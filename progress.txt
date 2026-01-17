@@ -65,3 +65,32 @@
   - dotenv.config() should use path.resolve for reliable .env loading
   - Config validates NODE_ENV against allowed values
 ---
+
+## Iteration 4 - US-004: Create Core Directory Structure
+- What was implemented:
+  - Created all required directories under apps/api/src/:
+    - features/ (empty, for future feature modules)
+    - middleware/ (for Express middleware)
+    - routes/ (for route mounting logic)
+    - utils/ (for utility functions)
+    - types/ (for shared type definitions)
+    - constants/ (for application constants)
+    - models/ (for data models)
+    - services/ (for business logic services)
+  - Created SUMMARY.md files for each directory explaining purpose and guidelines
+- Files changed:
+  - apps/api/src/features/SUMMARY.md (new)
+  - apps/api/src/middleware/SUMMARY.md (new)
+  - apps/api/src/routes/SUMMARY.md (new)
+  - apps/api/src/utils/SUMMARY.md (new)
+  - apps/api/src/types/SUMMARY.md (new)
+  - apps/api/src/constants/SUMMARY.md (new)
+  - apps/api/src/models/SUMMARY.md (new)
+  - apps/api/src/services/SUMMARY.md (new)
+  - PRD.md (marked US-004 as complete)
+  - progress.txt (added this entry)
+- Learnings for future iterations:
+  - SUMMARY.md files serve as AI context for understanding directory purposes
+  - Empty directories with only SUMMARY.md still pass typecheck
+  - Feature-based architecture groups related code together
+---

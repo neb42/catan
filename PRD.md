@@ -54,16 +54,16 @@ Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The p
 **Description:** As a developer, I want the feature-based directory structure created so that I have a consistent place for all code.
 
 **Acceptance Criteria:**
-- [ ] `apps/api/src/features/` directory created (empty, for future features)
-- [ ] `apps/api/src/middleware/` directory created
-- [ ] `apps/api/src/routes/` directory created
-- [ ] `apps/api/src/utils/` directory created
-- [ ] `apps/api/src/types/` directory created
-- [ ] `apps/api/src/constants/` directory created
-- [ ] `apps/api/src/models/` directory created
-- [ ] `apps/api/src/services/` directory created
-- [ ] Each directory has a SUMMARY.md file describing its purpose
-- [ ] Typecheck passes
+- [x] `apps/api/src/features/` directory created (empty, for future features)
+- [x] `apps/api/src/middleware/` directory created
+- [x] `apps/api/src/routes/` directory created
+- [x] `apps/api/src/utils/` directory created
+- [x] `apps/api/src/types/` directory created
+- [x] `apps/api/src/constants/` directory created
+- [x] `apps/api/src/models/` directory created
+- [x] `apps/api/src/services/` directory created
+- [x] Each directory has a SUMMARY.md file describing its purpose
+- [x] Typecheck passes
 
 ### US-005: Set Up Express App Structure
 **Description:** As a developer, I want the Express app properly structured with middleware and route mounting so that I have a foundation to build on.
