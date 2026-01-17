@@ -70,15 +70,15 @@ Set up an Nx frontend application in the existing monorepo using React, Vite, Ty
 **Description:** As a developer, I want a Mantine AppShell layout so that the app has consistent navigation structure.
 
 **Acceptance Criteria:**
-- [ ] `apps/web/src/components/` directory created
-- [ ] `apps/web/src/components/AppLayout.tsx` created with Mantine AppShell
-- [ ] AppShell includes Header with app title "Catan"
-- [ ] AppShell includes Navbar (left side) with placeholder navigation links
-- [ ] AppShell includes Footer with copyright text
-- [ ] AppShell includes Main content area that renders children/outlet
-- [ ] Navbar is collapsible on mobile (burger menu in header)
-- [ ] SUMMARY.md in `apps/web/src/components/` explaining components
-- [ ] Typecheck passes
+- [x] `apps/web/src/components/` directory created
+- [x] `apps/web/src/components/AppLayout.tsx` created with Mantine AppShell
+- [x] AppShell includes Header with app title "Catan"
+- [x] AppShell includes Navbar (left side) with placeholder navigation links
+- [x] AppShell includes Footer with copyright text
+- [x] AppShell includes Main content area that renders children/outlet
+- [x] Navbar is collapsible on mobile (burger menu in header)
+- [x] SUMMARY.md in `apps/web/src/components/` explaining components
+- [x] Typecheck passes
 
 ### US-006: Integrate AppShell with Router
 **Description:** As a developer, I want the AppShell integrated with the router so that all pages use the layout.
