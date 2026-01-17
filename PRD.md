@@ -30,13 +30,13 @@ Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The p
 **Description:** As a developer, I want an Express application scaffolded in the Nx workspace so that I have a runnable server.
 
 **Acceptance Criteria:**
-- [ ] `apps/api/` directory created
-- [ ] `apps/api/src/main.ts` entry point exists
-- [ ] Express server configured to start on port from environment
-- [ ] `apps/api/project.json` with build/serve targets
-- [ ] `apps/api/tsconfig.app.json` and `apps/api/tsconfig.json` exist
-- [ ] SUMMARY.md in `apps/api/` explaining the application
-- [ ] Typecheck passes
+- [x] `apps/api/` directory created
+- [x] `apps/api/src/main.ts` entry point exists
+- [x] Express server configured to start on port from environment
+- [x] `apps/api/project.json` with build/serve targets
+- [x] `apps/api/tsconfig.app.json` and `apps/api/tsconfig.json` exist
+- [x] SUMMARY.md in `apps/api/` explaining the application
+- [x] Typecheck passes
 
 ### US-003: Set Up Environment Configuration
 **Description:** As a developer, I want environment variables loaded from a .env file so that I can configure the app without code changes.

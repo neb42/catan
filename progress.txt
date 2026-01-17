@@ -2,5 +2,47 @@
 
 ## Learnings
 (Patterns discovered during implementation)
+- Nx 22.x uses `@nx/js` plugin with TypeScript support built-in
+- Use `workspaceLayout` in nx.json to configure apps/libs directories
+- Typecheck with `npx tsc --noEmit` at root level
+- *.tsbuildinfo files should be in .gitignore
 
+---
+
+## Iteration 1 - US-001: Initialize Nx Workspace
+- What was implemented:
+  - Created Nx workspace using create-nx-workspace with ts preset
+  - Configured apps/ and libs/ directory structure
+  - Added SUMMARY.md at workspace root
+  - Updated nx.json with workspaceLayout
+  - Fixed package.json workspaces and name
+- Files changed:
+  - nx.json (added workspaceLayout)
+  - package.json (fixed name and workspaces)
+  - tsconfig.base.json (fixed customConditions)
+  - SUMMARY.md (new)
+  - .gitignore (added *.tsbuildinfo)
+- Learnings for future iterations:
+  - create-nx-workspace cannot be run in existing dir, create then copy
+  - The ts preset creates "packages/" dir - must manually change to apps/libs
+  - All acceptance criteria should be verified before marking complete
+---
+
+## Iteration 2 - US-002: Create Express API Application
+- What was implemented:
+  - Verified apps/api/ directory structure already existed from previous setup
+  - apps/api/src/main.ts entry point with Express server and PORT config
+  - project.json with build (using @nx/js:swc) and serve targets
+  - tsconfig.json and tsconfig.app.json properly configured
+  - SUMMARY.md already present explaining the application
+- Files changed:
+  - PRD.md (marked US-002 as complete)
+  - progress.txt (added this entry)
+- Learnings for future iterations:
+  - The api app was scaffolded in a previous iteration - check existing state first
+  - Typecheck for api app: `npx tsc --noEmit -p apps/api/tsconfig.app.json`
+  - Express 5.x is being used (check package.json)
+  - @nx/js:swc executor is used for building, @nx/js:node for serving
+  - Need @swc/cli package for SWC build executor to work
+  - .swcrc config file required in apps/api/ directory
 ---
