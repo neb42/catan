@@ -46,3 +46,22 @@
   - Need @swc/cli package for SWC build executor to work
   - .swcrc config file required in apps/api/ directory
 ---
+
+## Iteration 3 - US-003: Set Up Environment Configuration
+- What was implemented:
+  - Verified dotenv was already installed (and added it to ensure it's there)
+  - .env.example already exists with PORT, NODE_ENV, WS_PORT documented
+  - .env already added to .gitignore (with .env.local patterns)
+  - apps/api/src/config/index.ts already exists with typed AppConfig
+  - Config loaded and validated with proper error handling
+  - SUMMARY.md in config/ directory with usage documentation
+- Files changed:
+  - PRD.md (marked US-003 as complete)
+  - progress.txt (added this entry)
+  - package.json, package-lock.json (ensured dotenv dependency)
+- Learnings for future iterations:
+  - Previous iterations may have implemented parts of future tasks
+  - Always verify existing state before implementing
+  - dotenv.config() should use path.resolve for reliable .env loading
+  - Config validates NODE_ENV against allowed values
+---
