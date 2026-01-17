@@ -124,3 +124,27 @@
   - Error handlers in Express need 4 arguments (err, req, res, next) to be recognized
   - Request logger attaches to res.on('finish') to get final status code and duration
 ---
+
+## Iteration 6 - US-006: Add WebSocket Support
+- What was implemented:
+  - Installed `ws` package and `@types/ws` for WebSocket support
+  - Created `apps/api/src/websocket/` directory
+  - Created `apps/api/src/websocket/index.ts` with WebSocket server initialization
+  - WebSocket server attaches to HTTP server using upgrade pattern
+  - Implemented connection/disconnection logging with unique client IDs
+  - Created SUMMARY.md documenting WebSocket setup and usage
+  - Updated main.ts to create HTTP server and attach WebSocket
+- Files changed:
+  - apps/api/src/websocket/index.ts (new)
+  - apps/api/src/websocket/SUMMARY.md (new)
+  - apps/api/src/main.ts (updated to use createServer and initializeWebSocket)
+  - package.json (added ws dependency)
+  - package-lock.json (updated)
+  - PRD.md (marked US-006 as complete)
+  - progress.txt (added this entry)
+- Learnings for future iterations:
+  - Use `createServer(app)` from 'http' to get httpServer for WebSocket attachment
+  - WebSocket upgrade pattern allows sharing port with HTTP server
+  - The `ws` module's WebSocket type works with `server.clients` for tracking connections
+  - Connection handlers should track IDs separately from the WebSocket object
+---
