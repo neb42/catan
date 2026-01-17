@@ -96,12 +96,12 @@ Set up an Nx frontend application in the existing monorepo using React, Vite, Ty
 **Description:** As a developer, I want all directories documented with SUMMARY.md files so that AI assistants understand the codebase.
 
 **Acceptance Criteria:**
-- [ ] `apps/web/src/hooks/` directory created with SUMMARY.md (for custom hooks)
-- [ ] `apps/web/src/types/` directory created with SUMMARY.md (for TypeScript types)
-- [ ] `apps/web/src/utils/` directory created with SUMMARY.md (for utility functions)
-- [ ] `apps/web/src/features/` directory created with SUMMARY.md (for feature modules)
-- [ ] Each SUMMARY.md describes the directory's purpose and what code belongs there
-- [ ] Typecheck passes
+- [x] `apps/web/src/hooks/` directory created with SUMMARY.md (for custom hooks)
+- [x] `apps/web/src/types/` directory created with SUMMARY.md (for TypeScript types)
+- [x] `apps/web/src/utils/` directory created with SUMMARY.md (for utility functions)
+- [x] `apps/web/src/features/` directory created with SUMMARY.md (for feature modules)
+- [x] Each SUMMARY.md describes the directory's purpose and what code belongs there
+- [x] Typecheck passes
 
 ### US-008: Update Root CLAUDE.md
 **Description:** As a developer, I want CLAUDE.md updated to include the web app so that AI assistants understand the full monorepo.
