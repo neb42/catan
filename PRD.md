@@ -84,13 +84,13 @@ Set up an Nx frontend application in the existing monorepo using React, Vite, Ty
 **Description:** As a developer, I want the AppShell integrated with the router so that all pages use the layout.
 
 **Acceptance Criteria:**
-- [ ] Root route (`__root.tsx`) renders AppLayout component
-- [ ] AppLayout renders `<Outlet />` in main content area
-- [ ] Home page route displays welcome content inside the layout
-- [ ] Home page includes a TanStack Query call to `/health` endpoint to verify API connection
-- [ ] Health status displayed on home page (shows "API Connected" or error)
-- [ ] Typecheck passes
-- [ ] Verify changes work in browser (layout visible, health check works)
+- [x] Root route (`__root.tsx`) renders AppLayout component
+- [x] AppLayout renders `<Outlet />` in main content area
+- [x] Home page route displays welcome content inside the layout
+- [x] Home page includes a TanStack Query call to `/health` endpoint to verify API connection
+- [x] Health status displayed on home page (shows "API Connected" or error)
+- [x] Typecheck passes
+- [x] Verify changes work in browser (layout visible, health check works)
 
 ### US-007: Create Directory Structure with SUMMARY.md Files
 **Description:** As a developer, I want all directories documented with SUMMARY.md files so that AI assistants understand the codebase.
