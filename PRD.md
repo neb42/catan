@@ -33,12 +33,12 @@ Set up an Nx frontend application in the existing monorepo using React, Vite, Ty
 **Description:** As a developer, I want Mantine UI library configured so that I can use its components.
 
 **Acceptance Criteria:**
-- [ ] `@mantine/core` and `@mantine/hooks` packages installed
-- [ ] `@mantine/core/styles.css` imported in main.tsx
-- [ ] `MantineProvider` wrapping the app in main.tsx
-- [ ] Mantine color scheme set to auto (respects system preference)
-- [ ] Typecheck passes
-- [ ] Verify Mantine is working by running the app
+- [x] `@mantine/core` and `@mantine/hooks` packages installed
+- [x] `@mantine/core/styles.css` imported in main.tsx
+- [x] `MantineProvider` wrapping the app in main.tsx
+- [x] Mantine color scheme set to auto (respects system preference)
+- [x] Typecheck passes
+- [x] Verify Mantine is working by running the app
 
 ### US-003: Install and Configure TanStack Router
 **Description:** As a developer, I want TanStack Router configured so that I have type-safe routing.
