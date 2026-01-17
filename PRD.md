@@ -42,13 +42,13 @@ Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The p
 **Description:** As a developer, I want environment variables loaded from a .env file so that I can configure the app without code changes.
 
 **Acceptance Criteria:**
-- [ ] `dotenv` package installed
-- [ ] `.env.example` file at root with documented variables (PORT, NODE_ENV, WS_PORT)
-- [ ] `.env` added to `.gitignore`
-- [ ] `apps/api/src/config/` directory created with `index.ts` exporting typed config
-- [ ] Config loaded and validated at app startup
-- [ ] SUMMARY.md in `apps/api/src/config/` explaining configuration management
-- [ ] Typecheck passes
+- [x] `dotenv` package installed
+- [x] `.env.example` file at root with documented variables (PORT, NODE_ENV, WS_PORT)
+- [x] `.env` added to `.gitignore`
+- [x] `apps/api/src/config/` directory created with `index.ts` exporting typed config
+- [x] Config loaded and validated at app startup
+- [x] SUMMARY.md in `apps/api/src/config/` explaining configuration management
+- [x] Typecheck passes
 
 ### US-004: Create Core Directory Structure
 **Description:** As a developer, I want the feature-based directory structure created so that I have a consistent place for all code.
