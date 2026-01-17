@@ -15,3 +15,46 @@
   - Web app runs on port 4200 by default with Vite
   - Use `npx nx typecheck @catan/web` to typecheck just the web app
 ---
+
+## Iteration 2 - US-002: Install and Configure Mantine
+- What was implemented:
+  - Installed @mantine/core and @mantine/hooks packages
+  - Imported @mantine/core/styles.css in main.tsx
+  - Added MantineProvider wrapping the app with defaultColorScheme="auto"
+  - Verified typecheck passes and app runs with Mantine configured
+- Files changed:
+  - package.json (added @mantine/core, @mantine/hooks)
+  - package-lock.json, yarn.lock (updated dependencies)
+  - apps/web/src/main.tsx (added MantineProvider and CSS import)
+  - PRD.md updated to mark US-002 complete
+- Learnings for future iterations:
+  - Use `--legacy-peer-deps` when installing npm packages due to dependency conflicts in the workspace
+  - Mantine v8+ requires explicit CSS import: `import '@mantine/core/styles.css'`
+  - Use `defaultColorScheme="auto"` for MantineProvider to respect system preference
+---
+
+## Iteration 3 - US-003: Install and Configure TanStack Router
+- What was implemented:
+  - Installed @tanstack/react-router package
+  - Created apps/web/src/routes/ directory
+  - Created __root.tsx with createRootRoute and Outlet component
+  - Created index.tsx home page route with createRoute
+  - Created router.tsx with router instance and TypeScript module augmentation
+  - Updated main.tsx to use RouterProvider instead of App component
+  - Created SUMMARY.md in routes directory
+  - Verified typecheck passes and app runs
+- Files changed:
+  - package.json (added @tanstack/react-router)
+  - apps/web/src/routes/__root.tsx (new)
+  - apps/web/src/routes/index.tsx (new)
+  - apps/web/src/routes/SUMMARY.md (new)
+  - apps/web/src/router.tsx (new)
+  - apps/web/src/main.tsx (updated to use RouterProvider)
+  - PRD.md updated to mark US-003 complete
+- Learnings for future iterations:
+  - TanStack Router v1+ requires `createRoute` with `getParentRoute` callback for child routes
+  - Don't use `createFileRoute('/')` for manual route tree - use `createRoute` with explicit parent
+  - Route tree is built manually in router.tsx using `rootRoute.addChildren([...])`
+  - TypeScript module augmentation `declare module '@tanstack/react-router'` needed for type safety
+  - Old App component (apps/web/src/app/app.tsx) is now unused, replaced by routes
+---

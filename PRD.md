@@ -44,15 +44,15 @@ Set up an Nx frontend application in the existing monorepo using React, Vite, Ty
 **Description:** As a developer, I want TanStack Router configured so that I have type-safe routing.
 
 **Acceptance Criteria:**
-- [ ] `@tanstack/react-router` package installed
-- [ ] `apps/web/src/routes/` directory created
-- [ ] Root route file created at `apps/web/src/routes/__root.tsx`
-- [ ] Index route file created at `apps/web/src/routes/index.tsx` (home page)
-- [ ] Router instance created and configured in `apps/web/src/router.tsx`
-- [ ] Router integrated in main.tsx with `RouterProvider`
-- [ ] SUMMARY.md in `apps/web/src/routes/` explaining routing
-- [ ] Typecheck passes
-- [ ] Verify routing works by running the app
+- [x] `@tanstack/react-router` package installed
+- [x] `apps/web/src/routes/` directory created
+- [x] Root route file created at `apps/web/src/routes/__root.tsx`
+- [x] Index route file created at `apps/web/src/routes/index.tsx` (home page)
+- [x] Router instance created and configured in `apps/web/src/router.tsx`
+- [x] Router integrated in main.tsx with `RouterProvider`
+- [x] SUMMARY.md in `apps/web/src/routes/` explaining routing
+- [x] Typecheck passes
+- [x] Verify routing works by running the app
 
 ### US-004: Install and Configure TanStack Query
 **Description:** As a developer, I want TanStack Query configured and connected to the API so that I can fetch data.
