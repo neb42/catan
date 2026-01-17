@@ -1,14 +1,23 @@
-# Catan Backend API
+# Catan Monorepo
 
-This is an Nx monorepo containing a Node.js/TypeScript/Express backend API with WebSocket support.
+This is an Nx monorepo containing a full-stack application with a Node.js/TypeScript/Express backend API and a React/Vite frontend.
 
 ## Project Overview
 
-A feature-based backend API skeleton built with:
+A feature-based full-stack application skeleton built with:
 - **Nx** - Monorepo tooling for builds and task orchestration
+- **TypeScript** - Type-safe development with strict mode
+
+### Backend (apps/api)
 - **Express 5.x** - HTTP server framework
 - **WebSocket (ws)** - Real-time communication support
-- **TypeScript** - Type-safe development with strict mode
+
+### Frontend (apps/web)
+- **React 18** - UI library
+- **Vite** - Fast build tool and dev server
+- **Mantine v8** - UI component library with AppShell layout
+- **TanStack Router** - Type-safe file-based routing
+- **TanStack Query** - Data fetching and caching
 
 ## Directory Structure
 
@@ -16,7 +25,10 @@ The codebase follows a feature-based architecture. Each directory contains a SUM
 
 ### SUMMARY.md Locations
 
+#### Root
 - `SUMMARY.md` - Root monorepo structure overview
+
+#### API App (apps/api)
 - `apps/api/SUMMARY.md` - API application overview
 - `apps/api/src/config/SUMMARY.md` - Environment configuration
 - `apps/api/src/constants/SUMMARY.md` - Application constants and HTTP status codes
@@ -29,11 +41,21 @@ The codebase follows a feature-based architecture. Each directory contains a SUM
 - `apps/api/src/utils/SUMMARY.md` - Utility functions
 - `apps/api/src/websocket/SUMMARY.md` - WebSocket server setup
 
+#### Web App (apps/web)
+- `apps/web/SUMMARY.md` - Web application overview
+- `apps/web/src/components/SUMMARY.md` - React components (AppLayout, etc.)
+- `apps/web/src/features/SUMMARY.md` - Feature modules (empty, for future use)
+- `apps/web/src/hooks/SUMMARY.md` - Custom React hooks
+- `apps/web/src/lib/SUMMARY.md` - Shared utilities (QueryClient, API helpers)
+- `apps/web/src/routes/SUMMARY.md` - TanStack Router route definitions
+- `apps/web/src/types/SUMMARY.md` - Shared TypeScript type definitions
+- `apps/web/src/utils/SUMMARY.md` - Utility functions
+
 ### Key Directories
 
 ```
 apps/
-  api/                    # Main Express API application
+  api/                    # Express API application (port 3000)
     src/
       main.ts             # Entry point - starts HTTP and WebSocket servers
       app.ts              # Express app factory with middleware
@@ -48,20 +70,40 @@ apps/
       utils/              # Utility functions
       websocket/          # WebSocket server initialization
 
+  web/                    # React/Vite frontend application (port 4200)
+    src/
+      main.tsx            # Entry point - renders React app with providers
+      router.tsx          # TanStack Router configuration
+      components/         # React components (AppLayout with Mantine AppShell)
+      features/           # Feature modules (future)
+      hooks/              # Custom React hooks
+      lib/                # Shared utilities (QueryClient, API helpers)
+      routes/             # TanStack Router route definitions
+      types/              # Shared TypeScript types
+      utils/              # Utility functions
+
 libs/                     # Shared libraries (future)
 ```
 
 ## Development
 
-### Running the Development Server
+### Running the Development Servers
+
+For full functionality, both the API and web app should be running:
 
 ```bash
-# Start the API server with hot reload
+# Start the API server with hot reload (port 3000)
 npx nx serve api
 
-# Build the API
+# Start the web app with hot reload (port 4200)
+npx nx serve web
+
+# Build projects
 npx nx build api
+npx nx build web
 ```
+
+**Note:** The web app connects to the API at `http://localhost:3000`. Run both servers for the health check and API features to work.
 
 ### Key npm Scripts
 
@@ -74,6 +116,9 @@ npx tsc --noEmit
 
 # Typecheck just the API app
 npx tsc --noEmit -p apps/api/tsconfig.app.json
+
+# Typecheck just the web app
+npx nx typecheck @catan/web
 ```
 
 ### Environment Variables

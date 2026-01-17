@@ -107,12 +107,12 @@ Set up an Nx frontend application in the existing monorepo using React, Vite, Ty
 **Description:** As a developer, I want CLAUDE.md updated to include the web app so that AI assistants understand the full monorepo.
 
 **Acceptance Criteria:**
-- [ ] CLAUDE.md updated with web app overview
-- [ ] Lists all new SUMMARY.md file locations for web app
-- [ ] Documents how to run the web development server (`npx nx serve web`)
-- [ ] Documents that web app connects to API at localhost:3000
-- [ ] Notes that both apps should be running for full functionality
-- [ ] Typecheck passes
+- [x] CLAUDE.md updated with web app overview
+- [x] Lists all new SUMMARY.md file locations for web app
+- [x] Documents how to run the web development server (`npx nx serve web`)
+- [x] Documents that web app connects to API at localhost:3000
+- [x] Notes that both apps should be running for full functionality
+- [x] Typecheck passes
 
 ## Non-Goals
 
