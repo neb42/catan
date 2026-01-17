@@ -58,13 +58,13 @@ Set up an Nx frontend application in the existing monorepo using React, Vite, Ty
 **Description:** As a developer, I want TanStack Query configured and connected to the API so that I can fetch data.
 
 **Acceptance Criteria:**
-- [ ] `@tanstack/react-query` package installed
-- [ ] `QueryClient` created with sensible defaults in `apps/web/src/lib/queryClient.ts`
-- [ ] `QueryClientProvider` wrapping the app in main.tsx
-- [ ] API base URL configured as `http://localhost:3000` in `apps/web/src/lib/api.ts`
-- [ ] Helper fetch function exported for use with queries
-- [ ] `apps/web/src/lib/` directory has SUMMARY.md
-- [ ] Typecheck passes
+- [x] `@tanstack/react-query` package installed
+- [x] `QueryClient` created with sensible defaults in `apps/web/src/lib/queryClient.ts`
+- [x] `QueryClientProvider` wrapping the app in main.tsx
+- [x] API base URL configured as `http://localhost:3000` in `apps/web/src/lib/api.ts`
+- [x] Helper fetch function exported for use with queries
+- [x] `apps/web/src/lib/` directory has SUMMARY.md
+- [x] Typecheck passes
 
 ### US-005: Create AppShell Layout Component
 **Description:** As a developer, I want a Mantine AppShell layout so that the app has consistent navigation structure.
