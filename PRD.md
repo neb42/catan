@@ -1,142 +1,134 @@
-# PRD: Nx Backend API Skeleton
+# PRD: Nx Frontend App Skeleton
 
 ## Introduction
 
-Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The project will use a feature-based folder structure with WebSocket support. Each directory will contain a SUMMARY.md file describing its purpose for CLAUDE.md integration.
+Set up an Nx frontend application in the existing monorepo using React, Vite, TypeScript, TanStack Router, TanStack Query, and Mantine UI. The app will include a complete AppShell layout with header, navbar, footer, and main content area. Each directory will contain a SUMMARY.md file describing its purpose for CLAUDE.md integration.
 
 ## Goals
 
-- Create an Nx workspace with a single `api` application
-- Establish a feature-based directory structure
-- Configure Express with WebSocket support
-- Set up environment configuration with dotenv
+- Create a new `web` application in the existing Nx workspace alongside the `api` app
+- Configure Vite as the build tool with React and TypeScript
+- Set up Mantine UI with AppShell (header, navbar, footer, main content)
+- Configure TanStack Router with a single home page route
+- Configure TanStack Query connected to the existing API at `localhost:3000`
 - Document each directory with SUMMARY.md files for AI context
 
 ## User Stories
 
-### US-001: Initialize Nx Workspace
-**Description:** As a developer, I want an Nx workspace initialized so that I have a monorepo foundation for the backend API.
+### US-001: Create Nx React/Vite Application
+**Description:** As a developer, I want a React application scaffolded in the Nx workspace so that I have a runnable frontend.
 
 **Acceptance Criteria:**
-- [x] Nx workspace created with `apps/` and `libs/` directories
-- [x] TypeScript configured as the default language
-- [x] `package.json` exists with Nx dependencies
-- [x] `nx.json` configured for the workspace
-- [x] `tsconfig.base.json` exists at root
-- [x] SUMMARY.md created at workspace root explaining the monorepo structure
+- [x] `apps/web/` directory created using `nx generate @nx/react:application`
+- [x] Vite configured as the bundler (not webpack)
+- [x] `apps/web/src/main.tsx` entry point exists
+- [x] `apps/web/project.json` with build/serve targets
+- [x] `apps/web/tsconfig.json` and `apps/web/tsconfig.app.json` exist
+- [x] `apps/web/index.html` exists
+- [x] App runs with `npx nx serve web` (displays default React page)
+- [x] SUMMARY.md in `apps/web/` explaining the application
 - [x] Typecheck passes
 
-### US-002: Create Express API Application
-**Description:** As a developer, I want an Express application scaffolded in the Nx workspace so that I have a runnable server.
+### US-002: Install and Configure Mantine
+**Description:** As a developer, I want Mantine UI library configured so that I can use its components.
 
 **Acceptance Criteria:**
-- [x] `apps/api/` directory created
-- [x] `apps/api/src/main.ts` entry point exists
-- [x] Express server configured to start on port from environment
-- [x] `apps/api/project.json` with build/serve targets
-- [x] `apps/api/tsconfig.app.json` and `apps/api/tsconfig.json` exist
-- [x] SUMMARY.md in `apps/api/` explaining the application
-- [x] Typecheck passes
+- [ ] `@mantine/core` and `@mantine/hooks` packages installed
+- [ ] `@mantine/core/styles.css` imported in main.tsx
+- [ ] `MantineProvider` wrapping the app in main.tsx
+- [ ] Mantine color scheme set to auto (respects system preference)
+- [ ] Typecheck passes
+- [ ] Verify Mantine is working by running the app
 
-### US-003: Set Up Environment Configuration
-**Description:** As a developer, I want environment variables loaded from a .env file so that I can configure the app without code changes.
-
-**Acceptance Criteria:**
-- [x] `dotenv` package installed
-- [x] `.env.example` file at root with documented variables (PORT, NODE_ENV, WS_PORT)
-- [x] `.env` added to `.gitignore`
-- [x] `apps/api/src/config/` directory created with `index.ts` exporting typed config
-- [x] Config loaded and validated at app startup
-- [x] SUMMARY.md in `apps/api/src/config/` explaining configuration management
-- [x] Typecheck passes
-
-### US-004: Create Core Directory Structure
-**Description:** As a developer, I want the feature-based directory structure created so that I have a consistent place for all code.
+### US-003: Install and Configure TanStack Router
+**Description:** As a developer, I want TanStack Router configured so that I have type-safe routing.
 
 **Acceptance Criteria:**
-- [x] `apps/api/src/features/` directory created (empty, for future features)
-- [x] `apps/api/src/middleware/` directory created
-- [x] `apps/api/src/routes/` directory created
-- [x] `apps/api/src/utils/` directory created
-- [x] `apps/api/src/types/` directory created
-- [x] `apps/api/src/constants/` directory created
-- [x] `apps/api/src/models/` directory created
-- [x] `apps/api/src/services/` directory created
-- [x] Each directory has a SUMMARY.md file describing its purpose
-- [x] Typecheck passes
+- [ ] `@tanstack/react-router` package installed
+- [ ] `apps/web/src/routes/` directory created
+- [ ] Root route file created at `apps/web/src/routes/__root.tsx`
+- [ ] Index route file created at `apps/web/src/routes/index.tsx` (home page)
+- [ ] Router instance created and configured in `apps/web/src/router.tsx`
+- [ ] Router integrated in main.tsx with `RouterProvider`
+- [ ] SUMMARY.md in `apps/web/src/routes/` explaining routing
+- [ ] Typecheck passes
+- [ ] Verify routing works by running the app
 
-### US-005: Set Up Express App Structure
-**Description:** As a developer, I want the Express app properly structured with middleware and route mounting so that I have a foundation to build on.
-
-**Acceptance Criteria:**
-- [x] `apps/api/src/app.ts` created with Express app configuration
-- [x] JSON body parsing middleware configured
-- [x] CORS middleware configured
-- [x] Health check route at `GET /health` returns `{ status: 'ok' }`
-- [x] Route mounting pattern established in `apps/api/src/routes/index.ts`
-- [x] Error handling middleware in `apps/api/src/middleware/errorHandler.ts`
-- [x] Request logging middleware in `apps/api/src/middleware/requestLogger.ts`
-- [x] SUMMARY.md updated in middleware and routes directories
-- [x] Typecheck passes
-
-### US-006: Add WebSocket Support
-**Description:** As a developer, I want WebSocket support integrated so that real-time communication is available.
+### US-004: Install and Configure TanStack Query
+**Description:** As a developer, I want TanStack Query configured and connected to the API so that I can fetch data.
 
 **Acceptance Criteria:**
-- [x] `ws` package installed with types
-- [x] `apps/api/src/websocket/` directory created
-- [x] WebSocket server initialization in `apps/api/src/websocket/index.ts`
-- [x] WebSocket server attached to HTTP server in `main.ts`
-- [x] Basic connection/disconnection logging implemented
-- [x] SUMMARY.md in `apps/api/src/websocket/` explaining WebSocket setup
-- [x] Typecheck passes
+- [ ] `@tanstack/react-query` package installed
+- [ ] `QueryClient` created with sensible defaults in `apps/web/src/lib/queryClient.ts`
+- [ ] `QueryClientProvider` wrapping the app in main.tsx
+- [ ] API base URL configured as `http://localhost:3000` in `apps/web/src/lib/api.ts`
+- [ ] Helper fetch function exported for use with queries
+- [ ] `apps/web/src/lib/` directory has SUMMARY.md
+- [ ] Typecheck passes
 
-### US-007: Add Base Type Definitions
-**Description:** As a developer, I want shared type definitions established so that I have type safety across the application.
-
-**Acceptance Criteria:**
-- [x] `apps/api/src/types/index.ts` with common types exported
-- [x] `AppConfig` type defined for environment config
-- [x] `ApiResponse<T>` generic type for standardized responses
-- [x] `WebSocketMessage` type for WS communication
-- [x] SUMMARY.md in types directory updated with type documentation approach
-- [x] Typecheck passes
-
-### US-008: Add Utility and Constants Foundations
-**Description:** As a developer, I want utility functions and constants scaffolded so that I have a place for shared code.
+### US-005: Create AppShell Layout Component
+**Description:** As a developer, I want a Mantine AppShell layout so that the app has consistent navigation structure.
 
 **Acceptance Criteria:**
-- [x] `apps/api/src/utils/index.ts` with placeholder export
-- [x] `apps/api/src/constants/index.ts` with HTTP status codes and common constants
-- [x] `apps/api/src/constants/httpStatus.ts` with status code constants
-- [x] SUMMARY.md files updated in utils and constants directories
-- [x] Typecheck passes
+- [ ] `apps/web/src/components/` directory created
+- [ ] `apps/web/src/components/AppLayout.tsx` created with Mantine AppShell
+- [ ] AppShell includes Header with app title "Catan"
+- [ ] AppShell includes Navbar (left side) with placeholder navigation links
+- [ ] AppShell includes Footer with copyright text
+- [ ] AppShell includes Main content area that renders children/outlet
+- [ ] Navbar is collapsible on mobile (burger menu in header)
+- [ ] SUMMARY.md in `apps/web/src/components/` explaining components
+- [ ] Typecheck passes
 
-### US-009: Update Root CLAUDE.md
-**Description:** As a developer, I want CLAUDE.md at the root to reference all SUMMARY.md files so that AI assistants understand the codebase structure.
+### US-006: Integrate AppShell with Router
+**Description:** As a developer, I want the AppShell integrated with the router so that all pages use the layout.
 
 **Acceptance Criteria:**
-- [x] `CLAUDE.md` updated with project overview
-- [x] Lists all SUMMARY.md file locations
-- [x] Describes the feature-based architecture pattern
-- [x] Documents how to run the development server
-- [x] Documents key npm scripts
-- [x] Typecheck passes
+- [ ] Root route (`__root.tsx`) renders AppLayout component
+- [ ] AppLayout renders `<Outlet />` in main content area
+- [ ] Home page route displays welcome content inside the layout
+- [ ] Home page includes a TanStack Query call to `/health` endpoint to verify API connection
+- [ ] Health status displayed on home page (shows "API Connected" or error)
+- [ ] Typecheck passes
+- [ ] Verify changes work in browser (layout visible, health check works)
+
+### US-007: Create Directory Structure with SUMMARY.md Files
+**Description:** As a developer, I want all directories documented with SUMMARY.md files so that AI assistants understand the codebase.
+
+**Acceptance Criteria:**
+- [ ] `apps/web/src/hooks/` directory created with SUMMARY.md (for custom hooks)
+- [ ] `apps/web/src/types/` directory created with SUMMARY.md (for TypeScript types)
+- [ ] `apps/web/src/utils/` directory created with SUMMARY.md (for utility functions)
+- [ ] `apps/web/src/features/` directory created with SUMMARY.md (for feature modules)
+- [ ] Each SUMMARY.md describes the directory's purpose and what code belongs there
+- [ ] Typecheck passes
+
+### US-008: Update Root CLAUDE.md
+**Description:** As a developer, I want CLAUDE.md updated to include the web app so that AI assistants understand the full monorepo.
+
+**Acceptance Criteria:**
+- [ ] CLAUDE.md updated with web app overview
+- [ ] Lists all new SUMMARY.md file locations for web app
+- [ ] Documents how to run the web development server (`npx nx serve web`)
+- [ ] Documents that web app connects to API at localhost:3000
+- [ ] Notes that both apps should be running for full functionality
+- [ ] Typecheck passes
 
 ## Non-Goals
 
-- No actual feature implementations (auth, users, etc.)
-- No database setup or ORM configuration
+- No actual feature implementations (auth, game logic, etc.)
+- No additional pages beyond home
+- No state management beyond TanStack Query
 - No testing framework setup
 - No CI/CD configuration
-- No Docker configuration
-- No production deployment configuration
-- No API documentation (Swagger/OpenAPI)
+- No production build optimization
+- No environment variable configuration (hardcoded localhost:3000 is fine)
 
 ## Technical Considerations
 
-- Use Nx 17+ with the `@nx/node` and `@nx/express` plugins
-- TypeScript strict mode enabled
-- ES modules preferred where possible
+- Use Nx 17+ with `@nx/react` and `@nx/vite` plugins
+- TanStack Router uses file-based routing convention
+- Mantine v7+ requires explicit CSS import
+- AppShell responsive behavior built into Mantine component
 - Keep dependencies minimal for skeleton
-- WebSocket server shares port with HTTP server (upgrade pattern) or uses separate port based on config
+- Web app will run on different port than API (Vite default is 5173 or 4200)
