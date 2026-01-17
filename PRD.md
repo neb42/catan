@@ -95,12 +95,12 @@ Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The p
 **Description:** As a developer, I want shared type definitions established so that I have type safety across the application.
 
 **Acceptance Criteria:**
-- [ ] `apps/api/src/types/index.ts` with common types exported
-- [ ] `AppConfig` type defined for environment config
-- [ ] `ApiResponse<T>` generic type for standardized responses
-- [ ] `WebSocketMessage` type for WS communication
-- [ ] SUMMARY.md in types directory updated with type documentation approach
-- [ ] Typecheck passes
+- [x] `apps/api/src/types/index.ts` with common types exported
+- [x] `AppConfig` type defined for environment config
+- [x] `ApiResponse<T>` generic type for standardized responses
+- [x] `WebSocketMessage` type for WS communication
+- [x] SUMMARY.md in types directory updated with type documentation approach
+- [x] Typecheck passes
 
 ### US-008: Add Utility and Constants Foundations
 **Description:** As a developer, I want utility functions and constants scaffolded so that I have a place for shared code.

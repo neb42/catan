@@ -148,3 +148,21 @@
   - The `ws` module's WebSocket type works with `server.clients` for tracking connections
   - Connection handlers should track IDs separately from the WebSocket object
 ---
+
+## Iteration 7 - US-007: Add Base Type Definitions
+- What was implemented:
+  - Created apps/api/src/types/index.ts with shared type exports
+  - Re-exported AppConfig from config/ module (single source of truth)
+  - Defined ApiResponse<T> generic type for standardized API responses
+  - Defined WebSocketMessage<T> generic type for WebSocket communication
+  - Updated SUMMARY.md with documentation on available types and usage guidelines
+- Files changed:
+  - apps/api/src/types/index.ts (new)
+  - apps/api/src/types/SUMMARY.md (updated)
+  - PRD.md (marked US-007 as complete)
+  - progress.txt (added this entry)
+- Learnings for future iterations:
+  - Use `export type { X }` instead of `export { X }` when isolatedModules is enabled
+  - Re-export types from canonical source rather than duplicating definitions
+  - Generic types with `T = unknown` provide flexibility while maintaining type safety
+---
