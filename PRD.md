@@ -116,12 +116,12 @@ Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The p
 **Description:** As a developer, I want CLAUDE.md at the root to reference all SUMMARY.md files so that AI assistants understand the codebase structure.
 
 **Acceptance Criteria:**
-- [ ] `CLAUDE.md` updated with project overview
-- [ ] Lists all SUMMARY.md file locations
-- [ ] Describes the feature-based architecture pattern
-- [ ] Documents how to run the development server
-- [ ] Documents key npm scripts
-- [ ] Typecheck passes
+- [x] `CLAUDE.md` updated with project overview
+- [x] Lists all SUMMARY.md file locations
+- [x] Describes the feature-based architecture pattern
+- [x] Documents how to run the development server
+- [x] Documents key npm scripts
+- [x] Typecheck passes
 
 ## Non-Goals
 
