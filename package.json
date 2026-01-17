@@ -11,10 +11,12 @@
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
     "nx": "22.3.3",
+    "prettier": "~3.6.2",
     "tslib": "^2.3.0",
     "typescript": "~5.9.2"
   },
   "workspaces": [
-    "packages/*"
+    "apps/*",
+    "libs/*"
   ]
 }
