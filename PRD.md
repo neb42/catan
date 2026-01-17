@@ -106,11 +106,11 @@ Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The p
 **Description:** As a developer, I want utility functions and constants scaffolded so that I have a place for shared code.
 
 **Acceptance Criteria:**
-- [ ] `apps/api/src/utils/index.ts` with placeholder export
-- [ ] `apps/api/src/constants/index.ts` with HTTP status codes and common constants
-- [ ] `apps/api/src/constants/httpStatus.ts` with status code constants
-- [ ] SUMMARY.md files updated in utils and constants directories
-- [ ] Typecheck passes
+- [x] `apps/api/src/utils/index.ts` with placeholder export
+- [x] `apps/api/src/constants/index.ts` with HTTP status codes and common constants
+- [x] `apps/api/src/constants/httpStatus.ts` with status code constants
+- [x] SUMMARY.md files updated in utils and constants directories
+- [x] Typecheck passes
 
 ### US-009: Update Root CLAUDE.md
 **Description:** As a developer, I want CLAUDE.md at the root to reference all SUMMARY.md files so that AI assistants understand the codebase structure.

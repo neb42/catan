@@ -10,9 +10,20 @@ Utility functions are small, reusable helper functions that don't belong to any 
 - Validation helpers
 - Response formatters
 
+## Files
+
+- `index.ts` - Main export file with placeholder utilities
+
 ## Usage
 
 Export utility functions from `index.ts` for easy imports:
 ```typescript
-import { formatResponse, validateEmail } from '../utils';
+import { noop } from '../utils';
 ```
+
+## Guidelines
+
+- Keep utility functions pure when possible (no side effects)
+- Each function should do one thing well
+- Add JSDoc comments for complex utilities
+- Consider adding unit tests for critical utilities
