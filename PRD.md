@@ -83,13 +83,13 @@ Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The p
 **Description:** As a developer, I want WebSocket support integrated so that real-time communication is available.
 
 **Acceptance Criteria:**
-- [ ] `ws` package installed with types
-- [ ] `apps/api/src/websocket/` directory created
-- [ ] WebSocket server initialization in `apps/api/src/websocket/index.ts`
-- [ ] WebSocket server attached to HTTP server in `main.ts`
-- [ ] Basic connection/disconnection logging implemented
-- [ ] SUMMARY.md in `apps/api/src/websocket/` explaining WebSocket setup
-- [ ] Typecheck passes
+- [x] `ws` package installed with types
+- [x] `apps/api/src/websocket/` directory created
+- [x] WebSocket server initialization in `apps/api/src/websocket/index.ts`
+- [x] WebSocket server attached to HTTP server in `main.ts`
+- [x] Basic connection/disconnection logging implemented
+- [x] SUMMARY.md in `apps/api/src/websocket/` explaining WebSocket setup
+- [x] Typecheck passes
 
 ### US-007: Add Base Type Definitions
 **Description:** As a developer, I want shared type definitions established so that I have type safety across the application.
