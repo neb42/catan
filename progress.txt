@@ -166,3 +166,31 @@
   - Re-export types from canonical source rather than duplicating definitions
   - Generic types with `T = unknown` provide flexibility while maintaining type safety
 ---
+
+## Iteration 8 - US-008: Add Utility and Constants Foundations
+- What was implemented:
+  - Created apps/api/src/utils/index.ts with placeholder `noop` function
+  - Created apps/api/src/constants/httpStatus.ts with HTTP status codes:
+    - Individual constants (HTTP_OK, HTTP_NOT_FOUND, etc.)
+    - Grouped HTTP_STATUS object for convenient access
+    - HttpStatusCode type for type-safe status codes
+  - Created apps/api/src/constants/index.ts with:
+    - Re-exports from httpStatus.ts
+    - APP_NAME, API_VERSION, API_PREFIX constants
+    - DEFAULT_PORT, DEFAULT_WS_PORT, DEFAULT_NODE_ENV defaults
+    - Timing constants (ONE_SECOND, ONE_MINUTE, ONE_HOUR)
+    - ERROR_MESSAGES object with common error strings
+  - Updated SUMMARY.md files with documentation on available exports
+- Files changed:
+  - apps/api/src/utils/index.ts (new)
+  - apps/api/src/constants/httpStatus.ts (new)
+  - apps/api/src/constants/index.ts (new)
+  - apps/api/src/utils/SUMMARY.md (updated)
+  - apps/api/src/constants/SUMMARY.md (updated)
+  - PRD.md (marked US-008 as complete)
+  - progress.txt (added this entry)
+- Learnings for future iterations:
+  - Use `as const` for constant objects to get literal types
+  - Organize constants into separate files by category then re-export from index
+  - Placeholder utility functions (noop) help establish the export pattern
+---
