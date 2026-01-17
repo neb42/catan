@@ -69,15 +69,15 @@ Set up an Nx monorepo with a Node/TypeScript/Express backend API skeleton. The p
 **Description:** As a developer, I want the Express app properly structured with middleware and route mounting so that I have a foundation to build on.
 
 **Acceptance Criteria:**
-- [ ] `apps/api/src/app.ts` created with Express app configuration
-- [ ] JSON body parsing middleware configured
-- [ ] CORS middleware configured
-- [ ] Health check route at `GET /health` returns `{ status: 'ok' }`
-- [ ] Route mounting pattern established in `apps/api/src/routes/index.ts`
-- [ ] Error handling middleware in `apps/api/src/middleware/errorHandler.ts`
-- [ ] Request logging middleware in `apps/api/src/middleware/requestLogger.ts`
-- [ ] SUMMARY.md updated in middleware and routes directories
-- [ ] Typecheck passes
+- [x] `apps/api/src/app.ts` created with Express app configuration
+- [x] JSON body parsing middleware configured
+- [x] CORS middleware configured
+- [x] Health check route at `GET /health` returns `{ status: 'ok' }`
+- [x] Route mounting pattern established in `apps/api/src/routes/index.ts`
+- [x] Error handling middleware in `apps/api/src/middleware/errorHandler.ts`
+- [x] Request logging middleware in `apps/api/src/middleware/requestLogger.ts`
+- [x] SUMMARY.md updated in middleware and routes directories
+- [x] Typecheck passes
 
 ### US-006: Add WebSocket Support
 **Description:** As a developer, I want WebSocket support integrated so that real-time communication is available.

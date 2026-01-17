@@ -94,3 +94,33 @@
   - Empty directories with only SUMMARY.md still pass typecheck
   - Feature-based architecture groups related code together
 ---
+
+## Iteration 5 - US-005: Set Up Express App Structure
+- What was implemented:
+  - Created apps/api/src/app.ts with Express app factory function (createApp)
+  - Installed cors package and @types/cors for CORS middleware
+  - Configured JSON body parsing with express.json() and express.urlencoded()
+  - Configured CORS middleware with cors()
+  - Created health check route at GET /health returning { status: 'ok' }
+  - Created apps/api/src/routes/index.ts with main router and route mounting pattern
+  - Created apps/api/src/middleware/errorHandler.ts for centralized error handling
+  - Created apps/api/src/middleware/requestLogger.ts for request logging with duration
+  - Updated main.ts to import createApp from app.ts
+  - Updated SUMMARY.md files in middleware and routes directories
+- Files changed:
+  - apps/api/src/app.ts (new)
+  - apps/api/src/routes/index.ts (new)
+  - apps/api/src/middleware/errorHandler.ts (new)
+  - apps/api/src/middleware/requestLogger.ts (new)
+  - apps/api/src/main.ts (updated to use createApp)
+  - apps/api/src/middleware/SUMMARY.md (updated)
+  - apps/api/src/routes/SUMMARY.md (updated)
+  - package.json (added cors dependency)
+  - PRD.md (marked US-005 as complete)
+  - progress.txt (added this entry)
+- Learnings for future iterations:
+  - Express 5.x is used - middleware and error handlers work the same as v4
+  - Use createApp factory function to separate app configuration from server start
+  - Error handlers in Express need 4 arguments (err, req, res, next) to be recognized
+  - Request logger attaches to res.on('finish') to get final status code and duration
+---

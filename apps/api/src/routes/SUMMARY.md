@@ -8,6 +8,10 @@ Routes map HTTP endpoints to their handlers. This directory contains:
 - `index.ts` - Main router that mounts all feature routes
 - Route-specific files for shared or non-feature routes
 
+## Available Endpoints
+
+- `GET /health` - Health check endpoint, returns `{ status: 'ok' }`
+
 ## Usage
 
 Import and mount feature routes in `index.ts`:

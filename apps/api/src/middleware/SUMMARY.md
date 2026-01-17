@@ -11,9 +11,19 @@ Middleware functions process requests before they reach route handlers. Common m
 - Request validation
 - CORS configuration
 
+## Available Middleware
+
+- `requestLogger.ts` - Logs incoming requests with method, URL, status code, and duration
+- `errorHandler.ts` - Centralized error handling that formats error responses
+
 ## Usage
 
 Export middleware functions that follow the Express middleware signature:
 ```typescript
 (req: Request, res: Response, next: NextFunction) => void
+```
+
+Error handlers use the 4-argument signature:
+```typescript
+(err: Error, req: Request, res: Response, next: NextFunction) => void
 ```
