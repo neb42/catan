@@ -39,6 +39,7 @@ export class RoomManager {
     const room: Room = {
       id: roomId,
       clients: new Set(),
+      nicknames: new Map(),
       createdAt: Date.now(),
       metadata: {
         capacity,
@@ -106,6 +107,9 @@ export class RoomManager {
     if (room) {
       // Remove client from room
       room.clients.delete(clientId);
+
+      // Remove client's nickname
+      room.nicknames.delete(clientId);
 
       console.log(`[RoomManager] Client ${clientId} left room ${roomId} (${room.clients.size}/${room.metadata.capacity} remaining)`);
 
@@ -218,5 +222,74 @@ export class RoomManager {
    */
   getAllRoomIds(): string[] {
     return Array.from(this.rooms.keys());
+  }
+
+  /**
+   * Set nickname for a client in a room
+   * Validates uniqueness (case-insensitive) before storing
+   * @param roomId Room ID
+   * @param clientId Client ID
+   * @param nickname Desired nickname
+   * @returns true if nickname is unique and stored, false if already taken
+   */
+  setNickname(roomId: string, clientId: string, nickname: string): boolean {
+    const room = this.rooms.get(roomId);
+
+    if (!room) {
+      console.warn(`[RoomManager] Cannot set nickname: room ${roomId} not found`);
+      return false;
+    }
+
+    // Check if nickname is already taken (case-insensitive)
+    const nicknameLower = nickname.toLowerCase();
+    const isTaken = Array.from(room.nicknames.values()).some(
+      (existingNickname) => existingNickname.toLowerCase() === nicknameLower
+    );
+
+    if (isTaken) {
+      console.log(`[RoomManager] Nickname "${nickname}" is already taken in room ${roomId}`);
+      return false;
+    }
+
+    // Store nickname
+    room.nicknames.set(clientId, nickname);
+    console.log(`[RoomManager] Client ${clientId} set nickname to "${nickname}" in room ${roomId}`);
+
+    return true;
+  }
+
+  /**
+   * Get nickname for a client in a room
+   * @param roomId Room ID
+   * @param clientId Client ID
+   * @returns Nickname or undefined if not set
+   */
+  getNickname(roomId: string, clientId: string): string | undefined {
+    const room = this.rooms.get(roomId);
+
+    if (!room) {
+      return undefined;
+    }
+
+    return room.nicknames.get(clientId);
+  }
+
+  /**
+   * Check if a nickname is available in a room (case-insensitive)
+   * @param roomId Room ID
+   * @param nickname Nickname to check
+   * @returns true if available, false if taken
+   */
+  isNicknameAvailable(roomId: string, nickname: string): boolean {
+    const room = this.rooms.get(roomId);
+
+    if (!room) {
+      return false;
+    }
+
+    const nicknameLower = nickname.toLowerCase();
+    return !Array.from(room.nicknames.values()).some(
+      (existingNickname) => existingNickname.toLowerCase() === nicknameLower
+    );
   }
 }

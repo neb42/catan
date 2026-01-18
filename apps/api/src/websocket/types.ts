@@ -47,6 +47,9 @@ export interface Room {
   /** Set of client IDs in this room */
   clients: Set<string>;
 
+  /** Nickname registry (clientId -> nickname mapping) */
+  nicknames: Map<string, string>;
+
   /** Timestamp when room was created (milliseconds since epoch) */
   createdAt: number;
 
