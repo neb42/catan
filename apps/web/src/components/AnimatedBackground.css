@@ -1,0 +1,155 @@
+/**
+ * AnimatedBackground Component Styles
+ *
+ * CSS-only animations for landing page background.
+ * Uses design system tokens for colors and timing.
+ */
+
+/* Container - full screen fixed background */
+.animated-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Gradient mesh - animated radial gradients */
+.gradient-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 107, 157, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(78, 205, 196, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 230, 109, 0.08) 0%, transparent 60%);
+  animation: mesh-float 20s ease-in-out infinite;
+}
+
+@keyframes mesh-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-5%, 5%) scale(1.05);
+  }
+}
+
+/* Floating shapes container */
+.floating-shapes {
+  position: absolute;
+  inset: 0;
+}
+
+.shape {
+  position: absolute;
+  opacity: 0.06;
+  animation: float-shape 15s ease-in-out infinite;
+}
+
+/* Shape 1 - Rectangle with border */
+.shape-1 {
+  width: 300px;
+  height: 300px;
+  border: 3px solid #FF6B9D; /* --color-primary */
+  border-radius: 16px; /* --radius-lg */
+  top: 10%;
+  left: 5%;
+  transform: rotate(15deg);
+  animation-delay: 0s;
+}
+
+/* Shape 2 - Diamond */
+.shape-2 {
+  width: 200px;
+  height: 200px;
+  background: #4ECDC4; /* --color-secondary */
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  top: 60%;
+  right: 10%;
+  animation-delay: 3s;
+}
+
+/* Shape 3 - Circle */
+.shape-3 {
+  width: 150px;
+  height: 150px;
+  border: 3px solid #FFE66D; /* --color-accent */
+  border-radius: 50%;
+  bottom: 15%;
+  left: 15%;
+  animation-delay: 6s;
+}
+
+/* Shape 4 - Small rectangle */
+.shape-4 {
+  width: 180px;
+  height: 180px;
+  border: 2px solid #FF6B9D; /* --color-primary */
+  border-radius: 12px; /* --radius-md */
+  top: 40%;
+  left: 60%;
+  transform: rotate(-20deg);
+  animation-delay: 2s;
+}
+
+/* Shape 5 - Small circle */
+.shape-5 {
+  width: 100px;
+  height: 100px;
+  border: 2px solid #4ECDC4; /* --color-secondary */
+  border-radius: 50%;
+  top: 20%;
+  right: 25%;
+  animation-delay: 5s;
+}
+
+/* Shape 6 - Triangle */
+.shape-6 {
+  width: 0;
+  height: 0;
+  border-left: 75px solid transparent;
+  border-right: 75px solid transparent;
+  border-bottom: 130px solid rgba(255, 230, 109, 0.06); /* --color-accent with opacity */
+  bottom: 30%;
+  right: 20%;
+  animation-delay: 4s;
+}
+
+/* Shape 7 - Rotated square */
+.shape-7 {
+  width: 120px;
+  height: 120px;
+  background: rgba(78, 205, 196, 0.06); /* --color-secondary with opacity */
+  transform: rotate(45deg);
+  top: 70%;
+  left: 40%;
+  animation-delay: 7s;
+}
+
+/* Shape 8 - Small diamond */
+.shape-8 {
+  width: 90px;
+  height: 90px;
+  background: rgba(255, 107, 157, 0.06); /* --color-primary with opacity */
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  bottom: 10%;
+  right: 35%;
+  animation-delay: 8s;
+}
+
+@keyframes float-shape {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(10deg);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .gradient-mesh,
+  .shape {
+    animation: none;
+  }
+}
