@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 1 of 6 (WebSocket Infrastructure)
-Plan: 3 of TBD in current phase
+Plan: 4 of TBD in current phase
 Status: In progress
-Last activity: 2026-01-18 — Completed 01-03-PLAN.md (Message Router Integration)
+Last activity: 2026-01-18 — Completed 01-04-PLAN.md (Client WebSocket Infrastructure)
 
-Progress: [██░░░░░░░░] ~20%
+Progress: [██░░░░░░░░] ~25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 2.3 min
-- Total execution time: 0.12 hours
+- Total plans completed: 4
+- Average duration: 2.25 min
+- Total execution time: 0.15 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-websocket-infrastructure | 3 | 7min | 2.3min |
+| 01-websocket-infrastructure | 4 | 9min | 2.25min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3min), 01-02 (2min), 01-03 (2min)
+- Last 5 plans: 01-01 (3min), 01-02 (2min), 01-03 (2min), 01-04 (2min)
 - Trend: Velocity stable at 2min per plan
 
 *Updated after each plan completion*
@@ -69,6 +69,13 @@ Recent decisions affecting current work:
 - Clean up managers in closeWebSocket to prevent memory leaks (Good)
 - Invalid messages don't crash server, trigger ERROR responses (graceful degradation) (Good)
 
+**From 01-04 (Client WebSocket Infrastructure):**
+- Use exponential backoff with jitter (0-25%) to prevent thundering herd during server outages (Good)
+- WebSocketProvider inside QueryClientProvider enables TanStack Query to access WebSocket state (Good)
+- Auto-connect on app mount ensures WebSocket ready before any route navigation (Good)
+- Multiple message handlers via Set pattern enables component-level message subscriptions (Good)
+- 30-second max delay matches server grace period for seamless session recovery (Good)
+
 ### Pending Todos
 
 None yet.
@@ -80,5 +87,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-18 — Plan execution
-Stopped at: Completed 01-03-PLAN.md execution, SUMMARY created
+Stopped at: Completed 01-04-PLAN.md execution, SUMMARY created
 Resume file: None
