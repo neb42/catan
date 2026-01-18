@@ -64,6 +64,45 @@ export const RoomJoinedMessageSchema = z.object({
 export type RoomJoinedMessage = z.infer<typeof RoomJoinedMessageSchema>;
 
 /**
+ * NICKNAME_ACCEPTED - Confirmation of nickname validation success
+ *
+ * Sent when nickname is unique and valid. Client should navigate to lobby.
+ */
+export const NicknameAcceptedMessageSchema = z.object({
+  type: z.literal('NICKNAME_ACCEPTED'),
+  payload: z.object({
+    nickname: z.string(),
+  }),
+  messageId: z.string(),
+  timestamp: z.number(),
+});
+
+export type NicknameAcceptedMessage = z.infer<
+  typeof NicknameAcceptedMessageSchema
+>;
+
+/**
+ * NICKNAME_REJECTED - Nickname validation failed
+ *
+ * Sent when nickname is already taken or invalid.
+ * - ALREADY_TAKEN: Another user has this nickname
+ * - INVALID_FORMAT: Nickname doesn't meet validation requirements
+ */
+export const NicknameRejectedMessageSchema = z.object({
+  type: z.literal('NICKNAME_REJECTED'),
+  payload: z.object({
+    message: z.string(),
+    reason: z.enum(['ALREADY_TAKEN', 'INVALID_FORMAT']),
+  }),
+  messageId: z.string(),
+  timestamp: z.number(),
+});
+
+export type NicknameRejectedMessage = z.infer<
+  typeof NicknameRejectedMessageSchema
+>;
+
+/**
  * ServerMessageSchema - Discriminated union of all server messages
  *
  * Use this schema to validate outgoing server messages.
@@ -73,6 +112,8 @@ export const ServerMessageSchema = z.discriminatedUnion('type', [
   ClientIdMessageSchema,
   ErrorMessageSchema,
   RoomJoinedMessageSchema,
+  NicknameAcceptedMessageSchema,
+  NicknameRejectedMessageSchema,
 ]);
 
 export type ServerMessage = z.infer<typeof ServerMessageSchema>;
