@@ -1,0 +1,163 @@
+## Iteration 1 - US-001: Create Nx React/Vite Application
+- What was implemented:
+  - Added @nx/react plugin to workspace
+  - Generated React app with Vite bundler using `nx generate @nx/react:application`
+  - Created SUMMARY.md in apps/web/ explaining the application
+  - Verified typecheck passes and app runs
+- Files changed:
+  - package.json (added @nx/react, @nx/vite dependencies)
+  - apps/web/ directory created with all scaffolded files
+  - apps/web/SUMMARY.md created
+  - PRD.md updated to mark US-001 complete
+- Learnings for future iterations:
+  - Nx 17+ uses inferred targets, so project.json is optional
+  - Use `npx nx sync --yes` if workspace is out of sync before typecheck
+  - Web app runs on port 4200 by default with Vite
+  - Use `npx nx typecheck @catan/web` to typecheck just the web app
+---
+
+## Iteration 2 - US-002: Install and Configure Mantine
+- What was implemented:
+  - Installed @mantine/core and @mantine/hooks packages
+  - Imported @mantine/core/styles.css in main.tsx
+  - Added MantineProvider wrapping the app with defaultColorScheme="auto"
+  - Verified typecheck passes and app runs with Mantine configured
+- Files changed:
+  - package.json (added @mantine/core, @mantine/hooks)
+  - package-lock.json, yarn.lock (updated dependencies)
+  - apps/web/src/main.tsx (added MantineProvider and CSS import)
+  - PRD.md updated to mark US-002 complete
+- Learnings for future iterations:
+  - Use `--legacy-peer-deps` when installing npm packages due to dependency conflicts in the workspace
+  - Mantine v8+ requires explicit CSS import: `import '@mantine/core/styles.css'`
+  - Use `defaultColorScheme="auto"` for MantineProvider to respect system preference
+---
+
+## Iteration 3 - US-003: Install and Configure TanStack Router
+- What was implemented:
+  - Installed @tanstack/react-router package
+  - Created apps/web/src/routes/ directory
+  - Created __root.tsx with createRootRoute and Outlet component
+  - Created index.tsx home page route with createRoute
+  - Created router.tsx with router instance and TypeScript module augmentation
+  - Updated main.tsx to use RouterProvider instead of App component
+  - Created SUMMARY.md in routes directory
+  - Verified typecheck passes and app runs
+- Files changed:
+  - package.json (added @tanstack/react-router)
+  - apps/web/src/routes/__root.tsx (new)
+  - apps/web/src/routes/index.tsx (new)
+  - apps/web/src/routes/SUMMARY.md (new)
+  - apps/web/src/router.tsx (new)
+  - apps/web/src/main.tsx (updated to use RouterProvider)
+  - PRD.md updated to mark US-003 complete
+- Learnings for future iterations:
+  - TanStack Router v1+ requires `createRoute` with `getParentRoute` callback for child routes
+  - Don't use `createFileRoute('/')` for manual route tree - use `createRoute` with explicit parent
+  - Route tree is built manually in router.tsx using `rootRoute.addChildren([...])`
+  - TypeScript module augmentation `declare module '@tanstack/react-router'` needed for type safety
+  - Old App component (apps/web/src/app/app.tsx) is now unused, replaced by routes
+---
+
+## Iteration 4 - US-004: Install and Configure TanStack Query
+- What was implemented:
+  - Installed @tanstack/react-query package
+  - Created apps/web/src/lib/ directory
+  - Created queryClient.ts with QueryClient and sensible defaults (1 min stale time, 1 retry, no refetch on window focus)
+  - Created api.ts with API_BASE_URL (localhost:3000) and apiFetch helper function
+  - Added QueryClientProvider wrapping the app in main.tsx
+  - Created SUMMARY.md in lib directory
+  - Verified typecheck passes
+- Files changed:
+  - package.json (added @tanstack/react-query)
+  - apps/web/src/lib/queryClient.ts (new)
+  - apps/web/src/lib/api.ts (new)
+  - apps/web/src/lib/SUMMARY.md (new)
+  - apps/web/src/main.tsx (added QueryClientProvider)
+  - PRD.md updated to mark US-004 complete
+- Learnings for future iterations:
+  - QueryClientProvider should wrap MantineProvider (query is outermost)
+  - apiFetch helper is generic: `apiFetch<T>(endpoint, options): Promise<T>`
+  - lib/ directory is for shared utilities used across features
+---
+
+## Iteration 5 - US-005: Create AppShell Layout Component
+- What was implemented:
+  - Created apps/web/src/components/ directory
+  - Created AppLayout.tsx with Mantine AppShell containing:
+    - Header with app title "Catan" and responsive burger menu
+    - Navbar with placeholder navigation links (Home, Games, Settings)
+    - Footer with copyright text
+    - Main content area that renders children
+  - Navbar collapses on mobile with burger toggle in header
+  - Created SUMMARY.md explaining components directory
+  - Verified typecheck passes
+- Files changed:
+  - apps/web/src/components/AppLayout.tsx (new)
+  - apps/web/src/components/SUMMARY.md (new)
+  - PRD.md updated to mark US-005 complete
+- Learnings for future iterations:
+  - Mantine AppShell uses useDisclosure hook from @mantine/hooks for navbar toggle
+  - AppShell navbar.collapsed.mobile controls mobile visibility, burger.hiddenFrom controls when burger shows
+  - AppLayout accepts children prop - will need to integrate with router Outlet in US-006
+---
+
+## Iteration 6 - US-006: Integrate AppShell with Router
+- What was implemented:
+  - Updated __root.tsx to wrap Outlet with AppLayout component
+  - Updated index.tsx home page with TanStack Query health check:
+    - Uses useQuery hook to call /health endpoint via apiFetch helper
+    - Shows loading state (blue Alert) while checking connection
+    - Shows success state (green Alert) with "API Connected" when healthy
+    - Shows error state (red Alert) when API unreachable
+  - Used Mantine components (Alert, Text, Title, Stack) for styling
+  - Verified typecheck passes
+- Files changed:
+  - apps/web/src/routes/__root.tsx (added AppLayout wrapper)
+  - apps/web/src/routes/index.tsx (added health check query with UI)
+  - PRD.md updated to mark US-006 complete
+- Learnings for future iterations:
+  - AppLayout children prop works seamlessly with router Outlet pattern
+  - useQuery from @tanstack/react-query provides isLoading, isSuccess, isError states
+  - Mantine Alert component takes color and title props for different states
+  - Stack component with gap prop is useful for vertical spacing
+---
+
+## Iteration 7 - US-007: Create Directory Structure with SUMMARY.md Files
+- What was implemented:
+  - Created apps/web/src/hooks/ directory with SUMMARY.md for custom React hooks
+  - Created apps/web/src/types/ directory with SUMMARY.md for shared TypeScript types
+  - Created apps/web/src/utils/ directory with SUMMARY.md for utility functions
+  - Created apps/web/src/features/ directory with SUMMARY.md for feature modules
+  - Each SUMMARY.md includes: purpose, guidelines, examples of what belongs/doesn't belong
+  - Verified typecheck passes
+- Files changed:
+  - apps/web/src/hooks/SUMMARY.md (new)
+  - apps/web/src/types/SUMMARY.md (new)
+  - apps/web/src/utils/SUMMARY.md (new)
+  - apps/web/src/features/SUMMARY.md (new)
+  - PRD.md updated to mark US-007 complete
+- Learnings for future iterations:
+  - SUMMARY.md files serve as documentation for AI assistants to understand directory purpose
+  - Feature-based architecture: features/ contains self-contained modules, shared code goes in hooks/, types/, utils/
+  - Each SUMMARY.md should include: Purpose, Guidelines, Examples of what belongs, What doesn't belong
+---
+
+## Iteration 8 - US-008: Update Root CLAUDE.md
+- What was implemented:
+  - Updated CLAUDE.md title from "Catan Backend API" to "Catan Monorepo"
+  - Added web app overview in Project Overview section (React 18, Vite, Mantine v8, TanStack Router/Query)
+  - Added Web App SUMMARY.md locations section listing all 8 SUMMARY.md files in apps/web/
+  - Updated Key Directories section with full web app directory tree
+  - Updated Development section to document running both servers
+  - Added note that web app connects to API at localhost:3000
+  - Added npx nx typecheck @catan/web command to Key npm Scripts
+  - Verified typecheck passes
+- Files changed:
+  - CLAUDE.md (updated with web app documentation)
+  - PRD.md updated to mark US-008 complete
+- Learnings for future iterations:
+  - CLAUDE.md serves as the main entry point for AI assistants understanding the codebase
+  - Important to document inter-app dependencies (web requires API running)
+  - Keep command examples consistent with existing style in the file
+---
