@@ -48,10 +48,12 @@ Plans:
   2. User cannot proceed with empty nickname (ENTRY-02)
   3. User receives clear error message when nickname is already taken (ENTRY-03)
   4. User joins lobby and sees it after entering unique nickname (ENTRY-04)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 02-01-PLAN.md — Extend WebSocket message schemas for nickname validation
+- [ ] 02-02-PLAN.md — Server-side nickname validation and storage
+- [ ] 02-03-PLAN.md — Landing page UI and lobby placeholder route
 
 ### Phase 3: Lobby State Management
 **Goal**: Users see real-time player list with capacity enforcement and can leave explicitly.
@@ -124,7 +126,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. WebSocket Infrastructure | 4/4 | Complete | 2026-01-18 |
-| 2. Landing and Lobby Entry | 0/TBD | Not started | - |
+| 2. Landing and Lobby Entry | 0/3 | Not started | - |
 | 3. Lobby State Management | 0/TBD | Not started | - |
 | 4. Player Coordination | 0/TBD | Not started | - |
 | 5. Game Initialization | 0/TBD | Not started | - |
