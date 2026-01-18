@@ -9,12 +9,14 @@ export {
   ClientMessageSchema,
   HandshakeMessageSchema,
   JoinRoomMessageSchema,
+  SetNicknameMessageSchema,
 } from './client-messages.js';
 
 export type {
   ClientMessage,
   HandshakeMessage,
   JoinRoomMessage,
+  SetNicknameMessage,
 } from './client-messages.js';
 
 // Server message schemas and types
@@ -23,6 +25,8 @@ export {
   ClientIdMessageSchema,
   ErrorMessageSchema,
   RoomJoinedMessageSchema,
+  NicknameAcceptedMessageSchema,
+  NicknameRejectedMessageSchema,
 } from './server-messages.js';
 
 export type {
@@ -30,4 +34,6 @@ export type {
   ClientIdMessage,
   ErrorMessage,
   RoomJoinedMessage,
+  NicknameAcceptedMessage,
+  NicknameRejectedMessage,
 } from './server-messages.js';

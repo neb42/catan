@@ -13,7 +13,13 @@
 import { randomUUID } from 'crypto';
 import { ZodError } from 'zod';
 import { ClientMessageSchema } from './schemas';
-import type { ClientIdMessage, ErrorMessage, RoomJoinedMessage } from './schemas';
+import type {
+  ClientIdMessage,
+  ErrorMessage,
+  RoomJoinedMessage,
+  NicknameAcceptedMessage,
+  NicknameRejectedMessage,
+} from './schemas';
 import { ConnectionManager } from './connection-manager';
 import { RoomManager } from './room-manager';
 
@@ -62,6 +68,10 @@ export class MessageRouter {
 
         case 'JOIN_ROOM':
           this.handleJoinRoom(clientId, message.payload);
+          break;
+
+        case 'SET_NICKNAME':
+          this.handleSetNickname(clientId, message.payload);
           break;
 
         default:
@@ -148,6 +158,66 @@ export class MessageRouter {
       // Room is full - send error
       this.sendError(clientId, 'ROOM_FULL', 'Room capacity reached');
       console.log(`[MessageRouter] Client ${clientId} failed to join room ${roomId}: capacity reached`);
+    }
+  }
+
+  /**
+   * Handle SET_NICKNAME message
+   * Validates nickname uniqueness and sends appropriate response
+   * @param clientId Client ID
+   * @param payload Set nickname payload with nickname
+   */
+  private handleSetNickname(clientId: string, payload: { nickname: string }): void {
+    const { nickname } = payload;
+
+    // Verify client is connected
+    const connection = this.connectionManager.getConnection(clientId);
+    if (!connection) {
+      this.sendError(clientId, 'CLIENT_NOT_FOUND', 'Client connection not found');
+      console.warn(`[MessageRouter] SET_NICKNAME failed: client ${clientId} not found`);
+      return;
+    }
+
+    // Use 'lobby' as roomId for v0.1 single-lobby model
+    const roomId = 'lobby';
+
+    // Check if nickname is available
+    const isAvailable = this.roomManager.isNicknameAvailable(roomId, nickname);
+
+    if (isAvailable) {
+      // Nickname is available - set it
+      const success = this.roomManager.setNickname(roomId, clientId, nickname);
+
+      if (success) {
+        // Send acceptance response
+        const acceptedMessage: NicknameAcceptedMessage = {
+          type: 'NICKNAME_ACCEPTED',
+          payload: { nickname },
+          messageId: randomUUID(),
+          timestamp: Date.now(),
+        };
+
+        this.connectionManager.sendToClient(clientId, acceptedMessage);
+        console.log(`[MessageRouter] Client ${clientId} nickname "${nickname}" accepted`);
+      } else {
+        // Should not happen if isAvailable returned true, but handle gracefully
+        this.sendError(clientId, 'INTERNAL_ERROR', 'Failed to set nickname');
+        console.error(`[MessageRouter] Failed to set nickname "${nickname}" for ${clientId} despite availability check`);
+      }
+    } else {
+      // Nickname is already taken
+      const rejectedMessage: NicknameRejectedMessage = {
+        type: 'NICKNAME_REJECTED',
+        payload: {
+          message: 'This nickname is already taken. Try another!',
+          reason: 'ALREADY_TAKEN',
+        },
+        messageId: randomUUID(),
+        timestamp: Date.now(),
+      };
+
+      this.connectionManager.sendToClient(clientId, rejectedMessage);
+      console.log(`[MessageRouter] Client ${clientId} nickname "${nickname}" rejected: already taken`);
     }
   }
 
