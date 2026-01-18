@@ -12,7 +12,7 @@ This roadmap delivers the v0.1 Lobby milestone: a real-time multiplayer lobby wh
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: WebSocket Infrastructure** - Foundation for real-time communication
+- [x] **Phase 1: WebSocket Infrastructure** - Foundation for real-time communication
 - [ ] **Phase 2: Landing and Lobby Entry** - Nickname entry and lobby joining
 - [ ] **Phase 3: Lobby State Management** - Real-time player list and capacity
 - [ ] **Phase 4: Player Coordination** - Color selection and ready states
@@ -31,10 +31,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Client connections automatically reconnect after brief network interruptions
   4. Server detects and cleans up stale connections within 30 seconds
   5. Messages are validated with typed schemas before processing
-**Plans**: TBD
+**Plans**: 4 plans executed
 
 Plans:
-- [ ] TBD during planning
+- [x] 01-01: Message Schemas and Validation
+- [x] 01-02: Connection and Room Management
+- [x] 01-03: Message Routing and Server Integration
+- [x] 01-04: Client Reconnection and React Context
 
 ### Phase 2: Landing and Lobby Entry
 **Goal**: Users can enter nicknames on landing page and join the shared lobby with uniqueness validation.
@@ -120,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. WebSocket Infrastructure | 0/TBD | Not started | - |
+| 1. WebSocket Infrastructure | 4/4 | Complete | 2026-01-18 |
 | 2. Landing and Lobby Entry | 0/TBD | Not started | - |
 | 3. Lobby State Management | 0/TBD | Not started | - |
 | 4. Player Coordination | 0/TBD | Not started | - |
