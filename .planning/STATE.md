@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 1 of 6 (WebSocket Infrastructure)
-Plan: 2 of TBD in current phase
+Plan: 3 of TBD in current phase
 Status: In progress
-Last activity: 2026-01-18 — Completed 01-02-PLAN.md (Connection & Room Managers)
+Last activity: 2026-01-18 — Completed 01-03-PLAN.md (Message Router Integration)
 
 Progress: [██░░░░░░░░] ~20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 2.5 min
-- Total execution time: 0.08 hours
+- Total plans completed: 3
+- Average duration: 2.3 min
+- Total execution time: 0.12 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-websocket-infrastructure | 2 | 5min | 2.5min |
+| 01-websocket-infrastructure | 3 | 7min | 2.3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3min), 01-02 (2min)
-- Trend: Velocity improving (3min → 2min)
+- Last 5 plans: 01-01 (3min), 01-02 (2min), 01-03 (2min)
+- Trend: Velocity stable at 2min per plan
 
 *Updated after each plan completion*
 
@@ -62,6 +62,13 @@ Recent decisions affecting current work:
 - RoomManager delegates to ConnectionManager for all message sending (separation of concerns) (Good)
 - Grace period tracks disconnected connections for 30 seconds enabling seamless reconnection (Good)
 
+**From 01-03 (Message Router Integration):**
+- Use crypto.randomUUID() for messageId generation (consistent with clientId, no dependencies) (Good)
+- Set maxPayload to 1MB to prevent DoS attacks (default 100MB is vulnerability) (Good)
+- ZodError.issues contains validation errors, not .errors (TypeScript property) (Good)
+- Clean up managers in closeWebSocket to prevent memory leaks (Good)
+- Invalid messages don't crash server, trigger ERROR responses (graceful degradation) (Good)
+
 ### Pending Todos
 
 None yet.
@@ -73,5 +80,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-18 — Plan execution
-Stopped at: Completed 01-02-PLAN.md execution, SUMMARY created
+Stopped at: Completed 01-03-PLAN.md execution, SUMMARY created
 Resume file: None
