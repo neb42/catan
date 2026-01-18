@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catan Online - Lobby Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Righteous&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #FF6B9D;
+      --color-secondary: #4ECDC4;
+      --color-accent: #FFE66D;
+
+      --color-player-red: #FF4757;
+      --color-player-blue: #5F27CD;
+      --color-player-green: #10AC84;
+      --color-player-yellow: #FFB142;
+
+      --color-bg-base: #1A1A2E;
+      --color-bg-surface: #252541;
+      --color-bg-elevated: #2E2E4D;
+      --color-success: #26DE81;
+
+      --color-text-primary: #F8F9FA;
+      --color-text-secondary: #B8B9C0;
+      --color-text-muted: #6B6C7A;
+
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+
+      --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+      --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      --duration-base: 250ms;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--color-bg-base);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background */
+    .background {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255, 107, 157, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(78, 205, 196, 0.06) 0%, transparent 50%);
+    }
+
+    /* Container */
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: var(--space-2xl);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+
+    @media (min-width: 900px) {
+      .container {
+        grid-template-columns: 1.5fr 1fr;
+      }
+    }
+
+    /* Header */
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: slide-down 0.6s var(--ease-smooth);
+    }
+
+    @keyframes slide-down {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      font-family: 'Righteous', sans-serif;
+      font-size: 2rem;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .leave-button {
+      padding: var(--space-sm) var(--space-lg);
+      background: transparent;
+      border: 2px solid var(--color-text-muted);
+      border-radius: var(--radius-full);
+      color: var(--color-text-secondary);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all var(--duration-base) var(--ease-smooth);
+    }
+
+    .leave-button:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      transform: translateY(-2px);
+    }
+
+    /* Players Section */
+    .players-section {
+      animation: slide-up 0.6s var(--ease-smooth) 0.1s backwards;
+    }
+
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .player-count {
+      padding: var(--space-xs) var(--space-md);
+      background: var(--color-bg-surface);
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+
+    .players-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .player-card {
+      position: relative;
+      padding: var(--space-lg);
+      background: var(--color-bg-surface);
+      border-radius: var(--radius-lg);
+      border-left: 4px solid var(--player-color);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: all var(--duration-base) var(--ease-smooth);
+      animation: player-enter 0.4s var(--ease-bounce) backwards;
+      animation-delay: calc(var(--player-index) * 0.1s);
+    }
+
+    @keyframes player-enter {
+      from {
+        opacity: 0;
+        transform: translateX(-30px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    .player-card:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+
+    .color-indicator {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--player-color);
+      box-shadow: 0 0 16px var(--player-color);
+      flex-shrink: 0;
+    }
+
+    .player-name {
+      font-family: 'Righteous', sans-serif;
+      font-size: 1.25rem;
+      flex: 1;
+    }
+
+    .ready-badge {
+      padding: var(--space-xs) var(--space-md);
+      background: var(--color-success);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      animation: badge-pop 0.3s var(--ease-bounce);
+    }
+
+    @keyframes badge-pop {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    .ready-badge.pulse {
+      animation: pulse-badge 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-badge {
+      0%, 100% { box-shadow: 0 0 0 rgba(38, 222, 129, 0.5); }
+      50% { box-shadow: 0 0 16px rgba(38, 222, 129, 0.8); }
+    }
+
+    .player-you {
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Controls Section */
+    .controls-section {
+      animation: slide-up 0.6s var(--ease-smooth) 0.2s backwards;
+    }
+
+    .control-panel {
+      position: sticky;
+      top: var(--space-2xl);
+      padding: var(--space-xl);
+      background: var(--color-bg-elevated);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: var(--space-lg);
+    }
+
+    .color-selector {
+      margin-bottom: var(--space-2xl);
+    }
+
+    .color-label {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-md);
+      font-weight: 600;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+    }
+
+    .color-option {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--swatch-color);
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all var(--duration-base) var(--ease-smooth);
+      position: relative;
+    }
+
+    .color-option:hover:not(.selected):not(.disabled) {
+      transform: scale(1.15);
+      box-shadow: 0 0 24px var(--swatch-color);
+    }
+
+    .color-option.selected {
+      border-color: white;
+      transform: scale(1.2);
+      box-shadow: 0 0 32px var(--swatch-color);
+      animation: color-select 0.3s var(--ease-bounce);
+    }
+
+    @keyframes color-select {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1.2); }
+    }
+
+    .color-option.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .color-option.disabled::after {
+      content: '🔒';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .ready-button {
+      width: 100%;
+      padding: var(--space-lg) var(--space-xl);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--duration-base) var(--ease-smooth);
+      background: linear-gradient(135deg, var(--color-success) 0%, #1abc9c 100%);
+      color: white;
+      box-shadow: 0 4px 16px rgba(38, 222, 129, 0.3);
+    }
+
+    .ready-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(38, 222, 129, 0.5);
+    }
+
+    .ready-button:active {
+      transform: translateY(-1px);
+    }
+
+    .ready-button.active {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #e74c3c 100%);
+      box-shadow: 0 4px 16px rgba(255, 107, 157, 0.3);
+    }
+
+    .ready-button.pulse-ready {
+      animation: pulse-ready 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse-ready {
+      0%, 100% {
+        box-shadow: 0 4px 16px rgba(38, 222, 129, 0.3);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 8px 32px rgba(38, 222, 129, 0.6);
+        transform: scale(1.02);
+      }
+    }
+
+    .ready-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button-hint {
+      margin-top: var(--space-md);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+
+    /* Countdown Modal */
+    .countdown-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      animation: modal-fade-in 0.3s var(--ease-smooth);
+    }
+
+    .countdown-modal.visible {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes modal-fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .countdown-content {
+      text-align: center;
+      animation: countdown-enter 0.5s var(--ease-bounce);
+    }
+
+    @keyframes countdown-enter {
+      from {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .countdown-timer {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      margin: 0 auto var(--space-xl);
+    }
+
+    .countdown-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--color-bg-elevated);
+      border: 8px solid var(--color-primary);
+      box-shadow: 0 0 64px rgba(255, 107, 157, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: circle-pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes circle-pulse {
+      0%, 100% { box-shadow: 0 0 32px rgba(255, 107, 157, 0.6); }
+      50% { box-shadow: 0 0 64px rgba(255, 107, 157, 0.9); }
+    }
+
+    .countdown-number {
+      font-family: 'Righteous', sans-serif;
+      font-size: 6rem;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: number-tick 1s var(--ease-bounce);
+    }
+
+    @keyframes number-tick {
+      0% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(5deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .countdown-text {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: var(--space-xl);
+      color: var(--color-text-secondary);
+    }
+
+    .cancel-button {
+      padding: var(--space-md) var(--space-2xl);
+      background: var(--color-bg-surface);
+      border: 2px solid var(--color-text-muted);
+      border-radius: var(--radius-full);
+      color: var(--color-text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all var(--duration-base) var(--ease-smooth);
+    }
+
+    .cancel-button:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      transform: scale(1.05);
+    }
+
+    /* Demo Controls */
+    .demo-controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2000;
+      background: var(--color-bg-surface);
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      border: 2px solid var(--color-primary);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      max-width: 250px;
+    }
+
+    .demo-controls h3 {
+      font-size: 0.9rem;
+      margin-bottom: var(--space-sm);
+      color: var(--color-primary);
+    }
+
+    .demo-controls button {
+      display: block;
+      width: 100%;
+      margin-bottom: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--color-bg-base);
+      border: 1px solid var(--color-text-secondary);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .demo-controls button:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">Catan Online</div>
+      <button class="leave-button">Leave Lobby</button>
+    </div>
+
+    <!-- Players Section -->
+    <div class="players-section">
+      <div class="section-header">
+        <h2 class="section-title">Players</h2>
+        <div class="player-count" id="playerCount">3/4 players</div>
+      </div>
+
+      <div class="players-list" id="playersList">
+        <!-- Players will be inserted here -->
+      </div>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+      <div class="control-panel">
+        <h3 class="panel-title">Your Setup</h3>
+
+        <div class="color-selector">
+          <label class="color-label">Choose your color</label>
+          <div class="color-grid" id="colorGrid">
+            <!-- Color options will be inserted here -->
+          </div>
+        </div>
+
+        <button class="ready-button" id="readyButton">
+          Ready
+        </button>
+        <div class="button-hint" id="buttonHint">
+          Need at least 3 players to start
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Countdown Modal -->
+  <div class="countdown-modal" id="countdownModal">
+    <div class="countdown-content">
+      <div class="countdown-timer">
+        <div class="countdown-circle">
+          <div class="countdown-number" id="countdownNumber">10</div>
+        </div>
+      </div>
+      <p class="countdown-text">Game starting soon...</p>
+      <button class="cancel-button" id="cancelButton">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Demo Controls -->
+  <div class="demo-controls">
+    <h3>Demo Controls</h3>
+    <button onclick="addPlayer()">Add Player</button>
+    <button onclick="removePlayer()">Remove Player</button>
+    <button onclick="toggleReady()">Toggle Ready</button>
+    <button onclick="startCountdown()">Start Countdown</button>
+    <button onclick="resetDemo()">Reset Demo</button>
+  </div>
+
+  <script>
+    const colors = [
+      { id: 'red', value: '#FF4757' },
+      { id: 'blue', value: '#5F27CD' },
+      { id: 'green', value: '#10AC84' },
+      { id: 'yellow', value: '#FFB142' },
+    ];
+
+    let players = [
+      { name: 'You', color: 'red', ready: false, isYou: true },
+      { name: 'Alice', color: 'blue', ready: true, isYou: false },
+      { name: 'Bob', color: 'green', ready: false, isYou: false },
+    ];
+
+    let selectedColor = 'red';
+    let isReady = false;
+
+    function renderPlayers() {
+      const list = document.getElementById('playersList');
+      list.innerHTML = '';
+
+      players.forEach((player, index) => {
+        const card = document.createElement('div');
+        card.className = 'player-card';
+        card.style.setProperty('--player-color', colors.find(c => c.id === player.color).value);
+        card.style.setProperty('--player-index', index);
+
+        card.innerHTML = `
+          <div class="player-header">
+            <div class="color-indicator"></div>
+            <div class="player-name">${player.name}</div>
+            ${player.ready ? '<div class="ready-badge">Ready</div>' : ''}
+          </div>
+          ${player.isYou ? '<div class="player-you">You</div>' : ''}
+        `;
+
+        list.appendChild(card);
+      });
+
+      document.getElementById('playerCount').textContent = `${players.length}/4 players`;
+    }
+
+    function renderColorGrid() {
+      const grid = document.getElementById('colorGrid');
+      grid.innerHTML = '';
+
+      const usedColors = players.filter(p => !p.isYou).map(p => p.color);
+
+      colors.forEach(color => {
+        const option = document.createElement('div');
+        option.className = 'color-option';
+        option.style.setProperty('--swatch-color', color.value);
+
+        if (color.id === selectedColor) {
+          option.classList.add('selected');
+        }
+
+        if (usedColors.includes(color.id)) {
+          option.classList.add('disabled');
+        } else {
+          option.onclick = () => selectColor(color.id);
+        }
+
+        grid.appendChild(option);
+      });
+    }
+
+    function selectColor(colorId) {
+      selectedColor = colorId;
+      const you = players.find(p => p.isYou);
+      you.color = colorId;
+      renderPlayers();
+      renderColorGrid();
+    }
+
+    function updateReadyButton() {
+      const button = document.getElementById('readyButton');
+      const hint = document.getElementById('buttonHint');
+
+      if (isReady) {
+        button.textContent = 'Not Ready';
+        button.classList.add('active');
+        hint.textContent = 'Click to cancel';
+      } else {
+        button.textContent = 'Ready';
+        button.classList.remove('active');
+
+        if (players.length < 3) {
+          button.disabled = true;
+          hint.textContent = 'Need at least 3 players to start';
+        } else {
+          button.disabled = false;
+          const readyCount = players.filter(p => p.ready).length;
+          if (readyCount === players.length - 1) {
+            hint.textContent = 'Everyone is waiting for you!';
+            button.classList.add('pulse-ready');
+          } else {
+            hint.textContent = `${readyCount}/${players.length} players ready`;
+            button.classList.remove('pulse-ready');
+          }
+        }
+      }
+    }
+
+    function toggleReady() {
+      isReady = !isReady;
+      const you = players.find(p => p.isYou);
+      you.ready = isReady;
+      renderPlayers();
+      updateReadyButton();
+
+      if (isReady && players.every(p => p.ready)) {
+        startCountdown();
+      }
+    }
+
+    document.getElementById('readyButton').addEventListener('click', toggleReady);
+
+    let countdownInterval;
+    function startCountdown() {
+      const modal = document.getElementById('countdownModal');
+      const numberEl = document.getElementById('countdownNumber');
+      modal.classList.add('visible');
+
+      let count = 10;
+      numberEl.textContent = count;
+
+      countdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          numberEl.textContent = count;
+          // Retrigger animation
+          numberEl.style.animation = 'none';
+          setTimeout(() => {
+            numberEl.style.animation = '';
+          }, 10);
+        } else {
+          clearInterval(countdownInterval);
+          alert('Game would start here!');
+          cancelCountdown();
+        }
+      }, 1000);
+    }
+
+    function cancelCountdown() {
+      const modal = document.getElementById('countdownModal');
+      modal.classList.remove('visible');
+      clearInterval(countdownInterval);
+    }
+
+    document.getElementById('cancelButton').addEventListener('click', () => {
+      cancelCountdown();
+      if (isReady) {
+        toggleReady();
+      }
+    });
+
+    // Demo functions
+    function addPlayer() {
+      if (players.length < 4) {
+        const names = ['Charlie', 'Diana', 'Eve', 'Frank'];
+        const availableColors = colors.filter(c =>
+          !players.some(p => p.color === c.id)
+        );
+
+        if (availableColors.length > 0) {
+          players.push({
+            name: names[players.length - 1],
+            color: availableColors[0].id,
+            ready: false,
+            isYou: false
+          });
+          renderPlayers();
+          renderColorGrid();
+          updateReadyButton();
+        }
+      }
+    }
+
+    function removePlayer() {
+      if (players.length > 1) {
+        players = players.filter((p, i) => i !== players.length - 1 || p.isYou);
+        renderPlayers();
+        renderColorGrid();
+        updateReadyButton();
+      }
+    }
+
+    function resetDemo() {
+      players = [
+        { name: 'You', color: 'red', ready: false, isYou: true },
+        { name: 'Alice', color: 'blue', ready: true, isYou: false },
+        { name: 'Bob', color: 'green', ready: false, isYou: false },
+      ];
+      selectedColor = 'red';
+      isReady = false;
+      cancelCountdown();
+      renderPlayers();
+      renderColorGrid();
+      updateReadyButton();
+    }
+
+    // Initial render
+    renderPlayers();
+    renderColorGrid();
+    updateReadyButton();
+  </script>
+</body>
+</html>
