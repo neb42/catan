@@ -1,0 +1,252 @@
+/**
+ * Landing Page Styles
+ *
+ * CSS-only animations for landing page form.
+ * Uses design system tokens for colors, spacing, and timing.
+ */
+
+/* Container slide-up animation on mount */
+.landing-container {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 600px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  text-align: center;
+  animation: slide-up 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Title gradient and animation */
+.landing-title {
+  font-family: 'Righteous', sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  line-height: 1.1;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #FF6B9D 0%, #4ECDC4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: slide-up 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.1s backwards;
+}
+
+/* Subtitle */
+.landing-subtitle {
+  font-size: 1.25rem;
+  color: #B8B9C0;
+  margin-bottom: 48px;
+  font-weight: 500;
+  animation: slide-up 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s backwards;
+}
+
+/* Form */
+.landing-form {
+  width: 100%;
+  animation: slide-up 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s backwards;
+}
+
+.input-group {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+/* Input field styling and focus */
+.landing-input {
+  width: 100%;
+  padding: 24px 32px;
+  font-size: 1.25rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  background: #252541;
+  border: 3px solid transparent;
+  border-radius: 16px;
+  color: #F8F9FA;
+  transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  outline: none;
+}
+
+.landing-input::placeholder {
+  color: #B8B9C0;
+}
+
+.landing-input:focus {
+  border-color: #FF6B9D;
+  box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.4),
+              0 8px 32px rgba(0, 0, 0, 0.3);
+  transform: scale(1.02);
+}
+
+.landing-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Error state with shake animation */
+.landing-input.error {
+  border-color: #FC5C65;
+  animation: shake 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* Character counter */
+.character-counter {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #B8B9C0;
+  text-align: right;
+}
+
+/* Error message slide-in */
+.error-message {
+  display: none;
+  margin-top: 8px;
+  padding: 8px 16px;
+  background: rgba(252, 92, 101, 0.1);
+  border-left: 3px solid #FC5C65;
+  border-radius: 12px;
+  color: #FC5C65;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.error-message.visible {
+  display: block;
+  animation: slide-in-left 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Button styling */
+.landing-button {
+  width: 100%;
+  padding: 24px 32px;
+  font-size: 1.25rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF4081 100%);
+  border: none;
+  border-radius: 9999px;
+  color: white;
+  cursor: pointer;
+  transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(255, 107, 157, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 100%);
+  transform: translateX(-100%);
+  transition: transform 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.landing-button:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(255, 107, 157, 0.5);
+}
+
+.landing-button:hover:not(:disabled)::before {
+  transform: translateX(0);
+}
+
+.landing-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.landing-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Button pulse when valid nickname entered */
+.landing-button.pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(255, 107, 157, 0.3); }
+  50% { box-shadow: 0 4px 32px rgba(255, 107, 157, 0.6); }
+}
+
+/* Helper text */
+.helper-text {
+  margin-top: 32px;
+  font-size: 0.9rem;
+  color: #B8B9C0;
+  animation: slide-up 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.4s backwards;
+}
+
+/* Connection status indicator */
+.connection-status {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  padding: 8px 16px;
+  background: #252541;
+  border-radius: 12px;
+  color: #FED330;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+  animation: slide-in-left 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  z-index: 100;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .landing-container,
+  .landing-title,
+  .landing-subtitle,
+  .landing-form,
+  .helper-text,
+  .landing-input.error,
+  .error-message.visible,
+  .connection-status,
+  .landing-button.pulse {
+    animation: none;
+  }
+
+  .landing-input:focus {
+    transform: none;
+  }
+
+  .landing-button:hover:not(:disabled),
+  .landing-button:active:not(:disabled) {
+    transform: none;
+  }
+}

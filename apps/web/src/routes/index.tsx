@@ -11,6 +11,7 @@ import { createRoute, useNavigate } from '@tanstack/react-router';
 import { Route as rootRoute } from './__root';
 import { useWebSocket } from '../lib/websocket-context';
 import { AnimatedBackground } from '../components/AnimatedBackground';
+import './index.css';
 
 export const Route = createRoute({
   getParentRoute: () => rootRoute,
