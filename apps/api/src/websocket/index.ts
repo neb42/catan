@@ -1,8 +1,14 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { Server as HttpServer } from 'http';
 import { config } from '../config';
+import { ConnectionManager } from './connection-manager';
+import { RoomManager } from './room-manager';
+import { MessageRouter } from './message-router';
 
 let wss: WebSocketServer | null = null;
+let connectionManager: ConnectionManager | null = null;
+let roomManager: RoomManager | null = null;
+let messageRouter: MessageRouter | null = null;
 
 /**
  * Initialize WebSocket server
@@ -13,18 +19,33 @@ export function initializeWebSocket(httpServer?: HttpServer): WebSocketServer {
     return wss;
   }
 
-  // Use HTTP server upgrade pattern if provided, otherwise use separate WS_PORT
+  // Create WebSocket server with maxPayload limit for DoS prevention
   if (httpServer) {
-    wss = new WebSocketServer({ server: httpServer });
+    wss = new WebSocketServer({
+      server: httpServer,
+      maxPayload: 1024 * 1024, // 1MB limit (prevents DoS, sufficient for text messages)
+      clientTracking: true,
+    });
     console.log(`WebSocket server attached to HTTP server`);
   } else if (config.wsPort) {
-    wss = new WebSocketServer({ port: config.wsPort });
+    wss = new WebSocketServer({
+      port: config.wsPort,
+      maxPayload: 1024 * 1024, // 1MB limit
+      clientTracking: true,
+    });
     console.log(`WebSocket server listening on port ${config.wsPort}`);
   } else {
     throw new Error('No HTTP server provided and WS_PORT not configured');
   }
 
+  // Initialize infrastructure managers
+  connectionManager = new ConnectionManager();
+  roomManager = new RoomManager(connectionManager);
+  messageRouter = new MessageRouter(connectionManager, roomManager);
+
   setupConnectionHandlers(wss);
+
+  console.log('[WebSocket] Server initialized with connection/room management');
 
   return wss;
 }
@@ -33,19 +54,25 @@ export function initializeWebSocket(httpServer?: HttpServer): WebSocketServer {
  * Set up connection and disconnection handlers with logging
  */
 function setupConnectionHandlers(server: WebSocketServer): void {
-  let connectionCount = 0;
-
   server.on('connection', (ws: WebSocket) => {
-    connectionCount++;
-    const connectionId = connectionCount;
-    console.log(`[WebSocket] Client connected (id: ${connectionId}, total: ${server.clients.size})`);
+    // Add connection and get assigned client ID
+    const clientId = connectionManager!.addConnection(ws);
 
-    ws.on('close', (code: number, reason: Buffer) => {
-      console.log(`[WebSocket] Client disconnected (id: ${connectionId}, code: ${code}, reason: ${reason.toString() || 'none'}, remaining: ${server.clients.size})`);
+    // Handle incoming messages
+    ws.on('message', (data: Buffer) => {
+      messageRouter!.routeMessage(clientId, data);
     });
 
+    // Handle disconnection
+    ws.on('close', (code: number, reason: Buffer) => {
+      console.log(`[WebSocket] Client disconnected (id: ${clientId}, code: ${code}, reason: ${reason.toString() || 'none'})`);
+      connectionManager!.removeConnection(clientId);
+      roomManager!.leaveRoom(clientId);
+    });
+
+    // Handle errors
     ws.on('error', (error: Error) => {
-      console.error(`[WebSocket] Client error (id: ${connectionId}):`, error.message);
+      console.error(`[WebSocket] Client ${clientId} error:`, error.message);
     });
   });
 
@@ -70,6 +97,12 @@ export function closeWebSocket(): Promise<void> {
       resolve();
       return;
     }
+
+    // Cleanup managers first
+    connectionManager?.cleanup();
+    connectionManager = null;
+    roomManager = null;
+    messageRouter = null;
 
     wss.close((err) => {
       if (err) {
