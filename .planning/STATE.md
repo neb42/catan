@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 1 of 6 (WebSocket Infrastructure)
-Plan: 1 of TBD in current phase
+Plan: 2 of TBD in current phase
 Status: In progress
-Last activity: 2026-01-18 — Completed 01-01-PLAN.md (WebSocket Message Schemas)
+Last activity: 2026-01-18 — Completed 01-02-PLAN.md (Connection & Room Managers)
 
-Progress: [█░░░░░░░░░] ~10%
+Progress: [██░░░░░░░░] ~20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 3 min
-- Total execution time: 0.05 hours
+- Total plans completed: 2
+- Average duration: 2.5 min
+- Total execution time: 0.08 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-websocket-infrastructure | 1 | 3min | 3min |
+| 01-websocket-infrastructure | 2 | 5min | 2.5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3min)
-- Trend: First plan baseline
+- Last 5 plans: 01-01 (3min), 01-02 (2min)
+- Trend: Velocity improving (3min → 2min)
 
 *Updated after each plan completion*
 
@@ -55,6 +55,13 @@ Recent decisions affecting current work:
 - Nullable clientId in HANDSHAKE enables both new connections and reconnection attempts (Good)
 - Use .parse() not .safeParse() to let ZodError throw for router to catch (Good)
 
+**From 01-02 (Connection & Room Managers):**
+- Use crypto.randomUUID() not uuid package (zero dependencies, 3x faster, built-in Node.js) (Good)
+- 30-second heartbeat interval matches grace period for consistent timing (Good)
+- Delete empty rooms immediately (no grace period for rooms, cheap to recreate) (Good)
+- RoomManager delegates to ConnectionManager for all message sending (separation of concerns) (Good)
+- Grace period tracks disconnected connections for 30 seconds enabling seamless reconnection (Good)
+
 ### Pending Todos
 
 None yet.
@@ -66,5 +73,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-18 — Plan execution
-Stopped at: Completed 01-01-PLAN.md execution, SUMMARY created
+Stopped at: Completed 01-02-PLAN.md execution, SUMMARY created
 Resume file: None
