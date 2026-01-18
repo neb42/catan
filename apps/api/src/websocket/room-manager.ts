@@ -227,17 +227,18 @@ export class RoomManager {
   /**
    * Set nickname for a client in a room
    * Validates uniqueness (case-insensitive) before storing
+   * Creates room if it doesn't exist
    * @param roomId Room ID
    * @param clientId Client ID
    * @param nickname Desired nickname
    * @returns true if nickname is unique and stored, false if already taken
    */
   setNickname(roomId: string, clientId: string, nickname: string): boolean {
-    const room = this.rooms.get(roomId);
+    // Get or create room
+    let room = this.rooms.get(roomId);
 
     if (!room) {
-      console.warn(`[RoomManager] Cannot set nickname: room ${roomId} not found`);
-      return false;
+      room = this.createRoom(roomId);
     }
 
     // Check if nickname is already taken (case-insensitive)
@@ -284,7 +285,8 @@ export class RoomManager {
     const room = this.rooms.get(roomId);
 
     if (!room) {
-      return false;
+      // Room doesn't exist yet - no nicknames taken, so any nickname is available
+      return true;
     }
 
     const nicknameLower = nickname.toLowerCase();
