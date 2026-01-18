@@ -39,6 +39,22 @@ export const JoinRoomMessageSchema = z.object({
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
 
 /**
+ * SET_NICKNAME - Set user nickname
+ *
+ * Sent by client to set their nickname before joining the lobby.
+ * Server will respond with NICKNAME_ACCEPTED if unique and valid,
+ * or NICKNAME_REJECTED if already taken or invalid.
+ */
+export const SetNicknameMessageSchema = z.object({
+  type: z.literal('SET_NICKNAME'),
+  payload: z.object({
+    nickname: z.string().min(3).max(30).trim(),
+  }),
+});
+
+export type SetNicknameMessage = z.infer<typeof SetNicknameMessageSchema>;
+
+/**
  * ClientMessageSchema - Discriminated union of all client messages
  *
  * Use this schema to validate incoming client messages.
@@ -47,6 +63,7 @@ export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
 export const ClientMessageSchema = z.discriminatedUnion('type', [
   HandshakeMessageSchema,
   JoinRoomMessageSchema,
+  SetNicknameMessageSchema,
 ]);
 
 export type ClientMessage = z.infer<typeof ClientMessageSchema>;
