@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Friends can play Settlers of Catan together online with full base game rules and real-time turn-based gameplay.
-**Current focus:** Phase 1 - WebSocket Infrastructure
+**Current focus:** Phase 2 - Landing and Lobby Entry
 
 ## Current Position
 
 Phase: 2 of 6 (Landing and Lobby Entry)
-Plan: 1 of 5 in current phase
+Plan: 2 of 5 in current phase
 Status: In progress
-Last activity: 2026-01-18 — Completed 02-01-PLAN.md
+Last activity: 2026-01-18 — Completed 02-02-PLAN.md
 
-Progress: [██░░░░░░░░] 21%
+Progress: [██░░░░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 2.0 min
-- Total execution time: 0.17 hours
+- Total execution time: 0.2 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-websocket-infrastructure | 4 | 9min | 2.25min |
-| 02-landing-and-lobby-entry | 1 | 1min | 1.0min |
+| 02-landing-and-lobby-entry | 2 | 4min | 2.0min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (2min), 01-03 (2min), 01-04 (2min), 02-01 (1min)
-- Trend: Velocity improving, schema-only plans faster than implementation
+- Last 5 plans: 01-03 (2min), 01-04 (2min), 02-01 (1min), 02-02 (3min)
+- Trend: Consistent velocity around 2min per plan, schema plans faster than implementation
 
 *Updated after each plan completion*
 
@@ -82,6 +82,12 @@ Recent decisions affecting current work:
 - NICKNAME_REJECTED reason enum enables client-specific error messaging (ALREADY_TAKEN vs INVALID_FORMAT) (Good)
 - Schema-level length validation (3-30 chars) provides automatic validation during message parsing (Good)
 
+**From 02-02 (Server Nickname Validation):**
+- Case-insensitive nickname validation prevents 'Alice' vs 'alice' confusion (Good)
+- Hardcoded 'lobby' roomId for v0.1 single-lobby model per PROJECT.md decision (Good)
+- Nickname cleanup on client leave prevents stale nickname reservations (Good)
+- Room-level nickname registry using Map<clientId, nickname> follows existing clients pattern (Good)
+
 ### Pending Todos
 
 None yet.
@@ -93,5 +99,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-18 — Plan execution
-Stopped at: Completed 02-01-PLAN.md execution, SUMMARY created
+Stopped at: Completed 02-02-PLAN.md execution, SUMMARY created
 Resume file: None
