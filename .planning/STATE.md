@@ -5,13 +5,13 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Friends can play Settlers of Catan together online with full base game rules and real-time turn-based gameplay.
-**Current focus:** Phase 3 - Lobby State Management
+**Current focus:** Phase 2.1 - Setup Testing Framework with Jest (INSERTED)
 
 ## Current Position
 
-Phase: 3 of 6 (Lobby State Management)
+Phase: 2.1 of 7 (Setup Testing Framework with Jest)
 Plan: Ready to plan
-Status: Phase 2 complete, Phase 3 not started
+Status: Phase 2 complete, Phase 2.1 not started (urgent insertion)
 Last activity: 2026-01-19 — Phase 2 completed and verified (4/4 success criteria passed)
 
 Progress: [███░░░░░░░] 33%
@@ -37,6 +37,12 @@ Progress: [███░░░░░░░] 33%
 *Updated after each plan completion*
 
 ## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 2.1 inserted after Phase 2: Setup testing framework with Jest and retroactively add tests to code (URGENT)
+  - Reason: Quality assurance needed before building additional lobby features
+  - Requirement: All future plans must include passing tests for completion
 
 ### Decisions
 
