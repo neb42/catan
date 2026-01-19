@@ -9,10 +9,10 @@ Requirements for initial lobby release. Each maps to roadmap phases.
 
 ### Entry
 
-- [ ] **ENTRY-01**: User sees landing page with nickname input field
-- [ ] **ENTRY-02**: User cannot proceed without entering a nickname
-- [ ] **ENTRY-03**: User receives error if nickname is already taken in lobby
-- [ ] **ENTRY-04**: User joins lobby after entering unique nickname
+- [x] **ENTRY-01**: User sees landing page with nickname input field
+- [x] **ENTRY-02**: User cannot proceed without entering a nickname
+- [x] **ENTRY-03**: User receives error if nickname is already taken in lobby
+- [x] **ENTRY-04**: User joins lobby after entering unique nickname
 
 ### Lobby State
 
@@ -128,10 +128,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ENTRY-01 | Phase 2 | Pending |
-| ENTRY-02 | Phase 2 | Pending |
-| ENTRY-03 | Phase 2 | Pending |
-| ENTRY-04 | Phase 2 | Pending |
+| ENTRY-01 | Phase 2 | Complete |
+| ENTRY-02 | Phase 2 | Complete |
+| ENTRY-03 | Phase 2 | Complete |
+| ENTRY-04 | Phase 2 | Complete |
 | LOBBY-01 | Phase 3 | Pending |
 | LOBBY-02 | Phase 3 | Pending |
 | LOBBY-03 | Phase 3 | Pending |
@@ -163,4 +163,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-18*
-*Last updated: 2026-01-18 after roadmap creation*
+*Last updated: 2026-01-19 after Phase 2 completion*

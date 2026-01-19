@@ -13,7 +13,7 @@ This roadmap delivers the v0.1 Lobby milestone: a real-time multiplayer lobby wh
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: WebSocket Infrastructure** - Foundation for real-time communication
-- [ ] **Phase 2: Landing and Lobby Entry** - Nickname entry and lobby joining
+- [x] **Phase 2: Landing and Lobby Entry** - Nickname entry and lobby joining
 - [ ] **Phase 3: Lobby State Management** - Real-time player list and capacity
 - [ ] **Phase 4: Player Coordination** - Color selection and ready states
 - [ ] **Phase 5: Game Initialization** - Countdown and game start
@@ -51,9 +51,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Extend WebSocket message schemas for nickname validation
-- [ ] 02-02-PLAN.md — Server-side nickname validation and storage
-- [ ] 02-03-PLAN.md — Landing page UI and lobby placeholder route
+- [x] 02-01-PLAN.md — Extend WebSocket message schemas for nickname validation
+- [x] 02-02-PLAN.md — Server-side nickname validation and storage
+- [x] 02-03-PLAN.md — Landing page UI and lobby placeholder route
 
 ### Phase 3: Lobby State Management
 **Goal**: Users see real-time player list with capacity enforcement and can leave explicitly.
@@ -126,7 +126,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. WebSocket Infrastructure | 4/4 | Complete | 2026-01-18 |
-| 2. Landing and Lobby Entry | 0/3 | Not started | - |
+| 2. Landing and Lobby Entry | 3/3 | Complete | 2026-01-19 |
 | 3. Lobby State Management | 0/TBD | Not started | - |
 | 4. Player Coordination | 0/TBD | Not started | - |
 | 5. Game Initialization | 0/TBD | Not started | - |
