@@ -14,6 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: WebSocket Infrastructure** - Foundation for real-time communication
 - [x] **Phase 2: Landing and Lobby Entry** - Nickname entry and lobby joining
+- [ ] **Phase 2.1: Setup Testing Framework with Vitest** (INSERTED) - Testing infrastructure and retroactive test coverage
 - [ ] **Phase 3: Lobby State Management** - Real-time player list and capacity
 - [ ] **Phase 4: Player Coordination** - Color selection and ready states
 - [ ] **Phase 5: Game Initialization** - Countdown and game start
@@ -54,6 +55,27 @@ Plans:
 - [x] 02-01-PLAN.md — Extend WebSocket message schemas for nickname validation
 - [x] 02-02-PLAN.md — Server-side nickname validation and storage
 - [x] 02-03-PLAN.md — Landing page UI and lobby placeholder route
+
+### Phase 2.1: Setup Testing Framework with Vitest and Retroactively Add Tests to Code (INSERTED)
+
+**Goal**: Establish comprehensive testing infrastructure with Vitest for both frontend and backend, add retroactive tests for existing code, and mandate test coverage for all future work.
+**Depends on**: Phase 2
+**Requirements**: None directly - quality assurance phase ensuring all features have test coverage
+**Success Criteria** (what must be TRUE):
+  1. Vitest configured and running for both API and web applications
+  2. Existing Phase 1 and Phase 2 code has comprehensive unit and integration tests
+  3. All tests pass successfully
+  4. Test scripts integrated into Nx workspace
+  5. Coverage thresholds met (80% lines/functions, 75% branches)
+**Plans**: 3 plans
+
+Plans:
+- [ ] 02.1-01-PLAN.md — Configure Vitest infrastructure and test utilities
+- [ ] 02.1-02-PLAN.md — Add retroactive tests for API (schemas, managers, integration)
+- [ ] 02.1-03-PLAN.md — Add retroactive tests for web (WebSocket, components)
+
+**Details:**
+This urgent insertion ensures quality assurance is in place before building additional lobby features. Going forward, all plans must include tests that pass before completion.
 
 ### Phase 3: Lobby State Management
 **Goal**: Users see real-time player list with capacity enforcement and can leave explicitly.
@@ -121,12 +143,13 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. WebSocket Infrastructure | 4/4 | Complete | 2026-01-18 |
 | 2. Landing and Lobby Entry | 3/3 | Complete | 2026-01-19 |
+| 2.1. Setup Testing Framework (INSERTED) | 0/3 | Not started | - |
 | 3. Lobby State Management | 0/TBD | Not started | - |
 | 4. Player Coordination | 0/TBD | Not started | - |
 | 5. Game Initialization | 0/TBD | Not started | - |
