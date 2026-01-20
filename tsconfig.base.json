@@ -19,6 +19,8 @@
     "lib": ["ES2020", "DOM"],
     "baseUrl": ".",
     "paths": {
+      "@catan/shared": ["libs/shared/src/index.ts"],
+      "@catan/shared/*": ["libs/shared/src/*"],
       "@web/*": ["apps/web/src/*"],
       "@api/*": ["apps/api/src/*"]
     }

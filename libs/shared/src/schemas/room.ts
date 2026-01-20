@@ -1,15 +1,18 @@
 import { z } from 'zod';
 
+import { MAX_PLAYERS, ROOM_ID_ALPHABET, ROOM_ID_LENGTH } from '../constants';
 import { PlayerSchema } from './player';
+
+const ROOM_ID_REGEX = new RegExp(`^[${ROOM_ID_ALPHABET}]{${ROOM_ID_LENGTH}}$`);
 
 export const RoomIdSchema = z
   .string()
-  .length(6)
-  .regex(/^[0-9A-Z]{6}$/);
+  .length(ROOM_ID_LENGTH)
+  .regex(ROOM_ID_REGEX);
 
 export const RoomSchema = z.object({
   id: RoomIdSchema,
-  players: z.array(PlayerSchema).min(1).max(4),
+  players: z.array(PlayerSchema).min(1).max(MAX_PLAYERS),
   createdAt: z.date(),
 });
 

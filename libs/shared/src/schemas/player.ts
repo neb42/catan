@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
+import { PLAYER_COLORS } from '../constants';
+
 export const PlayerIdSchema = z.string();
 export const NicknameSchema = z.string().trim().min(2).max(30);
-const ColorSchema = z.enum(['red', 'blue', 'white', 'orange']);
+const ColorSchema = z.enum(PLAYER_COLORS);
 
 export const PlayerSchema = z.object({
   id: PlayerIdSchema,
