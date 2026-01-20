@@ -49,7 +49,7 @@ export const ChangeColorMessageSchema = z.object({
 export const ColorChangedMessageSchema = z.object({
   type: z.literal('color_changed'),
   playerId: playerIdSchema,
-  color: z.enum(PLAYER_COLORS),
+  color: z.string(),
 });
 
 export const ToggleReadyMessageSchema = z.object({
