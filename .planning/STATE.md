@@ -13,20 +13,20 @@
 
 ## Phase Progress
 
-### Phase 1: Foundation (2/6)
+### Phase 1: Foundation (5/6)
 
-- [ ] LOBBY-01: User can create a game room and receive a shareable room ID
-- [ ] LOBBY-02: User can join an existing room by entering room ID
-- [ ] LOBBY-03: User can set their nickname when joining a room
+- [x] LOBBY-01: User can create a game room and receive a shareable room ID
+- [x] LOBBY-02: User can join an existing room by entering room ID
+- [x] LOBBY-03: User can set their nickname when joining a room
 - [ ] SYNC-01: Game broadcasts state updates to all players in real-time via WebSocket
 - [x] Shared types library created
 - [x] WebSocket infrastructure working
 
 **Success Criteria:**
-- [ ] User can create and share rooms
-- [ ] User can join rooms with nickname
-- [ ] Real-time lobby updates
-- [ ] Validation works
+- [x] User can create and share rooms
+- [x] User can join rooms with nickname
+- [x] Real-time lobby updates
+- [x] Validation works
 
 ---
 
@@ -169,11 +169,11 @@
 
 ## Overall Progress
 
-**Requirements:** 2/72 (3%)  
+**Requirements:** 5/72 (7%)  
 **Phases:** 0/6 (0%)
 
 ```
-Phase 1: Foundation         [███░░░░░░░] 2/6
+Phase 1: Foundation         [████████░░] 5/6
 Phase 2: Core Game Loop     [░░░░░░░░░░] 0/11
 Phase 3: Client Rendering   [░░░░░░░░░░] 0/4
 Phase 4: Game Mechanics     [░░░░░░░░░░] 0/22
@@ -191,6 +191,7 @@ None currently.
 
 ## Recent Activity
 
+- 2026-01-20: Lobby UI added with reconnection WebSocket client, create/join flow, and real-time player list
 - 2026-01-20: WebSocket server and room manager added for lobby real-time flow
 - 2026-01-20: Shared library schemas and constants added for lobby contracts
 - 2026-01-20: Roadmap created, project initialized
@@ -199,9 +200,9 @@ None currently.
 
 ## Next Steps
 
-1. Continue Phase 1 execution (lobby UI and client WebSocket integration)
-2. Implement room creation/join flows in frontend
-3. Verify end-to-end WebSocket interactions in 01-04
+1. Run end-to-end lobby verification in 01-04
+2. Add reconnect/resume handling for lobby grace period in upcoming phases
+3. Prepare for core game loop features after lobby flow validation
 
 ---
 
