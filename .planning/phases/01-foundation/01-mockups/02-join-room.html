@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Room - Settlers Kingdom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --warm-cream: #FFF8E7;
+      --soft-peach: #FFD4A3;
+      --sunset-orange: #FF8E53;
+      --deep-terracotta: #D84315;
+      --forest-green: #2E7D32;
+      --sky-blue: #64B5F6;
+      --earth-brown: #795548;
+      --error-red: #E53935;
+      --success-green: #43A047;
+      --shadow: rgba(121, 85, 72, 0.15);
+      --shadow-strong: rgba(121, 85, 72, 0.25);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, var(--warm-cream) 0%, #FFF5D6 50%, var(--soft-peach) 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 142, 83, 0.12) 0%, transparent 70%);
+      top: -300px;
+      right: -200px;
+      border-radius: 50%;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(100, 181, 246, 0.1) 0%, transparent 70%);
+      bottom: -150px;
+      left: -100px;
+      border-radius: 50%;
+      animation: float 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(30px, -30px) rotate(5deg); }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+      width: 100%;
+      animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--earth-brown);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: all 0.3s ease;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-4px);
+      box-shadow: 0 6px 16px var(--shadow);
+    }
+
+    .card {
+      background: white;
+      border-radius: 32px;
+      padding: 3rem 2.5rem;
+      box-shadow: 
+        0 10px 40px var(--shadow),
+        0 2px 8px var(--shadow-strong);
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.6s ease-out 0.1s both;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--soft-peach) 0%, transparent 60%);
+      opacity: 0.3;
+      border-radius: 50%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.25rem;
+      background: linear-gradient(135deg, var(--sky-blue), #42A5F5);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 6px 20px rgba(100, 181, 246, 0.3);
+    }
+
+    h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--earth-brown);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: #8D6E63;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .form-group {
+      margin-bottom: 1.75rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--earth-brown);
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 1.125rem 1.25rem;
+      border: 3px solid #EFEBE9;
+      border-radius: 16px;
+      font-size: 1.0625rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.3s ease;
+      background: white;
+      color: var(--earth-brown);
+      font-weight: 500;
+    }
+
+    input[type="text"]::placeholder {
+      color: #BCAAA4;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--sky-blue);
+      box-shadow: 0 0 0 4px rgba(100, 181, 246, 0.15);
+      transform: translateY(-2px);
+    }
+
+    input[type="text"].error {
+      border-color: var(--error-red);
+      animation: shake 0.4s ease;
+    }
+
+    input[type="text"].error:focus {
+      box-shadow: 0 0 0 4px rgba(229, 57, 53, 0.15);
+    }
+
+    .char-count {
+      position: absolute;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8125rem;
+      color: #A1887F;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    .char-count.warning {
+      color: var(--sunset-orange);
+    }
+
+    .error-message {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      color: var(--error-red);
+      font-size: 0.875rem;
+      font-weight: 600;
+      animation: slideUp 0.3s ease;
+    }
+
+    .help-text {
+      margin-top: 0.625rem;
+      color: #8D6E63;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .btn {
+      width: 100%;
+      font-family: 'Fredoka', sans-serif;
+      padding: 1.375rem 2rem;
+      border-radius: 20px;
+      border: none;
+      font-size: 1.125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--sky-blue), #42A5F5);
+      color: white;
+      box-shadow: 
+        0 4px 16px rgba(100, 181, 246, 0.4),
+        0 2px 4px rgba(66, 165, 245, 0.2);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 8px 24px rgba(100, 181, 246, 0.5),
+        0 4px 8px rgba(66, 165, 245, 0.3);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 2rem 0 1.5rem;
+      color: #A1887F;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 2px solid #EFEBE9;
+    }
+
+    .divider span {
+      padding: 0 1rem;
+    }
+
+    .quick-create {
+      text-align: center;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--sunset-orange), var(--deep-terracotta));
+      color: white;
+      box-shadow: 
+        0 4px 16px rgba(255, 142, 83, 0.4),
+        0 2px 4px rgba(216, 67, 21, 0.2);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 8px 24px rgba(255, 142, 83, 0.5),
+        0 4px 8px rgba(216, 67, 21, 0.3);
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 2rem 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      .btn {
+        padding: 1.25rem 1.5rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="01-home-create.html" class="back-btn">
+      ← Back to Home
+    </a>
+
+    <div class="card">
+      <div class="header">
+        <div class="icon">🚪</div>
+        <h1>Join a Room</h1>
+        <p class="subtitle">Enter a room code to join your friends</p>
+      </div>
+
+      <form onsubmit="handleJoin(event)">
+        <div class="form-group">
+          <label for="roomCode">Room Code</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="roomCode" 
+              name="roomCode"
+              placeholder="ABC123"
+              maxlength="10"
+              autocomplete="off"
+              oninput="handleRoomCodeInput(this)"
+              required
+            />
+          </div>
+          <p class="help-text">Ask your friend for the room code they received when creating a room.</p>
+          <div id="roomError" class="error-message" style="display: none;">
+            ⚠️ <span id="roomErrorText"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="nickname">Your Nickname</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="nickname" 
+              name="nickname"
+              placeholder="Enter your name"
+              minlength="2"
+              maxlength="30"
+              autocomplete="off"
+              oninput="handleNicknameInput(this)"
+              required
+            />
+            <span class="char-count" id="charCount">0/30</span>
+          </div>
+          <p class="help-text">Choose a unique nickname (2-30 characters). Once set, it can't be changed.</p>
+          <div id="nicknameError" class="error-message" style="display: none;">
+            ⚠️ <span id="nicknameErrorText"></span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Join Room
+        </button>
+      </form>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <div class="quick-create">
+        <button type="button" class="btn btn-secondary" onclick="handleCreateRoom()">
+          Create Your Own Room
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function handleRoomCodeInput(input) {
+      const error = document.getElementById('roomError');
+      error.style.display = 'none';
+      input.classList.remove('error');
+      
+      // Auto-uppercase room codes
+      input.value = input.value.toUpperCase();
+    }
+
+    function handleNicknameInput(input) {
+      const error = document.getElementById('nicknameError');
+      const charCount = document.getElementById('charCount');
+      const trimmedValue = input.value.trim();
+      
+      error.style.display = 'none';
+      input.classList.remove('error');
+      
+      // Update character count
+      charCount.textContent = `${trimmedValue.length}/30`;
+      
+      if (trimmedValue.length > 25) {
+        charCount.classList.add('warning');
+      } else {
+        charCount.classList.remove('warning');
+      }
+    }
+
+    function handleJoin(event) {
+      event.preventDefault();
+      
+      const roomCode = document.getElementById('roomCode');
+      const nickname = document.getElementById('nickname');
+      const roomError = document.getElementById('roomError');
+      const roomErrorText = document.getElementById('roomErrorText');
+      const nicknameError = document.getElementById('nicknameError');
+      const nicknameErrorText = document.getElementById('nicknameErrorText');
+      
+      let hasError = false;
+      
+      // Reset errors
+      roomError.style.display = 'none';
+      nicknameError.style.display = 'none';
+      roomCode.classList.remove('error');
+      nickname.classList.remove('error');
+      
+      // Validate room code
+      if (!roomCode.value.trim()) {
+        roomErrorText.textContent = 'Please enter a room code';
+        roomError.style.display = 'flex';
+        roomCode.classList.add('error');
+        hasError = true;
+      }
+      
+      // Trim nickname
+      const trimmedNickname = nickname.value.trim();
+      
+      // Validate nickname
+      if (trimmedNickname.length < 2) {
+        nicknameErrorText.textContent = 'Nickname must be at least 2 characters';
+        nicknameError.style.display = 'flex';
+        nickname.classList.add('error');
+        hasError = true;
+      }
+      
+      if (hasError) {
+        return;
+      }
+      
+      // Simulate error cases for demo
+      const demoErrors = ['FULL999', 'NOTFND', 'TAKEN'];
+      const roomCodeVal = roomCode.value.toUpperCase();
+      
+      if (roomCodeVal === 'FULL999') {
+        roomErrorText.textContent = 'Room is full';
+        roomError.style.display = 'flex';
+        roomCode.classList.add('error');
+        return;
+      }
+      
+      if (roomCodeVal === 'NOTFND') {
+        roomErrorText.textContent = 'Room not found';
+        roomError.style.display = 'flex';
+        roomCode.classList.add('error');
+        return;
+      }
+      
+      if (trimmedNickname.toLowerCase() === 'taken') {
+        nicknameErrorText.textContent = 'Nickname taken';
+        nicknameError.style.display = 'flex';
+        nickname.classList.add('error');
+        return;
+      }
+      
+      // Success - navigate to lobby
+      console.log('Joining room:', roomCodeVal, 'as', trimmedNickname);
+      window.location.href = '03-lobby.html';
+    }
+
+    function handleCreateRoom() {
+      console.log('Creating new room');
+      // In actual app: create room and navigate to lobby
+      window.location.href = '03-lobby.html';
+    }
+  </script>
+</body>
+</html>

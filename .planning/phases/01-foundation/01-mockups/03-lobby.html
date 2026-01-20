@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Lobby - Settlers Kingdom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --warm-cream: #FFF8E7;
+      --soft-peach: #FFD4A3;
+      --sunset-orange: #FF8E53;
+      --deep-terracotta: #D84315;
+      --forest-green: #2E7D32;
+      --sky-blue: #64B5F6;
+      --earth-brown: #795548;
+      --player-red: #E53935;
+      --player-blue: #1E88E5;
+      --player-white: #FAFAFA;
+      --player-orange: #FB8C00;
+      --shadow: rgba(121, 85, 72, 0.15);
+      --shadow-strong: rgba(121, 85, 72, 0.25);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, var(--warm-cream) 0%, #FFF5D6 50%, var(--soft-peach) 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(255, 142, 83, 0.12) 0%, transparent 70%);
+      top: -350px;
+      right: -250px;
+      border-radius: 50%;
+      animation: float 25s ease-in-out infinite;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(100, 181, 246, 0.1) 0%, transparent 70%);
+      bottom: -200px;
+      left: -150px;
+      border-radius: 50%;
+      animation: float 18s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(40px, -40px) rotate(8deg); }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    .room-info {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .room-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--forest-green);
+      box-shadow: 0 2px 8px var(--shadow);
+      margin-bottom: 1rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--forest-green);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .room-code-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+
+    .room-code-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #8D6E63;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .room-code-display {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .room-code {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--sunset-orange);
+      letter-spacing: 0.1em;
+    }
+
+    .copy-btn {
+      padding: 0.75rem 1.25rem;
+      background: linear-gradient(135deg, var(--sunset-orange), var(--deep-terracotta));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(255, 142, 83, 0.3);
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 142, 83, 0.4);
+    }
+
+    .copy-btn:active {
+      transform: translateY(0);
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'Fredoka', sans-serif;
+      padding: 1rem 1.75rem;
+      border-radius: 16px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-leave {
+      background: white;
+      color: var(--earth-brown);
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .btn-leave:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px var(--shadow);
+      background: #FAFAFA;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      animation: slideUp 0.6s ease-out 0.1s both;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .card-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--earth-brown);
+    }
+
+    .player-count {
+      background: linear-gradient(135deg, rgba(255, 142, 83, 0.15), rgba(255, 212, 163, 0.15));
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      color: var(--earth-brown);
+      font-size: 0.9375rem;
+    }
+
+    .players-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .player-card {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1.25rem;
+      background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+      border-radius: 16px;
+      border: 3px solid transparent;
+      transition: all 0.3s ease;
+      animation: scaleIn 0.4s ease-out both;
+    }
+
+    .player-card:nth-child(1) { animation-delay: 0.1s; }
+    .player-card:nth-child(2) { animation-delay: 0.2s; }
+    .player-card:nth-child(3) { animation-delay: 0.3s; }
+    .player-card:nth-child(4) { animation-delay: 0.4s; }
+
+    .player-card.ready {
+      background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+      border-color: var(--forest-green);
+    }
+
+    .player-card.you {
+      border-color: var(--sky-blue);
+      border-style: dashed;
+    }
+
+    .player-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+    }
+
+    .avatar-red { background: linear-gradient(135deg, #EF5350, var(--player-red)); }
+    .avatar-blue { background: linear-gradient(135deg, #42A5F5, var(--player-blue)); }
+    .avatar-white { background: linear-gradient(135deg, white, #F5F5F5); border: 3px solid #E0E0E0; }
+    .avatar-orange { background: linear-gradient(135deg, #FFA726, var(--player-orange)); }
+
+    .player-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .player-name {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--earth-brown);
+      margin-bottom: 0.375rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .you-badge {
+      background: var(--sky-blue);
+      color: white;
+      padding: 0.25rem 0.625rem;
+      border-radius: 8px;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .player-status {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.875rem;
+      color: #8D6E63;
+      font-weight: 500;
+    }
+
+    .color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .dot-red { background: var(--player-red); }
+    .dot-blue { background: var(--player-blue); }
+    .dot-white { background: white; border-color: #BDBDBD; }
+    .dot-orange { background: var(--player-orange); }
+
+    .ready-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      background: var(--forest-green);
+      color: white;
+      padding: 0.375rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      margin-left: auto;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .empty-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.75rem;
+      background: linear-gradient(135deg, rgba(189, 189, 189, 0.08) 0%, rgba(224, 224, 224, 0.08) 100%);
+      border: 3px dashed #E0E0E0;
+      border-radius: 16px;
+      color: #9E9E9E;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      animation: scaleIn 0.4s ease-out both;
+    }
+
+    .ready-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid #EFEBE9;
+    }
+
+    .ready-controls {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-ready {
+      flex: 1;
+      min-width: 200px;
+      background: linear-gradient(135deg, var(--forest-green), #388E3C);
+      color: white;
+      box-shadow: 0 4px 16px rgba(46, 125, 50, 0.3);
+      padding: 1.25rem 2rem;
+      font-size: 1.0625rem;
+    }
+
+    .btn-ready:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+    }
+
+    .btn-ready.active {
+      background: linear-gradient(135deg, #FFA726, var(--player-orange));
+      box-shadow: 0 4px 16px rgba(251, 140, 0, 0.3);
+    }
+
+    .btn-ready.active:hover {
+      box-shadow: 0 6px 20px rgba(251, 140, 0, 0.4);
+    }
+
+    .start-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, rgba(255, 142, 83, 0.1), rgba(255, 212, 163, 0.1));
+      border-radius: 12px;
+      font-size: 0.9375rem;
+      color: var(--earth-brown);
+      font-weight: 500;
+      min-width: 200px;
+    }
+
+    .info-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      .btn {
+        flex: 1;
+      }
+
+      .room-code {
+        font-size: 1.5rem;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
+
+      .ready-controls {
+        flex-direction: column;
+      }
+
+      .btn-ready,
+      .start-info {
+        min-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+
+      .room-code-card {
+        padding: 1.25rem;
+      }
+
+      .player-card {
+        padding: 1rem;
+      }
+
+      .player-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="room-info">
+        <div class="room-status">
+          <span class="status-dot"></span>
+          Connected
+        </div>
+        <div class="room-code-card">
+          <div class="room-code-label">Room Code</div>
+          <div class="room-code-display">
+            <div class="room-code" id="roomCode">ABC123</div>
+            <button class="copy-btn" onclick="copyRoomCode()">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-leave" onclick="leaveRoom()">
+          Leave Room
+        </button>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Game Lobby</h2>
+          <div class="player-count" id="playerCount">3/4 players</div>
+        </div>
+
+        <div class="players-grid" id="playersGrid">
+          <!-- Player 1 (You) -->
+          <div class="player-card you ready">
+            <div class="player-avatar avatar-red">🎯</div>
+            <div class="player-info">
+              <div class="player-name">
+                Alex
+                <span class="you-badge">You</span>
+              </div>
+              <div class="player-status">
+                <span class="color-dot dot-red"></span>
+                Red Settlement
+              </div>
+            </div>
+            <div class="ready-badge">
+              ✓ Ready
+            </div>
+          </div>
+
+          <!-- Player 2 -->
+          <div class="player-card ready">
+            <div class="player-avatar avatar-blue">🏔️</div>
+            <div class="player-info">
+              <div class="player-name">Jordan</div>
+              <div class="player-status">
+                <span class="color-dot dot-blue"></span>
+                Blue Settlement
+              </div>
+            </div>
+            <div class="ready-badge">
+              ✓ Ready
+            </div>
+          </div>
+
+          <!-- Player 3 -->
+          <div class="player-card">
+            <div class="player-avatar avatar-white">🌾</div>
+            <div class="player-info">
+              <div class="player-name">Taylor</div>
+              <div class="player-status">
+                <span class="color-dot dot-white"></span>
+                White Settlement
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty Slot -->
+          <div class="empty-slot">
+            Waiting for player...
+          </div>
+        </div>
+
+        <div class="ready-section">
+          <div class="ready-controls">
+            <button class="btn btn-ready active" id="readyBtn" onclick="toggleReady()">
+              Unready
+            </button>
+            <div class="start-info">
+              <span class="info-icon">⏳</span>
+              <span>Game starts when all players are ready (min 3)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isReady = true;
+    let players = [
+      { name: 'Alex', color: 'red', emoji: '🎯', ready: true, isYou: true },
+      { name: 'Jordan', color: 'blue', emoji: '🏔️', ready: true, isYou: false },
+      { name: 'Taylor', color: 'white', emoji: '🌾', ready: false, isYou: false }
+    ];
+
+    function copyRoomCode() {
+      const roomCode = document.getElementById('roomCode').textContent;
+      navigator.clipboard.writeText(roomCode).then(() => {
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 2000);
+      });
+    }
+
+    function toggleReady() {
+      isReady = !isReady;
+      players[0].ready = isReady;
+      
+      const btn = document.getElementById('readyBtn');
+      if (isReady) {
+        btn.textContent = 'Unready';
+        btn.classList.add('active');
+      } else {
+        btn.textContent = 'Mark as Ready';
+        btn.classList.remove('active');
+      }
+      
+      renderPlayers();
+    }
+
+    function renderPlayers() {
+      const grid = document.getElementById('playersGrid');
+      const colorMap = {
+        red: { class: 'avatar-red', dot: 'dot-red', label: 'Red Settlement' },
+        blue: { class: 'avatar-blue', dot: 'dot-blue', label: 'Blue Settlement' },
+        white: { class: 'avatar-white', dot: 'dot-white', label: 'White Settlement' },
+        orange: { class: 'avatar-orange', dot: 'dot-orange', label: 'Orange Settlement' }
+      };
+
+      let html = '';
+      
+      players.forEach(player => {
+        const colorInfo = colorMap[player.color];
+        const youClass = player.isYou ? 'you' : '';
+        const readyClass = player.ready ? 'ready' : '';
+        
+        html += `
+          <div class="player-card ${youClass} ${readyClass}">
+            <div class="player-avatar ${colorInfo.class}">${player.emoji}</div>
+            <div class="player-info">
+              <div class="player-name">
+                ${player.name}
+                ${player.isYou ? '<span class="you-badge">You</span>' : ''}
+              </div>
+              <div class="player-status">
+                <span class="color-dot ${colorInfo.dot}"></span>
+                ${colorInfo.label}
+              </div>
+            </div>
+            ${player.ready ? '<div class="ready-badge">✓ Ready</div>' : ''}
+          </div>
+        `;
+      });
+      
+      // Add empty slots
+      for (let i = players.length; i < 4; i++) {
+        html += '<div class="empty-slot">Waiting for player...</div>';
+      }
+      
+      grid.innerHTML = html;
+      
+      // Update player count
+      document.getElementById('playerCount').textContent = `${players.length}/4 players`;
+    }
+
+    function leaveRoom() {
+      if (confirm('Are you sure you want to leave the room?')) {
+        console.log('Leaving room');
+        window.location.href = '01-home-create.html';
+      }
+    }
+
+    // Simulate player joining after 3 seconds
+    setTimeout(() => {
+      players.push({ 
+        name: 'Morgan', 
+        color: 'orange', 
+        emoji: '⚡', 
+        ready: false, 
+        isYou: false 
+      });
+      renderPlayers();
+      
+      // Show a brief notification (you could add a toast component)
+      console.log('Morgan joined the game!');
+    }, 3000);
+
+    // Initial render
+    renderPlayers();
+  </script>
+</body>
+</html>
