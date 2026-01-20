@@ -7,20 +7,20 @@
 ## Current Phase
 
 **Phase:** Foundation (Phase 1 of 6)  
-**Status:** Not Started  
-**Started:** —  
+**Status:** In Progress  
+**Started:** 2026-01-20  
 **Target Completion:** —
 
 ## Phase Progress
 
-### Phase 1: Foundation (0/6)
+### Phase 1: Foundation (2/6)
 
 - [ ] LOBBY-01: User can create a game room and receive a shareable room ID
 - [ ] LOBBY-02: User can join an existing room by entering room ID
 - [ ] LOBBY-03: User can set their nickname when joining a room
 - [ ] SYNC-01: Game broadcasts state updates to all players in real-time via WebSocket
-- [ ] Shared types library created
-- [ ] WebSocket infrastructure working
+- [x] Shared types library created
+- [x] WebSocket infrastructure working
 
 **Success Criteria:**
 - [ ] User can create and share rooms
@@ -169,11 +169,11 @@
 
 ## Overall Progress
 
-**Requirements:** 0/72 (0%)  
+**Requirements:** 2/72 (3%)  
 **Phases:** 0/6 (0%)
 
 ```
-Phase 1: Foundation         [░░░░░░░░░░] 0/6
+Phase 1: Foundation         [███░░░░░░░] 2/6
 Phase 2: Core Game Loop     [░░░░░░░░░░] 0/11
 Phase 3: Client Rendering   [░░░░░░░░░░] 0/4
 Phase 4: Game Mechanics     [░░░░░░░░░░] 0/22
@@ -191,16 +191,17 @@ None currently.
 
 ## Recent Activity
 
+- 2026-01-20: WebSocket server and room manager added for lobby real-time flow
+- 2026-01-20: Shared library schemas and constants added for lobby contracts
 - 2026-01-20: Roadmap created, project initialized
 
 ---
 
 ## Next Steps
 
-1. Begin Phase 1: Foundation
-2. Create shared types library (`libs/shared`)
-3. Implement room creation/joining
-4. Set up WebSocket infrastructure
+1. Continue Phase 1 execution (lobby UI and client WebSocket integration)
+2. Implement room creation/join flows in frontend
+3. Verify end-to-end WebSocket interactions in 01-04
 
 ---
 
