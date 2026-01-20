@@ -1,13 +1,13 @@
 <purpose>
 Validate built features through conversational testing with persistent state. Creates UAT.md that tracks test progress, survives /clear, and feeds gaps into /gsd:plan-phase --gaps.
 
-User tests, Claude records. One test at a time. Plain text responses.
+User tests, Copilot records. One test at a time. Plain text responses.
 </purpose>
 
 <philosophy>
 **Show expected, ask if reality matches.**
 
-Claude presents what SHOULD happen. User confirms or describes what's different.
+Copilot presents what SHOULD happen. User confirms or describes what's different.
 - "yes" / "y" / "next" / empty → pass
 - Anything else → logged as issue, severity inferred
 

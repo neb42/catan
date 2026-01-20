@@ -1054,7 +1054,7 @@ TASK_COMMITS+=("Task ${TASK_NUM}: ${TASK_COMMIT}")
 - Each task independently revertable
 - Git bisect finds exact failing task
 - Git blame traces line to specific task context
-- Clear history for Claude in future sessions
+- Clear history for Copilot in future sessions
 - Better observability for AI-automated workflow
 
 </task_commit>
@@ -1062,7 +1062,7 @@ TASK_COMMITS+=("Task ${TASK_NUM}: ${TASK_COMMIT}")
 <step name="checkpoint_protocol">
 When encountering `type="checkpoint:*"`:
 
-**Critical: Claude automates everything with CLI/API before checkpoints.** Checkpoints are for verification and decisions, not manual work.
+**Critical: Copilot automates everything with CLI/API before checkpoints.** Checkpoints are for verification and decisions, not manual work.
 
 **Display checkpoint clearly:**
 
@@ -1118,7 +1118,7 @@ Options:
 **For checkpoint:human-action (1% - rare, only for truly unavoidable manual steps):**
 
 ```
-I automated: [what Claude already did via CLI/API]
+I automated: [what Copilot already did via CLI/API]
 
 Need your help with: [the ONE thing with no CLI/API - email link, 2FA code]
 

@@ -235,7 +235,7 @@ docs(quick-${next_num}): ${DESCRIPTION}
 
 Quick task completed.
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: Copilot Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 ```

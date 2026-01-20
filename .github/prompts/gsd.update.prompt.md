@@ -114,7 +114,7 @@ Your custom files in other locations are preserved:
 - Custom commands in `./.github/prompts/your-stuff/` ✓
 - Custom agents not prefixed with `gsd-` ✓
 - Custom hooks ✓
-- Your CLAUDE.md files ✓
+- Your AGENTS.md files ✓
 
 If you've modified any GSD files directly, back them up first.
 ```
@@ -152,7 +152,7 @@ Format completion message (changelog was already shown in confirmation step):
 ║  GSD Updated: v1.5.10 → v1.5.15                           ║
 ╚═══════════════════════════════════════════════════════════╝
 
-⚠️  Restart Claude Code to pick up the new commands.
+⚠️  Restart Copilot Code to pick up the new commands.
 
 [View full changelog](https://github.com/glittercowboy/get-shit-done/blob/main/CHANGELOG.md)
 ```

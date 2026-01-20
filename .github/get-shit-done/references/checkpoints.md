@@ -1,7 +1,7 @@
 <overview>
 Plans execute autonomously. Checkpoints formalize the interaction points where human verification or decisions are needed.
 
-**Core principle:** Claude automates everything with CLI/API. Checkpoints are for verification and decisions, not manual work.
+**Core principle:** Copilot automates everything with CLI/API. Checkpoints are for verification and decisions, not manual work.
 </overview>
 
 <checkpoint_types>
@@ -9,7 +9,7 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 <type name="human-verify">
 ## checkpoint:human-verify (Most Common - 90%)
 
-**When:** Claude completed automated work, human confirms it works correctly.
+**When:** Copilot completed automated work, human confirms it works correctly.
 
 **Use for:**
 - Visual UI checks (layout, styling, responsiveness)
@@ -22,7 +22,7 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 **Structure:**
 ```xml
 <task type="checkpoint:human-verify" gate="blocking">
-  <what-built>[What Claude automated and deployed/built]</what-built>
+  <what-built>[What Copilot automated and deployed/built]</what-built>
   <how-to-verify>
     [Exact steps to test - URLs, commands, expected behavior]
   </how-to-verify>
@@ -31,7 +31,7 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 ```
 
 **Key elements:**
-- `<what-built>`: What Claude automated (deployed, built, configured)
+- `<what-built>`: What Copilot automated (deployed, built, configured)
 - `<how-to-verify>`: Exact steps to confirm it works (numbered, specific)
 - `<resume-signal>`: Clear indication of how to continue
 
@@ -205,10 +205,10 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 <type name="human-action">
 ## checkpoint:human-action (1% - Rare)
 
-**When:** Action has NO CLI/API and requires human-only interaction, OR Claude hit an authentication gate during automation.
+**When:** Action has NO CLI/API and requires human-only interaction, OR Copilot hit an authentication gate during automation.
 
 **Use ONLY for:**
-- **Authentication gates** - Claude tried to use CLI/API but needs credentials to continue (this is NOT a failure)
+- **Authentication gates** - Copilot tried to use CLI/API but needs credentials to continue (this is NOT a failure)
 - Email verification links (account creation requires clicking email)
 - SMS 2FA codes (phone verification)
 - Manual account approvals (platform requires human review before API access)
@@ -225,17 +225,17 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 **Structure:**
 ```xml
 <task type="checkpoint:human-action" gate="blocking">
-  <action>[What human must do - Claude already did everything automatable]</action>
+  <action>[What human must do - Copilot already did everything automatable]</action>
   <instructions>
-    [What Claude already automated]
+    [What Copilot already automated]
     [The ONE thing requiring human action]
   </instructions>
-  <verification>[What Claude can check afterward]</verification>
+  <verification>[What Copilot can check afterward]</verification>
   <resume-signal>[How to continue]</resume-signal>
 </task>
 ```
 
-**Key principle:** Claude automates EVERYTHING possible first, only asks human for the truly unavoidable manual step.
+**Key principle:** Copilot automates EVERYTHING possible first, only asks human for the truly unavoidable manual step.
 
 **Example: Email Verification**
 ```xml
@@ -286,7 +286,7 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <verify>vercel ls shows deployment, curl returns 200</verify>
 </task>
 
-<!-- If vercel returns "Error: Not authenticated", Claude creates checkpoint on the fly -->
+<!-- If vercel returns "Error: Not authenticated", Copilot creates checkpoint on the fly -->
 
 <task type="checkpoint:human-action" gate="blocking">
   <action>Authenticate Vercel CLI so I can continue deployment</action>
@@ -299,7 +299,7 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
   <resume-signal>Type "done" when authenticated</resume-signal>
 </task>
 
-<!-- After authentication, Claude retries the deployment -->
+<!-- After authentication, Copilot retries the deployment -->
 
 <task type="auto">
   <name>Retry Vercel deployment</name>
@@ -308,13 +308,13 @@ Plans execute autonomously. Checkpoints formalize the interaction points where h
 </task>
 ```
 
-**Key distinction:** Authentication gates are created dynamically when Claude encounters auth errors during automation. They're NOT pre-planned - Claude tries to automate first, only asks for credentials when blocked.
+**Key distinction:** Authentication gates are created dynamically when Copilot encounters auth errors during automation. They're NOT pre-planned - Copilot tries to automate first, only asks for credentials when blocked.
 </type>
 </checkpoint_types>
 
 <execution_protocol>
 
-When Claude encounters `type="checkpoint:*"`:
+When Copilot encounters `type="checkpoint:*"`:
 
 1. **Stop immediately** - do not proceed to next task
 2. **Display checkpoint clearly** using the format below
@@ -403,9 +403,9 @@ I'll verify: vercel whoami returns your account
 
 <authentication_gates>
 
-**Critical:** When Claude tries CLI/API and gets auth error, this is NOT a failure - it's a gate requiring human input to unblock automation.
+**Critical:** When Copilot tries CLI/API and gets auth error, this is NOT a failure - it's a gate requiring human input to unblock automation.
 
-**Pattern:** Claude tries automation → auth error → creates checkpoint → you authenticate → Claude retries → continues
+**Pattern:** Copilot tries automation → auth error → creates checkpoint → you authenticate → Copilot retries → continues
 
 **Gate protocol:**
 1. Recognize it's not a failure - missing auth is expected
@@ -419,7 +419,7 @@ I'll verify: vercel whoami returns your account
 **Example execution flow (Vercel auth gate):**
 
 ```
-Claude: Running `vercel --yes` to deploy...
+Copilot: Running `vercel --yes` to deploy...
 
 Error: Not authenticated. Please run 'vercel login'
 
@@ -445,7 +445,7 @@ I'll verify: vercel whoami returns your account
 
 User: done
 
-Claude: Verifying authentication...
+Copilot: Verifying authentication...
 Running: vercel whoami
 ✓ Authenticated as: user@example.com
 
@@ -457,14 +457,14 @@ Task 3 complete. Continuing to task 4...
 ```
 
 **Key distinction:**
-- Pre-planned checkpoint: "I need you to do X" (wrong - Claude should automate)
+- Pre-planned checkpoint: "I need you to do X" (wrong - Copilot should automate)
 - Auth gate: "I tried to automate X but need credentials" (correct - unblocks automation)
 
 </authentication_gates>
 
 <automation_reference>
 
-**The rule:** If it has CLI/API, Claude does it. Never ask human to perform automatable work.
+**The rule:** If it has CLI/API, Copilot does it. Never ask human to perform automatable work.
 
 | Service | CLI/API | Key Commands | Auth Gate |
 |---------|---------|--------------|-----------|
@@ -484,7 +484,7 @@ Task 3 complete. Continuing to task 4...
 
 **Quick reference:**
 
-| Action | Automatable? | Claude does it? |
+| Action | Automatable? | Copilot does it? |
 |--------|--------------|-----------------|
 | Deploy to Vercel | Yes (`vercel`) | YES |
 | Create Stripe webhook | Yes (API) | YES |
@@ -508,20 +508,20 @@ Task 3 complete. Continuing to task 4...
 - Make verification executable: clear, testable steps
 
 **DON'T:**
-- Ask human to do work Claude can automate (deploy, create resources, run builds)
+- Ask human to do work Copilot can automate (deploy, create resources, run builds)
 - Assume knowledge: "Configure the usual settings" ❌
 - Skip steps: "Set up database" ❌ (too vague)
 - Mix multiple verifications in one checkpoint (split them)
-- Make verification impossible (Claude can't check visual appearance without user confirmation)
+- Make verification impossible (Copilot can't check visual appearance without user confirmation)
 
 **Placement:**
-- **After automation completes** - not before Claude does the work
+- **After automation completes** - not before Copilot does the work
 - **After UI buildout** - before declaring phase complete
 - **Before dependent work** - decisions before implementation
 - **At integration points** - after configuring external services
 
 **Bad placement:**
-- Before Claude automates (asking human to do automatable work) ❌
+- Before Copilot automates (asking human to do automatable work) ❌
 - Too frequent (every other task is a checkpoint) ❌
 - Too late (checkpoint is last task, but earlier tasks needed its result) ❌
 </writing_guidelines>
@@ -531,7 +531,7 @@ Task 3 complete. Continuing to task 4...
 ### Example 1: Deployment Flow (Correct)
 
 ```xml
-<!-- Claude automates everything -->
+<!-- Copilot automates everything -->
 <task type="auto">
   <name>Deploy to Vercel</name>
   <files>.vercel/, vercel.json, package.json</files>
@@ -566,7 +566,7 @@ Task 3 complete. Continuing to task 4...
 ### Example 2: Database Setup (No Checkpoint Needed)
 
 ```xml
-<!-- Claude automates everything -->
+<!-- Copilot automates everything -->
 <task type="auto">
   <name>Create Upstash Redis database</name>
   <files>.env</files>
@@ -584,13 +584,13 @@ Task 3 complete. Continuing to task 4...
   <done>Redis database created and configured</done>
 </task>
 
-<!-- NO CHECKPOINT NEEDED - Claude automated everything and verified programmatically -->
+<!-- NO CHECKPOINT NEEDED - Copilot automated everything and verified programmatically -->
 ```
 
 ### Example 3: Stripe Webhooks (Correct)
 
 ```xml
-<!-- Claude automates everything -->
+<!-- Copilot automates everything -->
 <task type="auto">
   <name>Configure Stripe webhooks</name>
   <files>.env, src/app/api/webhooks/route.ts</files>
@@ -678,9 +678,9 @@ Task 3 complete. Continuing to task 4...
 </task>
 ```
 
-**Why bad:** Vercel has a CLI. Claude should run `vercel --yes`.
+**Why bad:** Vercel has a CLI. Copilot should run `vercel --yes`.
 
-### ✅ GOOD: Claude automates, human verifies
+### ✅ GOOD: Copilot automates, human verifies
 
 ```xml
 <task type="auto">
@@ -736,7 +736,7 @@ Task 3 complete. Continuing to task 4...
 </task>
 ```
 
-**Why bad:** Claude has Write tool. This should be `type="auto"`.
+**Why bad:** Copilot has Write tool. This should be `type="auto"`.
 
 ### ❌ BAD: Vague verification steps
 
@@ -771,18 +771,18 @@ Task 3 complete. Continuing to task 4...
 
 <summary>
 
-Checkpoints formalize human-in-the-loop points. Use them when Claude cannot complete a task autonomously OR when human verification is required for correctness.
+Checkpoints formalize human-in-the-loop points. Use them when Copilot cannot complete a task autonomously OR when human verification is required for correctness.
 
-**The golden rule:** If Claude CAN automate it, Claude MUST automate it.
+**The golden rule:** If Copilot CAN automate it, Copilot MUST automate it.
 
 **Checkpoint priority:**
-1. **checkpoint:human-verify** (90% of checkpoints) - Claude automated everything, human confirms visual/functional correctness
+1. **checkpoint:human-verify** (90% of checkpoints) - Copilot automated everything, human confirms visual/functional correctness
 2. **checkpoint:decision** (9% of checkpoints) - Human makes architectural/technology choices
 3. **checkpoint:human-action** (1% of checkpoints) - Truly unavoidable manual steps with no API/CLI
 
 **When NOT to use checkpoints:**
-- Things Claude can verify programmatically (tests pass, build succeeds)
-- File operations (Claude can read files to verify)
+- Things Copilot can verify programmatically (tests pass, build succeeds)
+- File operations (Copilot can read files to verify)
 - Code correctness (use tests and static analysis)
 - Anything automatable via CLI/API
 </summary>

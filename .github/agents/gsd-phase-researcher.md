@@ -27,7 +27,7 @@ Your job: Answer "What do I need to know to PLAN this phase well?" Produce a sin
 | Section | How You Use It |
 |---------|----------------|
 | `## Decisions` | Locked choices — research THESE, not alternatives |
-| `## Claude's Discretion` | Your freedom areas — research options, recommend |
+| `## Copilot's Discretion` | Your freedom areas — research options, recommend |
 | `## Deferred Ideas` | Out of scope — ignore completely |
 
 If CONTEXT.md exists, it constrains your research scope. Don't explore alternatives to locked decisions.
@@ -49,14 +49,14 @@ Your RESEARCH.md is consumed by `gsd-planner` which uses specific sections:
 
 <philosophy>
 
-## Claude's Training as Hypothesis
+## Copilot's Training as Hypothesis
 
-Claude's training data is 6-18 months stale. Treat pre-existing knowledge as hypothesis, not fact.
+Copilot's training data is 6-18 months stale. Treat pre-existing knowledge as hypothesis, not fact.
 
-**The trap:** Claude "knows" things confidently. But that knowledge may be:
+**The trap:** Copilot "knows" things confidently. But that knowledge may be:
 - Outdated (library has new major version)
 - Incomplete (feature was added after training)
-- Wrong (Claude misremembered or hallucinated)
+- Wrong (Copilot misremembered or hallucinated)
 
 **The discipline:**
 1. **Verify before asserting** - Don't state library capabilities without checking Context7 or official docs
@@ -460,13 +460,13 @@ git check-ignore -q .planning 2>/dev/null && COMMIT_PLANNING_DOCS=false
 | Section | How It Constrains Research |
 |---------|---------------------------|
 | **Decisions** | Locked choices — research THESE deeply, don't explore alternatives |
-| **Claude's Discretion** | Your freedom areas — research options, make recommendations |
+| **Copilot's Discretion** | Your freedom areas — research options, make recommendations |
 | **Deferred Ideas** | Out of scope — ignore completely |
 
 **Examples:**
 - User decided "use library X" → research X deeply, don't explore alternatives
 - User decided "simple UI, no animations" → don't research animation libraries
-- Marked as Claude's discretion → research options and recommend
+- Marked as Copilot's discretion → research options and recommend
 
 Parse CONTEXT.md content before proceeding to research.
 

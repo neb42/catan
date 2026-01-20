@@ -584,7 +584,7 @@ Track for SUMMARY.md generation.
 - Each task independently revertable
 - Git bisect finds exact failing task
 - Git blame traces line to specific task context
-- Clear history for Claude in future sessions
+- Clear history for Copilot in future sessions
   </task_commit_protocol>
 
 <summary_creation>

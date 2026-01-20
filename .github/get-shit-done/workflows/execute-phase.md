@@ -319,7 +319,7 @@ Plans with `autonomous: false` require user interaction.
 8. **Repeat until plan completes or user stops**
 
 **Why fresh agent instead of resume:**
-Resume relies on Claude Code's internal serialization which breaks with parallel tool calls.
+Resume relies on Copilot Code's internal serialization which breaks with parallel tool calls.
 Fresh agents with explicit state are more reliable and maintain full context.
 
 **Checkpoint in parallel context:**
