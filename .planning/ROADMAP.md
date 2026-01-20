@@ -18,7 +18,8 @@
 
 **Goal:** Establish shared contracts and room infrastructure  
 **Duration:** 1 week  
-**Dependencies:** None
+**Dependencies:** None  
+**Plans:** 4 plans
 
 ### Requirements (6)
 
@@ -39,6 +40,13 @@
 2. **User can join rooms with nickname** — Enter room ID + nickname, see lobby with other players
 3. **Real-time lobby updates** — Other players see new joins instantly (< 500ms)
 4. **Validation works** — Invalid room IDs show error, nickname required before join
+
+### Plans
+
+- [ ] 01-01-PLAN.md — Shared types library with Zod schemas
+- [ ] 01-02-PLAN.md — WebSocket server and room management
+- [ ] 01-03-PLAN.md — Lobby UI and client WebSocket
+- [ ] 01-04-PLAN.md — End-to-end verification
 
 ### Deliverables
 
