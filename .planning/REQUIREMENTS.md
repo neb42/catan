@@ -148,33 +148,94 @@
 
 ## Traceability
 
-Requirements mapped to roadmap phases:
+Requirements mapped to roadmap phases (100% coverage):
 
-### Phase 1: Foundation
-- LOBBY-01, LOBBY-02, LOBBY-03, SYNC-01
+### Phase 1: Foundation (6 requirements)
+**Focus:** Shared contracts and room infrastructure
+- LOBBY-01: Create game room with shareable ID
+- LOBBY-02: Join room by ID
+- LOBBY-03: Set nickname when joining
+- SYNC-01: Real-time state updates via WebSocket
+- Shared types library (Zod schemas, TypeScript types, constants)
+- Room manager and WebSocket infrastructure
 
-### Phase 2: Core Game Loop
-- BOARD-01, BOARD-02, BOARD-03, BOARD-04, BOARD-05
-- TURN-01, TURN-02, TURN-03, TURN-04
-- RES-01, RES-02
+### Phase 2: Core Game Loop (11 requirements)
+**Focus:** Game skeleton (board, initial placement, turn structure)
+- BOARD-01: Random hex board generation (19 land hexes)
+- BOARD-02: Number token placement (no adjacent 6/8)
+- BOARD-03: Port placement (9 ports: 4 generic 3:1, 5 specific 2:1)
+- BOARD-04: Initial placement snake draft (1→2→3→4→4→3→2→1)
+- BOARD-05: Starting resources from second settlement
+- TURN-01: Dice rolling with animation
+- TURN-02: Resource distribution on roll
+- TURN-03: Turn phases (roll → main → end)
+- TURN-04: Round-robin turn order
+- RES-01: View own resource cards
+- RES-02: Track resource counts for all players
 
-### Phase 3: Client Rendering
-- TURN-05, BUILD-07, UX-01, UX-04
+### Phase 3: Client Rendering (4 requirements)
+**Focus:** Visual board with interactive hex grid
+- TURN-05: Clear indicator of whose turn it is
+- BUILD-07: Highlight valid placement locations
+- UX-01: Visual turn and phase indicators
+- UX-04: Player list with colors and scores
 
-### Phase 4: Game Mechanics
-- BUILD-01, BUILD-02, BUILD-03, BUILD-04, BUILD-05, BUILD-06, BUILD-08
-- TRADE-01, TRADE-02, TRADE-03, TRADE-04, TRADE-05, TRADE-06
-- ROBBER-01, ROBBER-02, ROBBER-03, ROBBER-04, ROBBER-05
-- RES-03, UX-02, UX-03
+### Phase 4: Game Mechanics (22 requirements)
+**Focus:** Building, trading, and robber systems
+- BUILD-01: Build roads (1 wood, 1 brick)
+- BUILD-02: Build settlements (1 wood, 1 brick, 1 sheep, 1 wheat)
+- BUILD-03: Upgrade to cities (3 ore, 2 wheat)
+- BUILD-04: Building costs reference visible
+- BUILD-05: Road placement validation
+- BUILD-06: Settlement placement validation (2 vertices away, adjacent to own road)
+- BUILD-08: Invalid placement error messages
+- TRADE-01: Propose domestic trade
+- TRADE-02: Accept/reject trade offers
+- TRADE-03: Execute accepted trades
+- TRADE-04: Bank trading 4:1
+- TRADE-05: Generic port trading 3:1
+- TRADE-06: Specific port trading 2:1
+- ROBBER-01: 7 roll triggers discard (8+ cards)
+- ROBBER-02: Move robber to any land hex
+- ROBBER-03: Steal from adjacent player
+- ROBBER-04: Self-blocking allowed
+- ROBBER-05: Robber blocks resource distribution
+- RES-03: View opponent resource counts (totals)
+- UX-02: Action feedback confirmations
+- UX-03: Error messages for invalid actions
 
-### Phase 5: Advanced Features
-- DEV-01 through DEV-09
-- SCORE-01 through SCORE-10
+### Phase 5: Advanced Features (19 requirements)
+**Focus:** Dev cards, longest road, largest army, victory
+- DEV-01: Buy dev card (1 ore, 1 sheep, 1 wheat)
+- DEV-02: Shuffled 25-card deck (14 Knight, 5 VP, 2×RB, 2×YoP, 2×Monopoly)
+- DEV-03: Can't play card same turn purchased
+- DEV-04: Can't play multiple cards per turn (except VP)
+- DEV-05: Knight card moves robber and steals
+- DEV-06: Road Building places 2 free roads
+- DEV-07: Year of Plenty gives 2 free resources
+- DEV-08: Monopoly takes all of one resource type
+- DEV-09: VP cards hidden from opponents
+- SCORE-01: Longest Road calculation (min 5, DFS)
+- SCORE-02: Award Longest Road card (2 VP)
+- SCORE-03: Transfer Longest Road on surpass (ties favor holder)
+- SCORE-04: Largest Army calculation (min 3 knights)
+- SCORE-05: Award Largest Army card (2 VP)
+- SCORE-06: Transfer Largest Army on surpass (ties favor holder)
+- SCORE-07: Total VP calculation (settlements=1, cities=2, LR=2, LA=2, VP cards=1)
+- SCORE-08: Display all players' public VP counts
+- SCORE-09: Detect 10 VP threshold
+- SCORE-10: End game and announce winner
 
-### Phase 6: Resilience & Polish
-- SYNC-02, SYNC-03, SYNC-04
-- LOBBY-04, LOBBY-05, LOBBY-06
-- UX-05, UX-06
+### Phase 6: Resilience & Polish (10 requirements)
+**Focus:** Disconnect handling, lobby polish, UX finalization
+- SYNC-02: Game pauses on disconnect
+- SYNC-03: Reconnect to paused game
+- SYNC-04: Restore full state on reconnect
+- LOBBY-04: Select player color (red, blue, white, orange)
+- LOBBY-05: Mark ready in lobby
+- LOBBY-06: Start countdown after all ready (3-4 players)
+- UX-05: Scrollable game log with timestamps
+- UX-06: Mobile responsive interface
 
 ---
 
