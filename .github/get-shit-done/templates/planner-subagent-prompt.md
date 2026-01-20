@@ -34,7 +34,7 @@ Template for spawning gsd-planner agent. The agent contains all planning experti
 </planning_context>
 
 <downstream_consumer>
-Output consumed by /gsd:execute-phase
+Output consumed by /gsd-execute-phase
 Plans must be executable prompts with:
 - Frontmatter (wave, depends_on, files_modified, autonomous)
 - Tasks in XML format
@@ -68,22 +68,14 @@ Before returning PLANNING COMPLETE:
 
 ## Usage
 
-**From /gsd:plan-phase (standard mode):**
+**From /gsd-plan-phase (standard mode):**
 ```python
-Task(
-  prompt=filled_template,
-  subagent_type="gsd-planner",
-  description="Plan Phase {phase}"
-)
+#tool:runSubagent:gsd-planner <filled_template>
 ```
 
-**From /gsd:plan-phase --gaps (gap closure mode):**
+**From /gsd-plan-phase --gaps (gap closure mode):**
 ```python
-Task(
-  prompt=filled_template,  # with mode: gap_closure
-  subagent_type="gsd-planner",
-  description="Plan gaps for Phase {phase}"
-)
+#tool:runSubagent:gsd-planner <filled_template>  # with mode: gap_closure
 ```
 
 ---

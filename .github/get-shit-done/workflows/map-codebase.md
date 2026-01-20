@@ -73,21 +73,14 @@ Continue to spawn_agents.
 <step name="spawn_agents">
 Spawn 4 parallel gsd-codebase-mapper agents.
 
-Use Task tool with `subagent_type="gsd-codebase-mapper"` and `run_in_background=true` for parallel execution.
+Use `#tool:runSubagent:gsd-codebase-mapper` for parallel execution.
 
 **CRITICAL:** Use the dedicated `gsd-codebase-mapper` agent, NOT `Explore`. The mapper agent writes documents directly.
 
 **Agent 1: Tech Focus**
 
-Task tool parameters:
 ```
-subagent_type: "gsd-codebase-mapper"
-run_in_background: true
-description: "Map codebase tech stack"
-```
-
-Prompt:
-```
+#tool:runSubagent:gsd-codebase-mapper
 Focus: tech
 
 Analyze this codebase for technology stack and external integrations.
@@ -101,15 +94,8 @@ Explore thoroughly. Write documents directly using templates. Return confirmatio
 
 **Agent 2: Architecture Focus**
 
-Task tool parameters:
 ```
-subagent_type: "gsd-codebase-mapper"
-run_in_background: true
-description: "Map codebase architecture"
-```
-
-Prompt:
-```
+#tool:runSubagent:gsd-codebase-mapper
 Focus: arch
 
 Analyze this codebase architecture and directory structure.
@@ -123,15 +109,8 @@ Explore thoroughly. Write documents directly using templates. Return confirmatio
 
 **Agent 3: Quality Focus**
 
-Task tool parameters:
 ```
-subagent_type: "gsd-codebase-mapper"
-run_in_background: true
-description: "Map codebase conventions"
-```
-
-Prompt:
-```
+#tool:runSubagent:gsd-codebase-mapper
 Focus: quality
 
 Analyze this codebase for coding conventions and testing patterns.
@@ -145,15 +124,8 @@ Explore thoroughly. Write documents directly using templates. Return confirmatio
 
 **Agent 4: Concerns Focus**
 
-Task tool parameters:
 ```
-subagent_type: "gsd-codebase-mapper"
-run_in_background: true
-description: "Map codebase concerns"
-```
-
-Prompt:
-```
+#tool:runSubagent:gsd-codebase-mapper
 Focus: concerns
 
 Analyze this codebase for technical debt, known issues, and areas of concern.
@@ -270,14 +242,14 @@ Created .planning/codebase/:
 
 **Initialize project** — use codebase context for planning
 
-`/gsd:new-project`
+`/gsd-new-project`
 
 <sub>`/clear` first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- Re-run mapping: `/gsd:map-codebase`
+- Re-run mapping: `/gsd-map-codebase`
 - Review specific file: `cat .planning/codebase/STACK.md`
 - Edit any document before proceeding
 

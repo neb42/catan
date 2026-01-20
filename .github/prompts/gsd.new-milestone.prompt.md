@@ -1,5 +1,5 @@
 ---
-name: gsd:new-milestone
+name: gsd-new-milestone
 description: Start a new milestone cycle — update PROJECT.md and route to requirements
 argument-hint: "[milestone name, e.g., 'v1.1 Notifications']"
 ---
@@ -16,7 +16,7 @@ This is the brownfield equivalent of new-project. The project exists, PROJECT.md
 - `.planning/ROADMAP.md` — phase structure (continues numbering)
 - `.planning/STATE.md` — reset for new milestone
 
-**After this command:** Run `/gsd:plan-phase [N]` to start execution.
+**After this command:** Run `/gsd-plan-phase [N]` to start execution.
 </objective>
 
 <execution_context>
@@ -35,7 +35,7 @@ Milestone name: $ARGUMENTS (optional - will prompt if not provided)
 @.planning/MILESTONES.md
 @.planning/config.json
 
-**Load milestone context (if exists, from /gsd:discuss-milestone):**
+**Load milestone context (if exists, from /gsd-discuss-milestone):**
 @.planning/MILESTONE-CONTEXT.md
 </context>
 
@@ -46,7 +46,7 @@ Milestone name: $ARGUMENTS (optional - will prompt if not provided)
 - Read PROJECT.md (existing project, Validated requirements, decisions)
 - Read MILESTONES.md (what shipped previously)
 - Read STATE.md (pending todos, blockers)
-- Check for MILESTONE-CONTEXT.md (from /gsd:discuss-milestone)
+- Check for MILESTONE-CONTEXT.md (from /gsd-discuss-milestone)
 
 ## Phase 2: Gather Milestone Goals
 
@@ -153,7 +153,7 @@ Display spawning indicator:
 Spawn 4 parallel gsd-project-researcher agents with milestone-aware context:
 
 ```
-Task(prompt="
+#tool:runSubagent:gsd-project-researcher "
 <research_type>
 Project Research — Stack dimension for [new features].
 </research_type>
@@ -192,9 +192,9 @@ Your STACK.md feeds into roadmap creation. Be prescriptive:
 Write to: .planning/research/STACK.md
 Use template: ./.github/get-shit-done/templates/research-project/STACK.md
 </output>
-", subagent_type="gsd-project-researcher", description="Stack research")
+"
 
-Task(prompt="
+#tool:runSubagent:gsd-project-researcher "
 <research_type>
 Project Research — Features dimension for [new features].
 </research_type>
@@ -233,9 +233,9 @@ Your FEATURES.md feeds into requirements definition. Categorize clearly:
 Write to: .planning/research/FEATURES.md
 Use template: ./.github/get-shit-done/templates/research-project/FEATURES.md
 </output>
-", subagent_type="gsd-project-researcher", description="Features research")
+"
 
-Task(prompt="
+#tool:runSubagent:gsd-project-researcher "
 <research_type>
 Project Research — Architecture dimension for [new features].
 </research_type>
@@ -275,9 +275,9 @@ Your ARCHITECTURE.md informs phase structure in roadmap. Include:
 Write to: .planning/research/ARCHITECTURE.md
 Use template: ./.github/get-shit-done/templates/research-project/ARCHITECTURE.md
 </output>
-", subagent_type="gsd-project-researcher", description="Architecture research")
+"
 
-Task(prompt="
+#tool:runSubagent:gsd-project-researcher "
 <research_type>
 Project Research — Pitfalls dimension for [new features].
 </research_type>
@@ -313,13 +313,13 @@ Your PITFALLS.md prevents mistakes in roadmap/planning. For each pitfall:
 Write to: .planning/research/PITFALLS.md
 Use template: ./.github/get-shit-done/templates/research-project/PITFALLS.md
 </output>
-", subagent_type="gsd-project-researcher", description="Pitfalls research")
+"
 ```
 
 After all 4 agents complete, spawn synthesizer to create SUMMARY.md:
 
 ```
-Task(prompt="
+#tool:runSubagent:gsd-research-synthesizer "
 <task>
 Synthesize research outputs into SUMMARY.md.
 </task>
@@ -337,7 +337,7 @@ Write to: .planning/research/SUMMARY.md
 Use template: ./.github/get-shit-done/templates/research-project/SUMMARY.md
 Commit after writing.
 </output>
-", subagent_type="gsd-research-synthesizer", description="Synthesize research")
+"
 ```
 
 Display research complete banner and key findings:
@@ -510,7 +510,7 @@ New phases continue from there (e.g., if v1.0 ended at phase 5, v1.1 starts at p
 Spawn gsd-roadmapper agent with context:
 
 ```
-Task(prompt="
+#tool:runSubagent:gsd-roadmapper
 <planning_context>
 
 **Project:**
@@ -542,7 +542,9 @@ Create roadmap for milestone v[X.Y]:
 
 Write files first, then return. This ensures artifacts persist even if context is lost.
 </instructions>
-", subagent_type="gsd-roadmapper", description="Create roadmap")
+```
+
+#tool:runSubagent:gsd-roadmapper <prompt from above>
 ```
 
 **Handle roadmapper return:**
@@ -599,7 +601,7 @@ Use AskUserQuestion:
 - Get user's adjustment notes
 - Re-spawn roadmapper with revision context:
   ```
-  Task(prompt="
+  #tool:runSubagent:gsd-roadmapper
   <revision>
   User feedback on roadmap:
   [user's notes]
@@ -609,7 +611,9 @@ Use AskUserQuestion:
   Update the roadmap based on feedback. Edit files in place.
   Return ROADMAP REVISED with changes made.
   </revision>
-  ", subagent_type="gsd-roadmapper", description="Revise roadmap")
+  ```
+  
+  #tool:runSubagent:gsd-roadmapper <prompt from above>
   ```
 - Present revised roadmap
 - Loop until user approves
@@ -662,14 +666,14 @@ Present completion with next steps:
 
 **Phase [N]: [Phase Name]** — [Goal from ROADMAP.md]
 
-`/gsd:discuss-phase [N]` — gather context and clarify approach
+`/gsd-discuss-phase [N]` — gather context and clarify approach
 
 <sub>`/clear` first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- `/gsd:plan-phase [N]` — skip discussion, plan directly
+- `/gsd-plan-phase [N]` — skip discussion, plan directly
 
 ───────────────────────────────────────────────────────────────
 ```
@@ -689,7 +693,7 @@ Present completion with next steps:
 - [ ] User feedback incorporated (if any)
 - [ ] ROADMAP.md created with phases continuing from previous milestone
 - [ ] All commits made (if planning docs committed)
-- [ ] User knows next step is `/gsd:discuss-phase [N]`
+- [ ] User knows next step is `/gsd-discuss-phase [N]`
 
 **Atomic commits:** Each phase commits its artifacts immediately. If context is lost, artifacts persist.
 </success_criteria>

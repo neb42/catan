@@ -1,5 +1,5 @@
 ---
-name: gsd:audit-milestone
+name: gsd-audit-milestone
 description: Audit milestone completion against original intent before archiving
 argument-hint: "[version]"
 ---
@@ -68,16 +68,13 @@ If a phase is missing VERIFICATION.md, flag it as "unverified phase" — this is
 With phase context collected:
 
 ```
-Task(
-  prompt="Check cross-phase integration and E2E flows.
+#tool:runSubagent:gsd-integration-checker Check cross-phase integration and E2E flows.
 
 Phases: {phase_dirs}
 Phase exports: {from SUMMARYs}
 API routes: {routes created}
 
-Verify cross-phase wiring and E2E user flows.",
-  subagent_type="gsd-integration-checker"
-)
+Verify cross-phase wiring and E2E user flows.
 ```
 
 ## 4. Collect Results
@@ -155,7 +152,7 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 
 **Complete milestone** — archive and tag
 
-/gsd:complete-milestone {version}
+/gsd-complete-milestone {version}
 
 <sub>/clear first → fresh context window</sub>
 
@@ -192,7 +189,7 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 
 **Plan gap closure** — create phases to complete milestone
 
-/gsd:plan-milestone-gaps
+/gsd-plan-milestone-gaps
 
 <sub>/clear first → fresh context window</sub>
 
@@ -200,7 +197,7 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 
 **Also available:**
 - cat .planning/v{version}-MILESTONE-AUDIT.md — see full report
-- /gsd:complete-milestone {version} — proceed anyway (accept tech debt)
+- /gsd-complete-milestone {version} — proceed anyway (accept tech debt)
 
 ───────────────────────────────────────────────────────────────
 
@@ -230,11 +227,11 @@ All requirements met. No critical blockers. Accumulated tech debt needs review.
 
 **A. Complete milestone** — accept debt, track in backlog
 
-/gsd:complete-milestone {version}
+/gsd-complete-milestone {version}
 
 **B. Plan cleanup phase** — address debt before completing
 
-/gsd:plan-milestone-gaps
+/gsd-plan-milestone-gaps
 
 <sub>/clear first → fresh context window</sub>
 

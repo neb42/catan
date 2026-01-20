@@ -1,5 +1,5 @@
 ---
-name: gsd:whats-new
+name: gsd-whats-new
 description: See what's new in GSD since your installed version
 ---
 

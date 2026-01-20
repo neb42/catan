@@ -219,9 +219,9 @@ No segmentation benefit - execute entirely in main
 ```
 1. Run init_agent_tracking step first (see step below)
 
-2. Use Task tool with subagent_type="gsd-executor":
+2. Spawn gsd-executor subagent:
 
-   Prompt: "Execute plan at .planning/phases/{phase}-{plan}-PLAN.md
+   #tool:runSubagent:gsd-executor Execute plan at .planning/phases/{phase}-{plan}-PLAN.md
 
    This is an autonomous plan (no checkpoints). Execute all tasks, create SUMMARY.md in phase directory, commit with message following plan's commit guidance.
 
@@ -371,9 +371,7 @@ For Pattern A (fully autonomous) and Pattern C (decision-dependent), skip this s
 
    B. If routing = Subagent:
       ```
-      Spawn Task tool with subagent_type="gsd-executor":
-
-      Prompt: "Execute tasks [task numbers/names] from plan at [plan path].
+      #tool:runSubagent:gsd-executor Execute tasks [task numbers/names] from plan at [plan path].
 
       **Context:**
       - Read the full plan for objective, context files, and deviation rules
@@ -1726,14 +1724,14 @@ Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
 **{phase}-{next-plan}: [Plan Name]** — [objective from next PLAN.md]
 
-`/gsd:execute-phase {phase}`
+`/gsd-execute-phase {phase}`
 
 <sub>`/clear` first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- `/gsd:verify-work {phase}-{plan}` — manual acceptance testing before continuing
+- `/gsd-verify-work {phase}-{plan}` — manual acceptance testing before continuing
 - Review what was built before continuing
 
 ---
@@ -1787,15 +1785,15 @@ All {Y} plans finished.
 
 **Phase {Z+1}: {Next Phase Name}** — {Goal from ROADMAP.md}
 
-`/gsd:plan-phase {Z+1}`
+`/gsd-plan-phase {Z+1}`
 
 <sub>`/clear` first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- `/gsd:verify-work {Z}` — manual acceptance testing before continuing
-- `/gsd:discuss-phase {Z+1}` — gather context first
+- `/gsd-verify-work {Z}` — manual acceptance testing before continuing
+- `/gsd-discuss-phase {Z+1}` — gather context first
 - Review phase accomplishments before continuing
 
 ---
@@ -1825,15 +1823,15 @@ All {Y} plans finished.
 
 **Complete Milestone** — archive and prepare for next
 
-`/gsd:complete-milestone`
+`/gsd-complete-milestone`
 
 <sub>`/clear` first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- `/gsd:verify-work` — manual acceptance testing before completing milestone
-- `/gsd:add-phase <description>` — add another phase before completing
+- `/gsd-verify-work` — manual acceptance testing before completing milestone
+- `/gsd-add-phase <description>` — add another phase before completing
 - Review accomplishments before archiving
 
 ---

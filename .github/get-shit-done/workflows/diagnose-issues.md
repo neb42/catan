@@ -78,11 +78,7 @@ This runs in parallel - all gaps investigated simultaneously.
 For each gap, fill the debug-subagent-prompt template and spawn:
 
 ```
-Task(
-  prompt=filled_debug_subagent_prompt,
-  subagent_type="general-purpose",
-  description="Debug: {truth_short}"
-)
+#tool:runSubagent:general-purpose <filled_debug_subagent_prompt>
 ```
 
 **All agents spawn in single message** (parallel execution).
@@ -226,7 +222,7 @@ Do NOT offer manual next steps - verify-work handles the rest.
 
 **Agent times out:**
 - Check DEBUG-{slug}.md for partial progress
-- Can resume with /gsd:debug
+- Can resume with /gsd-debug
 
 **All agents fail:**
 - Something systemic (permissions, git, etc.)

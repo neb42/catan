@@ -1,13 +1,13 @@
 ---
-name: gsd:research-phase
-description: Research how to implement a phase (standalone - usually use /gsd:plan-phase instead)
+name: gsd-research-phase
+description: Research how to implement a phase (standalone - usually use /gsd-plan-phase instead)
 argument-hint: "[phase]"
 ---
 
 <objective>
 Research how to implement a phase. Spawns gsd-phase-researcher agent with phase context.
 
-**Note:** This is a standalone research command. For most workflows, use `/gsd:plan-phase` which integrates research automatically.
+**Note:** This is a standalone research command. For most workflows, use `/gsd-plan-phase` which integrates research automatically.
 
 **Use this command when:**
 - You want to research without planning yet
@@ -100,7 +100,7 @@ Mode: ecosystem
 </context>
 
 <downstream_consumer>
-Your RESEARCH.md will be loaded by `/gsd:plan-phase` which uses specific sections:
+Your RESEARCH.md will be loaded by `/gsd-plan-phase` which uses specific sections:
 - `## Standard Stack` → Plans use these libraries
 - `## Architecture Patterns` → Task structure follows these
 - `## Don't Hand-Roll` → Tasks NEVER build custom solutions for listed problems
@@ -125,11 +125,7 @@ Write to: .planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md
 ```
 
 ```
-Task(
-  prompt=filled_prompt,
-  subagent_type="gsd-phase-researcher",
-  description="Research Phase {phase}"
-)
+#tool:runSubagent:gsd-phase-researcher filled_prompt
 ```
 
 ## 5. Handle Agent Return
@@ -158,11 +154,7 @@ Research file: @.planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md
 ```
 
 ```
-Task(
-  prompt=continuation_prompt,
-  subagent_type="gsd-phase-researcher",
-  description="Continue research Phase {phase}"
-)
+#tool:runSubagent:gsd-phase-researcher continuation_prompt
 ```
 
 </process>

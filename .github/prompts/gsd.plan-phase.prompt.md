@@ -1,5 +1,5 @@
 ---
-name: gsd:plan-phase
+name: gsd-plan-phase
 description: Create detailed execution plan for a phase (PLAN.md) with verification loop
 argument-hint: "[phase] [--research] [--skip-research] [--gaps] [--skip-verify]"
 agent: gsd-planner
@@ -39,7 +39,7 @@ Normalize phase input in step 2 before any directory lookups.
 ls .planning/ 2>/dev/null
 ```
 
-**If not found:** Error - user should run `/gsd:new-project` first.
+**If not found:** Error - user should run `/gsd-new-project` first.
 
 ## 2. Parse and Normalize Arguments
 
@@ -170,11 +170,7 @@ Write research findings to: {phase_dir}/{phase}-RESEARCH.md
 ```
 
 ```
-Task(
-  prompt=research_prompt,
-  subagent_type="gsd-phase-researcher",
-  description="Research Phase {phase}"
-)
+#tool:runSubagent:gsd-phase-researcher <research_prompt>
 ```
 
 ### Handle Researcher Return
@@ -254,7 +250,7 @@ Fill prompt and spawn:
 </planning_context>
 
 <downstream_consumer>
-Output consumed by /gsd:execute-phase
+Output consumed by /gsd-execute-phase
 Plans must be executable prompts with:
 
 - Frontmatter (wave, depends_on, files_modified, autonomous)
@@ -276,11 +272,7 @@ Before returning PLANNING COMPLETE:
 ```
 
 ```
-Task(
-  prompt=filled_prompt,
-  subagent_type="gsd-planner",
-  description="Plan Phase {phase}"
-)
+#tool:runSubagent:gsd-planner <filled_prompt>
 ```
 
 ## 9. Handle Planner Return
@@ -335,11 +327,7 @@ Return one of:
 ```
 
 ```
-Task(
-  prompt=checker_prompt,
-  subagent_type="gsd-plan-checker",
-  description="Verify Phase {phase} plans"
-)
+#tool:runSubagent:gsd-plan-checker <checker_prompt>
 ```
 
 ## 11. Handle Checker Return
@@ -386,11 +374,7 @@ Return what changed.
 ```
 
 ```
-Task(
-  prompt=revision_prompt,
-  subagent_type="gsd-planner",
-  description="Revise Phase {phase} plans"
-)
+#tool:runSubagent:gsd-planner <revision_prompt>
 ```
 
 - After planner returns → spawn checker again (step 10)
@@ -437,7 +421,7 @@ Verification: {Passed | Passed with override | Skipped}
 
 **Execute Phase {X}** — run all {N} plans
 
-/gsd:execute-phase {X}
+/gsd-execute-phase {X}
 
 <sub>/clear first → fresh context window</sub>
 
@@ -445,7 +429,7 @@ Verification: {Passed | Passed with override | Skipped}
 
 **Also available:**
 - cat .planning/phases/{phase-dir}/*-PLAN.md — review plans
-- /gsd:plan-phase {X} --research — re-research first
+- /gsd-plan-phase {X} --research — re-research first
 
 ───────────────────────────────────────────────────────────────
 </offer_next>

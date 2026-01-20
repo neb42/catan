@@ -1,5 +1,5 @@
 ---
-name: gsd:debug
+name: gsd-debug
 description: Systematic debugging with persistent state across context resets
 argument-hint: issue description
 ---
@@ -74,11 +74,7 @@ Create: .planning/debug/{slug}.md
 ```
 
 ```
-Task(
-  prompt=filled_prompt,
-  subagent_type="gsd-debugger",
-  description="Debug {slug}"
-)
+#tool:runSubagent:gsd-debugger <filled_prompt>
 ```
 
 ## 4. Handle Agent Return
@@ -87,7 +83,7 @@ Task(
 - Display root cause and evidence summary
 - Offer options:
   - "Fix now" - spawn fix subagent
-  - "Plan fix" - suggest /gsd:plan-phase --gaps
+  - "Plan fix" - suggest /gsd-plan-phase --gaps
   - "Manual fix" - done
 
 **If `## CHECKPOINT REACHED`:**
@@ -126,11 +122,7 @@ goal: find_and_fix
 ```
 
 ```
-Task(
-  prompt=continuation_prompt,
-  subagent_type="gsd-debugger",
-  description="Continue debug {slug}"
-)
+#tool:runSubagent:gsd-debugger <continuation_prompt>
 ```
 
 </process>

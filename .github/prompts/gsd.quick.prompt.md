@@ -1,5 +1,5 @@
 ---
-name: gsd:quick
+name: gsd-quick
 description: Execute a quick task with GSD guarantees (atomic commits, state tracking) but skip optional agents
 ---
 
@@ -31,7 +31,7 @@ Check that an active GSD project exists:
 ```bash
 if [ ! -f .planning/ROADMAP.md ]; then
   echo "Quick mode requires an active project with ROADMAP.md."
-  echo "Run /gsd:new-project first."
+  echo "Run /gsd-new-project first."
   exit 1
 fi
 ```
@@ -109,8 +109,7 @@ Store `$QUICK_DIR` for use in orchestration.
 Spawn gsd-planner with quick mode context:
 
 ```
-Task(
-  prompt="
+#tool:runSubagent:gsd-planner"
 <planning_context>
 
 **Mode:** quick
@@ -133,10 +132,7 @@ Task(
 Write plan to: ${QUICK_DIR}/${next_num}-PLAN.md
 Return: ## PLANNING COMPLETE with plan path
 </output>
-",
-  subagent_type="gsd-planner",
-  description="Quick plan: ${DESCRIPTION}"
-)
+"
 ```
 
 After planner returns:
@@ -153,8 +149,7 @@ If plan not found, error: "Planner failed to create ${next_num}-PLAN.md"
 Spawn gsd-executor with plan reference:
 
 ```
-Task(
-  prompt="
+#tool:runSubagent:gsd-executor "
 Execute quick task ${next_num}.
 
 Plan: @${QUICK_DIR}/${next_num}-PLAN.md
@@ -166,10 +161,7 @@ Project state: @.planning/STATE.md
 - Create summary at: ${QUICK_DIR}/${next_num}-SUMMARY.md
 - Do NOT update ROADMAP.md (quick tasks are separate from planned phases)
 </constraints>
-",
-  subagent_type="gsd-executor",
-  description="Execute: ${DESCRIPTION}"
-)
+"
 ```
 
 After executor returns:
@@ -258,7 +250,7 @@ Commit: ${commit_hash}
 
 ---
 
-Ready for next task: /gsd:quick
+Ready for next task: /gsd-quick
 ```
 
 </process>
