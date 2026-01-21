@@ -2,7 +2,8 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-01-21
+**Last Updated:** 2026-01-21  
+**Last activity:** 2026-01-21 - Completed quick task 001: split out phase 2 into smaller phases
 
 ## Current Phase
 
@@ -211,6 +212,14 @@ Phase 8: Resilience & Polish[░░░░░░░░░░] 0/10
 ## Blockers
 
 None currently.
+
+---
+
+## Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 001 | split out phase 2 into smaller phases | 2026-01-21 | c0d3c40 | [001-split-out-phase-2-into-smaller-phases](./quick/001-split-out-phase-2-into-smaller-phases/) |
 
 ---
 
