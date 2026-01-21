@@ -18,7 +18,7 @@ export function TurnIndicator() {
         ? 'Roll Dice'
         : gameState.turnPhase === 'main'
         ? 'Main Phase (Trade/Build)'
-        : 'End Turn',
+        : 'End Phase — Finishing turn...',
     game_over: 'Game Over',
   };
 

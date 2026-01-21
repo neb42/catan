@@ -11,12 +11,15 @@ export function DiceRoller() {
   const currentPlayer = gameState?.currentPlayer ?? null;
   const turnPhase = gameState?.turnPhase ?? null;
 
-  const canRoll = Boolean(
-    gameState && myPlayerId && currentPlayer === myPlayerId && turnPhase === 'roll'
+  const isCurrentPlayer = Boolean(
+    gameState && myPlayerId && currentPlayer === myPlayerId
   );
-  const canEndTurn = Boolean(
-    gameState && myPlayerId && currentPlayer === myPlayerId && turnPhase === 'main'
+  const canRoll = Boolean(isCurrentPlayer && turnPhase === 'roll');
+  const showEndTurnButton = Boolean(
+    isCurrentPlayer && (turnPhase === 'main' || turnPhase === 'end')
   );
+  const canEndTurn = Boolean(showEndTurnButton && turnPhase === 'main');
+  const isEndingTurn = Boolean(showEndTurnButton && turnPhase === 'end');
 
   const handleRollDice = () => {
     if (!myPlayerId || !sendMessage) return;
@@ -95,7 +98,26 @@ export function DiceRoller() {
         </button>
       )}
 
-      {!canRoll && !canEndTurn && (
+      {isEndingTurn && (
+        <button
+          disabled
+          style={{
+            width: '100%',
+            padding: '0.65rem 1rem',
+            borderRadius: 10,
+            border: 'none',
+            background: '#374151',
+            color: 'white',
+            fontWeight: 700,
+            cursor: 'not-allowed',
+            opacity: 0.85,
+          }}
+        >
+          Ending Turn...
+        </button>
+      )}
+
+      {!canRoll && !showEndTurnButton && (
         <div style={{ color: '#6b7280', fontWeight: 600, textAlign: 'center' }}>Waiting to roll</div>
       )}
     </div>
