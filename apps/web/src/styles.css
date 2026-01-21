@@ -1,1 +1,148 @@
-/* You can add global styles to this file, and also import other style files */
+/* Design System - Global Styles */
+
+:root {
+  --color-bg: #F9F4EF;
+  --color-text: #2D3142;
+  --color-primary: #E76F51; /* Terracotta */
+  --color-primary-dark: #C65538;
+  --color-secondary: #2A9D8F; /* Teal */
+  --color-secondary-dark: #1F7A6F;
+  --color-accent: #E9C46A; /* Saffron */
+  --color-surface: #FFFFFF;
+  --color-shadow: rgba(45, 49, 66, 0.15);
+  --radius-lg: 24px;
+  --radius-md: 12px;
+  --radius-full: 999px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Typography */
+h1, h2, h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Background Pattern */
+.bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.4;
+  background-image: radial-gradient(var(--color-accent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+}
+
+/* Hex Decorations */
+.hex-decoration {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, var(--color-secondary) 0%, transparent 80%);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  opacity: 0.1;
+  animation: float 20s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.hex-1 { 
+  top: -50px; 
+  left: -50px; 
+  animation-delay: 0s; 
+  transform: rotate(15deg);
+}
+
+.hex-2 { 
+  bottom: -50px; 
+  right: -50px; 
+  background: linear-gradient(135deg, var(--color-primary) 0%, transparent 80%); 
+  animation-delay: -5s; 
+  transform: rotate(-15deg);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-20px) rotate(var(--r, 0deg)); }
+}
+
+/* Animation Utilities */
+@keyframes slideUp {
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Player Color Classes */
+.c-red {
+  color: #E76F51;
+}
+
+.c-blue {
+  color: #264653;
+}
+
+.c-white {
+  color: #FFFFFF;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.c-orange {
+  color: #F4A261;
+}
+
+.c-green {
+  color: #2A9D8F;
+}
+
+.c-yellow {
+  color: #E9C46A;
+}
+
+.c-purple {
+  color: #9B59B6;
+}
+
+.c-brown {
+  color: #8B4513;
+}
