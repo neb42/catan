@@ -20,6 +20,22 @@ const terrainMap: Record<HexTileType['terrain'], string> = {
   desert,
 };
 
+const AXIAL_DIRECTIONS = [
+  { q: 1, r: 0 },
+  { q: 1, r: -1 },
+  { q: 0, r: -1 },
+  { q: -1, r: 0 },
+  { q: -1, r: 1 },
+  { q: 0, r: 1 },
+];
+
+const normalizeEdgeId = (edgeId: string): string => {
+  const [a, b] = edgeId.split('-');
+  if (!a || !b) return edgeId;
+  const [first, second] = [a, b].sort();
+  return `${first}-${second}`;
+};
+
 const getPipCount = (number: number | null): number => {
   if (!number) return 0;
   switch (number) {
@@ -47,26 +63,33 @@ export function HexTile({
   hex,
   onClick,
   showVertices,
+  showEdges,
   selectedVertex,
+  selectedEdge,
   onSelectVertex,
+  onSelectEdge,
   playerColor,
   occupiedVertices,
+  occupiedEdges,
+  boardHexKeys,
 }: {
   hex: HexTileType;
   onClick?: () => void;
   showVertices?: boolean;
+  showEdges?: boolean;
   selectedVertex?: string | null;
+  selectedEdge?: string | null;
   onSelectVertex?: (vertexId: string) => void;
+  onSelectEdge?: (edgeId: string) => void;
   playerColor?: string;
   occupiedVertices?: Set<string>;
-  showEdges?: boolean;
-  selectedEdge?: string | null;
-  onSelectEdge?: (edgeId: string) => void;
   occupiedEdges?: Set<string>;
+  boardHexKeys?: Set<string>;
 }) {
   const pipCount = getPipCount(hex.number);
   const isHighProbability = hex.number === 6 || hex.number === 8;
   const [hoveredVertex, setHoveredVertex] = useState<string | null>(null);
+  const [hoveredEdge, setHoveredEdge] = useState<string | null>(null);
 
   const cornerPositions = useMemo(
     () => getHexCornerPositions(hex.coord),
@@ -76,6 +99,26 @@ export function HexTile({
     () => cornerPositions.map((_, index) => `${hex.coord.q}:${hex.coord.r}:${index}`),
     [cornerPositions, hex.coord.q, hex.coord.r],
   );
+
+  const edgeSegments = useMemo(() => {
+    return cornerPositions.map((corner, index) => {
+      const nextIndex = (index + 1) % cornerPositions.length;
+      const direction = AXIAL_DIRECTIONS[index];
+      const neighbor = {
+        q: hex.coord.q + direction.q,
+        r: hex.coord.r + direction.r,
+      };
+      const neighborKey = `${neighbor.q},${neighbor.r}`;
+      const edgeId = `${hex.coord.q}:${hex.coord.r}-${neighbor.q}:${neighbor.r}`;
+      const isValid = boardHexKeys ? boardHexKeys.has(neighborKey) : true;
+      return {
+        edgeId,
+        start: corner,
+        end: cornerPositions[nextIndex],
+        isValid,
+      };
+    });
+  }, [cornerPositions, hex.coord.q, hex.coord.r, boardHexKeys]);
 
   const highlightColor = playerColor ?? '#2f2f2f';
 
@@ -152,6 +195,39 @@ export function HexTile({
               }}
               onMouseEnter={() => setHoveredVertex(vertexId)}
               onMouseLeave={() => setHoveredVertex(null)}
+            />
+          );
+        })}
+
+      {showEdges &&
+        edgeSegments.map((segment) => {
+          if (!segment.isValid) return null;
+          const normalizedId = normalizeEdgeId(segment.edgeId);
+          const isSelected = selectedEdge === normalizedId || selectedEdge === segment.edgeId;
+          const isHovered = hoveredEdge === normalizedId || hoveredEdge === segment.edgeId;
+          const isOccupied = occupiedEdges?.has(normalizedId);
+          const isEnabled = !isOccupied && Boolean(onSelectEdge);
+
+          return (
+            <line
+              key={segment.edgeId}
+              x1={segment.start.x}
+              y1={segment.start.y}
+              x2={segment.end.x}
+              y2={segment.end.y}
+              stroke={highlightColor}
+              strokeWidth={0.9}
+              strokeLinecap="round"
+              strokeOpacity={isSelected ? 0.9 : isHovered ? 0.6 : isEnabled ? 0.25 : 0.1}
+              style={{ cursor: isEnabled ? 'pointer' : 'default' }}
+              pointerEvents={isEnabled ? 'auto' : 'none'}
+              onClick={(event) => {
+                event.stopPropagation();
+                if (!isEnabled || !onSelectEdge) return;
+                onSelectEdge(segment.edgeId);
+              }}
+              onMouseEnter={() => setHoveredEdge(normalizeEdgeId(segment.edgeId))}
+              onMouseLeave={() => setHoveredEdge(null)}
             />
           );
         })}
