@@ -370,9 +370,11 @@ export default function Lobby() {
               />
               {countdown !== null
                 ? `Starting in ${countdown}...`
-                : players.length >= MIN_PLAYERS && players.every((p) => p.ready)
+                : players.length < MIN_PLAYERS
+                ? 'At least 3 players required'
+                : players.every((p) => p.ready)
                 ? 'Ready to start!'
-                : `Waiting for players... (${players.length}/${MIN_PLAYERS} min)`}
+                : `Waiting for players... ${players.filter((p) => p.ready).length}/${players.length} ready`}
             </div>
 
             {currentPlayerId && (
