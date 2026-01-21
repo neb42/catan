@@ -4,15 +4,18 @@ import Lobby from '../components/Lobby';
 
 export function App() {
   return (
-    <Container size="lg" py="xl">
-      <Stack gap="md">
-        <Stack gap={4}>
-          <Title order={2}>Catan Lobby</Title>
-          <Text c="dimmed">Create a room, share the code, and get everyone ready.</Text>
+    <>
+      <div className="bg-pattern" />
+      <Container size="lg" py="xl">
+        <Stack gap="md">
+          <Stack gap={4}>
+            <Title order={2}>Catan Lobby</Title>
+            <Text c="dimmed">Create a room, share the code, and get everyone ready.</Text>
+          </Stack>
+          <Lobby />
         </Stack>
-        <Lobby />
-      </Stack>
-    </Container>
+      </Container>
+    </>
   );
 }
 
