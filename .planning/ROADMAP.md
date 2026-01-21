@@ -7,10 +7,10 @@
 
 ## Overview
 
-6-phase roadmap derived from 72 v1 requirements. Each phase delivers working software with observable user value. Phases build sequentially — later phases depend on earlier foundations.
+8-phase roadmap derived from 72 v1 requirements. Each phase delivers working software with observable user value. Phases build sequentially — later phases depend on earlier foundations.
 
-**Estimated Timeline:** 6-8 weeks (1-2 weeks per phase avg)  
-**Delivery Strategy:** Ship after Phase 6 (v1 complete)
+**Estimated Timeline:** 8-10 weeks (1-1.5 weeks per phase avg)  
+**Delivery Strategy:** Ship after Phase 8 (v1 complete)
 
 ---
 
@@ -83,20 +83,84 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 2: Core Game Loop
+## Phase 2: Board Generation & Rendering
 
-**Goal:** Playable game skeleton (board, initial placement, turn structure)  
-**Duration:** 1.5 weeks  
+**Goal:** Generate random Catan board with hexes, numbers, and ports  
+**Duration:** 1 week  
 **Dependencies:** Phase 1  
-**Plans:** 9 plans
+**Plans:** 4 plans (from original 02-XX series)
 
-### Requirements (11)
+### Requirements (3)
 
 - **BOARD-01**: Game generates random hexagonal board layout with 19 land hexes (4 wood, 4 wheat, 4 sheep, 3 brick, 3 ore, 1 desert)
 - **BOARD-02**: Game places number tokens on hexes following Catan rules (no adjacent 6/8)
 - **BOARD-03**: Game places 9 ports on coast (4 generic 3:1, 5 specific 2:1)
+
+### Success Criteria
+
+1. **Random board generates correctly** — 19 hexes, no adjacent 6/8, ports placed, visually distinct
+2. **Board renders in browser** — Hex grid displays with proper orientation, terrain types visible, numbers on hexes
+3. **Ports display correctly** — 9 ports on coast, icons match resource types, positioned correctly
+
+### Plans
+
+- [x] 02-01-PLAN.md — Game foundation: dependencies, schemas, board generation, hex utilities
+- [x] 02-03-PLAN.md — Board rendering: HexGrid with react-hexgrid, terrain tiles, settlements/roads
+- [ ] 02-08-PLAN.md — Fix hex orientation mismatch (critical blocker)
+- [ ] 02-09-PLAN.md — Add port rendering to board
+
+### Deliverables
+
+- Board generation algorithm (hex layout, number tokens, ports)
+- Hex grid rendering with react-hexgrid
+- Terrain tiles and visual styling
+- Port icons and positioning
+
+---
+
+## Phase 3: Initial Placement
+
+**Goal:** Implement snake draft for initial settlements and roads  
+**Duration:** 1 week  
+**Dependencies:** Phase 2  
+**Plans:** 3 plans (from original 02-XX series)
+
+### Requirements (2)
+
 - **BOARD-04**: User can place initial settlements and roads in snake draft order (1→2→3→4→4→3→2→1)
 - **BOARD-05**: User receives starting resources from second settlement placement
+
+### Success Criteria
+
+1. **Initial placement works end-to-end** — 8 rounds (snake draft), placements valid, second settlement gives resources
+2. **Interactive placement** — Click vertex to place settlement, click edge to place road, visual feedback shows valid locations
+3. **Phase transitions smoothly** — Setup phase completes, game transitions to turn-based play
+
+### Plans
+
+- [x] 02-02-PLAN.md — Initial placement: GameManager, snake draft, placement validation, WebSocket handlers
+- [x] 02-06-PLAN.md — Interactive placement: vertex/edge selection, click handlers, visual feedback
+- [x] 02-07-PLAN.md — End-to-end phase transitions: initial placement completion, first turn flow
+
+### Deliverables
+
+- Initial placement state machine (snake draft)
+- Interactive vertex and edge selection
+- Placement validation
+- Starting resource distribution
+- Phase transition logic
+
+---
+
+## Phase 4: Turn Structure & Resources
+
+**Goal:** Enable turn-based gameplay with dice rolling and resource distribution  
+**Duration:** 1 week  
+**Dependencies:** Phase 3  
+**Plans:** 2 plans (from original 02-XX series)
+
+### Requirements (6)
+
 - **TURN-01**: User can roll two dice on their turn with animated result
 - **TURN-02**: Game distributes resources to players with settlements/cities adjacent to rolled number
 - **TURN-03**: User progresses through turn phases: roll → main (trade/build) → end turn
@@ -106,40 +170,29 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Success Criteria
 
-1. **Random board generates correctly** — 19 hexes, no adjacent 6/8, ports placed, visually distinct
-2. **Initial placement works end-to-end** — 8 rounds (snake draft), placements valid, second settlement gives resources
-3. **Dice roll distributes resources** — Roll dice, see animation, correct players get correct resources
-4. **Turn structure flows** — Can progress from setup → first turn → second turn, correct player order
-5. **Resource tracking persists** — Resources display correctly for all players, counts accurate after multiple turns
+1. **Dice roll distributes resources** — Roll dice, see animation, correct players get correct resources
+2. **Turn structure flows** — Can progress from setup → first turn → second turn, correct player order
+3. **Resource tracking persists** — Resources display correctly for all players, counts accurate after multiple turns
 
 ### Plans
 
-- [x] 02-01-PLAN.md — Game foundation: dependencies, schemas, board generation, hex utilities
-- [x] 02-02-PLAN.md — Initial placement: GameManager, snake draft, placement validation, WebSocket handlers
-- [x] 02-03-PLAN.md — Board rendering: HexGrid with react-hexgrid, terrain tiles, settlements/roads
 - [x] 02-04-PLAN.md — Turn structure: dice rolling, resource distribution, turn phases, animations
 - [x] 02-05-PLAN.md — Resource tracking UI: resource cards, turn indicators, player list, game layout
-- [x] 02-06-PLAN.md — Interactive placement: vertex/edge selection, click handlers, visual feedback
-- [x] 02-07-PLAN.md — End-to-end phase transitions: initial placement completion, first turn flow
-- [ ] 02-08-PLAN.md — Fix hex orientation mismatch (critical blocker)
-- [ ] 02-09-PLAN.md — Add port rendering to board
 
 ### Deliverables
 
-- Board generation algorithm (hex layout, number tokens, ports)
-- Initial placement state machine (snake draft)
 - Turn structure (phases, ordering)
 - Dice rolling (server RNG, animation, resource distribution)
 - Resource tracking (state management)
-- Complete game UI with board, resources, turn indicators
+- Complete game UI with resources and turn indicators
 
 ---
 
-## Phase 3: Client Rendering
+## Phase 5: Client Rendering
 
 **Goal:** Visual board with interactive hex grid and action UI  
 **Duration:** 1 week  
-**Dependencies:** Phase 2
+**Dependencies:** Phase 4
 
 ### Requirements (4)
 
@@ -165,11 +218,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 4: Game Mechanics
+## Phase 6: Game Mechanics
 
 **Goal:** Complete building, trading, and robber systems  
 **Duration:** 2 weeks  
-**Dependencies:** Phase 3
+**Dependencies:** Phase 5
 
 ### Requirements (22)
 
@@ -221,11 +274,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 5: Advanced Features
+## Phase 7: Advanced Features
 
 **Goal:** Development cards, longest road, largest army, victory  
 **Duration:** 1.5 weeks  
-**Dependencies:** Phase 4
+**Dependencies:** Phase 6
 
 ### Requirements (19)
 
@@ -272,11 +325,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 6: Resilience & Polish
+## Phase 8: Resilience & Polish
 
 **Goal:** Handle disconnects, finalize lobby, polish UX  
 **Duration:** 1 week  
-**Dependencies:** Phase 5
+**Dependencies:** Phase 7
 
 ### Requirements (10)
 
@@ -320,18 +373,22 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 | Phase | Requirements | Percentage |
 |-------|--------------|------------|
 | Phase 1: Foundation | 6 | 8% |
-| Phase 2: Core Game Loop | 11 | 15% |
-| Phase 3: Client Rendering | 4 | 6% |
-| Phase 4: Game Mechanics | 22 | 31% |
-| Phase 5: Advanced Features | 19 | 26% |
-| Phase 6: Resilience & Polish | 10 | 14% |
+| Phase 2: Board Generation & Rendering | 3 | 4% |
+| Phase 3: Initial Placement | 2 | 3% |
+| Phase 4: Turn Structure & Resources | 6 | 8% |
+| Phase 5: Client Rendering | 4 | 6% |
+| Phase 6: Game Mechanics | 22 | 31% |
+| Phase 7: Advanced Features | 19 | 26% |
+| Phase 8: Resilience & Polish | 10 | 14% |
 
 **Phase Dependencies:**
 - Phase 2 depends on Phase 1 (needs room system)
-- Phase 3 depends on Phase 2 (needs game state to render)
-- Phase 4 depends on Phase 3 (needs placement UI)
-- Phase 5 depends on Phase 4 (needs building/resources)
-- Phase 6 depends on Phase 5 (needs complete game)
+- Phase 3 depends on Phase 2 (needs board to place on)
+- Phase 4 depends on Phase 3 (needs initial placement complete)
+- Phase 5 depends on Phase 4 (needs game state to render)
+- Phase 6 depends on Phase 5 (needs placement UI)
+- Phase 7 depends on Phase 6 (needs building/resources)
+- Phase 8 depends on Phase 7 (needs complete game)
 
 **No orphaned requirements.** All 72 v1 requirements mapped to exactly one phase.
 
@@ -341,11 +398,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 | Risk | Phase | Impact | Mitigation |
 |------|-------|--------|------------|
-| Longest road algorithm bugs | Phase 5 | High | DFS with comprehensive test cases, validate against known scenarios |
-| State desynchronization | Phase 1-6 | Critical | Server-authoritative, full-state broadcasts, state versioning |
-| WebSocket connection drops | Phase 6 | High | Heartbeat pings, auto-reconnect, state recovery |
-| Trade UI complexity | Phase 4 | Medium | Prototype early, iterate with user testing |
-| Mobile touch targets too small | Phase 6 | Medium | Design for 44px minimum, test on real devices |
+| Longest road algorithm bugs | Phase 7 | High | DFS with comprehensive test cases, validate against known scenarios |
+| State desynchronization | Phase 1-8 | Critical | Server-authoritative, full-state broadcasts, state versioning |
+| WebSocket connection drops | Phase 8 | High | Heartbeat pings, auto-reconnect, state recovery |
+| Trade UI complexity | Phase 6 | Medium | Prototype early, iterate with user testing |
+| Mobile touch targets too small | Phase 8 | Medium | Design for 44px minimum, test on real devices |
 
 ---
 
