@@ -21,7 +21,7 @@
   padding: 0;
 }
 
-body {
+body, #root {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: 'Outfit', sans-serif;

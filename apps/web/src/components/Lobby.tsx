@@ -16,6 +16,7 @@ import {
 
 import CreateRoom from './CreateRoom';
 import JoinRoom from './JoinRoom';
+import LandingForm from './LandingForm';
 import PlayerList from './PlayerList';
 import { useWebSocket } from '../hooks/useWebSocket';
 
@@ -36,6 +37,8 @@ export default function Lobby() {
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [lastAction, setLastAction] = useState<PendingAction>(null);
+  const [showJoinForm, setShowJoinForm] = useState<boolean>(false);
+  const [nickname, setNickname] = useState<string>('');
 
   const players: Player[] = useMemo(() => room?.players ?? [], [room]);
 
@@ -151,28 +154,27 @@ export default function Lobby() {
 
   const { isConnected, sendMessage } = useWebSocket({ url: WS_URL, onMessage: handleMessage });
 
-  const handleCreateRoom = useCallback(
-    (nickname: string) => {
-      setLastAction('create');
-      setCreateError(null);
-      setJoinError(null);
-      setPendingNickname(nickname);
-      setCurrentView('lobby');
-      sendMessage({ type: 'create_room', nickname });
-    },
-    [sendMessage],
-  );
+  const handleCreateRoom = useCallback(() => {
+    if (!nickname.trim()) return;
+    setLastAction('create');
+    setCreateError(null);
+    setJoinError(null);
+    setPendingNickname(nickname);
+    setCurrentView('lobby');
+    sendMessage({ type: 'create_room', nickname: nickname.trim() });
+  }, [nickname, sendMessage]);
 
   const handleJoinRoom = useCallback(
-    (roomCode: string, nickname: string) => {
+    (roomCode: string) => {
+      if (!nickname.trim()) return;
       setLastAction('join');
       setCreateError(null);
       setJoinError(null);
       setPendingNickname(nickname);
       setCurrentView('lobby');
-      sendMessage({ type: 'join_room', roomId: roomCode, nickname });
+      sendMessage({ type: 'join_room', roomId: roomCode, nickname: nickname.trim() });
     },
-    [sendMessage],
+    [nickname, sendMessage],
   );
 
   const handleColorChange = useCallback(
@@ -219,10 +221,14 @@ export default function Lobby() {
             position: 'relative',
           }}
         >
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" style={{ maxWidth: '1000px', padding: '2rem' }}>
-            <CreateRoom isConnected={isConnected} onCreate={handleCreateRoom} error={createError} />
-            <JoinRoom isConnected={isConnected} onJoin={handleJoinRoom} error={joinError} />
-          </SimpleGrid>
+          <LandingForm
+            isConnected={isConnected}
+            onCreate={handleCreateRoom}
+            onJoin={handleJoinRoom}
+            nickname={nickname}
+            onNicknameChange={setNickname}
+            error={createError || joinError}
+          />
         </div>
       )}
 
@@ -236,7 +242,8 @@ export default function Lobby() {
             minHeight: '100vh',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
+            paddingTop: '4rem',
           }}
         >
           {!isConnected && (
@@ -328,7 +335,7 @@ export default function Lobby() {
             )}
           </header>
 
-          <div style={{ marginBottom: '2.5rem' }}>
+          <div style={{ marginBottom: '2.5rem', flex: '1' }}>
             <PlayerList
               players={players}
               currentPlayerId={currentPlayerId}
@@ -347,6 +354,8 @@ export default function Lobby() {
               alignItems: 'center',
               justifyContent: 'space-between',
               animation: 'fadeInUp 0.6s 0.2s backwards',
+              position: 'sticky',
+              bottom: '2rem',
             }}
           >
             <div style={{ color: '#6B7280', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

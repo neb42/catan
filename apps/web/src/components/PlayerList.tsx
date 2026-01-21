@@ -27,6 +27,18 @@ export default function PlayerList({
     return players[index] || null;
   });
 
+  // Color mapping for backgrounds
+  const colorMap: Record<string, string> = {
+    red: '#E76F51',
+    blue: '#264653',
+    white: '#FFFFFF',
+    orange: '#F4A261',
+    green: '#2A9D8F',
+    yellow: '#E9C46A',
+    purple: '#9B59B6',
+    brown: '#8B4513',
+  };
+
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
       {slots.map((player, index) => {
@@ -82,9 +94,8 @@ export default function PlayerList({
               <Avatar
                 size={80}
                 radius="xl"
-                className={`c-${player.color}`}
                 style={{
-                  backgroundColor: `var(--color-${player.color}, ${player.color})`,
+                  backgroundColor: colorMap[player.color] || player.color,
                   color: player.color === 'white' ? '#2D3142' : 'white',
                   fontSize: '2rem',
                   fontWeight: 800,
@@ -131,10 +142,9 @@ export default function PlayerList({
                   {PLAYER_COLORS.map((color) => (
                     <ColorSwatch
                       key={color}
-                      color={`var(--color-${color}, ${color})`}
+                      color={colorMap[color] || color}
                       size={32}
                       radius="xl"
-                      className={`c-${color}`}
                       style={{
                         cursor: 'pointer',
                         border: player.color === color ? '3px solid var(--color-text)' : '2px solid white',
