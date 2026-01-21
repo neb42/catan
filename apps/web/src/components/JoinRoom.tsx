@@ -15,10 +15,12 @@ const MAX_NICKNAME_LENGTH = 30;
 export default function JoinRoom({ isConnected, onJoin, error }: JoinRoomProps) {
   const [roomId, setRoomId] = useState('');
   const [nickname, setNickname] = useState('');
-  const [localError, setLocalError] = useState<string | null>(null);
+  const [roomError, setRoomError] = useState<string | null>(null);
+  const [nicknameError, setNicknameError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
-    setLocalError(error ?? null);
+    setSubmitError(error ?? null);
   }, [error]);
 
   const normalizedRoomId = useMemo(() => roomId.toUpperCase(), [roomId]);
@@ -36,18 +38,24 @@ export default function JoinRoom({ isConnected, onJoin, error }: JoinRoomProps) 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
+    setRoomError(null);
+    setNicknameError(null);
+    setSubmitError(null);
+
     if (!isRoomIdValid) {
-      setLocalError('Room ID must be 6 characters.');
-      return;
+      setRoomError('Room ID must be 6 characters.');
     }
 
+    const trimmedNickname = nickname.trim();
     if (!isNicknameValid) {
-      setLocalError('Nickname must be between 2 and 30 characters.');
+      setNicknameError('Nickname must be between 2 and 30 characters.');
+    }
+
+    if (!isRoomIdValid || !isNicknameValid) {
       return;
     }
 
-    setLocalError(null);
-    onJoin(normalizedRoomId, nickname.trim());
+    onJoin(normalizedRoomId, trimmedNickname);
   };
 
   return (
@@ -59,8 +67,12 @@ export default function JoinRoom({ isConnected, onJoin, error }: JoinRoomProps) 
           label="Room ID"
           placeholder="ABC123"
           value={normalizedRoomId}
-          onChange={(event) => setRoomId(event.currentTarget.value)}
-          error={localError ?? undefined}
+          onChange={(event) => {
+            setRoomId(event.currentTarget.value);
+            setRoomError(null);
+            setSubmitError(null);
+          }}
+          error={roomError ?? undefined}
           maxLength={ROOM_ID_LENGTH}
           required
         />
@@ -68,17 +80,21 @@ export default function JoinRoom({ isConnected, onJoin, error }: JoinRoomProps) 
           label="Nickname"
           placeholder="Your nickname"
           value={nickname}
-          onChange={(event) => setNickname(event.currentTarget.value)}
-          error={localError ?? undefined}
+          onChange={(event) => {
+            setNickname(event.currentTarget.value);
+            setNicknameError(null);
+            setSubmitError(null);
+          }}
+          error={nicknameError ?? undefined}
           maxLength={MAX_NICKNAME_LENGTH}
           required
         />
         <Button type="submit" disabled={!isConnected || !isRoomIdValid || !isNicknameValid}>
           {isConnected ? 'Join room' : 'Waiting for connection...'}
         </Button>
-        {localError && (
+        {submitError && (
           <Text c="red" size="sm">
-            {localError}
+            {submitError}
           </Text>
         )}
       </Stack>
