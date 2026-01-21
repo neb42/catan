@@ -38,27 +38,112 @@ export default function CreateRoom({ isConnected, onCreate, error }: CreateRoomP
   };
 
   return (
-    <div style={{ animation: 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
-      <Card withBorder radius="md" padding="lg" shadow="lg" component="form" onSubmit={handleSubmit}>
-        <Stack gap="sm">
-          <Title order={2} fw={800} ff="Fraunces, serif">Create Room</Title>
-          <Text c="dimmed" fz="lg">Enter a nickname to start a new room.</Text>
+    <Card
+      padding="3rem"
+      radius="lg"
+      shadow="xl"
+      component="form"
+      onSubmit={handleSubmit}
+      style={{
+        maxWidth: '480px',
+        width: '100%',
+        transform: 'translateY(20px)',
+        opacity: 0,
+        animation: 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        boxShadow: '0 20px 40px -10px var(--color-shadow), 0 0 0 1px rgba(0,0,0,0.02)',
+        textAlign: 'center',
+      }}
+    >
+      <Stack gap="xl">
+        <div style={{ marginBottom: '0.5rem' }}>
+          <Title
+            order={1}
+            style={{
+              fontFamily: 'Fraunces, serif',
+              fontWeight: 800,
+              fontSize: '3rem',
+              lineHeight: 1.1,
+              marginBottom: '0.5rem',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Settlers
+          </Title>
+          <Text
+            style={{
+              color: '#8D99AE',
+              fontSize: '1.1rem',
+              fontWeight: 400,
+            }}
+          >
+            Explore, Build, Trade.
+          </Text>
+        </div>
+
+        <div style={{ textAlign: 'left' }}>
+          <Text
+            size="sm"
+            fw={600}
+            style={{
+              marginBottom: '0.5rem',
+              color: '#8D99AE',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            Explorer Name
+          </Text>
           <TextInput
-            label="Nickname"
-            placeholder="Your nickname"
+            placeholder="e.g. Captain Brick"
             value={nickname}
             onChange={(event) => setNickname(event.currentTarget.value)}
             error={localError ?? undefined}
             maxLength={MAX_NICKNAME_LENGTH}
             required
-            size="lg"
-            styles={{ input: { fontSize: '1.2rem', padding: '1rem 1.25rem' } }}
+            autoFocus
+            styles={{
+              input: {
+                padding: '1rem 1.25rem',
+                fontSize: '1.2rem',
+                fontWeight: 600,
+                border: '2px solid #EEE',
+                borderRadius: 'var(--radius-md)',
+                background: '#FAFAFA',
+                transition: 'all 0.2s ease',
+              },
+            }}
           />
-          <Button type="submit" disabled={!isConnected || !isNicknameValid} size="lg" fw={800}>
-            {isConnected ? 'Create room' : 'Waiting for connection...'}
-          </Button>
-        </Stack>
-      </Card>
-    </div>
+        </div>
+
+        <Button
+          type="submit"
+          disabled={!isConnected || !isNicknameValid}
+          style={{
+            padding: '1rem',
+            fontWeight: 800,
+            fontSize: '1.1rem',
+            borderRadius: 'var(--radius-md)',
+            backgroundColor: 'var(--color-primary)',
+            color: 'white',
+            boxShadow: '0 4px 6px rgba(231, 111, 81, 0.3)',
+            transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+          onMouseEnter={(e) => {
+            if (!e.currentTarget.disabled) {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 8px 12px rgba(231, 111, 81, 0.4)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 6px rgba(231, 111, 81, 0.3)';
+          }}
+        >
+          {isConnected ? 'Start New Expedition' : 'Waiting for connection...'}
+        </Button>
+      </Stack>
+    </Card>
   );
 }
