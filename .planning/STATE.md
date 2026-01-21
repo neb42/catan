@@ -206,6 +206,14 @@ None currently.
 
 ---
 
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 1.1 inserted after Phase 1: Small improvements from phase 1. Update the UI to match designs found in "./.designs/01-foundation". Add 4 more colours for selection. (URGENT)
+
+---
+
 ## Session Continuity
 
 Last session: 2026-01-21  
