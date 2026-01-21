@@ -141,6 +141,7 @@ export default function Lobby() {
 
         case 'game_state': {
           useGameStore.getState().updateGameState(message.gameState);
+          useGameStore.getState().setLastError(null);
           break;
         }
 
@@ -151,6 +152,7 @@ export default function Lobby() {
             setJoinError(message.message);
           } else {
             setGeneralError(message.message);
+            useGameStore.getState().setLastError(message.message);
           }
           break;
         }
