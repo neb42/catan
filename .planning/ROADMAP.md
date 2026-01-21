@@ -88,7 +88,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 **Goal:** Playable game skeleton (board, initial placement, turn structure)  
 **Duration:** 1.5 weeks  
 **Dependencies:** Phase 1  
-**Plans:** 5 plans
+**Plans:** 9 plans
 
 ### Requirements (11)
 
@@ -114,11 +114,15 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-- [ ] 02-01-PLAN.md — Game foundation: dependencies, schemas, board generation, hex utilities
-- [ ] 02-02-PLAN.md — Initial placement: GameManager, snake draft, placement validation, WebSocket handlers
-- [ ] 02-03-PLAN.md — Board rendering: HexGrid with react-hexgrid, terrain tiles, settlements/roads
-- [ ] 02-04-PLAN.md — Turn structure: dice rolling, resource distribution, turn phases, animations
-- [ ] 02-05-PLAN.md — Resource tracking UI: resource cards, turn indicators, player list, game layout
+- [x] 02-01-PLAN.md — Game foundation: dependencies, schemas, board generation, hex utilities
+- [x] 02-02-PLAN.md — Initial placement: GameManager, snake draft, placement validation, WebSocket handlers
+- [x] 02-03-PLAN.md — Board rendering: HexGrid with react-hexgrid, terrain tiles, settlements/roads
+- [x] 02-04-PLAN.md — Turn structure: dice rolling, resource distribution, turn phases, animations
+- [x] 02-05-PLAN.md — Resource tracking UI: resource cards, turn indicators, player list, game layout
+- [x] 02-06-PLAN.md — Interactive placement: vertex/edge selection, click handlers, visual feedback
+- [x] 02-07-PLAN.md — End-to-end phase transitions: initial placement completion, first turn flow
+- [ ] 02-08-PLAN.md — Fix port rendering (UAT Issue #1)
+- [ ] 02-09-PLAN.md — Fix hex orientation mismatch (UAT Issue #2)
 
 ### Deliverables
 
