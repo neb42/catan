@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { useGameStore } from '../../stores/gameStore';
 import { HexTile } from './HexTile';
+import { Port } from './Port';
 import { Road } from './Road';
 import { Settlement } from './Settlement';
 
@@ -153,6 +154,14 @@ export function HexGrid() {
                 boardHexKeys={boardHexKeys}
               />
             </Hexagon>
+          ))}
+
+          {gameState.board.ports.map((port, index) => (
+            <Port
+              key={`port-${index}`}
+              position={port.position}
+              type={port.type}
+            />
           ))}
 
           {gameState.players.flatMap((player) =>
