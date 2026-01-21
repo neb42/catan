@@ -35,13 +35,33 @@
 
 ---
 
-### Phase 2: Core Game Loop (0/11)
+### Phase 2: Board Generation & Rendering (0/3)
 
 - [ ] BOARD-01: Game generates random hexagonal board layout
 - [ ] BOARD-02: Game places number tokens following Catan rules
 - [ ] BOARD-03: Game places 9 ports on coast
+
+**Success Criteria:**
+- [ ] Random board generates correctly
+- [ ] Board renders in browser
+- [ ] Ports display correctly
+
+---
+
+### Phase 3: Initial Placement (0/2)
+
 - [ ] BOARD-04: User can place initial settlements and roads (snake draft)
 - [ ] BOARD-05: User receives starting resources from second settlement
+
+**Success Criteria:**
+- [ ] Initial placement works end-to-end
+- [ ] Interactive placement with visual feedback
+- [ ] Phase transitions smoothly
+
+---
+
+### Phase 4: Turn Structure & Resources (0/6)
+
 - [ ] TURN-01: User can roll two dice with animated result
 - [ ] TURN-02: Game distributes resources on roll
 - [ ] TURN-03: User progresses through turn phases
@@ -50,15 +70,13 @@
 - [ ] RES-02: Game tracks resource counts
 
 **Success Criteria:**
-- [ ] Random board generates correctly
-- [ ] Initial placement works end-to-end
 - [ ] Dice roll distributes resources
 - [ ] Turn structure flows
 - [ ] Resource tracking persists
 
 ---
 
-### Phase 3: Client Rendering (0/4)
+### Phase 5: Client Rendering (0/4)
 
 - [ ] TURN-05: User sees clear turn indicator
 - [ ] BUILD-07: Game highlights valid placement locations
@@ -73,7 +91,7 @@
 
 ---
 
-### Phase 4: Game Mechanics (0/22)
+### Phase 6: Game Mechanics (0/22)
 
 **Building:**
 - [ ] BUILD-01: User can build roads
@@ -113,7 +131,7 @@
 
 ---
 
-### Phase 5: Advanced Features (0/19)
+### Phase 7: Advanced Features (0/19)
 
 **Development Cards:**
 - [ ] DEV-01: User can buy dev cards
@@ -147,7 +165,7 @@
 
 ---
 
-### Phase 6: Resilience & Polish (0/10)
+### Phase 8: Resilience & Polish (0/10)
 
 **Resilience:**
 - [ ] SYNC-02: Game pauses on disconnect
@@ -175,15 +193,17 @@
 ## Overall Progress
 
 **Requirements:** 5/72 (7%)  
-**Phases:** 0/6 (0%)
+**Phases:** 0/8 (0%)
 
 ```
 Phase 1: Foundation         [████████░░] 5/6
-Phase 2: Core Game Loop     [░░░░░░░░░░] 0/11
-Phase 3: Client Rendering   [░░░░░░░░░░] 0/4
-Phase 4: Game Mechanics     [░░░░░░░░░░] 0/22
-Phase 5: Advanced Features  [░░░░░░░░░░] 0/19
-Phase 6: Resilience & Polish[░░░░░░░░░░] 0/10
+Phase 2: Board Gen & Render [░░░░░░░░░░] 0/3
+Phase 3: Initial Placement  [░░░░░░░░░░] 0/2
+Phase 4: Turn & Resources   [░░░░░░░░░░] 0/6
+Phase 5: Client Rendering   [░░░░░░░░░░] 0/4
+Phase 6: Game Mechanics     [░░░░░░░░░░] 0/22
+Phase 7: Advanced Features  [░░░░░░░░░░] 0/19
+Phase 8: Resilience & Polish[░░░░░░░░░░] 0/10
 ```
 
 ---
