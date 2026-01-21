@@ -1,14 +1,12 @@
 import { Player, PLAYER_COLORS } from '@catan/shared';
 import {
+  Avatar,
   Badge,
-  Button,
   Card,
   ColorSwatch,
   Group,
-  Select,
   Stack,
   Text,
-  Title,
 } from '@mantine/core';
 
 type PlayerListProps = {
@@ -24,82 +22,140 @@ export default function PlayerList({
   onColorChange,
   onReadyToggle,
 }: PlayerListProps) {
-  const colorOptions = PLAYER_COLORS.map((color) => ({
-    value: color,
-    label: color.charAt(0).toUpperCase() + color.slice(1),
-  }));
-
-  const currentPlayer = players.find((player) => player.id === currentPlayerId) ?? null;
+  // Create 4 slots (max players)
+  const slots = Array.from({ length: 4 }, (_, index) => {
+    return players[index] || null;
+  });
 
   return (
-    <Card withBorder radius="md" padding="lg" shadow="sm">
-      <Stack gap="sm">
-        <Group justify="space-between" align="center">
-          <Title order={4}>Players ({players.length}/4)</Title>
-          {currentPlayer && (
-            <Button
-              size="sm"
-              variant={currentPlayer.ready ? 'light' : 'filled'}
-              color={currentPlayer.ready ? 'teal' : 'blue'}
-              onClick={onReadyToggle}
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      {slots.map((player, index) => {
+        if (!player) {
+          // Empty slot
+          return (
+            <Card
+              key={`empty-${index}`}
+              padding="xl"
+              radius="lg"
+              shadow="sm"
+              style={{
+                minHeight: '220px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                background: 'rgba(255, 255, 255, 0.5)',
+                border: '2px dashed #D1D5DB',
+                boxShadow: 'none',
+              }}
             >
-              {currentPlayer.ready ? 'Unready' : 'Ready up'}
-            </Button>
-          )}
-        </Group>
+              <Text c="dimmed" fw={500}>
+                Waiting for player...
+              </Text>
+            </Card>
+          );
+        }
 
-        {players.length === 0 && <Text c="dimmed">No players yet.</Text>}
+        const isSelf = player.id === currentPlayerId;
+        const initials = player.nickname.slice(0, 2).toUpperCase();
 
-        <Stack gap="sm">
-          {players.map((player) => {
-            const isSelf = player.id === currentPlayerId;
+        return (
+          <Card
+            key={player.id}
+            padding="xl"
+            radius="lg"
+            shadow="md"
+            style={{
+              minHeight: '220px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              border: '2px solid #EEE',
+              transition: 'transform 0.3s',
+            }}
+          >
+            <Stack gap="xs" align="center">
+              {/* Avatar with initials */}
+              <Avatar
+                size={80}
+                radius="xl"
+                className={`c-${player.color}`}
+                style={{
+                  backgroundColor: `var(--color-${player.color}, ${player.color})`,
+                  color: player.color === 'white' ? '#2D3142' : 'white',
+                  fontSize: '2rem',
+                  fontWeight: 800,
+                  fontFamily: 'Fraunces, serif',
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                }}
+              >
+                {initials}
+              </Avatar>
 
-            return (
-              <Card key={player.id} withBorder radius="md" padding="md">
-                <Stack gap="xs">
-                  <Group justify="space-between" align="center">
-                    <Group gap="xs" align="center">
-                      <ColorSwatch color={player.color} radius="xl" size={18} withShadow={false} />
-                      <Text fw={600}>{player.nickname}</Text>
-                      {isSelf && (
-                        <Badge color="blue" variant="light">
-                          You
-                        </Badge>
-                      )}
-                    </Group>
-                    <Badge color={player.ready ? 'teal' : 'gray'} variant={player.ready ? 'filled' : 'outline'}>
-                      {player.ready ? 'Ready' : 'Not ready'}
-                    </Badge>
-                  </Group>
+              {/* Player name */}
+              <Text
+                size="lg"
+                fw={700}
+                style={{ fontFamily: 'Fraunces, serif' }}
+              >
+                {player.nickname}
+              </Text>
 
-                  {isSelf ? (
-                    <Group gap="xs" align="center">
-                      <Select
-                        label="Color"
-                        data={colorOptions}
-                        value={player.color}
-                        allowDeselect={false}
-                        onChange={(value) => {
-                          if (!value) return;
-                          onColorChange(value as Player['color']);
-                        }}
-                        comboboxProps={{ withinPortal: true }}
-                        checkIconPosition="right"
-                        w={200}
-                      />
-                    </Group>
-                  ) : (
-                    <Group gap="xs" align="center">
-                      <Text c="dimmed">Color:</Text>
-                      <ColorSwatch color={player.color} radius="xl" size={18} withShadow={false} />
-                    </Group>
-                  )}
-                </Stack>
-              </Card>
-            );
-          })}
-        </Stack>
-      </Stack>
-    </Card>
+              {/* Ready status */}
+              <Badge
+                size="md"
+                variant={player.ready ? 'filled' : 'outline'}
+                color={player.ready ? 'teal' : 'gray'}
+                style={{
+                  cursor: isSelf ? 'pointer' : 'default',
+                }}
+                onClick={isSelf ? onReadyToggle : undefined}
+              >
+                {player.ready ? 'Ready' : 'Not ready'}
+              </Badge>
+
+              {/* Color picker for current player */}
+              {isSelf && (
+                <Group
+                  gap="xs"
+                  style={{
+                    marginTop: '0.5rem',
+                    background: '#F3F4F6',
+                    padding: '0.4rem',
+                    borderRadius: '99px',
+                  }}
+                >
+                  {PLAYER_COLORS.map((color) => (
+                    <ColorSwatch
+                      key={color}
+                      color={`var(--color-${color}, ${color})`}
+                      size={32}
+                      radius="xl"
+                      className={`c-${color}`}
+                      style={{
+                        cursor: 'pointer',
+                        border: player.color === color ? '3px solid var(--color-text)' : '2px solid white',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                        transition: 'transform 0.2s',
+                      }}
+                      onClick={() => onColorChange(color)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    />
+                  ))}
+                </Group>
+              )}
+            </Stack>
+          </Card>
+        );
+      })}
+    </div>
   );
 }

@@ -113,36 +113,47 @@ h1, h2, h3 {
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* Player Color Classes */
+/* Player Color Variables & Classes */
+:root {
+  --color-red: #E76F51;
+  --color-blue: #264653;
+  --color-white: #FFFFFF;
+  --color-orange: #F4A261;
+  --color-green: #2A9D8F;
+  --color-yellow: #E9C46A;
+  --color-purple: #9B59B6;
+  --color-brown: #8B4513;
+}
+
 .c-red {
-  color: #E76F51;
+  color: var(--color-red);
 }
 
 .c-blue {
-  color: #264653;
+  color: var(--color-blue);
 }
 
 .c-white {
-  color: #FFFFFF;
+  color: var(--color-white);
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
 .c-orange {
-  color: #F4A261;
+  color: var(--color-orange);
 }
 
 .c-green {
-  color: #2A9D8F;
+  color: var(--color-green);
 }
 
 .c-yellow {
-  color: #E9C46A;
+  color: var(--color-yellow);
 }
 
 .c-purple {
-  color: #9B59B6;
+  color: var(--color-purple);
 }
 
 .c-brown {
-  color: #8B4513;
+  color: var(--color-brown);
 }
