@@ -1,6 +1,7 @@
 import { GameState, Player, Terrain } from '@catan/shared';
 
 import { createInitialGameState } from '../game/GameState';
+import { advanceTurn, rollDice } from '@api/game/TurnManager';
 import {
   validateRoadPlacement,
   validateSettlementPlacement,
@@ -108,6 +109,25 @@ export class GameManager {
       this.advanceInitialPlacement(gameState);
     }
 
+    return gameState;
+  }
+
+  rollDice(roomId: string, playerId: string): GameState {
+    const gameState = this.requireGame(roomId);
+    rollDice(gameState, playerId);
+    return gameState;
+  }
+
+  endTurn(roomId: string, playerId: string): GameState {
+    const gameState = this.requireGame(roomId);
+    if (gameState.currentPlayer !== playerId) {
+      throw new Error('Not your turn');
+    }
+    if (gameState.turnPhase !== 'main') {
+      throw new Error('Wrong phase');
+    }
+
+    advanceTurn(gameState);
     return gameState;
   }
 
