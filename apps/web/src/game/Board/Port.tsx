@@ -1,6 +1,6 @@
 import type { Port as SharedPort } from '@catan/shared';
 
-import { axialToPixel, getHexCornerPositions } from './geometry';
+import { axialToPixel, getEdgeCornerIndices, getHexCornerPositions } from './geometry';
 
 type PortProps = {
   position: SharedPort['position'];
@@ -49,9 +49,9 @@ export function Port({ position, type }: PortProps) {
   const { coord, edgeIndex } = parsed;
   const { ratio, resource } = parsePortType(type);
   const corners = getHexCornerPositions(coord);
-  const normalized = ((edgeIndex % 6) + 6) % 6;
-  const start = corners[normalized];
-  const end = corners[(normalized + 1) % 6];
+  const [startIndex, endIndex] = getEdgeCornerIndices(edgeIndex);
+  const start = corners[startIndex];
+  const end = corners[endIndex];
   const center = axialToPixel(coord);
   const edgeCenter = {
     x: (start.x + end.x) / 2,

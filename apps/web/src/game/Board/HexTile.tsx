@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import type { HexTile as HexTileType } from '@catan/shared';
 
-import { getHexCornerPositions } from './geometry';
+import { getEdgeCornerIndices, getHexCornerPositions } from './geometry';
 
 import desert from '../../assets/tiles/desert.svg';
 import fields from '../../assets/tiles/fields.svg';
@@ -102,7 +102,7 @@ export function HexTile({
 
   const edgeSegments = useMemo(() => {
     return cornerPositions.map((corner, index) => {
-      const nextIndex = (index + 1) % cornerPositions.length;
+      const [startIndex, endIndex] = getEdgeCornerIndices(index);
       const direction = AXIAL_DIRECTIONS[index];
       const neighbor = {
         q: hex.coord.q + direction.q,
@@ -113,8 +113,8 @@ export function HexTile({
       const isValid = boardHexKeys ? boardHexKeys.has(neighborKey) : true;
       return {
         edgeId,
-        start: corner,
-        end: cornerPositions[nextIndex],
+        start: cornerPositions[startIndex],
+        end: cornerPositions[endIndex],
         isValid,
       };
     });

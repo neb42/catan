@@ -33,6 +33,20 @@ export const getVertexPosition = (
   return corners[normalized];
 };
 
+const DIRECTION_TO_EDGE_CORNERS: Array<[number, number]> = [
+  [0, 1],
+  [5, 0],
+  [4, 5],
+  [3, 4],
+  [2, 3],
+  [1, 2],
+];
+
+export const getEdgeCornerIndices = (directionIndex: number): [number, number] => {
+  const normalized = ((directionIndex % 6) + 6) % 6;
+  return DIRECTION_TO_EDGE_CORNERS[normalized];
+};
+
 export const parseVertexId = (vertexId: string): { coord: AxialCoord; vertexIndex: number } | null => {
   const [qStr, rStr, vStr] = vertexId.split(':');
   if (!qStr || !rStr || !vStr) return null;
