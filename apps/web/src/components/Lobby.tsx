@@ -258,11 +258,6 @@ export default function Lobby() {
             </Alert>
           )}
 
-          {countdown !== null && (
-            <Alert color="teal" title="Game starting" variant="filled" style={{ marginBottom: '1rem' }}>
-              Game starting in {countdown} second{countdown === 1 ? '' : 's'}...
-            </Alert>
-          )}
 
           <header style={{ textAlign: 'center', marginBottom: '2rem', animation: 'fadeInDown 0.6s ease' }}>
             <Title
