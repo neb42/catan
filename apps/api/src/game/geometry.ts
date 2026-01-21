@@ -34,6 +34,20 @@ export const getVertexPosition = (
   return corners[normalized];
 };
 
+const DIRECTION_TO_EDGE_CORNERS: Array<[number, number]> = [
+  [0, 1],
+  [5, 0],
+  [4, 5],
+  [3, 4],
+  [2, 3],
+  [1, 2],
+];
+
+export const getEdgeCornerIndices = (directionIndex: number): [number, number] => {
+  const normalized = ((directionIndex % 6) + 6) % 6;
+  return DIRECTION_TO_EDGE_CORNERS[normalized];
+};
+
 export const positionKey = (position: VertexPosition): string =>
   `${position.x.toFixed(4)},${position.y.toFixed(4)}`;
 
@@ -51,13 +65,27 @@ export const parseVertexId = (
 
 export const parseEdgeId = (
   edgeId: string
-): { a: AxialCoord; b: AxialCoord } | null => {
+):
+  | { kind: 'neighbor'; a: AxialCoord; b: AxialCoord }
+  | { kind: 'direction'; coord: AxialCoord; edgeIndex: number }
+  | null => {
+  if (edgeId.includes(',')) {
+    const [coordPart, edgePart] = edgeId.split(':');
+    if (!coordPart || edgePart === undefined) return null;
+    const [qStr, rStr] = coordPart.split(',');
+    const q = Number(qStr);
+    const r = Number(rStr);
+    const edgeIndex = Number(edgePart);
+    if ([q, r, edgeIndex].some((value) => Number.isNaN(value))) return null;
+    return { kind: 'direction', coord: { q, r }, edgeIndex };
+  }
+
   const [left, right] = edgeId.split('-');
   if (!left || !right) return null;
   const [q1, r1] = left.split(':').map(Number);
   const [q2, r2] = right.split(':').map(Number);
   if ([q1, r1, q2, r2].some((value) => Number.isNaN(value))) return null;
-  return { a: { q: q1, r: r1 }, b: { q: q2, r: r2 } };
+  return { kind: 'neighbor', a: { q: q1, r: r1 }, b: { q: q2, r: r2 } };
 };
 
 export const buildVertexIndex = (hexes: AxialCoord[], size = HEX_SIZE) => {
@@ -95,11 +123,18 @@ export const getSharedVertexKeysForEdge = (
 ): string[] | null => {
   const parsed = parseEdgeId(edgeId);
   if (!parsed) return null;
-  const aCorners = getHexCornerPositions(parsed.a, size).map(positionKey);
-  const bCorners = getHexCornerPositions(parsed.b, size).map(positionKey);
-  const shared = aCorners.filter((key) => bCorners.includes(key));
-  if (shared.length !== 2) {
-    return null;
+  let shared: string[];
+  if (parsed.kind === 'direction') {
+    const corners = getHexCornerPositions(parsed.coord, size);
+    const [startIndex, endIndex] = getEdgeCornerIndices(parsed.edgeIndex);
+    shared = [positionKey(corners[startIndex]), positionKey(corners[endIndex])];
+  } else {
+    const aCorners = getHexCornerPositions(parsed.a, size).map(positionKey);
+    const bCorners = getHexCornerPositions(parsed.b, size).map(positionKey);
+    shared = aCorners.filter((key) => bCorners.includes(key));
+    if (shared.length !== 2) {
+      return null;
+    }
   }
   const existingKeys = new Set(buildVertexIndex(hexes, size).keyToPosition.keys());
   if (!shared.every((key) => existingKeys.has(key))) {

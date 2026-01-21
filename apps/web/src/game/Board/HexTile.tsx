@@ -30,6 +30,7 @@ const AXIAL_DIRECTIONS = [
 ];
 
 const normalizeEdgeId = (edgeId: string): string => {
+  if (edgeId.includes(',')) return edgeId;
   const [a, b] = edgeId.split('-');
   if (!a || !b) return edgeId;
   const [first, second] = [a, b].sort();
@@ -110,7 +111,7 @@ export function HexTile({
       };
       const neighborKey = `${neighbor.q},${neighbor.r}`;
       const hexKey = `${hex.coord.q},${hex.coord.r}`;
-      const edgeId = `${hex.coord.q}:${hex.coord.r}-${neighbor.q}:${neighbor.r}`;
+      const edgeId = `${hex.coord.q},${hex.coord.r}:${index}`;
       const isValid = boardHexKeys
         ? !boardHexKeys.has(neighborKey) || hexKey < neighborKey
         : true;

@@ -57,15 +57,28 @@ export const parseVertexId = (vertexId: string): { coord: AxialCoord; vertexInde
   return { coord: { q, r }, vertexIndex: v };
 };
 
-export const parseEdgeId = (
-  edgeId: string
-): { a: AxialCoord; b: AxialCoord } | null => {
+type ParsedEdgeId =
+  | { kind: 'neighbor'; a: AxialCoord; b: AxialCoord }
+  | { kind: 'direction'; coord: AxialCoord; edgeIndex: number };
+
+export const parseEdgeId = (edgeId: string): ParsedEdgeId | null => {
+  if (edgeId.includes(',')) {
+    const [coordPart, edgePart] = edgeId.split(':');
+    if (!coordPart || edgePart === undefined) return null;
+    const [qStr, rStr] = coordPart.split(',');
+    const q = Number(qStr);
+    const r = Number(rStr);
+    const edgeIndex = Number(edgePart);
+    if ([q, r, edgeIndex].some((value) => Number.isNaN(value))) return null;
+    return { kind: 'direction', coord: { q, r }, edgeIndex };
+  }
+
   const [left, right] = edgeId.split('-');
   if (!left || !right) return null;
   const [q1, r1] = left.split(':').map(Number);
   const [q2, r2] = right.split(':').map(Number);
   if ([q1, r1, q2, r2].some((value) => Number.isNaN(value))) return null;
-  return { a: { q: q1, r: r1 }, b: { q: q2, r: r2 } };
+  return { kind: 'neighbor', a: { q: q1, r: r1 }, b: { q: q2, r: r2 } };
 };
 
 export const getEdgeVertexPositions = (
@@ -74,6 +87,12 @@ export const getEdgeVertexPositions = (
 ): [Point, Point] | null => {
   const parsed = parseEdgeId(edgeId);
   if (!parsed) return null;
+  if (parsed.kind === 'direction') {
+    const corners = getHexCornerPositions(parsed.coord, size);
+    const [startIndex, endIndex] = getEdgeCornerIndices(parsed.edgeIndex);
+    return [corners[startIndex], corners[endIndex]];
+  }
+
   const aCorners = getHexCornerPositions(parsed.a, size);
   const bCorners = getHexCornerPositions(parsed.b, size);
 

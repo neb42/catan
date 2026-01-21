@@ -9,6 +9,7 @@ import { Road } from './Road';
 import { Settlement } from './Settlement';
 
 const normalizeEdgeId = (edgeId: string): string => {
+  if (edgeId.includes(',')) return edgeId;
   const [a, b] = edgeId.split('-');
   if (!a || !b) return edgeId;
   const [first, second] = [a, b].sort();
