@@ -122,6 +122,7 @@ export default function PlayerList({
                 color={player.ready ? 'teal' : 'gray'}
                 style={{
                   cursor: isSelf ? 'pointer' : 'default',
+                  pointerEvents: isSelf ? 'auto' : 'none',
                 }}
                 onClick={isSelf ? onReadyToggle : undefined}
               >

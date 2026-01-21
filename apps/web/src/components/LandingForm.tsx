@@ -163,15 +163,14 @@ export default function LandingForm({
             <Button
               type="submit"
               disabled={!isConnected || !isNicknameValid || !isRoomIdValid}
-              style={{
-                padding: '1rem',
-                fontWeight: 800,
-                fontSize: '1.1rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--color-primary)',
-                color: 'white',
-                boxShadow: '0 4px 6px rgba(231, 111, 81, 0.3)',
-                transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+              size="lg"
+              fw={800}
+              styles={{
+                root: {
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'white',
+                  fontSize: '1.1rem',
+                },
               }}
             >
               {isConnected ? 'Go' : 'Waiting for connection...'}
@@ -200,15 +199,14 @@ export default function LandingForm({
             <Button
               type="submit"
               disabled={!isConnected || !isNicknameValid}
-              style={{
-                padding: '1rem',
-                fontWeight: 800,
-                fontSize: '1.1rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--color-primary)',
-                color: 'white',
-                boxShadow: '0 4px 6px rgba(231, 111, 81, 0.3)',
-                transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+              size="lg"
+              fw={800}
+              styles={{
+                root: {
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'white',
+                  fontSize: '1.1rem',
+                },
               }}
             >
               {isConnected ? 'Start New Expedition' : 'Waiting for connection...'}
@@ -218,15 +216,14 @@ export default function LandingForm({
               type="button"
               onClick={handleShowJoin}
               disabled={!isConnected || !isNicknameValid}
-              style={{
-                padding: '1rem',
-                fontWeight: 800,
-                fontSize: '1.1rem',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'transparent',
-                color: 'var(--color-text)',
-                border: '2px solid #EEE',
-                transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+              size="lg"
+              fw={800}
+              variant="outline"
+              styles={{
+                root: {
+                  color: 'var(--color-text)',
+                  fontSize: '1.1rem',
+                },
               }}
             >
               Join Existing Map

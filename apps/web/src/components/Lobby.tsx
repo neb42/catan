@@ -378,42 +378,32 @@ export default function Lobby() {
             {currentPlayerId && (
               <Button
                 onClick={handleReadyToggle}
-                style={{
-                  background: players.find((p) => p.id === currentPlayerId)?.ready
-                    ? 'var(--color-secondary)'
-                    : '#F3F4F6',
-                  color: players.find((p) => p.id === currentPlayerId)?.ready ? 'white' : '#6B7280',
-                  border: '2px solid transparent',
-                  padding: '1rem 2rem',
-                  fontWeight: 800,
-                  fontSize: '1.1rem',
-                  borderRadius: 'var(--radius-md)',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                  boxShadow: players.find((p) => p.id === currentPlayerId)?.ready
-                    ? '0 8px 20px -6px var(--color-secondary)'
-                    : 'none',
+                size="lg"
+                fw={800}
+                styles={{
+                  root: {
+                    background: players.find((p) => p.id === currentPlayerId)?.ready
+                      ? 'var(--color-secondary)'
+                      : '#F3F4F6',
+                    color: players.find((p) => p.id === currentPlayerId)?.ready ? 'white' : '#6B7280',
+                    fontSize: '1.1rem',
+                  },
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+                leftSection={
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                }
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{ marginRight: '8px', display: 'inline' }}
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
                 {players.find((p) => p.id === currentPlayerId)?.ready ? "Ready!" : "I'm Ready"}
               </Button>
             )}
