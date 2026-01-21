@@ -59,45 +59,51 @@ export default function JoinRoom({ isConnected, onJoin, error }: JoinRoomProps) 
   };
 
   return (
-    <Card withBorder radius="md" padding="lg" shadow="sm" component="form" onSubmit={handleSubmit}>
-      <Stack gap="sm">
-        <Title order={4}>Join Room</Title>
-        <Text c="dimmed">Enter the room ID and your nickname to join.</Text>
-        <TextInput
-          label="Room ID"
-          placeholder="ABC123"
-          value={normalizedRoomId}
-          onChange={(event) => {
-            setRoomId(event.currentTarget.value);
-            setRoomError(null);
-            setSubmitError(null);
-          }}
-          error={roomError ?? undefined}
-          maxLength={ROOM_ID_LENGTH}
-          required
-        />
-        <TextInput
-          label="Nickname"
-          placeholder="Your nickname"
-          value={nickname}
-          onChange={(event) => {
-            setNickname(event.currentTarget.value);
-            setNicknameError(null);
-            setSubmitError(null);
-          }}
-          error={nicknameError ?? undefined}
-          maxLength={MAX_NICKNAME_LENGTH}
-          required
-        />
-        <Button type="submit" disabled={!isConnected || !isRoomIdValid || !isNicknameValid}>
-          {isConnected ? 'Join room' : 'Waiting for connection...'}
-        </Button>
-        {submitError && (
-          <Text c="red" size="sm">
-            {submitError}
-          </Text>
-        )}
-      </Stack>
-    </Card>
+    <div style={{ animation: 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
+      <Card withBorder radius="md" padding="lg" shadow="lg" component="form" onSubmit={handleSubmit}>
+        <Stack gap="sm">
+          <Title order={2} fw={800} ff="Fraunces, serif">Join Room</Title>
+          <Text c="dimmed" fz="lg">Enter the room ID and your nickname to join.</Text>
+          <TextInput
+            label="Room ID"
+            placeholder="ABC123"
+            value={normalizedRoomId}
+            onChange={(event) => {
+              setRoomId(event.currentTarget.value);
+              setRoomError(null);
+              setSubmitError(null);
+            }}
+            error={roomError ?? undefined}
+            maxLength={ROOM_ID_LENGTH}
+            required
+            size="lg"
+            styles={{ input: { fontSize: '1.2rem', padding: '1rem 1.25rem' } }}
+          />
+          <TextInput
+            label="Nickname"
+            placeholder="Your nickname"
+            value={nickname}
+            onChange={(event) => {
+              setNickname(event.currentTarget.value);
+              setNicknameError(null);
+              setSubmitError(null);
+            }}
+            error={nicknameError ?? undefined}
+            maxLength={MAX_NICKNAME_LENGTH}
+            required
+            size="lg"
+            styles={{ input: { fontSize: '1.2rem', padding: '1rem 1.25rem' } }}
+          />
+          <Button type="submit" disabled={!isConnected || !isRoomIdValid || !isNicknameValid} size="lg" fw={800}>
+            {isConnected ? 'Join room' : 'Waiting for connection...'}
+          </Button>
+          {submitError && (
+            <Text c="red" size="sm">
+              {submitError}
+            </Text>
+          )}
+        </Stack>
+      </Card>
+    </div>
   );
 }

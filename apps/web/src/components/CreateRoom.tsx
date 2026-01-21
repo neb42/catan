@@ -38,23 +38,27 @@ export default function CreateRoom({ isConnected, onCreate, error }: CreateRoomP
   };
 
   return (
-    <Card withBorder radius="md" padding="lg" shadow="sm" component="form" onSubmit={handleSubmit}>
-      <Stack gap="sm">
-        <Title order={4}>Create Room</Title>
-        <Text c="dimmed">Enter a nickname to start a new room.</Text>
-        <TextInput
-          label="Nickname"
-          placeholder="Your nickname"
-          value={nickname}
-          onChange={(event) => setNickname(event.currentTarget.value)}
-          error={localError ?? undefined}
-          maxLength={MAX_NICKNAME_LENGTH}
-          required
-        />
-        <Button type="submit" disabled={!isConnected || !isNicknameValid}>
-          {isConnected ? 'Create room' : 'Waiting for connection...'}
-        </Button>
-      </Stack>
-    </Card>
+    <div style={{ animation: 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
+      <Card withBorder radius="md" padding="lg" shadow="lg" component="form" onSubmit={handleSubmit}>
+        <Stack gap="sm">
+          <Title order={2} fw={800} ff="Fraunces, serif">Create Room</Title>
+          <Text c="dimmed" fz="lg">Enter a nickname to start a new room.</Text>
+          <TextInput
+            label="Nickname"
+            placeholder="Your nickname"
+            value={nickname}
+            onChange={(event) => setNickname(event.currentTarget.value)}
+            error={localError ?? undefined}
+            maxLength={MAX_NICKNAME_LENGTH}
+            required
+            size="lg"
+            styles={{ input: { fontSize: '1.2rem', padding: '1rem 1.25rem' } }}
+          />
+          <Button type="submit" disabled={!isConnected || !isNicknameValid} size="lg" fw={800}>
+            {isConnected ? 'Create room' : 'Waiting for connection...'}
+          </Button>
+        </Stack>
+      </Card>
+    </div>
   );
 }
