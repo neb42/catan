@@ -1,4 +1,8 @@
+import { useMemo, useState } from 'react';
+
 import type { HexTile as HexTileType } from '@catan/shared';
+
+import { getHexCornerPositions } from './geometry';
 
 import desert from '../../assets/tiles/desert.svg';
 import fields from '../../assets/tiles/fields.svg';
@@ -39,9 +43,41 @@ const getPipCount = (number: number | null): number => {
   }
 };
 
-export function HexTile({ hex, onClick }: { hex: HexTileType; onClick?: () => void }) {
+export function HexTile({
+  hex,
+  onClick,
+  showVertices,
+  selectedVertex,
+  onSelectVertex,
+  playerColor,
+  occupiedVertices,
+}: {
+  hex: HexTileType;
+  onClick?: () => void;
+  showVertices?: boolean;
+  selectedVertex?: string | null;
+  onSelectVertex?: (vertexId: string) => void;
+  playerColor?: string;
+  occupiedVertices?: Set<string>;
+  showEdges?: boolean;
+  selectedEdge?: string | null;
+  onSelectEdge?: (edgeId: string) => void;
+  occupiedEdges?: Set<string>;
+}) {
   const pipCount = getPipCount(hex.number);
   const isHighProbability = hex.number === 6 || hex.number === 8;
+  const [hoveredVertex, setHoveredVertex] = useState<string | null>(null);
+
+  const cornerPositions = useMemo(
+    () => getHexCornerPositions(hex.coord),
+    [hex.coord.q, hex.coord.r],
+  );
+  const vertexIds = useMemo(
+    () => cornerPositions.map((_, index) => `${hex.coord.q}:${hex.coord.r}:${index}`),
+    [cornerPositions, hex.coord.q, hex.coord.r],
+  );
+
+  const highlightColor = playerColor ?? '#2f2f2f';
 
   return (
     <g onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
@@ -87,6 +123,38 @@ export function HexTile({ hex, onClick }: { hex: HexTileType; onClick?: () => vo
           ⛔
         </text>
       )}
+
+      {showVertices &&
+        cornerPositions.map((corner, index) => {
+          const vertexId = vertexIds[index];
+          const isSelected = selectedVertex === vertexId;
+          const isHovered = hoveredVertex === vertexId;
+          const isOccupied = occupiedVertices?.has(vertexId);
+          const isEnabled = !isOccupied && Boolean(onSelectVertex);
+
+          return (
+            <circle
+              key={vertexId}
+              cx={corner.x}
+              cy={corner.y}
+              r={1.1}
+              fill={highlightColor}
+              fillOpacity={isSelected ? 0.9 : isHovered ? 0.6 : isEnabled ? 0.25 : 0.1}
+              stroke={highlightColor}
+              strokeWidth={0.25}
+              strokeOpacity={isEnabled ? 0.7 : 0.2}
+              style={{ cursor: isEnabled ? 'pointer' : 'default' }}
+              pointerEvents={isEnabled ? 'auto' : 'none'}
+              onClick={(event) => {
+                event.stopPropagation();
+                if (!isEnabled || !onSelectVertex) return;
+                onSelectVertex(vertexId);
+              }}
+              onMouseEnter={() => setHoveredVertex(vertexId)}
+              onMouseLeave={() => setHoveredVertex(null)}
+            />
+          );
+        })}
     </g>
   );
 }
