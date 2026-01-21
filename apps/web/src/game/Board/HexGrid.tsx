@@ -132,7 +132,7 @@ export function HexGrid() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       <ReactHexGrid width={900} height={700} viewBox="-55 -55 110 110">
-        <Layout size={{ x: 10, y: 10 }} flat={true} spacing={1.05}>
+        <Layout size={{ x: 10, y: 10 }} flat={false} spacing={1.05}>
           {gameState.board.hexes.map((hex) => (
             <Hexagon
               key={`${hex.coord.q},${hex.coord.r}`}
