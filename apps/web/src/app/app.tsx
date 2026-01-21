@@ -1,5 +1,5 @@
 import Lobby from '../components/Lobby';
-import { HexGrid } from '../game/Board/HexGrid';
+import { GameView } from '../game/GameView';
 import { useGameStore } from '../stores/gameStore';
 
 export function App() {
@@ -19,7 +19,7 @@ export function App() {
         <Lobby />
       </div>
 
-      {gameState && <HexGrid />}
+      {gameState && <GameView />}
     </>
   );
 }
