@@ -16,6 +16,7 @@ import { ManagedPlayer, ManagedRoom, RoomManager } from '../managers/RoomManager
 import { generateRoomId } from '../utils/room-id';
 
 const GAME_START_COUNTDOWN = 5;
+const TURN_END_DELAY_MS = 900;
 const gameManager = new GameManager();
 
 function sendMessage(socket: WebSocket, message: unknown): void {
@@ -297,11 +298,27 @@ export function handleWebSocketConnection(
         }
 
         try {
+          const wasMainPhase =
+            gameManager.getGame(currentRoomId)?.turnPhase === 'main';
           const gameState = gameManager.endTurn(currentRoomId, playerId);
           roomManager.broadcastToRoom(currentRoomId, {
             type: 'game_state',
             gameState,
           });
+
+          if (wasMainPhase) {
+            setTimeout(() => {
+              try {
+                const nextState = gameManager.advanceTurn(currentRoomId);
+                roomManager.broadcastToRoom(currentRoomId, {
+                  type: 'game_state',
+                  gameState: nextState,
+                });
+              } catch (error) {
+                console.error('Failed to advance turn', error);
+              }
+            }, TURN_END_DELAY_MS);
+          }
         } catch (error) {
           sendError(ws, (error as Error).message);
         }

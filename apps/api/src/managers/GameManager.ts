@@ -123,10 +123,20 @@ export class GameManager {
     if (gameState.currentPlayer !== playerId) {
       throw new Error('Not your turn');
     }
-    if (gameState.turnPhase !== 'main') {
+    if (gameState.turnPhase !== 'main' && gameState.turnPhase !== 'end') {
       throw new Error('Wrong phase');
     }
+    if (gameState.turnPhase === 'main') {
+      gameState.turnPhase = 'end';
+    }
+    return gameState;
+  }
 
+  advanceTurn(roomId: string): GameState {
+    const gameState = this.requireGame(roomId);
+    if (gameState.turnPhase !== 'end') {
+      throw new Error('Wrong phase');
+    }
     advanceTurn(gameState);
     return gameState;
   }
