@@ -19,6 +19,7 @@ import JoinRoom from './JoinRoom';
 import LandingForm from './LandingForm';
 import PlayerList from './PlayerList';
 import { useWebSocket } from '../hooks/useWebSocket';
+import { useGameStore } from '../stores/gameStore';
 
 const WS_URL = 'ws://localhost:3333/ws';
 
@@ -40,6 +41,8 @@ export default function Lobby() {
   const [showJoinForm, setShowJoinForm] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>('');
 
+  const gameState = useGameStore((state) => state.gameState);
+
   const players: Player[] = useMemo(() => room?.players ?? [], [room]);
 
   const handleMessage = useCallback(
@@ -48,6 +51,7 @@ export default function Lobby() {
         case 'room_created': {
           setRoomId(message.roomId);
           setCurrentPlayerId(message.player.id);
+          useGameStore.getState().setMyPlayerId(message.player.id);
           setPendingNickname(message.player.nickname);
           setCurrentView('lobby');
           setCreateError(null);
@@ -64,6 +68,7 @@ export default function Lobby() {
 
           if (selfFromNickname) {
             setCurrentPlayerId(selfFromNickname.id);
+            useGameStore.getState().setMyPlayerId(selfFromNickname.id);
             setPendingNickname(null);
           }
 
@@ -134,6 +139,11 @@ export default function Lobby() {
           break;
         }
 
+        case 'game_state': {
+          useGameStore.getState().updateGameState(message.gameState);
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
@@ -153,6 +163,10 @@ export default function Lobby() {
   );
 
   const { isConnected, sendMessage } = useWebSocket({ url: WS_URL, onMessage: handleMessage });
+
+  useEffect(() => {
+    useGameStore.getState().setSendMessage(sendMessage);
+  }, [sendMessage]);
 
   const handleCreateRoom = useCallback(() => {
     if (!nickname.trim()) return;
@@ -193,6 +207,12 @@ export default function Lobby() {
   useEffect(() => {
     if (countdown === null) return;
     if (countdown <= 0) {
+      if (roomId && room && currentPlayerId && !gameState) {
+        const isHost = room.players[0]?.id === currentPlayerId;
+        if (isHost) {
+          sendMessage({ type: 'start_game', roomId });
+        }
+      }
       setCountdown(null);
       return;
     }
@@ -204,7 +224,7 @@ export default function Lobby() {
     return () => {
       clearInterval(timer);
     };
-  }, [countdown]);
+  }, [countdown, roomId, room, currentPlayerId, sendMessage, gameState]);
 
   const lobbyViewActive = currentView === 'lobby' && Boolean(roomId || room);
 
