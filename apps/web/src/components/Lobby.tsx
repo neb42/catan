@@ -234,12 +234,12 @@ export default function Lobby() {
       )}
 
       {lobbyViewActive && (
-        <Card withBorder radius="md" padding="lg" shadow="sm">
+        <Card withBorder radius="md" padding="lg" shadow="lg" style={{ animation: 'fadeInUp 0.6s ease' }}>
           <Stack gap="md">
             <Group justify="space-between" align="center">
               <Stack gap={4}>
                 <Group gap="xs" align="center">
-                  <Title order={3}>Room {roomId ?? room?.id}</Title>
+                  <Title order={2} ff="Fraunces, serif" fw={800}>Room {roomId ?? room?.id}</Title>
                   <Badge color={isConnected ? 'teal' : 'yellow'}>{isConnected ? 'Connected' : 'Reconnecting'}</Badge>
                 </Group>
                 <Text c="dimmed" size="sm">
@@ -249,7 +249,13 @@ export default function Lobby() {
               {roomId && (
                 <CopyButton value={roomId} timeout={1500}>
                   {({ copied, copy }) => (
-                    <Button variant={copied ? 'light' : 'outline'} color={copied ? 'teal' : 'blue'} onClick={copy}>
+                    <Button 
+                      variant={copied ? 'light' : 'outline'} 
+                      color={copied ? 'teal' : 'blue'} 
+                      onClick={copy}
+                      size="md"
+                      fw={700}
+                    >
                       {copied ? 'Copied!' : 'Copy room ID'}
                     </Button>
                   )}
