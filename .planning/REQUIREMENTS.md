@@ -7,7 +7,7 @@
 - [ ] **LOBBY-01**: User can create a game room and receive a shareable room ID
 - [ ] **LOBBY-02**: User can join an existing room by entering room ID
 - [ ] **LOBBY-03**: User can set their nickname when joining a room
-- [ ] **LOBBY-04**: User can select their player color from available options (red, blue, white, orange)
+- [x] **LOBBY-04**: User can select their player color from available options (red, blue, white, orange, green, yellow, purple, brown) *(Completed 2026-01-21)*
 - [ ] **LOBBY-05**: User can mark themselves as ready in the lobby
 - [ ] **LOBBY-06**: Game starts with countdown after all players (3-4) mark ready
 

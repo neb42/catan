@@ -60,15 +60,26 @@
 ## Phase 1.1: Small improvements from phase 1. Update the UI to match designs found in "./.designs/01-foundation". Add 4 more colours for selection. (INSERTED)
 
 **Goal:** Polish lobby UI with expanded color palette and modern design aesthetic  
+**Status:** ✅ Complete  
+**Completed:** 2026-01-21  
 **Depends on:** Phase 1  
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01.1-01-PLAN.md — Add 4 colors + design foundation (fonts, global styles, tokens)
-- [ ] 01.1-02-PLAN.md — Update component styling (avatars, color picker, backgrounds)
+- [x] 01.1-01-PLAN.md — Add 4 colors + design foundation (fonts, global styles, tokens)
+- [x] 01.1-02-PLAN.md — Update component styling (avatars, color picker, backgrounds)
 
 **Details:**
 Enhance visual design to match HTML mockups while maintaining all existing WebSocket functionality. Expands player colors from 4 to 8, applies Fraunces+Outfit typography, implements new color palette (terracotta, teal, saffron), and redesigns player list with circular avatars and inline color picker.
+
+**Deliverables:**
+- 8 player colors (red, blue, white, orange, green, yellow, purple, brown)
+- Two-step landing form (nickname → create or join)
+- Lobby with "Expedition Party" header and room code pill
+- 2x2 player grid with circular avatars showing initials
+- Inline 8-color picker with working color selection
+- Ready button at bottom with status messages
+- Warm beige background (#F9F4EF) throughout
 
 ---
 
