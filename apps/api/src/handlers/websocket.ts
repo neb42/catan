@@ -272,6 +272,42 @@ export function handleWebSocketConnection(
         break;
       }
 
+      case 'roll_dice': {
+        if (!currentRoomId || !playerId || message.playerId !== playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        try {
+          const gameState = gameManager.rollDice(currentRoomId, playerId);
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'game_state',
+            gameState,
+          });
+        } catch (error) {
+          sendError(ws, (error as Error).message);
+        }
+        break;
+      }
+
+      case 'end_turn': {
+        if (!currentRoomId || !playerId || message.playerId !== playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        try {
+          const gameState = gameManager.endTurn(currentRoomId, playerId);
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'game_state',
+            gameState,
+          });
+        } catch (error) {
+          sendError(ws, (error as Error).message);
+        }
+        break;
+      }
+
 
       case 'change_color': {
         if (!currentRoomId || !playerId || message.playerId !== playerId) {

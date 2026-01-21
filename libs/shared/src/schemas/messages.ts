@@ -85,6 +85,16 @@ export const PlaceRoadMessageSchema = z.object({
   edgeId: z.string(),
 });
 
+export const RollDiceMessageSchema = z.object({
+  type: z.literal('roll_dice'),
+  playerId: playerIdSchema,
+});
+
+export const EndTurnMessageSchema = z.object({
+  type: z.literal('end_turn'),
+  playerId: playerIdSchema,
+});
+
 export const GameStateMessageSchema = z.object({
   type: z.literal('game_state'),
   gameState: GameStateSchema,
@@ -110,6 +120,8 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   StartGameMessageSchema,
   PlaceSettlementMessageSchema,
   PlaceRoadMessageSchema,
+  RollDiceMessageSchema,
+  EndTurnMessageSchema,
   GameStateMessageSchema,
   ErrorMessageSchema,
 ]);
@@ -128,6 +140,8 @@ export type RoomStateMessage = z.infer<typeof RoomStateMessageSchema>;
 export type StartGameMessage = z.infer<typeof StartGameMessageSchema>;
 export type PlaceSettlementMessage = z.infer<typeof PlaceSettlementMessageSchema>;
 export type PlaceRoadMessage = z.infer<typeof PlaceRoadMessageSchema>;
+export type RollDiceMessage = z.infer<typeof RollDiceMessageSchema>;
+export type EndTurnMessage = z.infer<typeof EndTurnMessageSchema>;
 export type GameStateMessage = z.infer<typeof GameStateMessageSchema>;
 export type ErrorMessage = z.infer<typeof ErrorMessageSchema>;
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
