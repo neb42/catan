@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { PLAYER_COLORS, ROOM_ID_LENGTH } from '../constants';
 import { PlayerSchema } from './player';
 import { RoomSchema } from './room';
+import { GameStateSchema } from './game';
 
 const roomIdSchema = z.string().length(ROOM_ID_LENGTH).regex(/^[0-9A-Z]{6}$/);
 const nicknameSchema = z.string().trim().min(2).max(30);
@@ -67,15 +68,31 @@ export const RoomStateMessageSchema = z.object({
   room: RoomSchema,
 });
 
+export const StartGameMessageSchema = z.object({
+  type: z.literal('start_game'),
+  roomId: roomIdSchema,
+});
+
+export const PlaceSettlementMessageSchema = z.object({
+  type: z.literal('place_settlement'),
+  playerId: playerIdSchema,
+  vertexId: z.string(),
+});
+
+export const PlaceRoadMessageSchema = z.object({
+  type: z.literal('place_road'),
+  playerId: playerIdSchema,
+  edgeId: z.string(),
+});
+
+export const GameStateMessageSchema = z.object({
+  type: z.literal('game_state'),
+  gameState: GameStateSchema,
+});
+
 export const ErrorMessageSchema = z.object({
   type: z.literal('error'),
-  message: z.enum([
-    'Room not found',
-    'Room is full',
-    'Nickname taken',
-    'Invalid room ID',
-    'Color already taken',
-  ]),
+  message: z.string(),
 });
 
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
@@ -90,6 +107,10 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   ToggleReadyMessageSchema,
   GameStartingMessageSchema,
   RoomStateMessageSchema,
+  StartGameMessageSchema,
+  PlaceSettlementMessageSchema,
+  PlaceRoadMessageSchema,
+  GameStateMessageSchema,
   ErrorMessageSchema,
 ]);
 
@@ -104,5 +125,9 @@ export type ColorChangedMessage = z.infer<typeof ColorChangedMessageSchema>;
 export type ToggleReadyMessage = z.infer<typeof ToggleReadyMessageSchema>;
 export type GameStartingMessage = z.infer<typeof GameStartingMessageSchema>;
 export type RoomStateMessage = z.infer<typeof RoomStateMessageSchema>;
+export type StartGameMessage = z.infer<typeof StartGameMessageSchema>;
+export type PlaceSettlementMessage = z.infer<typeof PlaceSettlementMessageSchema>;
+export type PlaceRoadMessage = z.infer<typeof PlaceRoadMessageSchema>;
+export type GameStateMessage = z.infer<typeof GameStateMessageSchema>;
 export type ErrorMessage = z.infer<typeof ErrorMessageSchema>;
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;

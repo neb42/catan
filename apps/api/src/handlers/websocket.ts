@@ -11,10 +11,12 @@ import {
   WebSocketMessageSchema,
 } from '@catan/shared';
 
+import { GameManager } from '../managers/GameManager';
 import { ManagedPlayer, ManagedRoom, RoomManager } from '../managers/RoomManager';
 import { generateRoomId } from '../utils/room-id';
 
 const GAME_START_COUNTDOWN = 5;
+const gameManager = new GameManager();
 
 function sendMessage(socket: WebSocket, message: unknown): void {
   if (socket.readyState === WebSocket.OPEN) {
@@ -52,7 +54,7 @@ type ErrorMessage =
   | 'Invalid room ID'
   | 'Color already taken';
 
-function sendError(socket: WebSocket, message: ErrorMessage): void {
+function sendError(socket: WebSocket, message: ErrorMessage | string): void {
   sendMessage(socket, { type: 'error', message });
 }
 
@@ -208,6 +210,68 @@ export function handleWebSocketConnection(
         });
         break;
       }
+
+      case 'start_game': {
+        const room = roomManager.getRoom(message.roomId);
+        if (!room) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        const players = Array.from(room.players.values()).map(serializePlayer);
+        const gameState = gameManager.createGame(message.roomId, players);
+
+        roomManager.broadcastToRoom(message.roomId, {
+          type: 'game_state',
+          gameState,
+        });
+        break;
+      }
+
+      case 'place_settlement': {
+        if (!currentRoomId || !playerId || message.playerId !== playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        try {
+          const gameState = gameManager.placeSettlement(
+            currentRoomId,
+            playerId,
+            message.vertexId
+          );
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'game_state',
+            gameState,
+          });
+        } catch (error) {
+          sendError(ws, (error as Error).message);
+        }
+        break;
+      }
+
+      case 'place_road': {
+        if (!currentRoomId || !playerId || message.playerId !== playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        try {
+          const gameState = gameManager.placeRoad(
+            currentRoomId,
+            playerId,
+            message.edgeId
+          );
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'game_state',
+            gameState,
+          });
+        } catch (error) {
+          sendError(ws, (error as Error).message);
+        }
+        break;
+      }
+
 
       case 'change_color': {
         if (!currentRoomId || !playerId || message.playerId !== playerId) {
