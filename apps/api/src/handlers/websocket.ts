@@ -309,6 +309,7 @@ export function handleWebSocketConnection(
           if (wasMainPhase) {
             setTimeout(() => {
               try {
+                if (!currentRoomId) return;
                 const nextState = gameManager.advanceTurn(currentRoomId);
                 roomManager.broadcastToRoom(currentRoomId, {
                   type: 'game_state',

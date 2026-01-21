@@ -24,7 +24,7 @@ const createGamePlayer = (player: Player): GamePlayer => ({
 });
 
 const resolveBoardMode = (): 'balanced' | 'natural' =>
-  process.env.BOARD_GEN_MODE === 'natural' ? 'natural' : 'balanced';
+  process.env['BOARD_GEN_MODE'] === 'natural' ? 'natural' : 'balanced';
 
 export const createInitialGameState = (
   roomId: string,
