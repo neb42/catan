@@ -91,6 +91,8 @@ export const distributeResources = (gameState: GameState, roll: number): void =>
 };
 
 export const advanceTurn = (gameState: GameState): void => {
+  gameState.turnPhase = 'end';
+
   const currentIndex = gameState.players.findIndex(
     (player) => player.id === gameState.currentPlayer
   );
