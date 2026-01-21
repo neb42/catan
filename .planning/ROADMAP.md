@@ -57,6 +57,21 @@
 
 ---
 
+## Phase 1.1: Small improvements from phase 1. Update the UI to match designs found in "./.designs/01-foundation". Add 4 more colours for selection. (INSERTED)
+
+**Goal:** Polish lobby UI with expanded color palette and modern design aesthetic  
+**Depends on:** Phase 1  
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01.1-01-PLAN.md — Add 4 colors + design foundation (fonts, global styles, tokens)
+- [ ] 01.1-02-PLAN.md — Update component styling (avatars, color picker, backgrounds)
+
+**Details:**
+Enhance visual design to match HTML mockups while maintaining all existing WebSocket functionality. Expands player colors from 4 to 8, applies Fraunces+Outfit typography, implements new color palette (terracotta, teal, saffron), and redesigns player list with circular avatars and inline color picker.
+
+---
+
 ## Phase 2: Core Game Loop
 
 **Goal:** Playable game skeleton (board, initial placement, turn structure)  
