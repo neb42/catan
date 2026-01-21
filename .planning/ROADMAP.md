@@ -121,8 +121,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - [x] 02-05-PLAN.md — Resource tracking UI: resource cards, turn indicators, player list, game layout
 - [x] 02-06-PLAN.md — Interactive placement: vertex/edge selection, click handlers, visual feedback
 - [x] 02-07-PLAN.md — End-to-end phase transitions: initial placement completion, first turn flow
-- [ ] 02-08-PLAN.md — Fix port rendering (UAT Issue #1)
-- [ ] 02-09-PLAN.md — Fix hex orientation mismatch (UAT Issue #2)
+- [ ] 02-08-PLAN.md — Fix hex orientation mismatch (critical blocker)
+- [ ] 02-09-PLAN.md — Add port rendering to board
 
 ### Deliverables
 
