@@ -3,6 +3,8 @@ import { motion } from 'motion/react';
 
 import { useGameStore } from '../../stores/gameStore';
 import { HexTile } from './HexTile';
+import { Road } from './Road';
+import { Settlement } from './Settlement';
 
 export function HexGrid() {
   const gameState = useGameStore((state) => state.gameState);
@@ -29,6 +31,34 @@ export function HexGrid() {
               <HexTile hex={hex} />
             </Hexagon>
           ))}
+
+          {gameState.players.flatMap((player) =>
+            player.roads.map((edgeId) => (
+              <Road key={`${player.id}-${edgeId}`} edgeId={edgeId} color={player.color} />
+            ))
+          )}
+
+          {gameState.players.flatMap((player) =>
+            player.settlements.map((vertexId) => (
+              <Settlement
+                key={`${player.id}-${vertexId}`}
+                vertexId={vertexId}
+                color={player.color}
+                isCity={false}
+              />
+            ))
+          )}
+
+          {gameState.players.flatMap((player) =>
+            player.cities.map((vertexId) => (
+              <Settlement
+                key={`${player.id}-${vertexId}-city`}
+                vertexId={vertexId}
+                color={player.color}
+                isCity
+              />
+            ))
+          )}
 
         </Layout>
       </ReactHexGrid>
