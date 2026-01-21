@@ -109,8 +109,11 @@ export function HexTile({
         r: hex.coord.r + direction.r,
       };
       const neighborKey = `${neighbor.q},${neighbor.r}`;
+      const hexKey = `${hex.coord.q},${hex.coord.r}`;
       const edgeId = `${hex.coord.q}:${hex.coord.r}-${neighbor.q}:${neighbor.r}`;
-      const isValid = boardHexKeys ? boardHexKeys.has(neighborKey) : true;
+      const isValid = boardHexKeys
+        ? !boardHexKeys.has(neighborKey) || hexKey < neighborKey
+        : true;
       return {
         edgeId,
         start: cornerPositions[startIndex],
