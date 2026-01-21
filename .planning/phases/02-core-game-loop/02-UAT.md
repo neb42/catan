@@ -267,4 +267,41 @@ Testing deliverables from 7 plans:
 ---
 
 *Testing started: 2026-01-21*  
-*Last updated: 2026-01-21*
+*Last updated: 2026-01-21*  
+*Status: Completed - Issues diagnosed, fix plans ready*
+
+## Diagnosis & Fix Plans
+
+### Issue #1: Ports Missing (Major)
+**Root Cause:** HexGrid has no rendering logic for ports. Ports are generated server-side and included in game state, but not rendered by UI.
+
+**Fix Plan:** 02-08-PLAN.md
+- Create Port.tsx component to render port visuals
+- Integrate port rendering into HexGrid
+- Parse port position format: `"q,r:directionIndex"` (0-5)
+- Display 3:1 generic and 2:1 resource-specific port types
+
+**Status:** ✅ Fix plan approved and ready
+
+---
+
+### Issue #2: Placement Coordinates Wrong (Critical)
+**Root Cause:** Hex orientation mismatch between react-hexgrid Layout (pointy-top with `flat={false}`) and custom geometry.ts calculations (flat-top formulas with -30° offset).
+
+**Fix Plan:** 02-09-PLAN.md
+- Change HexGrid Layout from `flat={false}` to `flat={true}` (one line)
+- Aligns react-hexgrid orientation with geometry calculations
+- Fixes all settlement and road placement coordinates
+
+**Status:** ✅ Fix plan approved and ready
+
+---
+
+## Next Steps
+
+Execute fix plans in order:
+1. `/gsd-execute-phase 02 --start 09` - Fix hex orientation (critical)
+2. `/gsd-execute-phase 02 --start 08` - Add port rendering (major)
+3. Re-run UAT to verify all 15 tests pass
+
+**Expected outcome:** All 15 tests passing, game fully playable
