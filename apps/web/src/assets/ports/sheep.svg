@@ -1,0 +1,39 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Container Ring -->
+  <circle cx="100" cy="100" r="90" fill="white" stroke="#7CB342" stroke-width="8"/>
+  <circle cx="100" cy="100" r="82" fill="#DCEDC8" />
+
+  <!-- Geometric Sheep Symbol -->
+  <g filter="url(#shadow)" transform="translate(-10, 10)">
+    <!-- Legs -->
+    <rect x="70" y="110" width="10" height="30" fill="#424242" rx="5"/>
+    <rect x="120" y="110" width="10" height="30" fill="#424242" rx="5"/>
+
+    <!-- Body (Fluffy Circles) -->
+    <circle cx="80" cy="90" r="30" fill="#F5F5F5"/>
+    <circle cx="120" cy="90" r="30" fill="#F5F5F5"/>
+    <circle cx="100" cy="70" r="35" fill="#EEEEEE"/>
+    <circle cx="100" cy="90" r="30" fill="#FAFAFA"/> <!-- Center blend -->
+
+    <!-- Head -->
+    <path d="M130 65 Q130 50 145 50 Q160 50 160 65 Q160 85 145 95 L135 90 Z" fill="#424242"/>
+    
+    <!-- Ear -->
+    <ellipse cx="155" cy="60" rx="4" ry="10" fill="#616161" transform="rotate(45 155 60)"/>
+    
+    <!-- Eye -->
+    <circle cx="145" cy="65" r="2" fill="white"/>
+  </g>
+
+  <!-- Ratio Badge -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="160" width="60" height="25" rx="12" fill="#558B2F"/>
+    <text x="100" y="178" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="16" text-anchor="middle">2:1</text>
+  </g>
+</svg>
