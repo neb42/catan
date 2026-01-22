@@ -102,13 +102,6 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 2. **Board renders in browser** — Hex grid displays with proper orientation, terrain types visible, numbers on hexes
 3. **Ports display correctly** — 9 ports on coast, icons match resource types, positioned correctly
 
-### Plans
-
-- [x] 02-01-PLAN.md — Game foundation: dependencies, schemas, board generation, hex utilities
-- [x] 02-03-PLAN.md — Board rendering: HexGrid with react-hexgrid, terrain tiles, settlements/roads
-- [ ] 02-08-PLAN.md — Fix hex orientation mismatch (critical blocker)
-- [ ] 02-09-PLAN.md — Add port rendering to board
-
 ### Deliverables
 
 - Board generation algorithm (hex layout, number tokens, ports)
@@ -135,12 +128,6 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 1. **Initial placement works end-to-end** — 8 rounds (snake draft), placements valid, second settlement gives resources
 2. **Interactive placement** — Click vertex to place settlement, click edge to place road, visual feedback shows valid locations
 3. **Phase transitions smoothly** — Setup phase completes, game transitions to turn-based play
-
-### Plans
-
-- [x] 02-02-PLAN.md — Initial placement: GameManager, snake draft, placement validation, WebSocket handlers
-- [x] 02-06-PLAN.md — Interactive placement: vertex/edge selection, click handlers, visual feedback
-- [x] 02-07-PLAN.md — End-to-end phase transitions: initial placement completion, first turn flow
 
 ### Deliverables
 
@@ -174,10 +161,6 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 2. **Turn structure flows** — Can progress from setup → first turn → second turn, correct player order
 3. **Resource tracking persists** — Resources display correctly for all players, counts accurate after multiple turns
 
-### Plans
-
-- [x] 02-04-PLAN.md — Turn structure: dice rolling, resource distribution, turn phases, animations
-- [x] 02-05-PLAN.md — Resource tracking UI: resource cards, turn indicators, player list, game layout
 
 ### Deliverables
 
