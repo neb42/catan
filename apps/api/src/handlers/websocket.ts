@@ -11,13 +11,10 @@ import {
   WebSocketMessageSchema,
 } from '@catan/shared';
 
-import { GameManager } from '../managers/GameManager';
 import { ManagedPlayer, ManagedRoom, RoomManager } from '../managers/RoomManager';
 import { generateRoomId } from '../utils/room-id';
 
 const GAME_START_COUNTDOWN = 5;
-const TURN_END_DELAY_MS = 900;
-const gameManager = new GameManager();
 
 function sendMessage(socket: WebSocket, message: unknown): void {
   if (socket.readyState === WebSocket.OPEN) {
@@ -208,23 +205,6 @@ export function handleWebSocketConnection(
         roomManager.broadcastToRoom(currentRoomId, {
           type: 'room_state',
           room: serializeRoom(room),
-        });
-        break;
-      }
-
-      case 'start_game': {
-        const room = roomManager.getRoom(message.roomId);
-        if (!room) {
-          sendError(ws, 'Room not found');
-          return;
-        }
-
-        const players = Array.from(room.players.values()).map(serializePlayer);
-        const gameState = gameManager.createGame(message.roomId, players);
-
-        roomManager.broadcastToRoom(message.roomId, {
-          type: 'game_state',
-          gameState,
         });
         break;
       }
