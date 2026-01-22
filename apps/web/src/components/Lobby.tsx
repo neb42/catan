@@ -41,8 +41,6 @@ export default function Lobby() {
   const [showJoinForm, setShowJoinForm] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>('');
 
-  const gameState = useGameStore((state) => state.gameState);
-
   const players: Player[] = useMemo(() => room?.players ?? [], [room]);
 
   const handleMessage = useCallback(
@@ -139,12 +137,6 @@ export default function Lobby() {
           break;
         }
 
-        case 'game_state': {
-          useGameStore.getState().updateGameState(message.gameState);
-          useGameStore.getState().setLastError(null);
-          break;
-        }
-
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
@@ -205,28 +197,6 @@ export default function Lobby() {
     if (!currentPlayerId) return;
     sendMessage({ type: 'toggle_ready', playerId: currentPlayerId });
   }, [currentPlayerId, sendMessage]);
-
-  useEffect(() => {
-    if (countdown === null) return;
-    if (countdown <= 0) {
-      if (roomId && room && currentPlayerId && !gameState) {
-        const isHost = room.players[0]?.id === currentPlayerId;
-        if (isHost) {
-          sendMessage({ type: 'start_game', roomId });
-        }
-      }
-      setCountdown(null);
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setCountdown((previous) => (previous && previous > 0 ? previous - 1 : previous));
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, [countdown, roomId, room, currentPlayerId, sendMessage, gameState]);
 
   const lobbyViewActive = currentView === 'lobby' && Boolean(roomId || room);
 
