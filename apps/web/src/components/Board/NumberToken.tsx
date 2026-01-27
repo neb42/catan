@@ -15,18 +15,27 @@ export function NumberToken({ hex }: NumberTokenProps) {
   const isHighProbability = hex.number === 6 || hex.number === 8;
 
   return (
-    <Text
-      x={pixel.x}
-      y={pixel.y}
-      style={{
-        fontSize: '5px',
-        fontWeight: isHighProbability ? 'bold' : 'normal',
-        fill: isHighProbability ? '#C73E1D' : '#4A4A4A',
-        textAnchor: 'middle',
-        dominantBaseline: 'central',
-      }}
-    >
-      {hex.number}
-    </Text>
+    <g>
+      <circle
+        cx={pixel.x}
+        cy={pixel.y + 5}
+        r={2}
+        fill={isHighProbability ? '#F5D6D0' : '#E0E0E0'}
+      >
+      </circle>
+      <Text
+        x={pixel.x}
+        y={pixel.y + 5}
+        style={{
+          fontSize: '3px',
+          fontWeight: isHighProbability ? 'bold' : 'normal',
+          fill: isHighProbability ? '#C73E1D' : '#4A4A4A',
+          textAnchor: 'middle',
+          dominantBaseline: 'central',
+        }}
+      >
+        {hex.number}
+      </Text>
+    </g>
   );
 }
