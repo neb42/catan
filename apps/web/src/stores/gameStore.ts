@@ -29,6 +29,7 @@ interface GameStore extends PlacementSlice {
   board: BoardState | null;
   gameStarted: boolean;
   myPlayerId: string | null;
+  nickname: string | null; // Added nickname
   lastError: string | null;
   sendMessage: ((message: WebSocketMessage) => void) | null;
 
@@ -36,6 +37,7 @@ interface GameStore extends PlacementSlice {
   setBoard: (board: BoardState) => void;
   setGameStarted: (started: boolean) => void;
   setMyPlayerId: (playerId: string | null) => void;
+  setNickname: (nickname: string | null) => void; // Added action
   setLastError: (message: string | null) => void;
   setSendMessage: (
     handler: ((message: WebSocketMessage) => void) | null,
@@ -61,6 +63,7 @@ export const useGameStore = create<GameStore>((set) => ({
   board: null,
   gameStarted: false,
   myPlayerId: null,
+  nickname: null, // Initial value
   lastError: null,
   sendMessage: null,
 
@@ -79,6 +82,7 @@ export const useGameStore = create<GameStore>((set) => ({
   setBoard: (board) => set({ board }),
   setGameStarted: (started) => set({ gameStarted: started }),
   setMyPlayerId: (playerId) => set({ myPlayerId: playerId }),
+  setNickname: (nickname) => set({ nickname }), // Action implementation
   setLastError: (message) => set({ lastError: message }),
   setSendMessage: (handler) => set({ sendMessage: handler }),
 
