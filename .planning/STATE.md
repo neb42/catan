@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-27  
-**Last activity:** 2026-01-27 - Completed Phase 2 Plan 1 (Board Generation)
+**Last activity:** 2026-01-27 - Completed Phase 2 Plan 2 (Board State Schemas)
 
 ## Current Phase
 
@@ -14,7 +14,7 @@
 
 ### Recently Completed
 
-**Phase 2 Plan 1:** Board generation algorithm implementation  
+**Phase 2 Plan 2:** Board state schemas and message protocol  
 **Completed:** 2026-01-27
 
 ## Phase Progress
@@ -225,6 +225,7 @@ None currently.
 
 ## Recent Activity
 
+- 2026-01-27: Implemented board schemas and message protocol (Phase 2 Plan 2)
 - 2026-01-27: Implemented complete board generation (BOARD-01, BOARD-02, BOARD-03)
 - 2026-01-20: Lobby UI added with reconnection WebSocket client
 
@@ -248,7 +249,7 @@ None currently.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 02-01 (Board Generation)
+Stopped at: Completed 02-02 (Board Schemas)
 Resume file: none
 
 ---
