@@ -33,7 +33,6 @@ const mockEdges: Edge[] = [
 const emptyGameState: GameState = {
   board: { hexes: [], ports: [] },
   settlements: [],
-  cities: [],
   roads: [],
   placement: {
     currentPlayerIndex: 0,
@@ -42,7 +41,6 @@ const emptyGameState: GameState = {
     turnNumber: 0,
   },
   playerResources: {},
-  robberLocation: null,
 };
 
 describe('isValidSettlementPlacement', () => {
@@ -59,7 +57,9 @@ describe('isValidSettlementPlacement', () => {
   it('returns false for occupied vertex', () => {
     const gameState = {
       ...emptyGameState,
-      settlements: [{ id: 's1', vertexId: 'v1', playerId: 'p1' }],
+      settlements: [
+        { id: 's1', vertexId: 'v1', playerId: 'p1', isCity: false },
+      ],
     };
     const isValid = isValidSettlementPlacement(
       'v1',
@@ -73,7 +73,9 @@ describe('isValidSettlementPlacement', () => {
   it('returns false for vertex adjacent to existing settlement', () => {
     const gameState = {
       ...emptyGameState,
-      settlements: [{ id: 's1', vertexId: 'v2', playerId: 'p1' }], // v2 is adjacent to v1
+      settlements: [
+        { id: 's1', vertexId: 'v2', playerId: 'p1', isCity: false },
+      ], // v2 is adjacent to v1
     };
     const isValid = isValidSettlementPlacement(
       'v1',
@@ -138,7 +140,9 @@ describe('getInvalidSettlementReason', () => {
   it('returns "Too close to existing settlement" for adjacent vertex', () => {
     const gameState = {
       ...emptyGameState,
-      settlements: [{ id: 's1', vertexId: 'v2', playerId: 'p1' }],
+      settlements: [
+        { id: 's1', vertexId: 'v2', playerId: 'p1', isCity: false },
+      ],
     };
     const reason = getInvalidSettlementReason(
       'v1',

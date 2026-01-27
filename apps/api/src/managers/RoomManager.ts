@@ -1,6 +1,14 @@
 import { WebSocket } from 'ws';
 
-import { BoardState, GRACE_PERIOD_MS, MAX_PLAYERS, Player, Room } from '@catan/shared';
+import {
+  BoardState,
+  GRACE_PERIOD_MS,
+  MAX_PLAYERS,
+  Player,
+  Room,
+} from '@catan/shared';
+
+import { GameManager } from '../game/GameManager';
 
 export type ManagedPlayer = Player & { ws: WebSocket };
 
@@ -10,6 +18,7 @@ export type ManagedRoom = {
   players: Map<string, ManagedPlayer>;
   disconnectTimer: NodeJS.Timeout | null;
   board: BoardState | null;
+  gameManager: GameManager | null;
 };
 
 export class RoomManager {
@@ -22,6 +31,7 @@ export class RoomManager {
       disconnectTimer: null,
       createdAt: new Date(),
       board: null,
+      gameManager: null,
     };
 
     this.rooms.set(roomId, room);
@@ -101,6 +111,20 @@ export class RoomManager {
     }
 
     room.board = board;
+  }
+
+  setGameManager(roomId: string, gameManager: GameManager): void {
+    const room = this.rooms.get(roomId);
+    if (!room) {
+      throw new Error('Room not found');
+    }
+
+    room.gameManager = gameManager;
+  }
+
+  getGameManager(roomId: string): GameManager | null {
+    const room = this.rooms.get(roomId);
+    return room?.gameManager ?? null;
   }
 
   getBoard(roomId: string): BoardState | null {
