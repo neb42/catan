@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import type {
   WebSocketMessage,
   BoardState,
@@ -132,10 +133,12 @@ export const usePlacementPhase = () =>
   useGameStore((state) => state.placementPhase);
 
 export const useCurrentPlayer = () =>
-  useGameStore((state) => ({
-    index: state.currentPlayerIndex,
-    id: state.currentPlayerId,
-  }));
+  useGameStore(
+    useShallow((state) => ({
+      index: state.currentPlayerIndex,
+      id: state.currentPlayerId,
+    })),
+  );
 
 export const useIsMyTurn = () =>
   useGameStore((state) => state.currentPlayerId === state.myPlayerId);
@@ -144,11 +147,13 @@ export const useSelectedLocation = () =>
   useGameStore((state) => state.selectedLocationId);
 
 export const usePlacementActions = () =>
-  useGameStore((state) => ({
-    setSelected: state.setSelectedLocation,
-    addSettlement: state.addSettlement,
-    addRoad: state.addRoad,
-  }));
+  useGameStore(
+    useShallow((state) => ({
+      setSelected: state.setSelectedLocation,
+      addSettlement: state.addSettlement,
+      addRoad: state.addRoad,
+    })),
+  );
 
 export const useSettlements = () => useGameStore((state) => state.settlements);
 
