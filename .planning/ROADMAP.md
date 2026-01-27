@@ -104,11 +104,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-- [ ] 02-01-PLAN.md — Board generation algorithm with fairness validation
-- [ ] 02-02-PLAN.md — Board state schemas and WebSocket messages
-- [ ] 02-03-PLAN.md — Board rendering with react-hexgrid
-- [ ] 02-04-PLAN.md — End-to-end verification
-- [ ] 02-05-PLAN.md — Fix port rendering with hex-to-pixel conversion (gap closure)
+- [x] 02-01-PLAN.md — Board generation algorithm with fairness validation
+- [x] 02-02-PLAN.md — Board state schemas and WebSocket messages
+- [x] 02-03-PLAN.md — Board rendering with react-hexgrid
+- [x] 02-04-PLAN.md — End-to-end verification
+- [x] 02-05-PLAN.md — Fix port rendering with hex-to-pixel conversion (gap closure)
 
 ### Deliverables
 

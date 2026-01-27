@@ -13,9 +13,9 @@
 
 ### Board & Initial Setup
 
-- [ ] **BOARD-01**: Game generates random hexagonal board layout with 19 land hexes (4 wood, 4 wheat, 4 sheep, 3 brick, 3 ore, 1 desert)
-- [ ] **BOARD-02**: Game places number tokens on hexes following Catan rules (no adjacent 6/8)
-- [ ] **BOARD-03**: Game places 9 ports on coast (4 generic 3:1, 5 specific 2:1)
+- [x] **BOARD-01**: Game generates random hexagonal board layout with 19 land hexes (4 wood, 4 wheat, 4 sheep, 3 brick, 3 ore, 1 desert) *(Completed 2026-01-27)*
+- [x] **BOARD-02**: Game places number tokens on hexes following Catan rules (no adjacent 6/8) *(Completed 2026-01-27)*
+- [x] **BOARD-03**: Game places 9 ports on coast (4 generic 3:1, 5 specific 2:1) *(Completed 2026-01-27)*
 - [ ] **BOARD-04**: User can place initial settlements and roads in snake draft order (1→2→3→4→4→3→2→1)
 - [ ] **BOARD-05**: User receives starting resources from second settlement placement
 
