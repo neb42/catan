@@ -61,7 +61,9 @@ export default function Lobby() {
         case 'room_state': {
           const selfFromNickname =
             !currentPlayerId && pendingNickname
-              ? message.room.players.find((player) => player.nickname === pendingNickname)
+              ? message.room.players.find(
+                  (player) => player.nickname === pendingNickname,
+                )
               : null;
 
           if (selfFromNickname) {
@@ -88,7 +90,9 @@ export default function Lobby() {
         case 'player_joined': {
           setRoom((previous) => {
             if (!previous) return previous;
-            const filtered = previous.players.filter((player) => player.id !== message.player.id);
+            const filtered = previous.players.filter(
+              (player) => player.id !== message.player.id,
+            );
             return { ...previous, players: [...filtered, message.player] };
           });
           break;
@@ -97,7 +101,12 @@ export default function Lobby() {
         case 'player_left': {
           setRoom((previous) => {
             if (!previous) return previous;
-            return { ...previous, players: previous.players.filter((player) => player.id !== message.playerId) };
+            return {
+              ...previous,
+              players: previous.players.filter(
+                (player) => player.id !== message.playerId,
+              ),
+            };
           });
           break;
         }
@@ -106,11 +115,14 @@ export default function Lobby() {
           setRoom((previous) => {
             if (!previous) return previous;
             const updatedPlayers = previous.players.map((player) =>
-              player.id === message.playerId ? { ...player, ready: message.ready } : player,
+              player.id === message.playerId
+                ? { ...player, ready: message.ready }
+                : player,
             );
 
             const readyToStart =
-              updatedPlayers.length >= MIN_PLAYERS && updatedPlayers.every((player) => player.ready);
+              updatedPlayers.length >= MIN_PLAYERS &&
+              updatedPlayers.every((player) => player.ready);
 
             if (!readyToStart) {
               setCountdown(null);
@@ -125,7 +137,9 @@ export default function Lobby() {
           setRoom((previous) => {
             if (!previous) return previous;
             const updatedPlayers = previous.players.map((player) =>
-              player.id === message.playerId ? { ...player, color: message.color } : player,
+              player.id === message.playerId
+                ? { ...player, color: message.color }
+                : player,
             );
             return { ...previous, players: updatedPlayers };
           });
@@ -141,6 +155,34 @@ export default function Lobby() {
           const gameStore = useGameStore.getState();
           gameStore.setBoard(message.board);
           gameStore.setGameStarted(true);
+          break;
+        }
+
+        case 'placement_turn': {
+          useGameStore.getState().setPlacementTurn({
+            currentPlayerIndex: message.currentPlayerIndex,
+            currentPlayerId: message.currentPlayerId,
+            phase: message.phase,
+            round: message.round,
+            turnNumber: message.turnNumber,
+          });
+          break;
+        }
+
+        case 'settlement_placed': {
+          useGameStore.getState().addSettlement({
+            vertexId: message.vertexId,
+            playerId: message.playerId,
+            isCity: false,
+          });
+          break;
+        }
+
+        case 'road_placed': {
+          useGameStore.getState().addRoad({
+            edgeId: message.edgeId,
+            playerId: message.playerId,
+          });
           break;
         }
 
@@ -163,7 +205,10 @@ export default function Lobby() {
     [currentPlayerId, pendingNickname, lastAction],
   );
 
-  const { isConnected, sendMessage } = useWebSocket({ url: WS_URL, onMessage: handleMessage });
+  const { isConnected, sendMessage } = useWebSocket({
+    url: WS_URL,
+    onMessage: handleMessage,
+  });
 
   useEffect(() => {
     useGameStore.getState().setSendMessage(sendMessage);
@@ -187,7 +232,11 @@ export default function Lobby() {
       setJoinError(null);
       setPendingNickname(nickname);
       setCurrentView('lobby');
-      sendMessage({ type: 'join_room', roomId: roomCode, nickname: nickname.trim() });
+      sendMessage({
+        type: 'join_room',
+        roomId: roomCode,
+        nickname: nickname.trim(),
+      });
     },
     [nickname, sendMessage],
   );
@@ -246,19 +295,34 @@ export default function Lobby() {
           }}
         >
           {!isConnected && (
-            <Alert color="yellow" title="Reconnecting..." variant="light" style={{ marginBottom: '1rem' }}>
+            <Alert
+              color="yellow"
+              title="Reconnecting..."
+              variant="light"
+              style={{ marginBottom: '1rem' }}
+            >
               Connection lost. Attempting to reconnect to the lobby server.
             </Alert>
           )}
 
           {generalError && (
-            <Alert color="red" title="Error" variant="light" style={{ marginBottom: '1rem' }}>
+            <Alert
+              color="red"
+              title="Error"
+              variant="light"
+              style={{ marginBottom: '1rem' }}
+            >
               {generalError}
             </Alert>
           )}
 
-
-          <header style={{ textAlign: 'center', marginBottom: '2rem', animation: 'fadeInDown 0.6s ease' }}>
+          <header
+            style={{
+              textAlign: 'center',
+              marginBottom: '2rem',
+              animation: 'fadeInDown 0.6s ease',
+            }}
+          >
             <Title
               order={1}
               style={{
@@ -286,14 +350,28 @@ export default function Lobby() {
                   border: '2px solid var(--color-secondary)',
                 }}
               >
-                <span style={{ fontWeight: 400, fontSize: '0.9rem', textTransform: 'uppercase' }}>Room Code</span>
-                <span style={{ fontFamily: 'Fraunces, serif', fontSize: '1.25rem' }}>{roomId}</span>
+                <span
+                  style={{
+                    fontWeight: 400,
+                    fontSize: '0.9rem',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Room Code
+                </span>
+                <span
+                  style={{ fontFamily: 'Fraunces, serif', fontSize: '1.25rem' }}
+                >
+                  {roomId}
+                </span>
                 <CopyButton value={roomId} timeout={1500}>
                   {({ copied, copy }) => (
                     <button
                       onClick={copy}
                       style={{
-                        background: copied ? 'var(--color-secondary-dark)' : 'var(--color-secondary)',
+                        background: copied
+                          ? 'var(--color-secondary-dark)'
+                          : 'var(--color-secondary)',
                         color: 'white',
                         border: 'none',
                         width: '36px',
@@ -305,8 +383,12 @@ export default function Lobby() {
                         cursor: 'pointer',
                         transition: 'transform 0.2s',
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
-                      onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.transform = 'scale(1.1)')
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.transform = 'scale(1)')
+                      }
                       title="Copy Code"
                     >
                       <svg
@@ -319,7 +401,14 @@ export default function Lobby() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                        <rect
+                          x="9"
+                          y="9"
+                          width="13"
+                          height="13"
+                          rx="2"
+                          ry="2"
+                        />
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                       </svg>
                     </button>
@@ -352,12 +441,23 @@ export default function Lobby() {
               bottom: '2rem',
             }}
           >
-            <div style={{ color: '#6B7280', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div
+              style={{
+                color: '#6B7280',
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+              }}
+            >
               <div
                 style={{
                   width: '8px',
                   height: '8px',
-                  background: countdown !== null ? 'var(--color-secondary)' : 'var(--color-accent)',
+                  background:
+                    countdown !== null
+                      ? 'var(--color-secondary)'
+                      : 'var(--color-accent)',
                   borderRadius: '50%',
                   animation: 'pulse 2s infinite',
                 }}
@@ -365,10 +465,10 @@ export default function Lobby() {
               {countdown !== null
                 ? `Starting in ${countdown}...`
                 : players.length < MIN_PLAYERS
-                ? 'At least 3 players required'
-                : players.every((p) => p.ready)
-                ? 'Ready to start!'
-                : `Waiting for players... ${players.filter((p) => p.ready).length}/${players.length} ready`}
+                  ? 'At least 3 players required'
+                  : players.every((p) => p.ready)
+                    ? 'Ready to start!'
+                    : `Waiting for players... ${players.filter((p) => p.ready).length}/${players.length} ready`}
             </div>
 
             {currentPlayerId && (
@@ -378,10 +478,13 @@ export default function Lobby() {
                 fw={800}
                 styles={{
                   root: {
-                    background: players.find((p) => p.id === currentPlayerId)?.ready
+                    background: players.find((p) => p.id === currentPlayerId)
+                      ?.ready
                       ? 'var(--color-secondary)'
                       : '#F3F4F6',
-                    color: players.find((p) => p.id === currentPlayerId)?.ready ? 'white' : '#6B7280',
+                    color: players.find((p) => p.id === currentPlayerId)?.ready
+                      ? 'white'
+                      : '#6B7280',
                     fontSize: '1.1rem',
                   },
                 }}
@@ -400,7 +503,9 @@ export default function Lobby() {
                   </svg>
                 }
               >
-                {players.find((p) => p.id === currentPlayerId)?.ready ? "Ready!" : "I'm Ready"}
+                {players.find((p) => p.id === currentPlayerId)?.ready
+                  ? 'Ready!'
+                  : "I'm Ready"}
               </Button>
             )}
           </div>
