@@ -62,3 +62,52 @@ export function getCatanHexPositions(): AxialCoord[] {
   
   return positions;
 }
+
+export interface PixelCoord {
+  x: number;
+  y: number;
+}
+
+/**
+ * Convert axial hex coordinates to pixel coordinates.
+ * Must match react-hexgrid Layout settings: size={x: 10, y: 10}, flat=false (pointy-top)
+ * 
+ * Formula for pointy-top hexes:
+ * x = size.x * (Math.sqrt(3) * q + Math.sqrt(3)/2 * r)
+ * y = size.y * (3/2 * r)
+ */
+export function hexToPixel(coord: AxialCoord, size: { x: number; y: number } = { x: 10, y: 10 }): PixelCoord {
+  const x = size.x * (Math.sqrt(3) * coord.q + Math.sqrt(3) / 2 * coord.r);
+  const y = size.y * (3 / 2 * coord.r);
+  return { x, y };
+}
+
+/**
+ * Get angle in degrees for hex edge direction (0-5).
+ * For pointy-top hexes:
+ * 0=E (0°), 1=NE (60°), 2=NW (120°), 3=W (180°), 4=SW (240°), 5=SE (300°)
+ */
+export function getEdgeAngle(edge: number): number {
+  return edge * 60;
+}
+
+/**
+ * Calculate pixel position for port on hex edge.
+ * Port should be positioned at the midpoint of the edge, extended outward.
+ */
+export function getPortPosition(
+  hexQ: number,
+  hexR: number,
+  edge: number,
+  size: { x: number; y: number } = { x: 10, y: 10 },
+  distance: number = 15
+): PixelCoord {
+  const hexCenter = hexToPixel({ q: hexQ, r: hexR }, size);
+  const angle = getEdgeAngle(edge);
+  const radians = (angle * Math.PI) / 180;
+  
+  return {
+    x: hexCenter.x + Math.cos(radians) * distance,
+    y: hexCenter.y + Math.sin(radians) * distance,
+  };
+}
