@@ -8,20 +8,42 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
+import { motion } from 'motion/react';
+import { useCurrentPlayer } from '../stores/gameStore';
 
 type PlayerListProps = {
   players: Player[];
-  currentPlayerId: string | null;
+  // Deprecated prop, kept for compatibility but should be removed eventually
+  currentPlayerId?: string | null;
   onColorChange: (color: Player['color']) => void;
   onReadyToggle: () => void;
 };
 
+// Player color hex values
+const PLAYER_COLOR_HEX: Record<string, string> = {
+  red: '#E53935',
+  blue: '#1E88E5',
+  white: '#F5F5F5',
+  orange: '#FB8C00',
+  green: '#43A047',
+  yellow: '#FDD835',
+  purple: '#8E24AA',
+  brown: '#6D4C41',
+};
+
 export default function PlayerList({
   players,
-  currentPlayerId,
+  currentPlayerId: propCurrentPlayerId,
   onColorChange,
   onReadyToggle,
 }: PlayerListProps) {
+  // Get active player from store for game phase highlighting
+  const { id: activePlayerId } = useCurrentPlayer();
+
+  // Use prop if provided (legacy), otherwise use active player from store
+  // Note: During placement, 'activePlayerId' is the player whose turn it is
+  // Prop 'currentPlayerId' is usually "me" (the local user)
+
   // Create 4 slots (max players)
   const slots = Array.from({ length: 4 }, (_, index) => {
     return players[index] || null;
@@ -40,7 +62,9 @@ export default function PlayerList({
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+    <div
+      style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}
+    >
       {slots.map((player, index) => {
         if (!player) {
           // Empty slot
@@ -69,102 +93,134 @@ export default function PlayerList({
           );
         }
 
-        const isSelf = player.id === currentPlayerId;
+        const isSelf = player.id === propCurrentPlayerId;
+        const isActiveTurn = player.id === activePlayerId;
         const initials = player.nickname.slice(0, 2).toUpperCase();
+        const playerColorHex = PLAYER_COLOR_HEX[player.color] || player.color;
 
         return (
-          <Card
+          <motion.div
             key={player.id}
-            padding="xl"
-            radius="lg"
-            shadow="md"
+            animate={
+              isActiveTurn
+                ? {
+                    boxShadow: [
+                      `0 0 0 0 ${playerColorHex}40`,
+                      `0 0 0 8px ${playerColorHex}40`,
+                      `0 0 0 0 ${playerColorHex}40`,
+                    ],
+                  }
+                : {}
+            }
+            transition={{ duration: 2, repeat: isActiveTurn ? Infinity : 0 }}
             style={{
-              minHeight: '220px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              border: '2px solid #EEE',
-              transition: 'transform 0.3s',
+              borderRadius: 16, // Matches Card radius="lg"
             }}
           >
-            <Stack gap="xs" align="center">
-              {/* Avatar with initials */}
-              <Avatar
-                size={80}
-                radius="xl"
-                style={{
-                  backgroundColor: colorMap[player.color] || player.color,
-                  color: player.color === 'white' ? '#2D3142' : 'white',
-                  fontSize: '2rem',
-                  fontWeight: 800,
-                  fontFamily: 'Fraunces, serif',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                }}
-              >
-                {initials}
-              </Avatar>
-
-              {/* Player name */}
-              <Text
-                size="lg"
-                fw={700}
-                style={{ fontFamily: 'Fraunces, serif' }}
-              >
-                {player.nickname}
-              </Text>
-
-              {/* Ready status */}
-              <Badge
-                size="md"
-                variant={player.ready ? 'filled' : 'outline'}
-                color={player.ready ? 'teal' : 'gray'}
-                style={{
-                  cursor: isSelf ? 'pointer' : 'default',
-                  pointerEvents: isSelf ? 'auto' : 'none',
-                }}
-                onClick={isSelf ? onReadyToggle : undefined}
-              >
-                {player.ready ? 'Ready' : 'Not ready'}
-              </Badge>
-
-              {/* Color picker for current player */}
-              {isSelf && (
-                <Group
-                  gap="xs"
+            <Card
+              padding="xl"
+              radius="lg"
+              shadow="md"
+              style={{
+                minHeight: '220px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                border: isActiveTurn
+                  ? `3px solid ${playerColorHex}`
+                  : '2px solid #EEE',
+                transition: 'transform 0.3s, border 0.3s',
+              }}
+            >
+              <Stack gap="xs" align="center">
+                {/* Avatar with initials */}
+                <Avatar
+                  size={80}
+                  radius="xl"
                   style={{
-                    marginTop: '0.5rem',
-                    background: '#F3F4F6',
-                    padding: '0.4rem',
-                    borderRadius: '99px',
+                    backgroundColor: colorMap[player.color] || player.color,
+                    color: player.color === 'white' ? '#2D3142' : 'white',
+                    fontSize: '2rem',
+                    fontWeight: 800,
+                    fontFamily: 'Fraunces, serif',
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                   }}
                 >
-                  {PLAYER_COLORS.map((color) => (
-                    <ColorSwatch
-                      key={color}
-                      color={colorMap[color] || color}
-                      size={32}
-                      radius="xl"
-                      style={{
-                        cursor: 'pointer',
-                        border: player.color === color ? '3px solid var(--color-text)' : '2px solid white',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                        transition: 'transform 0.2s',
-                      }}
-                      onClick={() => onColorChange(color)}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.2)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1)';
-                      }}
-                    />
-                  ))}
-                </Group>
-              )}
-            </Stack>
-          </Card>
+                  {initials}
+                </Avatar>
+
+                {/* Player name */}
+                <Text
+                  size="lg"
+                  fw={700}
+                  style={{ fontFamily: 'Fraunces, serif' }}
+                >
+                  {player.nickname}
+                </Text>
+
+                {/* Ready status */}
+                <Badge
+                  size="md"
+                  variant={player.ready ? 'filled' : 'outline'}
+                  color={player.ready ? 'teal' : 'gray'}
+                  style={{
+                    cursor: isSelf ? 'pointer' : 'default',
+                    pointerEvents: isSelf ? 'auto' : 'none',
+                  }}
+                  onClick={isSelf ? onReadyToggle : undefined}
+                >
+                  {player.ready ? 'Ready' : 'Not ready'}
+                </Badge>
+
+                {/* Active turn indicator */}
+                {isActiveTurn && (
+                  <Badge size="xs" color="blue" variant="light" mt={4}>
+                    Taking Turn
+                  </Badge>
+                )}
+
+                {/* Color picker for current player */}
+                {isSelf && (
+                  <Group
+                    gap="xs"
+                    style={{
+                      marginTop: '0.5rem',
+                      background: '#F3F4F6',
+                      padding: '0.4rem',
+                      borderRadius: '99px',
+                    }}
+                  >
+                    {PLAYER_COLORS.map((color) => (
+                      <ColorSwatch
+                        key={color}
+                        color={colorMap[color] || color}
+                        size={32}
+                        radius="xl"
+                        style={{
+                          cursor: 'pointer',
+                          border:
+                            player.color === color
+                              ? '3px solid var(--color-text)'
+                              : '2px solid white',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                          transition: 'transform 0.2s',
+                        }}
+                        onClick={() => onColorChange(color)}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                      />
+                    ))}
+                  </Group>
+                )}
+              </Stack>
+            </Card>
+          </motion.div>
         );
       })}
     </div>

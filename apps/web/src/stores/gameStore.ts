@@ -4,6 +4,7 @@ import type {
   BoardState,
   Settlement,
   Road,
+  Room, // Import Room type
 } from '@catan/shared';
 
 // Placement state slice
@@ -27,17 +28,19 @@ interface PlacementSlice {
 
 interface GameStore extends PlacementSlice {
   board: BoardState | null;
+  room: Room | null; // Add room state
   gameStarted: boolean;
   myPlayerId: string | null;
-  nickname: string | null; // Added nickname
+  nickname: string | null;
   lastError: string | null;
   sendMessage: ((message: WebSocketMessage) => void) | null;
 
   // Actions
   setBoard: (board: BoardState) => void;
+  setRoom: (room: Room) => void; // Add setRoom
   setGameStarted: (started: boolean) => void;
   setMyPlayerId: (playerId: string | null) => void;
-  setNickname: (nickname: string | null) => void; // Added action
+  setNickname: (nickname: string | null) => void;
   setLastError: (message: string | null) => void;
   setSendMessage: (
     handler: ((message: WebSocketMessage) => void) | null,
@@ -61,9 +64,10 @@ interface GameStore extends PlacementSlice {
 export const useGameStore = create<GameStore>((set) => ({
   // Existing state
   board: null,
+  room: null, // Initialize room
   gameStarted: false,
   myPlayerId: null,
-  nickname: null, // Initial value
+  nickname: null,
   lastError: null,
   sendMessage: null,
 
@@ -80,9 +84,10 @@ export const useGameStore = create<GameStore>((set) => ({
 
   // Existing actions
   setBoard: (board) => set({ board }),
+  setRoom: (room) => set({ room }), // Implement setRoom
   setGameStarted: (started) => set({ gameStarted: started }),
   setMyPlayerId: (playerId) => set({ myPlayerId: playerId }),
-  setNickname: (nickname) => set({ nickname }), // Action implementation
+  setNickname: (nickname) => set({ nickname }),
   setLastError: (message) => set({ lastError: message }),
   setSendMessage: (handler) => set({ sendMessage: handler }),
 
@@ -148,3 +153,5 @@ export const usePlacementActions = () =>
 export const useSettlements = () => useGameStore((state) => state.settlements);
 
 export const useRoads = () => useGameStore((state) => state.roads);
+
+export const useSocket = () => useGameStore((state) => state.sendMessage); // Export useSocket hook
