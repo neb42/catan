@@ -1,0 +1,19 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexagon Background -->
+  <path d="M100 10 L178 55 L178 145 L100 190 L22 145 L22 55 Z" fill="#DAA520" stroke="black" stroke-width="2"/>
+  
+  <!-- Wheat Stalks -->
+  <g transform="translate(100, 100) rotate(-15) translate(-100, -100)">
+    <path d="M100 160 Q105 100 100 50" stroke="#F5DEB3" stroke-width="4" fill="none"/>
+    <ellipse cx="100" cy="50" rx="5" ry="12" fill="#F5DEB3"/>
+    <ellipse cx="95" cy="65" rx="5" ry="10" fill="#F5DEB3" transform="rotate(-30 95 65)"/>
+    <ellipse cx="105" cy="65" rx="5" ry="10" fill="#F5DEB3" transform="rotate(30 105 65)"/>
+    <ellipse cx="95" cy="80" rx="5" ry="10" fill="#F5DEB3" transform="rotate(-30 95 80)"/>
+    <ellipse cx="105" cy="80" rx="5" ry="10" fill="#F5DEB3" transform="rotate(30 105 80)"/>
+  </g>
+  
+  <g transform="translate(100, 100) rotate(15) translate(-100, -100)">
+      <path d="M100 160 Q105 100 100 60" stroke="#F5DEB3" stroke-width="4" fill="none"/>
+      <ellipse cx="100" cy="60" rx="4" ry="10" fill="#F5DEB3"/>
+  </g>
+</svg>
