@@ -128,6 +128,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ## Phase 3: Initial Placement
 
 **Goal:** Implement snake draft for initial settlements and roads  
+**Status:** ✅ Complete
 **Duration:** 1 week  
 **Dependencies:** Phase 2  
 **Plans:** 6 plans
@@ -149,8 +150,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - [x] 03-02-PLAN.md — Backend placement logic and validation
 - [x] 03-03-PLAN.md — Backend initial resources and state management refactor
 - [x] 03-04-PLAN.md — Client placement state and validation hooks
-- [ ] 03-05-PLAN.md — Client placement UI and interaction
-- [ ] 03-06-PLAN.md — End-to-end verification
+- [x] 03-05-PLAN.md — Client placement UI and interaction
+- [x] 03-06-PLAN.md — End-to-end verification
 
 ### Deliverables
 
