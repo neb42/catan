@@ -3,20 +3,20 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-27  
-**Last activity:** 2026-01-27 - Completed Phase 3 Plan 03 (Placement Logic)
+**Last activity:** 2026-01-27 - Completed 03-04-PLAN.md
 
 ## Current Position
 
 Phase: 3 of 8 (Initial Placement)  
-Plan: 3 of 6 in current phase  
+Plan: 4 of 6 in current phase  
 Status: In progress  
-Last activity: 2026-01-27 - Completed 03-03-PLAN.md
+Last activity: 2026-01-27 - Completed 03-04-PLAN.md (Client Placement Logic)
 
-Progress: ███████░░░ 70%
+Progress: ████████░░ 80%
 
 ## Blockers/Concerns
 
-- Breaking changes in shared library (PlaceSettlement/PlaceRoad schemas) cause type errors in existing frontend code (`apps/web/src/components/Board/PlacementControls.tsx`). This will be fixed in the next plan (03-04 - UI Integration).
+- Breaking changes in shared library (PlaceSettlement/PlaceRoad schemas) cause type errors in existing frontend code (`apps/web/src/components/Board/PlacementControls.tsx`). This will be fixed in the next plan (03-05 - UI Integration).
 
 ## Decisions
 
@@ -27,9 +27,11 @@ Progress: ███████░░░ 70%
 | 03    | 0-based turn indexing   | Simplify turn math (Math.floor(turn/2)) vs tracking round/player separately |
 | 03    | Simplified messages     | Placement messages only send ID (vertex/edge), not raw hex coordinates      |
 | 03    | Backend State Manager   | GameManager instance attached to Room controls logic, distinct from data    |
+| 03    | Client-side validation  | Calculate valid locations on client for immediate UI feedback               |
+| 03    | Selector hooks pattern  | Use specific hooks to access store state to prevent re-render anti-patterns |
 
 ## Session Continuity
 
 Last session: 2026-01-27 23:55 UTC
-Stopped at: Completed 03-03-PLAN.md
+Stopped at: Completed 03-04-PLAN.md
 Resume file: none

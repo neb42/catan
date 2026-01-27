@@ -44,10 +44,10 @@
 
 ### Plans
 
-- [ ] 01-01-PLAN.md — Shared types library with Zod schemas
-- [ ] 01-02-PLAN.md — WebSocket server and room management
-- [ ] 01-03-PLAN.md — Lobby UI and client WebSocket
-- [ ] 01-04-PLAN.md — End-to-end verification
+- [x] 01-01-PLAN.md — Shared types library with Zod schemas
+- [x] 01-02-PLAN.md — WebSocket server and room management
+- [x] 01-03-PLAN.md — Lobby UI and client WebSocket
+- [x] 01-04-PLAN.md — End-to-end verification
 
 ### Deliverables
 
@@ -130,7 +130,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 **Goal:** Implement snake draft for initial settlements and roads  
 **Duration:** 1 week  
 **Dependencies:** Phase 2  
-**Plans:** 3 plans (from original 02-XX series)
+**Plans:** 6 plans
 
 ### Requirements (2)
 
@@ -142,6 +142,15 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 1. **Initial placement works end-to-end** — 8 rounds (snake draft), placements valid, second settlement gives resources
 2. **Interactive placement** — Click vertex to place settlement, click edge to place road, visual feedback shows valid locations
 3. **Phase transitions smoothly** — Setup phase completes, game transitions to turn-based play
+
+### Plans
+
+- [x] 03-01-PLAN.md — Backend placement state and WebSocket messages
+- [x] 03-02-PLAN.md — Backend placement logic and validation
+- [x] 03-03-PLAN.md — Backend initial resources and state management refactor
+- [x] 03-04-PLAN.md — Client placement state and validation hooks
+- [ ] 03-05-PLAN.md — Client placement UI and interaction
+- [ ] 03-06-PLAN.md — End-to-end verification
 
 ### Deliverables
 
