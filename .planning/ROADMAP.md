@@ -109,6 +109,9 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - [x] 02-03-PLAN.md — Board rendering with react-hexgrid
 - [x] 02-04-PLAN.md — End-to-end verification
 - [x] 02-05-PLAN.md — Fix port rendering with hex-to-pixel conversion (gap closure)
+- [ ] 02-06-PLAN.md — Fix number token clustering (gap closure - UAT Issue #1)
+- [ ] 02-07-PLAN.md — Fix port positioning inconsistency (gap closure - UAT Issue #2)
+- [ ] 02-08-PLAN.md — Fix hex terrain fill alignment (gap closure - UAT Issue #3)
 
 ### Deliverables
 
