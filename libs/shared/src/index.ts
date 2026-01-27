@@ -6,3 +6,4 @@ export * from './schemas/game';
 export * from './constants';
 export * from './utils/coordinates';
 export * from './utils/hexGeometry';
+export * from './utils/snakeDraft';
