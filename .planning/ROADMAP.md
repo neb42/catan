@@ -29,6 +29,7 @@
 - **SYNC-01**: Game broadcasts state updates to all players in real-time via WebSocket
 
 **Supporting:**
+
 - Shared types library (Zod schemas, TypeScript types, constants)
 - Room manager (create, join, leave)
 - WebSocket infrastructure (connect, disconnect, message routing)
@@ -66,6 +67,7 @@
 **Plans:** 2 plans
 
 Plans:
+
 - [x] 01.1-01-PLAN.md — Add 4 colors + design foundation (fonts, global styles, tokens)
 - [x] 01.1-02-PLAN.md — Update component styling (avatars, color picker, backgrounds)
 
@@ -73,6 +75,7 @@ Plans:
 Enhance visual design to match HTML mockups while maintaining all existing WebSocket functionality. Expands player colors from 4 to 8, applies Fraunces+Outfit typography, implements new color palette (terracotta, teal, saffron), and redesigns player list with circular avatars and inline color picker.
 
 **Deliverables:**
+
 - 8 player colors (red, blue, white, orange, green, yellow, purple, brown)
 - Two-step landing form (nickname → create or join)
 - Lobby with "Expedition Party" header and room code pill
@@ -88,7 +91,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 **Goal:** Generate random Catan board with hexes, numbers, and ports  
 **Duration:** 1 week  
 **Dependencies:** Phase 1  
-**Plans:** 4 plans (from original 02-XX series)
+**Plans:** 4 plans
 
 ### Requirements (3)
 
@@ -101,6 +104,17 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 1. **Random board generates correctly** — 19 hexes, no adjacent 6/8, ports placed, visually distinct
 2. **Board renders in browser** — Hex grid displays with proper orientation, terrain types visible, numbers on hexes
 3. **Ports display correctly** — 9 ports on coast, icons match resource types, positioned correctly
+
+### Plans
+
+- [x] 02-01-PLAN.md — Board generation algorithm with fairness validation
+- [x] 02-02-PLAN.md — Board state schemas and WebSocket messages
+- [x] 02-03-PLAN.md — Board rendering with react-hexgrid
+- [x] 02-04-PLAN.md — End-to-end verification
+- [x] 02-05-PLAN.md — Fix port rendering with hex-to-pixel conversion (gap closure)
+- [x] 02-06-PLAN.md — Fix number token clustering (gap closure - UAT Issue #1)
+- [x] 02-07-PLAN.md — Fix port positioning inconsistency (gap closure - UAT Issue #2)
+- [x] 02-08-PLAN.md — Fix hex terrain fill alignment (gap closure - UAT Issue #3)
 
 ### Deliverables
 
@@ -161,7 +175,6 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 2. **Turn structure flows** — Can progress from setup → first turn → second turn, correct player order
 3. **Resource tracking persists** — Resources display correctly for all players, counts accurate after multiple turns
 
-
 ### Deliverables
 
 - Turn structure (phases, ordering)
@@ -210,6 +223,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ### Requirements (22)
 
 **Building (8):**
+
 - **BUILD-01**: User can build roads by spending resources (1 wood, 1 brick)
 - **BUILD-02**: User can build settlements by spending resources (1 wood, 1 brick, 1 sheep, 1 wheat)
 - **BUILD-03**: User can upgrade settlements to cities by spending resources (3 ore, 2 wheat)
@@ -219,6 +233,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - **BUILD-08**: Game prevents invalid placements and shows clear error message
 
 **Trading (6):**
+
 - **TRADE-01**: User can propose trade offer to specific player (offering X resources for Y resources)
 - **TRADE-02**: User can accept or reject incoming trade offers
 - **TRADE-03**: Game executes accepted trades by transferring resources between players
@@ -227,6 +242,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - **TRADE-06**: User can trade 2:1 at specific resource port (2 of specific resource for any 1 other resource)
 
 **Robber (5):**
+
 - **ROBBER-01**: When 7 is rolled, players with 8+ cards choose half (rounded down) to discard
 - **ROBBER-02**: User can move robber to any land hex (including where robber currently sits)
 - **ROBBER-03**: User can steal one random resource card from adjacent player when moving robber
@@ -234,6 +250,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - **ROBBER-05**: Hex with robber does not distribute resources when its number is rolled
 
 **Supporting (3):**
+
 - **RES-03**: User can see opponent resource counts (total only, not breakdown)
 - **UX-02**: User receives feedback confirmation for all actions (build, trade, roll, etc.)
 - **UX-03**: User sees error messages when attempting invalid actions
@@ -266,6 +283,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ### Requirements (19)
 
 **Development Cards (9):**
+
 - **DEV-01**: User can buy development card from deck for resources (1 ore, 1 sheep, 1 wheat)
 - **DEV-02**: Game draws from shuffled deck of 25 cards (14 Knight, 5 VP, 2 Road Building, 2 Year of Plenty, 2 Monopoly)
 - **DEV-03**: User cannot play development card on same turn it was purchased
@@ -277,6 +295,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - **DEV-09**: Victory Point cards remain hidden from opponents until win condition
 
 **Scoring & Victory (10):**
+
 - **SCORE-01**: Game calculates Longest Road (minimum 5 road segments) using graph traversal
 - **SCORE-02**: Game awards Longest Road card (2 VP) to player with longest continuous road
 - **SCORE-03**: Game transfers Longest Road card when another player surpasses length (ties favor current holder)
@@ -317,16 +336,19 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ### Requirements (10)
 
 **Resilience (4):**
+
 - **SYNC-02**: Game pauses when player disconnects
 - **SYNC-03**: User can reconnect to paused game and resume from same state
 - **SYNC-04**: Game restores full game state for reconnecting player
 
 **Lobby Polish (3):**
+
 - **LOBBY-04**: User can select their player color from available options (red, blue, white, orange)
 - **LOBBY-05**: User can mark themselves as ready in the lobby
 - **LOBBY-06**: Game starts with countdown after all players (3-4) mark ready
 
 **UX Polish (2):**
+
 - **UX-05**: User can view scrollable game log showing all actions with timestamps
 - **UX-06**: Game interface is responsive and playable on mobile devices
 
@@ -353,18 +375,19 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 **Requirements Coverage:** 72/72 (100%)
 
-| Phase | Requirements | Percentage |
-|-------|--------------|------------|
-| Phase 1: Foundation | 6 | 8% |
-| Phase 2: Board Generation & Rendering | 3 | 4% |
-| Phase 3: Initial Placement | 2 | 3% |
-| Phase 4: Turn Structure & Resources | 6 | 8% |
-| Phase 5: Client Rendering | 4 | 6% |
-| Phase 6: Game Mechanics | 22 | 31% |
-| Phase 7: Advanced Features | 19 | 26% |
-| Phase 8: Resilience & Polish | 10 | 14% |
+| Phase                                 | Requirements | Percentage |
+| ------------------------------------- | ------------ | ---------- |
+| Phase 1: Foundation                   | 6            | 8%         |
+| Phase 2: Board Generation & Rendering | 3            | 4%         |
+| Phase 3: Initial Placement            | 2            | 3%         |
+| Phase 4: Turn Structure & Resources   | 6            | 8%         |
+| Phase 5: Client Rendering             | 4            | 6%         |
+| Phase 6: Game Mechanics               | 22           | 31%        |
+| Phase 7: Advanced Features            | 19           | 26%        |
+| Phase 8: Resilience & Polish          | 10           | 14%        |
 
 **Phase Dependencies:**
+
 - Phase 2 depends on Phase 1 (needs room system)
 - Phase 3 depends on Phase 2 (needs board to place on)
 - Phase 4 depends on Phase 3 (needs initial placement complete)
@@ -379,29 +402,32 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ## Risks & Mitigations
 
-| Risk | Phase | Impact | Mitigation |
-|------|-------|--------|------------|
-| Longest road algorithm bugs | Phase 7 | High | DFS with comprehensive test cases, validate against known scenarios |
-| State desynchronization | Phase 1-8 | Critical | Server-authoritative, full-state broadcasts, state versioning |
-| WebSocket connection drops | Phase 8 | High | Heartbeat pings, auto-reconnect, state recovery |
-| Trade UI complexity | Phase 6 | Medium | Prototype early, iterate with user testing |
-| Mobile touch targets too small | Phase 8 | Medium | Design for 44px minimum, test on real devices |
+| Risk                           | Phase     | Impact   | Mitigation                                                          |
+| ------------------------------ | --------- | -------- | ------------------------------------------------------------------- |
+| Longest road algorithm bugs    | Phase 7   | High     | DFS with comprehensive test cases, validate against known scenarios |
+| State desynchronization        | Phase 1-8 | Critical | Server-authoritative, full-state broadcasts, state versioning       |
+| WebSocket connection drops     | Phase 8   | High     | Heartbeat pings, auto-reconnect, state recovery                     |
+| Trade UI complexity            | Phase 6   | Medium   | Prototype early, iterate with user testing                          |
+| Mobile touch targets too small | Phase 8   | Medium   | Design for 44px minimum, test on real devices                       |
 
 ---
 
 ## Success Metrics (v1 Launch)
 
 **Functional:**
+
 - ✓ All 72 requirements implemented
 - ✓ Complete game playable end-to-end
 - ✓ No critical bugs blocking game completion
 
 **Technical:**
+
 - ✓ State sync < 500ms across all clients
 - ✓ Reconnection success rate > 95%
 - ✓ Game state size < 100KB
 
 **User Experience:**
+
 - ✓ Mobile playable (can complete full game)
 - ✓ Clear feedback for all actions
 - ✓ Win condition reached in test games
@@ -411,6 +437,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ## Post-v1 Backlog (v2)
 
 Deferred from v1:
+
 - Trade counter-offers (TRADE-07)
 - Trade broadcast requests (TRADE-08)
 - In-game chat (SOCIAL-01, SOCIAL-02)
@@ -420,6 +447,7 @@ Deferred from v1:
 - Turn undo (QOL-03)
 
 Future versions:
+
 - User accounts & authentication
 - Expansions (Seafarers, Cities & Knights)
 - AI players
@@ -429,4 +457,4 @@ Future versions:
 
 ---
 
-*Last updated: 2026-01-20 after roadmap creation*
+_Last updated: 2026-01-20 after roadmap creation_

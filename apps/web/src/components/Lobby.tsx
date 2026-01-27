@@ -137,6 +137,13 @@ export default function Lobby() {
           break;
         }
 
+        case 'game_started': {
+          const gameStore = useGameStore.getState();
+          gameStore.setBoard(message.board);
+          gameStore.setGameStarted(true);
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);

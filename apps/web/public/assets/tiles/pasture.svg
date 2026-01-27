@@ -1,0 +1,16 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sheep Body (Cloud-like) -->
+  <circle cx="85" cy="100" r="18" fill="white"/>
+  <circle cx="100" cy="90" r="22" fill="white"/>
+  <circle cx="115" cy="100" r="18" fill="white"/>
+  <circle cx="100" cy="115" r="18" fill="white"/>
+  
+  <!-- Legs -->
+  <rect x="85" y="115" width="6" height="18" fill="#333"/>
+  <rect x="110" y="115" width="6" height="18" fill="#333"/>
+  
+  <!-- Head -->
+  <circle cx="75" cy="95" r="12" fill="#333"/>
+  <!-- Eye -->
+  <circle cx="72" cy="92" r="2" fill="white"/>
+</svg>

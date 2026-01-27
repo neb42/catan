@@ -1,0 +1,8 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tree Trunk -->
+  <rect x="90" y="130" width="20" height="30" fill="#8B4513"/>
+  
+  <!-- Tree Foliage -->
+  <path d="M50 130 L100 40 L150 130 Z" fill="#006400"/>
+  <path d="M60 100 L100 30 L140 100 Z" fill="#008000"/>
+</svg>

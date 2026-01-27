@@ -1,0 +1,9 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dunes -->
+  <path d="M22 110 Q100 60 178 110 L178 145 L22 145 Z" fill="#D2691E" opacity="0.3"/>
+  
+  <!-- Cactus -->
+  <rect x="95" y="110" width="10" height="50" rx="5" fill="#006400"/>
+  <path d="M95 130 Q75 130 75 110 L75 100 Q75 95 80 95 L85 95" stroke="#006400" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M105 120 Q125 120 125 100 L125 90" stroke="#006400" stroke-width="8" fill="none" stroke-linecap="round"/>
+</svg>
