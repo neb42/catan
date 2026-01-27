@@ -1,7 +1,4 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <!-- Hexagon Background -->
-  <path d="M100 10 L178 55 L178 145 L100 190 L22 145 L22 55 Z" fill="#708090" stroke="black" stroke-width="2"/>
-  
   <!-- Mountains - Adjusted to fit within bounds (Max X ~178, Min X ~22) -->
   <path d="M35 145 L75 80 L115 145 Z" fill="#4a5a6a"/>
   <path d="M95 145 L135 60 L165 145 Z" fill="#2F4F4F"/>

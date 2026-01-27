@@ -1,7 +1,4 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <!-- Hexagon Background -->
-  <path d="M100 10 L178 55 L178 145 L100 190 L22 145 L22 55 Z" fill="#90EE90" stroke="black" stroke-width="2"/>
-  
   <!-- Sheep Body (Cloud-like) -->
   <circle cx="85" cy="100" r="18" fill="white"/>
   <circle cx="100" cy="90" r="22" fill="white"/>
