@@ -63,7 +63,7 @@ Each task was committed atomically:
 
 1. **Task 1: Remove hexagon boundary paths from all SVG tile files** - `0edcf26` (fix)
 
-**Plan metadata:** (this commit)
+**Plan metadata:** `b2c4477`
 
 _Note: TDD tasks may have multiple commits (test → feat → refactor)_
 
