@@ -88,7 +88,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 **Goal:** Generate random Catan board with hexes, numbers, and ports  
 **Duration:** 1 week  
 **Dependencies:** Phase 1  
-**Plans:** 4 plans (from original 02-XX series)
+**Plans:** 4 plans
 
 ### Requirements (3)
 
@@ -101,6 +101,13 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 1. **Random board generates correctly** — 19 hexes, no adjacent 6/8, ports placed, visually distinct
 2. **Board renders in browser** — Hex grid displays with proper orientation, terrain types visible, numbers on hexes
 3. **Ports display correctly** — 9 ports on coast, icons match resource types, positioned correctly
+
+### Plans
+
+- [ ] 02-01-PLAN.md — Board generation algorithm with fairness validation
+- [ ] 02-02-PLAN.md — Board state schemas and WebSocket messages
+- [ ] 02-03-PLAN.md — Board rendering with react-hexgrid
+- [ ] 02-04-PLAN.md — End-to-end verification
 
 ### Deliverables
 
