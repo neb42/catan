@@ -13,7 +13,7 @@ export function TerrainHex({ hex }: TerrainHexProps) {
         q={hex.q} 
         r={hex.r} 
         s={-hex.q - hex.r}
-        fill={`url(#${hex.terrain})`}
+        fill={`${hex.terrain}`}
         style={{
           stroke: '#8B7355',
           strokeWidth: 0.5,
