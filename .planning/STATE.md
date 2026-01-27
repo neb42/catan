@@ -3,14 +3,14 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-27  
-**Last activity:** 2026-01-27 - Completed 03-06-PLAN.md
+**Last activity:** 2026-01-27 - Completed 03-07-PLAN.md
 
 ## Current Position
 
 Phase: 3 of 8 (Initial Placement)  
-Plan: 6 of 6 in current phase  
+Plan: 7 of 7 in current phase  
 Status: Phase complete  
-Last activity: 2026-01-27 - Completed 03-06-PLAN.md (Placement UI Components)
+Last activity: 2026-01-27 - Completed 03-07-PLAN.md (WebSocket Message Handlers - Gap Closure)
 
 Progress: ██████████ 100%
 
@@ -34,9 +34,10 @@ Progress: ██████████ 100%
 | 03    | Store-based color       | Derive player color from store nickname instead of prop drilling             |
 | 03    | Store Room State        | Move room/player data into gameStore to avoid prop drilling in UI components |
 | 03    | UI Component Split      | Separate PlacementBanner and DraftOrderDisplay for cleaner Game layout       |
+| 03    | Lobby owns WebSocket    | Lobby.tsx handles all WebSocket messages including gameplay during placement |
 
 ## Session Continuity
 
-Last session: 2026-01-27 23:00 UTC
-Stopped at: Completed 03-06-PLAN.md
+Last session: 2026-01-27 23:22 UTC
+Stopped at: Completed 03-07-PLAN.md
 Resume file: none
