@@ -3,25 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-27  
-**Last activity:** 2026-01-27 - Completed Phase 2 Plan 05 (Gap Closure - Port Rendering)
+**Last activity:** 2026-01-27 - Completed Phase 2 Plan 06 (Gap Closure - Number Tokens)
 
 ## Current Phase
 
-**Phase:** Board Generation & Rendering (Phase 2 of 6)  
-**Status:** Complete  
-**Started:** 2026-01-27  
-**Completed:** 2026-01-27
+Phase: 2 of 8 (Board Generation & Rendering)
+Plan: 6 of 8 in current phase
+Status: In progress
+Last activity: 2026-01-27 - Completed 02-06-PLAN.md
 
-### Recently Completed
-
-**Phase 2 Plan 05 (Gap Closure):** Port rendering fix  
-**Completed:** 2026-01-27
-
-**Phase 2 Plan 4:** Board verification and sign-off  
-**Completed:** 2026-01-27
-
-**Phase 2 Plan 3:** Board rendering and game start flow  
-**Completed:** 2026-01-27
+Progress: █████░░░░░ 56%
 
 ## Phase Progress
 
@@ -35,6 +26,7 @@
 - [x] WebSocket infrastructure working
 
 **Success Criteria:**
+
 - [x] User can create and share rooms
 - [x] User can join rooms with nickname
 - [x] Real-time lobby updates
@@ -49,6 +41,7 @@
 - [x] BOARD-03: Game places 9 ports on coast
 
 **Success Criteria:**
+
 - [x] Random board generates correctly
 - [x] Board renders in browser
 - [x] Ports display correctly
@@ -61,6 +54,7 @@
 - [ ] BOARD-05: User receives starting resources from second settlement
 
 **Success Criteria:**
+
 - [ ] Initial placement works end-to-end
 - [ ] Interactive placement with visual feedback
 - [ ] Phase transitions smoothly
@@ -77,6 +71,7 @@
 - [ ] RES-02: Game tracks resource counts
 
 **Success Criteria:**
+
 - [ ] Dice roll distributes resources
 - [ ] Turn structure flows
 - [ ] Resource tracking persists
@@ -91,6 +86,7 @@
 - [ ] UX-04: User can view player list with colors and scores
 
 **Success Criteria:**
+
 - [ ] Hex board renders correctly
 - [ ] Turn indicators are prominent
 - [ ] Valid placements highlight
@@ -101,6 +97,7 @@
 ### Phase 6: Game Mechanics (0/22)
 
 **Building:**
+
 - [ ] BUILD-01: User can build roads
 - [ ] BUILD-02: User can build settlements
 - [ ] BUILD-03: User can upgrade to cities
@@ -110,6 +107,7 @@
 - [ ] BUILD-08: Invalid placements show errors
 
 **Trading:**
+
 - [ ] TRADE-01: User can propose domestic trades
 - [ ] TRADE-02: User can accept/reject trades
 - [ ] TRADE-03: Game executes accepted trades
@@ -118,6 +116,7 @@
 - [ ] TRADE-06: User can trade 2:1 at specific port
 
 **Robber:**
+
 - [ ] ROBBER-01: 7 roll triggers discard for 8+ cards
 - [ ] ROBBER-02: User can move robber to any land hex
 - [ ] ROBBER-03: User can steal from adjacent player
@@ -125,11 +124,13 @@
 - [ ] ROBBER-05: Robber blocks resource distribution
 
 **Supporting:**
+
 - [ ] RES-03: User sees opponent resource counts
 - [ ] UX-02: User receives action feedback
 - [ ] UX-03: User sees error messages
 
 **Success Criteria:**
+
 - [ ] Building system works end-to-end
 - [ ] Domestic trading works
 - [ ] Maritime trading works
@@ -141,6 +142,7 @@
 ### Phase 7: Advanced Features (0/19)
 
 **Development Cards:**
+
 - [ ] DEV-01: User can buy dev cards
 - [ ] DEV-02: Game uses shuffled 25-card deck
 - [ ] DEV-03: Can't play card same turn purchased
@@ -152,6 +154,7 @@
 - [ ] DEV-09: VP cards stay hidden
 
 **Scoring & Victory:**
+
 - [ ] SCORE-01: Longest Road calculated correctly
 - [ ] SCORE-02: Longest Road card awarded (2 VP)
 - [ ] SCORE-03: Longest Road transfers on surpass
@@ -164,6 +167,7 @@
 - [ ] SCORE-10: Game ends and announces winner
 
 **Success Criteria:**
+
 - [ ] Dev cards work correctly
 - [ ] Longest road calculates correctly
 - [ ] Largest army calculates correctly
@@ -175,20 +179,24 @@
 ### Phase 8: Resilience & Polish (0/10)
 
 **Resilience:**
+
 - [ ] SYNC-02: Game pauses on disconnect
 - [ ] SYNC-03: User can reconnect to paused game
 - [ ] SYNC-04: Game restores full state on reconnect
 
 **Lobby Polish:**
+
 - [ ] LOBBY-04: User can select player color
 - [ ] LOBBY-05: User can mark ready
 - [ ] LOBBY-06: Game starts after all ready
 
 **UX Polish:**
+
 - [ ] UX-05: Scrollable game log with timestamps
 - [ ] UX-06: Interface responsive on mobile
 
 **Success Criteria:**
+
 - [ ] Disconnect handling works
 - [ ] Reconnection works
 - [ ] Lobby flow complete
@@ -215,50 +223,26 @@ Phase 8: Resilience & Polish[░░░░░░░░░░] 0/10
 
 ---
 
-## Blockers
+## Blockers/Concerns Carried Forward
 
-None currently.
-
----
-
-## Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 001 | split out phase 2 into smaller phases | 2026-01-21 | c0d3c40 | [001-split-out-phase-2-into-smaller-phases](./quick/001-split-out-phase-2-into-smaller-phases/) |
+None.
 
 ---
 
-## Recent Activity
+## Decisions
 
-- 2026-01-27: Verified and signed off board generation (Phase 2 Plan 4)
-- 2026-01-27: Implemented board rendering and game start (Phase 2 Plan 3)
-- 2026-01-27: Implemented board schemas and message protocol (Phase 2 Plan 2)
-- 2026-01-27: Implemented complete board generation (BOARD-01, BOARD-02, BOARD-03)
-- 2026-01-20: Lobby UI added with reconnection WebSocket client
+| Phase | Decision | Rationale                  |
+| ----- | -------- | -------------------------- |
+| 02-06 | None     | Followed plan as specified |
 
----
-
-## Next Steps
-
-1. Initial placement implementation (Phase 3)
-2. Turn structure implementation (Phase 4)
-
----
-
-## Accumulated Context
-
-### Roadmap Evolution
-
-- Phase 1.1 inserted after Phase 1: Small improvements from phase 1. Update the UI to match designs found in "./.designs/01-foundation". Add 4 more colours for selection. (URGENT)
 ---
 
 ## Session Continuity
 
-Last session: 2026-01-27
-Stopped at: Completed 02-04 (Board Verification)
-Resume file: none
+Last session: 2026-01-27 17:29
+Stopped at: Completed 02-06-PLAN.md
+Resume file: None
 
 ---
 
-*This file tracks implementation progress against the roadmap. Update after completing each requirement or phase.*
+_This file tracks implementation progress against the roadmap. Update after completing each requirement or phase._
