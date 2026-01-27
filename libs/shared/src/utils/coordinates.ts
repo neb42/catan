@@ -76,9 +76,13 @@ export interface PixelCoord {
  * x = size.x * (Math.sqrt(3) * q + Math.sqrt(3)/2 * r)
  * y = size.y * (3/2 * r)
  */
-export function hexToPixel(coord: AxialCoord, size: { x: number; y: number } = { x: 10, y: 10 }): PixelCoord {
-  const x = size.x * (Math.sqrt(3) * coord.q + Math.sqrt(3) / 2 * coord.r);
-  const y = size.y * (3 / 2 * coord.r);
+export function hexToPixel(
+  coord: AxialCoord, 
+  size: { x: number; y: number } = { x: 10, y: 10 },
+  spacing: number = 1
+): PixelCoord {
+  const x = size.x * (Math.sqrt(3) * coord.q + Math.sqrt(3) / 2 * coord.r) * spacing;
+  const y = size.y * (3 / 2 * coord.r) * spacing;
   return { x, y };
 }
 
@@ -100,9 +104,10 @@ export function getPortPosition(
   hexR: number,
   edge: number,
   size: { x: number; y: number } = { x: 10, y: 10 },
-  distance: number = 15
+  distance: number = 15,
+  spacing: number = 1
 ): PixelCoord {
-  const hexCenter = hexToPixel({ q: hexQ, r: hexR }, size);
+  const hexCenter = hexToPixel({ q: hexQ, r: hexR }, size, spacing);
   const angle = getEdgeAngle(edge);
   const radians = (angle * Math.PI) / 180;
   

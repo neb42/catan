@@ -6,13 +6,14 @@ interface PortProps {
 
 export function Port({ port }: PortProps) {
   // Calculate pixel position using proper hex-to-pixel conversion
-  // Matches Board.tsx Layout: size={x: 10, y: 10}, flat=false
+  // Matches Board.tsx Layout: size={x: 10, y: 10}, flat=false, spacing=1.05
   const position = getPortPosition(
     port.hexQ,
     port.hexR,
     port.edge,
     { x: 10, y: 10 }, // Match Board Layout size
-    15 // Distance from hex center to position port outside boundary
+    15, // Distance from hex center to position port outside boundary
+    1.05 // Match Board Layout spacing
   );
   
   return (
