@@ -214,46 +214,64 @@ function generatePorts(hexes: Hex[]): Port[] {
       { q: -1, r: 1, s: 0 },
       { q: 0, r: 1, s: -1 },
     ];
-    // Map CUBE_DIRECTIONS index to angle-ordered edge index (0° to 300°)
-    // DIRS[0] → 60°, DIRS[1] → 0°, DIRS[2] → 300°,
-    // DIRS[3] → 240°, DIRS[4] → 180°, DIRS[5] → 120°
-    const DIRS_TO_ANGLE_MAP = [1, 0, 5, 4, 3, 2];
+    // Map DIRS index to visual edge index (0-5)
+    // DIRS are: East, NE, NW, West, SW, SE (in terms of q,r changes?)
+    // Actually:
+    // (1,0) -> East (Prop 0)
+    // (1,-1) -> NE (Prop 5)
+    // (0,-1) -> NW (Prop 4)
+    // (-1,0) -> West (Prop 3)
+    // (-1,1) -> SW (Prop 2)
+    // (0,1) -> SE (Prop 1)
+    const DIRS_TO_EDGE_MAP = [0, 5, 4, 3, 2, 1];
 
-    // We find the direction that extends furthest from center
+    // We find the direction that extends furthest from center AND is most aligned with position
+    let bestEdgeIndex = -1;
+    let maxAlignment = -Infinity;
+
     for (let e = 0; e < 6; e++) {
       const d = DIRS[e];
       const nQ = hex.q + d.q;
       const nR = hex.r + d.r;
-      const nS = -hex.q - hex.r + d.s;
+      const nS = -hex.q - hex.r + d.s; // s = -q-r
 
       const dist = (Math.abs(nQ) + Math.abs(nR) + Math.abs(nS)) / 2;
-      if (dist > 2) {
-        // Is outside ring 2
-        // This is a candidate edge.
-        // We prefer the one most aligned with hex position vector.
-        // Or just pick the first valid one?
-        // Visuals work better if we pick consistently.
-        // For a straight edge hex (not corner), there is 1 valid edge.
-        // For a corner hex, there are 2 or 3.
-        // Let's pick the one "most parallel" to the radius.
-        // Similar to max dist? All outside neighbors are dist 3.
 
-        // Tie breaker?
-        // Just take the first valid one for now.
-        bestEdge = e;
-        // If we want to be fancy, we can check which one aligns best with Radial Angle.
+      // Must be an external edge (neighbor is outside the board)
+      if (dist > 2) {
+        // Calculate alignment (dot product) between Position and Direction
+        // Hex to pixel conversion (approximate for comparison):
+        // x = q + r/2
+        // y = r * sqrt(3)/2
+        // Dot product = (P.x * D.x) + (P.y * D.y)
+
+        // Position vector components
+        const px = hex.q + hex.r * 0.5;
+        const py = hex.r * 0.866;
+
+        // Direction vector components
+        const dx = d.q + d.r * 0.5;
+        const dy = d.r * 0.866;
+
+        const alignment = px * dx + py * dy;
+
+        if (alignment > maxAlignment) {
+          maxAlignment = alignment;
+          bestEdgeIndex = e;
+        }
       }
     }
-    // If multiple, maybe we should pick the "middle" one if 3, or one of the 2.
 
-    const angleOrderedEdge = DIRS_TO_ANGLE_MAP[bestEdge];
+    if (bestEdgeIndex !== -1) {
+      const visualEdge = DIRS_TO_EDGE_MAP[bestEdgeIndex];
 
-    ports.push({
-      type,
-      hexQ: hex.q,
-      hexR: hex.r,
-      edge: angleOrderedEdge,
-    });
+      ports.push({
+        type,
+        hexQ: hex.q,
+        hexR: hex.r,
+        edge: visualEdge,
+      });
+    }
   });
 
   return ports;
