@@ -11,6 +11,7 @@ import {
   WebSocketMessageSchema,
 } from '@catan/shared';
 
+import { generateBoard } from '../game/board-generator';
 import { ManagedPlayer, ManagedRoom, RoomManager } from '../managers/RoomManager';
 import { generateRoomId } from '../utils/room-id';
 
@@ -200,6 +201,19 @@ export function handleWebSocketConnection(
             type: 'game_starting',
             countdown: GAME_START_COUNTDOWN,
           });
+
+          setTimeout(() => {
+            const roomChecking = roomManager.getRoom(currentRoomId!);
+            if (!roomChecking || roomChecking.board) return;
+
+            const board = generateBoard();
+            roomManager.setBoard(currentRoomId!, board);
+
+            roomManager.broadcastToRoom(currentRoomId!, {
+              type: 'game_started',
+              board,
+            });
+          }, GAME_START_COUNTDOWN * 1000);
         }
 
         roomManager.broadcastToRoom(currentRoomId, {

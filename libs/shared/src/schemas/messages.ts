@@ -58,10 +58,14 @@ export const ToggleReadyMessageSchema = z.object({
   playerId: playerIdSchema,
 });
 
+export const GameStartingMessageSchema = z.object({
+  type: z.literal('game_starting'),
+  countdown: z.number(),
+});
+
 export const GameStartedMessageSchema = z.object({
   type: z.literal('game_started'),
   board: BoardStateSchema,
-  countdown: z.number().optional(), // For UI transition (3-2-1 countdown)
 });
 
 export const RoomStateMessageSchema = z.object({
@@ -84,6 +88,7 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   ChangeColorMessageSchema,
   ColorChangedMessageSchema,
   ToggleReadyMessageSchema,
+  GameStartingMessageSchema,
   GameStartedMessageSchema,
   RoomStateMessageSchema,
   ErrorMessageSchema,
@@ -98,6 +103,7 @@ export type PlayerReadyMessage = z.infer<typeof PlayerReadyMessageSchema>;
 export type ChangeColorMessage = z.infer<typeof ChangeColorMessageSchema>;
 export type ColorChangedMessage = z.infer<typeof ColorChangedMessageSchema>;
 export type ToggleReadyMessage = z.infer<typeof ToggleReadyMessageSchema>;
+export type GameStartingMessage = z.infer<typeof GameStartingMessageSchema>;
 export type GameStartedMessage = z.infer<typeof GameStartedMessageSchema>;
 export type RoomStateMessage = z.infer<typeof RoomStateMessageSchema>;
 export type ErrorMessage = z.infer<typeof ErrorMessageSchema>;
