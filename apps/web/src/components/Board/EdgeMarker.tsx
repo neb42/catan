@@ -18,7 +18,10 @@ export function EdgeMarker({
   invalidReason,
   onClick,
 }: EdgeMarkerProps) {
-  let { start, end, midpoint } = edge;
+  // Roads should go from corner to midpoint (half the edge)
+  let start = edge.start;
+  let end = edge.midpoint; // Changed from edge.end to edge.midpoint
+  let midpoint = edge.midpoint;
 
   // For boundary edges (only 1 adjacent hex), offset the road preview outward
   const size = { x: 10, y: 10 };

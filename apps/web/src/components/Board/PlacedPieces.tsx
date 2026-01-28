@@ -42,9 +42,11 @@ export function PlacedPieces({ board, playerIdToColor }: PlacedPiecesProps) {
         const colorName = playerIdToColor.get(road.playerId) || 'white';
         const colorHex = PLAYER_COLOR_HEX[colorName] || colorName;
 
+        // Roads should go from corner to midpoint (half the edge)
         // For boundary edges (only 1 adjacent hex), offset the road outward
         const isBoundaryEdge = edge.adjacentHexes.length === 1;
-        let { start, end } = edge;
+        let start = edge.start;
+        let end = edge.midpoint; // Changed from edge.end to edge.midpoint
 
         if (isBoundaryEdge) {
           // Calculate offset direction (perpendicular to edge, away from hex center)
