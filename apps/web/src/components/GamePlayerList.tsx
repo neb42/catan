@@ -1,7 +1,7 @@
 import { Player, PLAYER_COLOR_HEX } from '@catan/shared';
 import { Avatar, Badge, Card, Stack, Text } from '@mantine/core';
 import { motion } from 'motion/react';
-import { useCurrentPlayer, usePlayerResources } from '../stores/gameStore';
+import { useCurrentPlayer, useGameStore } from '../stores/gameStore';
 
 type GamePlayerListProps = {
   players: Player[];
@@ -20,6 +20,9 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
   // Get active player from store for turn highlighting
   const { id: activePlayerId } = useCurrentPlayer();
 
+  // Read all player resources once at the top level
+  const allPlayerResources = useGameStore((state) => state.playerResources);
+
   // Color mapping for backgrounds
   const colorMap: Record<string, string> = PLAYER_COLOR_HEX;
 
@@ -31,7 +34,13 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
         const isActiveTurn = player.id === activePlayerId;
         const initials = player.nickname.slice(0, 2).toUpperCase();
         const playerColorHex = PLAYER_COLOR_HEX[player.color] || player.color;
-        const playerResources = usePlayerResources(player.id);
+        const playerResources = allPlayerResources[player.id] || {
+          wood: 0,
+          brick: 0,
+          sheep: 0,
+          wheat: 0,
+          ore: 0,
+        };
 
         return (
           <motion.div
