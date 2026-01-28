@@ -28,7 +28,7 @@ export function PlacementBanner({ players }: PlacementBannerProps) {
       style={{
         position: 'absolute',
         top: 16,
-        left: '50%',
+        left: '65%',
         transform: 'translateX(-50%)',
         zIndex: 100,
       }}
