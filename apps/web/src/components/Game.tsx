@@ -5,12 +5,14 @@ import { PlacementBanner } from './PlacementBanner';
 import { DraftOrderDisplay } from './DraftOrderDisplay';
 import { PlacementControls } from './Board/PlacementControls';
 import { usePlacementState } from '../hooks/usePlacementState';
-import PlayerList from './PlayerList';
+import { GamePlayerList } from './GamePlayerList';
 import { useShallow } from 'zustand/react/shallow';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
-  const players = useGameStore(useShallow((state) => state.room?.players || []));
+  const players = useGameStore(
+    useShallow((state) => state.room?.players || []),
+  );
   const { id: currentPlayerId } = useCurrentPlayer();
   const socket = useSocket();
   const { phase: placementPhase } = usePlacementState();
@@ -72,12 +74,7 @@ export function Game() {
           transformOrigin: 'top left',
         }}
       >
-        <PlayerList
-          players={players}
-          currentPlayerId={currentPlayerId}
-          onColorChange={() => {}} // No color changing during game
-          onReadyToggle={() => {}} // No ready toggling during game
-        />
+        <GamePlayerList players={players} />
       </div>
 
       {/* Placement controls at bottom center */}

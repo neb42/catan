@@ -17,7 +17,7 @@ import {
 import CreateRoom from './CreateRoom';
 import JoinRoom from './JoinRoom';
 import LandingForm from './LandingForm';
-import PlayerList from './PlayerList';
+import { LobbyPlayerList } from './LobbyPlayerList';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useGameStore } from '../stores/gameStore';
 
@@ -441,7 +441,7 @@ export default function Lobby() {
           </header>
 
           <div style={{ marginBottom: '2.5rem', flex: '1' }}>
-            <PlayerList
+            <LobbyPlayerList
               players={players}
               currentPlayerId={currentPlayerId}
               onColorChange={handleColorChange}
