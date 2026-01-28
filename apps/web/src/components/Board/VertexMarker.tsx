@@ -80,12 +80,7 @@ export function VertexMarker({
 
       {/* Large transparent hitbox for easier clicking */}
       {!isValid && invalidReason && (
-        <circle
-          cx={vertex.x}
-          cy={vertex.y}
-          r={isValid ? 3 : 1.5}
-          fill="transparent"
-        >
+        <circle cx={vertex.x} cy={vertex.y} r={1.5} fill="transparent">
           <title>{invalidReason}</title>
         </circle>
       )}
