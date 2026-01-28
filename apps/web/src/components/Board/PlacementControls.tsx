@@ -59,7 +59,7 @@ export function PlacementControls() {
         </motion.div>
       )}
 
-      {!selectedLocationId && (
+      {/* {!selectedLocationId && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -81,7 +81,7 @@ export function PlacementControls() {
             Click a valid location to place your {phase}
           </Text>
         </motion.div>
-      )}
+      )} */}
     </AnimatePresence>
   );
 }
