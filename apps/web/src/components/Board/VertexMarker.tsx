@@ -41,9 +41,9 @@ export function VertexMarker({
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           style={{
             filter: `drop-shadow(0 0 ${isSelected ? 4 : 2}px ${playerColor})`,
-            cursor: isValid ? 'pointer' : 'default',
+            cursor: 'pointer',
           }}
-          onClick={isValid ? onClick : undefined}
+          onClick={onClick}
         >
           {!isValid && invalidReason && <title>{invalidReason}</title>}
         </motion.circle>
