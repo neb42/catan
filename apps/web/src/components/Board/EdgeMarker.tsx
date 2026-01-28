@@ -24,7 +24,7 @@ export function EdgeMarker({
   const size = { x: 10, y: 10 };
   const isBoundaryEdge = edge.adjacentHexes.length === 1;
 
-  if (isBoundaryEdge && isSelected) {
+  if (isBoundaryEdge) {
     // Calculate offset direction (perpendicular to edge, away from hex center)
     const hexId = edge.adjacentHexes[0];
     const [qStr, rStr] = hexId.split(',');
@@ -68,6 +68,12 @@ export function EdgeMarker({
     end = {
       x: end.x + perpNormX * offsetAmount * directionMultiplier,
       y: end.y + perpNormY * offsetAmount * directionMultiplier,
+    };
+
+    // Recalculate midpoint with offset applied
+    midpoint = {
+      x: (start.x + end.x) / 2,
+      y: (start.y + end.y) / 2,
     };
   }
 
