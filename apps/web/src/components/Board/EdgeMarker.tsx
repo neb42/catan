@@ -86,18 +86,18 @@ export function EdgeMarker({
   return (
     <g>
       {/* Large transparent hitbox along the edge */}
-      {/* <line
-        x1={start.x}
-        y1={start.y}
-        x2={end.x}
-        y2={end.y}
-        stroke="transparent"
-        strokeWidth={isValid ? 4 : 2}
-        style={{ cursor: isValid ? 'pointer' : 'default' }}
-        onClick={isValid ? onClick : undefined}
-      >
-        {!isValid && invalidReason && <title>{invalidReason}</title>}
-      </line> */}
+      {!isValid && invalidReason && (
+        <line
+          x1={start.x}
+          y1={start.y}
+          x2={end.x}
+          y2={end.y}
+          stroke="transparent"
+          strokeWidth={2}
+        >
+          <title>{invalidReason}</title>
+        </line>
+      )}
 
       {/* Visual indicator for valid edge */}
       {isValid && (

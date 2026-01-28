@@ -79,16 +79,16 @@ export function VertexMarker({
       )}
 
       {/* Large transparent hitbox for easier clicking */}
-      {/* <circle
-        cx={vertex.x}
-        cy={vertex.y}
-        r={isValid ? 3 : 1.5}
-        fill="transparent"
-        style={{ cursor: isValid ? 'pointer' : 'default' }}
-        onClick={isValid ? onClick : undefined}
-      >
-          {!isValid && invalidReason && <title>{invalidReason}</title>}
-      </circle> */}
+      {!isValid && invalidReason && (
+        <circle
+          cx={vertex.x}
+          cy={vertex.y}
+          r={isValid ? 3 : 1.5}
+          fill="transparent"
+        >
+          <title>{invalidReason}</title>
+        </circle>
+      )}
     </g>
   );
 }
