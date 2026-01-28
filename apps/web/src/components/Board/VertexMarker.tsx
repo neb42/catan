@@ -41,8 +41,12 @@ export function VertexMarker({
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           style={{
             filter: `drop-shadow(0 0 ${isSelected ? 4 : 2}px ${playerColor})`,
+            cursor: isValid ? 'pointer' : 'default',
           }}
-        />
+          onClick={isValid ? onClick : undefined}
+        >
+          {!isValid && invalidReason && <title>{invalidReason}</title>}
+        </motion.circle>
       )}
 
       {/* Selection preview - settlement shape */}
@@ -75,7 +79,7 @@ export function VertexMarker({
       )}
 
       {/* Large transparent hitbox for easier clicking */}
-      <circle
+      {/* <circle
         cx={vertex.x}
         cy={vertex.y}
         r={isValid ? 3 : 1.5}
@@ -83,9 +87,8 @@ export function VertexMarker({
         style={{ cursor: isValid ? 'pointer' : 'default' }}
         onClick={isValid ? onClick : undefined}
       >
-        {/* SVG native tooltip for invalid locations */}
-        {!isValid && invalidReason && <title>{invalidReason}</title>}
-      </circle>
+          {!isValid && invalidReason && <title>{invalidReason}</title>}
+      </circle> */}
     </g>
   );
 }

@@ -26,7 +26,7 @@ export function EdgeMarker({
   return (
     <g>
       {/* Large transparent hitbox along the edge */}
-      <line
+      {/* <line
         x1={start.x}
         y1={start.y}
         x2={end.x}
@@ -37,7 +37,7 @@ export function EdgeMarker({
         onClick={isValid ? onClick : undefined}
       >
         {!isValid && invalidReason && <title>{invalidReason}</title>}
-      </line>
+      </line> */}
 
       {/* Visual indicator for valid edge */}
       {isValid && (
@@ -57,7 +57,9 @@ export function EdgeMarker({
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           style={{
             filter: `drop-shadow(0 0 ${isSelected ? 3 : 1.5}px ${playerColor})`,
+            cursor: isValid ? 'pointer' : 'default',
           }}
+          onClick={isValid ? onClick : undefined}
         />
       )}
 
