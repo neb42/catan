@@ -18,7 +18,58 @@ export function EdgeMarker({
   invalidReason,
   onClick,
 }: EdgeMarkerProps) {
-  const { start, end, midpoint } = edge;
+  let { start, end, midpoint } = edge;
+
+  // For boundary edges (only 1 adjacent hex), offset the road preview outward
+  const size = { x: 10, y: 10 };
+  const isBoundaryEdge = edge.adjacentHexes.length === 1;
+
+  if (isBoundaryEdge && isSelected) {
+    // Calculate offset direction (perpendicular to edge, away from hex center)
+    const hexId = edge.adjacentHexes[0];
+    const [qStr, rStr] = hexId.split(',');
+    const hexQ = parseInt(qStr, 10);
+    const hexR = parseInt(rStr, 10);
+
+    // Get hex center in pixel coordinates
+    const hexCenterX =
+      size.x * (Math.sqrt(3) * hexQ + (Math.sqrt(3) / 2) * hexR);
+    const hexCenterY = size.y * (3 / 2) * hexR;
+
+    // Calculate edge direction vector
+    const edgeVectorX = end.x - start.x;
+    const edgeVectorY = end.y - start.y;
+
+    // Calculate perpendicular vector (rotate 90 degrees)
+    const perpX = -edgeVectorY;
+    const perpY = edgeVectorX;
+
+    // Normalize perpendicular vector
+    const perpLength = Math.sqrt(perpX * perpX + perpY * perpY);
+    const perpNormX = perpX / perpLength;
+    const perpNormY = perpY / perpLength;
+
+    // Calculate vector from hex center to edge midpoint
+    const toEdgeX = midpoint.x - hexCenterX;
+    const toEdgeY = midpoint.y - hexCenterY;
+
+    // Determine which direction of perpendicular points away from hex center
+    const dotProduct = perpNormX * toEdgeX + perpNormY * toEdgeY;
+    const directionMultiplier = dotProduct > 0 ? 1 : -1;
+
+    // Offset amount (in SVG units)
+    const offsetAmount = 1.0;
+
+    // Apply offset to start and end points
+    start = {
+      x: start.x + perpNormX * offsetAmount * directionMultiplier,
+      y: start.y + perpNormY * offsetAmount * directionMultiplier,
+    };
+    end = {
+      x: end.x + perpNormX * offsetAmount * directionMultiplier,
+      y: end.y + perpNormY * offsetAmount * directionMultiplier,
+    };
+  }
 
   // Calculate angle for road orientation
   const angle = Math.atan2(end.y - start.y, end.x - start.x) * (180 / Math.PI);

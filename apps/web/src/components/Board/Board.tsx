@@ -4,7 +4,9 @@ import { TerrainHex } from './TerrainHex';
 import { Port } from './Port';
 import { PlacementOverlay } from './PlacementOverlay';
 import { PlacementControls } from './PlacementControls';
+import { PlacedPieces } from './PlacedPieces';
 import { useGameStore } from '../../stores/gameStore';
+import { useShallow } from 'zustand/react/shallow';
 
 interface BoardProps {
   board: BoardState;
@@ -24,6 +26,12 @@ export function Board({ board }: BoardProps) {
     const me = players.find((p: any) => p.nickname === myNickname);
     return me?.color || 'white';
   });
+
+  // Create a map of playerId -> color for rendering placed pieces
+  const players = useGameStore(
+    useShallow((state) => state.room?.players || []),
+  );
+  const playerIdToColor = new Map(players.map((p) => [p.id, p.color]));
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
@@ -46,6 +54,9 @@ export function Board({ board }: BoardProps) {
           {board.hexes.map((hex) => (
             <TerrainHex key={`${hex.q}-${hex.r}`} hex={hex} />
           ))}
+
+          {/* Render placed pieces (roads and settlements) */}
+          <PlacedPieces board={board} playerIdToColor={playerIdToColor} />
 
           {/* Overlay renders INSIDE Layout to share coordinate system */}
           <PlacementOverlay currentPlayerColor={currentPlayerColor} />
