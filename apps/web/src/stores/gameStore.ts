@@ -5,7 +5,8 @@ import type {
   BoardState,
   Settlement,
   Road,
-  Room, // Import Room type
+  Room,
+  PlayerResources,
 } from '@catan/shared';
 
 // Placement state slice
@@ -35,6 +36,7 @@ interface GameStore extends PlacementSlice {
   nickname: string | null;
   lastError: string | null;
   sendMessage: ((message: WebSocketMessage) => void) | null;
+  playerResources: Record<string, PlayerResources>;
 
   // Actions
   setBoard: (board: BoardState) => void;
@@ -45,6 +47,13 @@ interface GameStore extends PlacementSlice {
   setLastError: (message: string | null) => void;
   setSendMessage: (
     handler: ((message: WebSocketMessage) => void) | null,
+  ) => void;
+  updatePlayerResources: (
+    playerId: string,
+    resources: Array<{
+      type: 'wood' | 'brick' | 'sheep' | 'wheat' | 'ore';
+      count: number;
+    }>,
   ) => void;
 
   // Placement actions
@@ -71,6 +80,7 @@ export const useGameStore = create<GameStore>((set) => ({
   nickname: null,
   lastError: null,
   sendMessage: null,
+  playerResources: {},
 
   // Placement state
   currentPlayerIndex: null,
@@ -91,6 +101,28 @@ export const useGameStore = create<GameStore>((set) => ({
   setNickname: (nickname) => set({ nickname }),
   setLastError: (message) => set({ lastError: message }),
   setSendMessage: (handler) => set({ sendMessage: handler }),
+  updatePlayerResources: (playerId, resources) =>
+    set((state) => {
+      const currentResources = state.playerResources[playerId] || {
+        wood: 0,
+        brick: 0,
+        sheep: 0,
+        wheat: 0,
+        ore: 0,
+      };
+
+      const updatedResources = { ...currentResources };
+      for (const resource of resources) {
+        updatedResources[resource.type] += resource.count;
+      }
+
+      return {
+        playerResources: {
+          ...state.playerResources,
+          [playerId]: updatedResources,
+        },
+      };
+    }),
 
   // Placement actions
   setPlacementTurn: (turn) =>
@@ -160,3 +192,15 @@ export const useSettlements = () => useGameStore((state) => state.settlements);
 export const useRoads = () => useGameStore((state) => state.roads);
 
 export const useSocket = () => useGameStore((state) => state.sendMessage); // Export useSocket hook
+
+export const usePlayerResources = (playerId: string) =>
+  useGameStore(
+    (state) =>
+      state.playerResources[playerId] || {
+        wood: 0,
+        brick: 0,
+        sheep: 0,
+        wheat: 0,
+        ore: 0,
+      },
+  );
