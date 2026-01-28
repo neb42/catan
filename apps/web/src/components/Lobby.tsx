@@ -82,6 +82,7 @@ export default function Lobby() {
 
           setRoom(message.room);
           setRoomId(message.room.id);
+          useGameStore.getState().setRoom(message.room);
           setCurrentView('lobby');
           setGeneralError(null);
           break;
@@ -93,7 +94,12 @@ export default function Lobby() {
             const filtered = previous.players.filter(
               (player) => player.id !== message.player.id,
             );
-            return { ...previous, players: [...filtered, message.player] };
+            const updatedRoom = {
+              ...previous,
+              players: [...filtered, message.player],
+            };
+            useGameStore.getState().setRoom(updatedRoom as Room);
+            return updatedRoom;
           });
           break;
         }
@@ -101,12 +107,14 @@ export default function Lobby() {
         case 'player_left': {
           setRoom((previous) => {
             if (!previous) return previous;
-            return {
+            const updatedRoom = {
               ...previous,
               players: previous.players.filter(
                 (player) => player.id !== message.playerId,
               ),
             };
+            useGameStore.getState().setRoom(updatedRoom as Room);
+            return updatedRoom;
           });
           break;
         }
@@ -128,7 +136,9 @@ export default function Lobby() {
               setCountdown(null);
             }
 
-            return { ...previous, players: updatedPlayers };
+            const updatedRoom = { ...previous, players: updatedPlayers };
+            useGameStore.getState().setRoom(updatedRoom as Room);
+            return updatedRoom;
           });
           break;
         }
@@ -141,7 +151,12 @@ export default function Lobby() {
                 ? { ...player, color: message.color }
                 : player,
             );
-            return { ...previous, players: updatedPlayers };
+            const updatedRoom = {
+              ...previous,
+              players: updatedPlayers,
+            } as Room;
+            useGameStore.getState().setRoom(updatedRoom);
+            return updatedRoom;
           });
           break;
         }
