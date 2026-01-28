@@ -44,9 +44,7 @@ export function VertexMarker({
             cursor: 'pointer',
           }}
           onClick={onClick}
-        >
-          {!isValid && invalidReason && <title>{invalidReason}</title>}
-        </motion.circle>
+        />
       )}
 
       {/* Selection preview - settlement shape */}
