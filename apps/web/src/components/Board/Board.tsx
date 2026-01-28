@@ -55,17 +55,17 @@ export function Board({ board }: BoardProps) {
             <TerrainHex key={`${hex.q}-${hex.r}`} hex={hex} />
           ))}
 
+          {/* Render ports */}
+          {board.ports.map((port, i) => (
+            <Port key={i} port={port} />
+          ))}
+
           {/* Render placed pieces (roads and settlements) */}
           <PlacedPieces board={board} playerIdToColor={playerIdToColor} />
 
           {/* Overlay renders INSIDE Layout to share coordinate system */}
           <PlacementOverlay currentPlayerColor={currentPlayerColor} />
         </Layout>
-
-        {/* Render ports */}
-        {board.ports.map((port, i) => (
-          <Port key={i} port={port} />
-        ))}
       </HexGrid>
 
       {/* Controls render OUTSIDE SVG for standard DOM interaction */}
