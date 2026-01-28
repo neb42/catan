@@ -148,6 +148,13 @@ export default function Lobby() {
 
         case 'game_starting': {
           setCountdown(message.countdown);
+          setInterval(() => {
+            setCountdown((prev) => {
+              if (prev === null) return null;
+              if (prev <= 1) return null;
+              return prev - 1;
+            });
+          }, 1000);
           break;
         }
 
