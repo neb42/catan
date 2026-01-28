@@ -1,9 +1,9 @@
 ---
-status: diagnosed
+status: complete
 phase: 03-initial-placement
 source: 03-01-SUMMARY.md, 03-02-SUMMARY.md, 03-03-SUMMARY.md, 03-04-SUMMARY.md, 03-05-SUMMARY.md, 03-06-SUMMARY.md, 03-07-SUMMARY.md
 started: 2026-01-28T08:25:00Z
-updated: 2026-01-28T08:35:00Z
+updated: 2026-01-28T22:15:00Z
 ---
 
 ## Current Test
@@ -45,9 +45,9 @@ result: pass
 ### 7. Starting resources from second settlement
 
 expected: After placing your second settlement (during the reverse order round 4→3→2→1), you immediately receive resources based on the adjacent hexes. For example, if your second settlement touches wood, wheat, and sheep hexes, you receive 1 wood, 1 wheat, and 1 sheep. Your resource count updates visibly in the UI.
-result: issue
-reported: "There is no UI for displaying resource counts. Unclear if resources are being allocated on the backend."
-severity: major
+result: pass
+fixed_by: 03-08-PLAN.md
+verified: 2026-01-28T22:15:00Z
 
 ### 8. Placement restrictions enforce distance rule
 
@@ -57,9 +57,9 @@ result: pass
 ### 9. Phase transition after placement complete
 
 expected: After all players complete both placement rounds (8 total rounds: 1-2-3-4-4-3-2-1), the placement phase ends and the game transitions to the main game phase. The UI updates to show turn-based gameplay indicators (e.g., "Roll Dice" button or similar).
-result: issue
-reported: "After the last placement round, the first player is stuck on the road placement. The main game does not start."
-severity: blocker
+result: pass
+fixed_by: 03-09-PLAN.md
+verified: 2026-01-28T22:15:00Z
 
 ### 10. Settlement and road rendering
 
@@ -69,44 +69,11 @@ result: pass
 ## Summary
 
 total: 10
-passed: 8
-issues: 2
+passed: 10
+issues: 0
 pending: 0
 skipped: 0
 
 ## Gaps
 
-- truth: "After placing your second settlement (during the reverse order round 4→3→2→1), you immediately receive resources based on the adjacent hexes and your resource count updates visibly in the UI"
-  status: failed
-  reason: "User reported: There is no UI for displaying resource counts. Unclear if resources are being allocated on the backend."
-  severity: major
-  test: 7
-  root_cause: "Frontend has no implementation for resource state management or UI display. While backend correctly calculates and broadcasts resources via WebSocket, the client: (1) ignores resourcesGranted field in settlement_placed message handler, (2) has no playerResources state in gameStore, (3) has no UI component to display resource counts"
-  artifacts:
-  - path: "apps/web/src/components/Lobby.tsx"
-    issue: "Lines 194-200 - settlement_placed handler ignores resourcesGranted field from backend message"
-  - path: "apps/web/src/stores/gameStore.ts"
-    issue: "Missing playerResources state and update actions"
-  - path: "apps/web/src/components/GamePlayerList.tsx"
-    issue: "Only displays avatar, nickname, and turn indicator - no resource counts displayed"
-    missing:
-  - "Add playerResources state to gameStore (Record<string, PlayerResources>)"
-  - "Add updatePlayerResources action to gameStore"
-  - "Update settlement_placed handler in Lobby.tsx to process resourcesGranted"
-  - "Extend GamePlayerList to display resource counts with icons"
-    debug_session: ".planning/debug/resource-ui-missing.md"
-
-- truth: "After all players complete both placement rounds (8 total rounds: 1-2-3-4-4-3-2-1), the placement phase ends and the game transitions to the main game phase"
-  status: failed
-  reason: "User reported: After the last placement round, the first player is stuck on the road placement. The main game does not start."
-  severity: blocker
-  test: 9
-  root_cause: "Client has no WebSocket message handler for 'setup_complete' message type. Backend correctly sends setup_complete after turn 15, but client ignores it. No handler exists in Lobby.tsx to process this message and trigger phase transition."
-  artifacts:
-  - path: "apps/web/src/components/Lobby.tsx"
-    issue: "Missing 'setup_complete' case in WebSocket message handler switch statement (lines 183-225)"
-  - path: "apps/api/src/handlers/websocket.ts"
-    issue: "Backend sends 'setup_complete' message (lines 371-375) but no client handler exists"
-    missing:
-  - "Add 'setup_complete' case handler in Lobby.tsx that calls clearPlacementState()"
-    debug_session: ".planning/debug/phase-transition-blocked.md"
+[All gaps resolved - both issues fixed and verified]
