@@ -195,7 +195,7 @@ export const useSocket = () => useGameStore((state) => state.sendMessage); // Ex
 
 export const usePlayerResources = (playerId: string) =>
   useGameStore(
-    (state) =>
+    useShallow((state) =>
       state.playerResources[playerId] || {
         wood: 0,
         brick: 0,
@@ -203,4 +203,5 @@ export const usePlayerResources = (playerId: string) =>
         wheat: 0,
         ore: 0,
       },
+    ),
   );
