@@ -197,6 +197,16 @@ export default function Lobby() {
             playerId: message.playerId,
             isCity: false,
           });
+
+          // Process starting resources from second settlement
+          if (message.resourcesGranted && message.resourcesGranted.length > 0) {
+            useGameStore
+              .getState()
+              .updatePlayerResources(
+                message.playerId,
+                message.resourcesGranted,
+              );
+          }
           break;
         }
 
@@ -205,6 +215,12 @@ export default function Lobby() {
             edgeId: message.edgeId,
             playerId: message.playerId,
           });
+          break;
+        }
+
+        case 'setup_complete': {
+          // Clear placement-specific state
+          useGameStore.getState().clearPlacementState();
           break;
         }
 
