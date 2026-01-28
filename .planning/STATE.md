@@ -3,20 +3,22 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-28  
-**Last activity:** 2026-01-28 - Completed 03-09-PLAN.md (Phase Transition Handler - Gap Closure)
+**Last activity:** 2026-01-28 - Completed 03-08-PLAN.md (Resource UI Display - Gap Closure)
 
 ## Current Position
 
 Phase: 3 of 8 (Initial Placement)  
-Plan: 9 of 9 in current phase  
-Status: Phase complete + all UAT blockers resolved  
-Last activity: 2026-01-28 - Completed 03-09-PLAN.md (Phase Transition Handler - Gap Closure)
+Plan: 8 of 9 in current phase  
+Status: In progress - Gap closure from UAT  
+Last activity: 2026-01-28 - Completed 03-08-PLAN.md (Resource UI Display - Gap Closure)
 
 Progress: ██████████ 100%
 
 ## Blockers/Concerns
 
-- None - Phase 3 fully complete with all UAT blockers resolved. Ready for Phase 4 (Turn Structure & Resources).
+- UAT Test 7 resolved: Resource counts now display and update in UI
+- UAT Test 9 pending: Phase transition handler in 03-09-PLAN.md
+- After 03-09 complete, Phase 3 will be fully complete and verified
 
 ### Quick Tasks Completed
 
@@ -26,25 +28,27 @@ Progress: ██████████ 100%
 
 ## Decisions
 
-| Phase | Decision                | Rationale                                                                    |
-| ----- | ----------------------- | ---------------------------------------------------------------------------- |
-| 03    | Rounded coordinate keys | Use EPSILON=0.1 to handle floating point precision in vertex deduplication   |
-| 03    | Sorted edge IDs         | Sort endpoints to normalize edge direction (A->B equals B->A)                |
-| 03    | 0-based turn indexing   | Simplify turn math (Math.floor(turn/2)) vs tracking round/player separately  |
-| 03    | Simplified messages     | Placement messages only send ID (vertex/edge), not raw hex coordinates       |
-| 03    | Backend State Manager   | GameManager instance attached to Room controls logic, distinct from data     |
-| 03    | Client-side validation  | Calculate valid locations on client for immediate UI feedback                |
-| 03    | Selector hooks pattern  | Use specific hooks to access store state to prevent re-render anti-patterns  |
-| 03    | Split markers           | Separate VertexMarker/EdgeMarker components for clean geometry handling      |
-| 03    | Native SVG tooltips     | Use simple <title> tags for accessibility and performance                    |
-| 03    | Store-based color       | Derive player color from store nickname instead of prop drilling             |
-| 03    | Store Room State        | Move room/player data into gameStore to avoid prop drilling in UI components |
-| 03    | UI Component Split      | Separate PlacementBanner and DraftOrderDisplay for cleaner Game layout       |
-| 03    | Lobby owns WebSocket    | Lobby.tsx handles all WebSocket messages including gameplay during placement |
-| 03    | Phase transition        | clearPlacementState() clears placement UI, enabling main game phase UI       |
+| Phase | Decision                | Rationale                                                                     |
+| ----- | ----------------------- | ----------------------------------------------------------------------------- |
+| 03    | Rounded coordinate keys | Use EPSILON=0.1 to handle floating point precision in vertex deduplication    |
+| 03    | Sorted edge IDs         | Sort endpoints to normalize edge direction (A->B equals B->A)                 |
+| 03    | 0-based turn indexing   | Simplify turn math (Math.floor(turn/2)) vs tracking round/player separately   |
+| 03    | Simplified messages     | Placement messages only send ID (vertex/edge), not raw hex coordinates        |
+| 03    | Backend State Manager   | GameManager instance attached to Room controls logic, distinct from data      |
+| 03    | Client-side validation  | Calculate valid locations on client for immediate UI feedback                 |
+| 03    | Selector hooks pattern  | Use specific hooks to access store state to prevent re-render anti-patterns   |
+| 03    | Split markers           | Separate VertexMarker/EdgeMarker components for clean geometry handling       |
+| 03    | Native SVG tooltips     | Use simple <title> tags for accessibility and performance                     |
+| 03    | Store-based color       | Derive player color from store nickname instead of prop drilling              |
+| 03    | Store Room State        | Move room/player data into gameStore to avoid prop drilling in UI components  |
+| 03    | UI Component Split      | Separate PlacementBanner and DraftOrderDisplay for cleaner Game layout        |
+| 03    | Lobby owns WebSocket    | Lobby.tsx handles all WebSocket messages including gameplay during placement  |
+| 03    | Phase transition        | clearPlacementState() clears placement UI, enabling main game phase UI        |
+| 03    | Resource state tracking | Use Record<string, PlayerResources> for flexible per-player resource tracking |
+| 03    | Display all resources   | Show all 5 resource types even at 0 for consistent layout                     |
 
 ## Session Continuity
 
-Last session: 2026-01-28 15:39 UTC
-Stopped at: Completed 03-09-PLAN.md
+Last session: 2026-01-28 15:41 UTC
+Stopped at: Completed 03-08-PLAN.md
 Resume file: none
