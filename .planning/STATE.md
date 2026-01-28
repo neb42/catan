@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-28  
-**Last activity:** 2026-01-28 - Phase 3 verified and complete
+**Last activity:** 2026-01-28 - Completed quick task 002: Decouple PlayerList component into separate lobby and game components
 
 ## Current Position
 
@@ -17,6 +17,12 @@ Progress: ██████████ 100%
 ## Blockers/Concerns
 
 - None - Phase 3 fully verified and complete. Ready for Phase 4 (Turn Structure & Resources).
+
+### Quick Tasks Completed
+
+| #   | Description                                                           | Date       | Commit  | Directory                                                                                             |
+| --- | --------------------------------------------------------------------- | ---------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| 002 | Decouple PlayerList component into separate lobby and game components | 2026-01-28 | 6de8737 | [002-decouple-playerlist-component-into-separ](./quick/002-decouple-playerlist-component-into-separ/) |
 
 ## Decisions
 
