@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 03-initial-placement
 source: 03-01-SUMMARY.md, 03-02-SUMMARY.md, 03-03-SUMMARY.md, 03-04-SUMMARY.md, 03-05-SUMMARY.md, 03-06-SUMMARY.md, 03-07-SUMMARY.md
 started: 2026-01-28T08:25:00Z
@@ -81,17 +81,32 @@ skipped: 0
   reason: "User reported: There is no UI for displaying resource counts. Unclear if resources are being allocated on the backend."
   severity: major
   test: 7
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Frontend has no implementation for resource state management or UI display. While backend correctly calculates and broadcasts resources via WebSocket, the client: (1) ignores resourcesGranted field in settlement_placed message handler, (2) has no playerResources state in gameStore, (3) has no UI component to display resource counts"
+  artifacts:
+  - path: "apps/web/src/components/Lobby.tsx"
+    issue: "Lines 194-200 - settlement_placed handler ignores resourcesGranted field from backend message"
+  - path: "apps/web/src/stores/gameStore.ts"
+    issue: "Missing playerResources state and update actions"
+  - path: "apps/web/src/components/GamePlayerList.tsx"
+    issue: "Only displays avatar, nickname, and turn indicator - no resource counts displayed"
+    missing:
+  - "Add playerResources state to gameStore (Record<string, PlayerResources>)"
+  - "Add updatePlayerResources action to gameStore"
+  - "Update settlement_placed handler in Lobby.tsx to process resourcesGranted"
+  - "Extend GamePlayerList to display resource counts with icons"
+    debug_session: ".planning/debug/resource-ui-missing.md"
 
 - truth: "After all players complete both placement rounds (8 total rounds: 1-2-3-4-4-3-2-1), the placement phase ends and the game transitions to the main game phase"
   status: failed
   reason: "User reported: After the last placement round, the first player is stuck on the road placement. The main game does not start."
   severity: blocker
   test: 9
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Client has no WebSocket message handler for 'setup_complete' message type. Backend correctly sends setup_complete after turn 15, but client ignores it. No handler exists in Lobby.tsx to process this message and trigger phase transition."
+  artifacts:
+  - path: "apps/web/src/components/Lobby.tsx"
+    issue: "Missing 'setup_complete' case in WebSocket message handler switch statement (lines 183-225)"
+  - path: "apps/api/src/handlers/websocket.ts"
+    issue: "Backend sends 'setup_complete' message (lines 371-375) but no client handler exists"
+    missing:
+  - "Add 'setup_complete' case handler in Lobby.tsx that calls clearPlacementState()"
+    debug_session: ".planning/debug/phase-transition-blocked.md"
