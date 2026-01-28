@@ -1,4 +1,4 @@
-import { Player } from '@catan/shared';
+import { Player, PLAYER_COLOR_HEX } from '@catan/shared';
 import { Avatar, Badge, Card, Stack, Text } from '@mantine/core';
 import { motion } from 'motion/react';
 import { useCurrentPlayer } from '../stores/gameStore';
@@ -7,33 +7,13 @@ type GamePlayerListProps = {
   players: Player[];
 };
 
-// Player color hex values
-const PLAYER_COLOR_HEX: Record<string, string> = {
-  red: '#E53935',
-  blue: '#1E88E5',
-  white: '#F5F5F5',
-  orange: '#FB8C00',
-  green: '#43A047',
-  yellow: '#FDD835',
-  purple: '#8E24AA',
-  brown: '#6D4C41',
-};
 
 export function GamePlayerList({ players }: GamePlayerListProps) {
   // Get active player from store for turn highlighting
   const { id: activePlayerId } = useCurrentPlayer();
 
   // Color mapping for backgrounds
-  const colorMap: Record<string, string> = {
-    red: '#E76F51',
-    blue: '#264653',
-    white: '#FFFFFF',
-    orange: '#F4A261',
-    green: '#2A9D8F',
-    yellow: '#E9C46A',
-    purple: '#9B59B6',
-    brown: '#8B4513',
-  };
+  const colorMap: Record<string, string> = PLAYER_COLOR_HEX;
 
   return (
     <div

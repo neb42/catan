@@ -1,4 +1,5 @@
 import { AnimatePresence } from 'motion/react';
+import { PLAYER_COLOR_HEX } from '@catan/shared';
 import {
   useValidSettlementLocations,
   useValidRoadLocations,
@@ -10,18 +11,6 @@ import {
 } from '../../stores/gameStore';
 import { VertexMarker } from './VertexMarker';
 import { EdgeMarker } from './EdgeMarker';
-
-// Player color map - matches PLAYER_COLORS from shared
-const PLAYER_COLOR_HEX: Record<string, string> = {
-  red: '#E53935',
-  blue: '#1E88E5',
-  white: '#F5F5F5',
-  orange: '#FB8C00',
-  green: '#43A047',
-  yellow: '#FDD835',
-  purple: '#8E24AA',
-  brown: '#6D4C41',
-};
 
 interface PlacementOverlayProps {
   currentPlayerColor: string; // e.g., 'red', 'blue'

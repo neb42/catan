@@ -1,18 +1,8 @@
 import { motion } from 'motion/react';
 import { Paper, Text, Group, Box, Stack, Tooltip } from '@mantine/core';
+import { PLAYER_COLOR_HEX } from '@catan/shared';
 import { useDraftOrder } from '../hooks/usePlacementState';
 
-// Player color hex values
-const PLAYER_COLOR_HEX: Record<string, string> = {
-  red: '#E53935',
-  blue: '#1E88E5',
-  white: '#F5F5F5',
-  orange: '#FB8C00',
-  green: '#43A047',
-  yellow: '#FDD835',
-  purple: '#8E24AA',
-  brown: '#6D4C41',
-};
 
 interface DraftOrderDisplayProps {
   players: Array<{ id: string; nickname: string; color: string }>;
