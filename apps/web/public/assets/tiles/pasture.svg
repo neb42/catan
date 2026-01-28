@@ -1,16 +1,41 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexagon Background -->
+  <!-- <path d="M100 10 L178 55 L178 145 L100 190 L22 145 L22 55 Z" fill="#AED581" stroke="black" stroke-width="2"/> -->
+  
   <!-- Sheep Body (Cloud-like) -->
-  <circle cx="85" cy="100" r="18" fill="white"/>
+  <!-- <circle cx="85" cy="100" r="18" fill="white"/>
   <circle cx="100" cy="90" r="22" fill="white"/>
   <circle cx="115" cy="100" r="18" fill="white"/>
-  <circle cx="100" cy="115" r="18" fill="white"/>
+  <circle cx="100" cy="115" r="18" fill="white"/> -->
   
   <!-- Legs -->
-  <rect x="85" y="115" width="6" height="18" fill="#333"/>
-  <rect x="110" y="115" width="6" height="18" fill="#333"/>
+  <!-- <rect x="85" y="115" width="6" height="18" fill="#333"/> -->
+  <!-- <rect x="110" y="115" width="6" height="18" fill="#333"/> -->
   
   <!-- Head -->
-  <circle cx="75" cy="95" r="12" fill="#333"/>
+  <!-- <circle cx="75" cy="95" r="12" fill="#333"/> -->
   <!-- Eye -->
-  <circle cx="72" cy="92" r="2" fill="white"/>
+  <!-- <circle cx="72" cy="92" r="2" fill="white"/> -->
+
+  <!-- Geometric Sheep Symbol -->
+  <g filter="url(#shadow)" transform="translate(-10, 10)">
+    <!-- Legs -->
+    <rect x="70" y="110" width="10" height="30" fill="#424242" rx="5"/>
+    <rect x="120" y="110" width="10" height="30" fill="#424242" rx="5"/>
+
+    <!-- Body (Fluffy Circles) -->
+    <circle cx="80" cy="90" r="30" fill="#F5F5F5"/>
+    <circle cx="120" cy="90" r="30" fill="#F5F5F5"/>
+    <circle cx="100" cy="70" r="35" fill="#EEEEEE"/>
+    <circle cx="100" cy="90" r="30" fill="#FAFAFA"/> <!-- Center blend -->
+
+    <!-- Head -->
+    <path d="M130 65 Q130 50 145 50 Q160 50 160 65 Q160 85 145 95 L135 90 Z" fill="#424242"/>
+    
+    <!-- Ear -->
+    <ellipse cx="155" cy="60" rx="4" ry="10" fill="#616161" transform="rotate(45 155 60)"/>
+    
+    <!-- Eye -->
+    <circle cx="145" cy="65" r="2" fill="white"/>
+  </g>
 </svg>
