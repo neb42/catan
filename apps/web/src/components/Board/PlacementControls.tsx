@@ -45,6 +45,7 @@ export function PlacementControls() {
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 100,
+            width: 300,
           }}
         >
           <Group gap="sm">
@@ -68,9 +69,15 @@ export function PlacementControls() {
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 100,
+            backgroundColor: 'rgba(255, 255, 255)',
+            padding: '8px 16px',
+            borderRadius: 8,
+            border: '3px solid rgba(0, 0, 0)',
+            width: 300,
+            textAlign: 'center',
           }}
         >
-          <Text size="sm" c="dimmed">
+          <Text size="sm">
             Click a valid location to place your {phase}
           </Text>
         </motion.div>
