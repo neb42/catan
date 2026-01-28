@@ -132,7 +132,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 **Completed:** 2026-01-28  
 **Duration:** 1 week  
 **Dependencies:** Phase 2  
-**Plans:** 7 plans
+**Plans:** 9 plans
 
 ### Requirements (2)
 
@@ -154,6 +154,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - [x] 03-05-PLAN.md — Client placement UI and interaction
 - [x] 03-06-PLAN.md — End-to-end verification
 - [x] 03-07-PLAN.md — WebSocket message handlers (gap closure)
+- [ ] 03-08-PLAN.md — Resource UI display (gap closure - UAT Test 7)
+- [ ] 03-09-PLAN.md — Phase transition handler (gap closure - UAT Test 9)
 
 ### Deliverables
 
