@@ -42,7 +42,7 @@ The design avoids the "generic SaaS" look and embraces a tactile, toy-like, and 
 -   **Wood**: `#66BB6A` (Soft Forest Green)
 -   **Brick**: `#FF7043` (Terracotta/Orange)
 -   **Sheep**: `#AED581` (Light Green)
--   **Wheat**: `#FDD835` (Sunshine Yellow)
+-   **Wheat**: `#DAA520` (Sunshine Yellow)
 -   **Ore**: `#90A4AE` (Blue Grey)
 -   **Desert**: `#D7CCC8` (Soft Tan)
 

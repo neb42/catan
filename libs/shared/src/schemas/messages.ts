@@ -4,7 +4,10 @@ import { BoardStateSchema } from './board';
 import { PlayerSchema } from './player';
 import { RoomSchema } from './room';
 
-const roomIdSchema = z.string().length(ROOM_ID_LENGTH).regex(/^[0-9A-Z]{6}$/);
+const roomIdSchema = z
+  .string()
+  .length(ROOM_ID_LENGTH)
+  .regex(/^[0-9A-Z]{6}$/);
 const nicknameSchema = z.string().trim().min(2).max(30);
 const playerIdSchema = z.string();
 
@@ -78,6 +81,57 @@ export const ErrorMessageSchema = z.object({
   message: z.string(),
 });
 
+// Placement Phase Messages
+export const PlaceSettlementMessageSchema = z.object({
+  type: z.literal('place_settlement'),
+  vertexId: z.string(),
+});
+
+export const PlaceRoadMessageSchema = z.object({
+  type: z.literal('place_road'),
+  edgeId: z.string(),
+});
+
+export const SettlementPlacedMessageSchema = z.object({
+  type: z.literal('settlement_placed'),
+  vertexId: z.string(),
+  playerId: z.string(),
+  isSecondSettlement: z.boolean(),
+  resourcesGranted: z
+    .array(
+      z.object({
+        type: z.enum(['wood', 'brick', 'sheep', 'wheat', 'ore']),
+        count: z.number(),
+      }),
+    )
+    .optional(),
+});
+
+export const RoadPlacedMessageSchema = z.object({
+  type: z.literal('road_placed'),
+  edgeId: z.string(),
+  playerId: z.string(),
+});
+
+export const PlacementTurnMessageSchema = z.object({
+  type: z.literal('placement_turn'),
+  currentPlayerIndex: z.number(),
+  currentPlayerId: z.string(),
+  phase: z.enum(['settlement', 'road']),
+  round: z.union([z.literal(1), z.literal(2)]),
+  turnNumber: z.number(),
+});
+
+export const SetupCompleteMessageSchema = z.object({
+  type: z.literal('setup_complete'),
+  nextPlayerId: z.string(),
+});
+
+export const InvalidPlacementMessageSchema = z.object({
+  type: z.literal('invalid_placement'),
+  reason: z.string(),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -92,6 +146,14 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   GameStartedMessageSchema,
   RoomStateMessageSchema,
   ErrorMessageSchema,
+  // New placement messages
+  PlaceSettlementMessageSchema,
+  PlaceRoadMessageSchema,
+  SettlementPlacedMessageSchema,
+  RoadPlacedMessageSchema,
+  PlacementTurnMessageSchema,
+  SetupCompleteMessageSchema,
+  InvalidPlacementMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -107,4 +169,19 @@ export type GameStartingMessage = z.infer<typeof GameStartingMessageSchema>;
 export type GameStartedMessage = z.infer<typeof GameStartedMessageSchema>;
 export type RoomStateMessage = z.infer<typeof RoomStateMessageSchema>;
 export type ErrorMessage = z.infer<typeof ErrorMessageSchema>;
+// New placement types
+export type PlaceSettlementMessage = z.infer<
+  typeof PlaceSettlementMessageSchema
+>;
+export type PlaceRoadMessage = z.infer<typeof PlaceRoadMessageSchema>;
+export type SettlementPlacedMessage = z.infer<
+  typeof SettlementPlacedMessageSchema
+>;
+export type RoadPlacedMessage = z.infer<typeof RoadPlacedMessageSchema>;
+export type PlacementTurnMessage = z.infer<typeof PlacementTurnMessageSchema>;
+export type SetupCompleteMessage = z.infer<typeof SetupCompleteMessageSchema>;
+export type InvalidPlacementMessage = z.infer<
+  typeof InvalidPlacementMessageSchema
+>;
+
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;

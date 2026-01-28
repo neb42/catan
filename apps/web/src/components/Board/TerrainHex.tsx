@@ -9,17 +9,17 @@ interface TerrainHexProps {
 const getBackgroundFill = (terrain: Hex['terrain']): string => {
   switch (terrain) {
     case 'forest':
-      return '#228B22';
+      return '#66BB6A';
     case 'hills':
-      return '#D2691E';
+      return '#FF7043';
     case 'mountains':
-      return '#A9A9A9';
+      return '#90A4AE';
     case 'fields':
-      return '#FFFF99';
+      return '#DAA520';
     case 'pasture':
-      return '#7CFC00';
+      return '#AED581';
     case 'desert':
-      return '#EDC9AF';
+      return '#D7CCC8';
     default:
       return '#FFFFFF';
   }

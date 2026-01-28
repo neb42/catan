@@ -2,29 +2,52 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-01-27  
-**Last activity:** 2026-01-27 - Completed Phase 2 Plan 08 (Gap Closure - Terrain Fill Alignment)
+**Last Updated:** 2026-01-28  
+**Last activity:** 2026-01-28 - Phase 3 complete with all UAT gaps closed (plans 03-08, 03-09)
 
 ## Current Position
 
-Phase: 2 of 8 (Board Generation & Rendering)  
-Plan: 8 of 8 in current phase  
-Status: Phase complete  
-Last activity: 2026-01-27 - Completed 02-08-PLAN.md
+Phase: 3 of 8 (Initial Placement)  
+Plan: 9 of 9 in current phase  
+Status: ✅ Complete + Verified (All UAT gaps closed)  
+Last activity: 2026-01-28 - Executed plans 03-08 and 03-09, re-verified phase goal
 
 Progress: ██████████ 100%
 
 ## Blockers/Concerns
 
-None currently.
+- None - Phase 3 fully complete with all UAT gaps closed (10/10 tests passing)
+- Ready for Phase 4 (Turn Structure & Resources)
+
+### Quick Tasks Completed
+
+| #   | Description                                                           | Date       | Commit  | Directory                                                                                             |
+| --- | --------------------------------------------------------------------- | ---------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| 002 | Decouple PlayerList component into separate lobby and game components | 2026-01-28 | 6de8737 | [002-decouple-playerlist-component-into-separ](./quick/002-decouple-playerlist-component-into-separ/) |
 
 ## Decisions
 
-| Phase | Decision | Rationale |
-| ----- | -------- | --------- |
+| Phase | Decision                | Rationale                                                                     |
+| ----- | ----------------------- | ----------------------------------------------------------------------------- |
+| 03    | Rounded coordinate keys | Use EPSILON=0.1 to handle floating point precision in vertex deduplication    |
+| 03    | Sorted edge IDs         | Sort endpoints to normalize edge direction (A->B equals B->A)                 |
+| 03    | 0-based turn indexing   | Simplify turn math (Math.floor(turn/2)) vs tracking round/player separately   |
+| 03    | Simplified messages     | Placement messages only send ID (vertex/edge), not raw hex coordinates        |
+| 03    | Backend State Manager   | GameManager instance attached to Room controls logic, distinct from data      |
+| 03    | Client-side validation  | Calculate valid locations on client for immediate UI feedback                 |
+| 03    | Selector hooks pattern  | Use specific hooks to access store state to prevent re-render anti-patterns   |
+| 03    | Split markers           | Separate VertexMarker/EdgeMarker components for clean geometry handling       |
+| 03    | Native SVG tooltips     | Use simple <title> tags for accessibility and performance                     |
+| 03    | Store-based color       | Derive player color from store nickname instead of prop drilling              |
+| 03    | Store Room State        | Move room/player data into gameStore to avoid prop drilling in UI components  |
+| 03    | UI Component Split      | Separate PlacementBanner and DraftOrderDisplay for cleaner Game layout        |
+| 03    | Lobby owns WebSocket    | Lobby.tsx handles all WebSocket messages including gameplay during placement  |
+| 03    | Phase transition        | clearPlacementState() clears placement UI, enabling main game phase UI        |
+| 03    | Resource state tracking | Use Record<string, PlayerResources> for flexible per-player resource tracking |
+| 03    | Display all resources   | Show all 5 resource types even at 0 for consistent layout                     |
 
 ## Session Continuity
 
-Last session: 2026-01-27 17:30 UTC
-Stopped at: Completed 02-08-PLAN.md
+Last session: 2026-01-28 16:45 UTC
+Stopped at: Phase 3 complete (all 9 plans executed, verified)
 Resume file: none

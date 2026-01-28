@@ -7,17 +7,17 @@
 - [ ] **LOBBY-01**: User can create a game room and receive a shareable room ID
 - [ ] **LOBBY-02**: User can join an existing room by entering room ID
 - [ ] **LOBBY-03**: User can set their nickname when joining a room
-- [x] **LOBBY-04**: User can select their player color from available options (red, blue, white, orange, green, yellow, purple, brown) *(Completed 2026-01-21)*
+- [x] **LOBBY-04**: User can select their player color from available options (red, blue, white, orange, green, yellow, purple, brown) _(Completed 2026-01-21)_
 - [ ] **LOBBY-05**: User can mark themselves as ready in the lobby
 - [ ] **LOBBY-06**: Game starts with countdown after all players (3-4) mark ready
 
 ### Board & Initial Setup
 
-- [x] **BOARD-01**: Game generates random hexagonal board layout with 19 land hexes (4 wood, 4 wheat, 4 sheep, 3 brick, 3 ore, 1 desert) *(Completed 2026-01-27)*
-- [x] **BOARD-02**: Game places number tokens on hexes following Catan rules (no adjacent 6/8) *(Completed 2026-01-27)*
-- [x] **BOARD-03**: Game places 9 ports on coast (4 generic 3:1, 5 specific 2:1) *(Completed 2026-01-27)*
-- [ ] **BOARD-04**: User can place initial settlements and roads in snake draft order (1→2→3→4→4→3→2→1)
-- [ ] **BOARD-05**: User receives starting resources from second settlement placement
+- [x] **BOARD-01**: Game generates random hexagonal board layout with 19 land hexes (4 wood, 4 wheat, 4 sheep, 3 brick, 3 ore, 1 desert) _(Completed 2026-01-27)_
+- [x] **BOARD-02**: Game places number tokens on hexes following Catan rules (no adjacent 6/8) _(Completed 2026-01-27)_
+- [x] **BOARD-03**: Game places 9 ports on coast (4 generic 3:1, 5 specific 2:1) _(Completed 2026-01-27)_
+- [x] **BOARD-04**: User can place initial settlements and roads in snake draft order (1→2→3→4→4→3→2→1) _(Completed 2026-01-28)_
+- [x] **BOARD-05**: User receives starting resources from second settlement placement _(Completed 2026-01-28)_
 
 ### Turn Structure & Dice
 
@@ -110,18 +110,22 @@
 ## v2 Requirements (Deferred)
 
 ### Trading Enhancements
+
 - [ ] **TRADE-07**: User can counter-offer on incoming trade proposals
 - [ ] **TRADE-08**: User can broadcast trade request asking "who has X resource?"
 
 ### Social Features
+
 - [ ] **SOCIAL-01**: User can send text messages in game chat
 - [ ] **SOCIAL-02**: User can see chat history for current game
 
 ### Audio & Polish
+
 - [ ] **AUDIO-01**: Game plays sound effects for dice rolls, building, robber, etc.
 - [ ] **AUDIO-02**: User can toggle sound effects on/off
 
 ### Quality of Life
+
 - [ ] **QOL-01**: User can click "Rematch" button to start new game with same players
 - [ ] **QOL-02**: Game shows resource production probability indicators (pip counts)
 - [ ] **QOL-03**: User can undo actions within current turn before committing
@@ -131,6 +135,7 @@
 ## Out of Scope (v1)
 
 ### Deferred to Future Versions
+
 - **Expansions** (Seafarers, Cities & Knights, 5-6 player) — Planned for future
 - **User accounts & authentication** — Planned for future
 - **AI players** — Planned for future
@@ -139,6 +144,7 @@
 - **House rules toggles** — Planned for future
 
 ### Not Planned
+
 - **Turn timers** — Casual, untimed gameplay by design
 - **Ranking & leaderboards** — Requires accounts, not priority
 - **Voice/video chat** — Players use external tools (Discord, etc.)
@@ -151,7 +157,9 @@
 Requirements mapped to roadmap phases (100% coverage):
 
 ### Phase 1: Foundation (6 requirements)
+
 **Focus:** Shared contracts and room infrastructure
+
 - LOBBY-01: Create game room with shareable ID
 - LOBBY-02: Join room by ID
 - LOBBY-03: Set nickname when joining
@@ -160,7 +168,9 @@ Requirements mapped to roadmap phases (100% coverage):
 - Room manager and WebSocket infrastructure
 
 ### Phase 2: Core Game Loop (11 requirements)
+
 **Focus:** Game skeleton (board, initial placement, turn structure)
+
 - BOARD-01: Random hex board generation (19 land hexes)
 - BOARD-02: Number token placement (no adjacent 6/8)
 - BOARD-03: Port placement (9 ports: 4 generic 3:1, 5 specific 2:1)
@@ -174,14 +184,18 @@ Requirements mapped to roadmap phases (100% coverage):
 - RES-02: Track resource counts for all players
 
 ### Phase 3: Client Rendering (4 requirements)
+
 **Focus:** Visual board with interactive hex grid
+
 - TURN-05: Clear indicator of whose turn it is
 - BUILD-07: Highlight valid placement locations
 - UX-01: Visual turn and phase indicators
 - UX-04: Player list with colors and scores
 
 ### Phase 4: Game Mechanics (22 requirements)
+
 **Focus:** Building, trading, and robber systems
+
 - BUILD-01: Build roads (1 wood, 1 brick)
 - BUILD-02: Build settlements (1 wood, 1 brick, 1 sheep, 1 wheat)
 - BUILD-03: Upgrade to cities (3 ore, 2 wheat)
@@ -205,7 +219,9 @@ Requirements mapped to roadmap phases (100% coverage):
 - UX-03: Error messages for invalid actions
 
 ### Phase 5: Advanced Features (19 requirements)
+
 **Focus:** Dev cards, longest road, largest army, victory
+
 - DEV-01: Buy dev card (1 ore, 1 sheep, 1 wheat)
 - DEV-02: Shuffled 25-card deck (14 Knight, 5 VP, 2×RB, 2×YoP, 2×Monopoly)
 - DEV-03: Can't play card same turn purchased
@@ -227,7 +243,9 @@ Requirements mapped to roadmap phases (100% coverage):
 - SCORE-10: End game and announce winner
 
 ### Phase 6: Resilience & Polish (10 requirements)
+
 **Focus:** Disconnect handling, lobby polish, UX finalization
+
 - SYNC-02: Game pauses on disconnect
 - SYNC-03: Reconnect to paused game
 - SYNC-04: Restore full state on reconnect
@@ -245,4 +263,4 @@ Requirements mapped to roadmap phases (100% coverage):
 
 ---
 
-*Last updated: 2026-01-20 after requirements definition*
+_Last updated: 2026-01-20 after requirements definition_
