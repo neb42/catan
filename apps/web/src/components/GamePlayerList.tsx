@@ -1,6 +1,7 @@
 import { Player, PLAYER_COLOR_HEX } from '@catan/shared';
 import { Avatar, Badge, Card, Stack, Text } from '@mantine/core';
 import { motion } from 'motion/react';
+import { useShallow } from 'zustand/react/shallow';
 import { useCurrentPlayer, useGameStore } from '../stores/gameStore';
 
 type GamePlayerListProps = {
@@ -20,8 +21,10 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
   // Get active player from store for turn highlighting
   const { id: activePlayerId } = useCurrentPlayer();
 
-  // Read all player resources once at the top level
-  const allPlayerResources = useGameStore((state) => state.playerResources);
+  // Read all player resources once at the top level with shallow equality
+  const allPlayerResources = useGameStore(
+    useShallow((state) => state.playerResources),
+  );
 
   // Color mapping for backgrounds
   const colorMap: Record<string, string> = PLAYER_COLOR_HEX;
