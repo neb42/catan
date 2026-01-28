@@ -23,19 +23,6 @@ export function VertexMarker({
 
   return (
     <g>
-      {/* Large transparent hitbox for easier clicking */}
-      <circle
-        cx={vertex.x}
-        cy={vertex.y}
-        r={isValid ? 3 : 1.5}
-        fill="transparent"
-        style={{ cursor: isValid ? 'pointer' : 'default' }}
-        onClick={isValid ? onClick : undefined}
-      >
-        {/* SVG native tooltip for invalid locations */}
-        {!isValid && invalidReason && <title>{invalidReason}</title>}
-      </circle>
-
       {/* Visual dot for valid locations */}
       {isValid && (
         <motion.circle
@@ -86,6 +73,19 @@ export function VertexMarker({
           />
         </motion.g>
       )}
+
+      {/* Large transparent hitbox for easier clicking */}
+      <circle
+        cx={vertex.x}
+        cy={vertex.y}
+        r={isValid ? 3 : 1.5}
+        fill="transparent"
+        style={{ cursor: isValid ? 'pointer' : 'default' }}
+        onClick={isValid ? onClick : undefined}
+      >
+        {/* SVG native tooltip for invalid locations */}
+        {!isValid && invalidReason && <title>{invalidReason}</title>}
+      </circle>
     </g>
   );
 }

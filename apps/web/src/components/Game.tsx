@@ -6,10 +6,11 @@ import { DraftOrderDisplay } from './DraftOrderDisplay';
 import { PlacementControls } from './Board/PlacementControls';
 import { usePlacementState } from '../hooks/usePlacementState';
 import PlayerList from './PlayerList';
+import { useShallow } from 'zustand/react/shallow';
 
 export function Game() {
-  const board = useGameStore((state) => state.board);
-  const players = useGameStore((state) => state.room?.players || []);
+  const board = useGameStore(useShallow((state) => state.board));
+  const players = useGameStore(useShallow((state) => state.room?.players || []));
   const { id: currentPlayerId } = useCurrentPlayer();
   const socket = useSocket();
   const { phase: placementPhase } = usePlacementState();

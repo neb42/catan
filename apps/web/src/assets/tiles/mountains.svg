@@ -1,12 +1,28 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <!-- Hexagon Background -->
-  <path d="M100 10 L178 55 L178 145 L100 190 L22 145 L22 55 Z" fill="#708090" stroke="black" stroke-width="2"/>
+  <path d="M100 10 L178 55 L178 145 L100 190 L22 145 L22 55 Z" fill="#90A4AE" stroke="black" stroke-width="2"/>
   
   <!-- Mountains - Adjusted to fit within bounds (Max X ~178, Min X ~22) -->
-  <path d="M35 145 L75 80 L115 145 Z" fill="#4a5a6a"/>
-  <path d="M95 145 L135 60 L165 145 Z" fill="#2F4F4F"/>
+  <!-- <path d="M35 145 L75 80 L115 145 Z" fill="#4a5a6a"/> -->
+  <!-- <path d="M95 145 L135 60 L165 145 Z" fill="#2F4F4F"/> -->
   
   <!-- Snow Caps -->
-  <path d="M75 80 L85 95 L65 95 Z" fill="white" opacity="0.8"/>
-  <path d="M135 60 L145 80 L125 80 Z" fill="white" opacity="0.8"/>
+  <!-- <path d="M75 80 L85 95 L65 95 Z" fill="white" opacity="0.8"/> -->
+  <!-- <path d="M135 60 L145 80 L125 80 Z" fill="white" opacity="0.8"/> -->
+
+  <!-- Ore / Crystal Formation -->
+  <g filter="url(#shadow)" transform="translate(50, 40)">
+    <!-- Base Rock -->
+    <path d="M10 80 L50 40 L90 80 L70 110 L30 110 Z" fill="#607D8B"/>
+    
+    <!-- Facets -->
+    <path d="M50 40 L90 80 L50 85 Z" fill="#90A4AE"/> <!-- Right face -->
+    <path d="M50 40 L10 80 L50 85 Z" fill="#78909C"/> <!-- Left face -->
+    <path d="M10 80 L30 110 L50 85 Z" fill="#455A64"/> <!-- Bottom left shade -->
+    <path d="M90 80 L70 110 L50 85 Z" fill="#546E7A"/> <!-- Bottom right shade -->
+    <path d="M30 110 L70 110 L50 85 Z" fill="#37474F"/> <!-- Bottom center dark -->
+
+    <!-- Highlight -->
+    <path d="M50 40 L65 55 L50 60 L35 55 Z" fill="#CFD8DC" opacity="0.6"/>
+  </g>
 </svg>

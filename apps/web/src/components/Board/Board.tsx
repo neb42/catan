@@ -58,7 +58,7 @@ export function Board({ board }: BoardProps) {
       </HexGrid>
 
       {/* Controls render OUTSIDE SVG for standard DOM interaction */}
-      <PlacementControls />
+      {/* <PlacementControls /> */}
     </div>
   );
 }

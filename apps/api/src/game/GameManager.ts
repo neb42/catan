@@ -152,11 +152,29 @@ export class GameManager {
       }
     }
 
-    // 6. Advance phase (settlement -> road)
-    // Same player, same turn number, just phase change
+    // 6. Advance turn (settlement -> road)
+    // Increment turn number and update phase
     if (this.gameState.placement) {
-      const isRound1 = this.gameState.placement.draftRound === 1;
-      this.gameState.placement.phase = isRound1 ? 'setup_road1' : 'setup_road2';
+      const nextTurnNumber = this.gameState.placement.turnNumber + 1;
+      const nextDraft = calculateDraftPosition(
+        nextTurnNumber,
+        this.playerIds.length,
+      );
+
+      this.gameState.placement.turnNumber = nextTurnNumber;
+      this.gameState.placement.currentPlayerIndex = nextDraft.playerIndex;
+      this.gameState.placement.draftRound = nextDraft.round;
+
+      // Map draft phase to specific setup phase string
+      if (nextDraft.phase === 'settlement') {
+        this.gameState.placement.phase =
+          nextDraft.round === 1 ? 'setup_settlement1' : 'setup_settlement2';
+        // Reset lastPlacedSettlementId if moving to next player
+        this.lastPlacedSettlementId = null;
+      } else {
+        this.gameState.placement.phase =
+          nextDraft.round === 1 ? 'setup_road1' : 'setup_road2';
+      }
     }
 
     return {
