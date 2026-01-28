@@ -41,9 +41,9 @@ export function VertexMarker({
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           style={{
             filter: `drop-shadow(0 0 ${isSelected ? 4 : 2}px ${playerColor})`,
-            cursor: isValid ? 'pointer' : 'default',
+            cursor: 'pointer',
           }}
-          onClick={isValid ? onClick : undefined}
+          onClick={onClick}
         >
           {!isValid && invalidReason && <title>{invalidReason}</title>}
         </motion.circle>
@@ -80,12 +80,7 @@ export function VertexMarker({
 
       {/* Large transparent hitbox for easier clicking */}
       {!isValid && invalidReason && (
-        <circle
-          cx={vertex.x}
-          cy={vertex.y}
-          r={isValid ? 3 : 1.5}
-          fill="transparent"
-        >
+        <circle cx={vertex.x} cy={vertex.y} r={1.5} fill="transparent">
           <title>{invalidReason}</title>
         </circle>
       )}
