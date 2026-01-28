@@ -1,12 +1,20 @@
 import { Player, PLAYER_COLOR_HEX } from '@catan/shared';
 import { Avatar, Badge, Card, Stack, Text } from '@mantine/core';
 import { motion } from 'motion/react';
-import { useCurrentPlayer } from '../stores/gameStore';
+import { useCurrentPlayer, usePlayerResources } from '../stores/gameStore';
 
 type GamePlayerListProps = {
   players: Player[];
 };
 
+// Resource icon mapping
+const RESOURCE_ICONS: Record<string, string> = {
+  wood: '🪵',
+  brick: '🧱',
+  sheep: '🐑',
+  wheat: '🌾',
+  ore: '⛰️',
+};
 
 export function GamePlayerList({ players }: GamePlayerListProps) {
   // Get active player from store for turn highlighting
@@ -23,6 +31,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
         const isActiveTurn = player.id === activePlayerId;
         const initials = player.nickname.slice(0, 2).toUpperCase();
         const playerColorHex = PLAYER_COLOR_HEX[player.color] || player.color;
+        const playerResources = usePlayerResources(player.id);
 
         return (
           <motion.div
@@ -85,6 +94,25 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 >
                   {player.nickname}
                 </Text>
+
+                {/* Resource counts */}
+                <Stack gap={2} mt="xs">
+                  {Object.entries(playerResources).map(([type, count]) => (
+                    <Text
+                      key={type}
+                      size="xs"
+                      c="dimmed"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
+                      }}
+                    >
+                      <span>{RESOURCE_ICONS[type]}</span>
+                      <span>{count}</span>
+                    </Text>
+                  ))}
+                </Stack>
 
                 {/* Active turn indicator */}
                 {isActiveTurn && (
