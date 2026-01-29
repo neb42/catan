@@ -15,6 +15,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { DiceRoller } from './DiceRoller/DiceRoller';
 import { TurnControls } from './TurnControls/TurnControls';
 import { ResourceHand } from './ResourceHand/ResourceHand';
+import { BuildControls } from './BuildControls/BuildControls';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
@@ -104,7 +105,7 @@ export function Game() {
         </div>
       )}
 
-      {/* Main game phase UI (dice roller, turn controls, resource hand) */}
+      {/* Main game phase UI (dice roller, turn controls, resource hand, build controls) */}
       {isMainGamePhase && (
         <>
           {/* Game controls panel (top-right) */}
@@ -123,7 +124,7 @@ export function Game() {
             <DiceRoller />
           </div>
 
-          {/* Resource hand (bottom center) */}
+          {/* Resource hand and build controls (bottom center) */}
           <div
             style={{
               position: 'absolute',
@@ -131,8 +132,13 @@ export function Game() {
               left: '50%',
               transform: 'translateX(-50%)',
               zIndex: 20,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 12,
             }}
           >
+            <BuildControls />
             <ResourceHand />
           </div>
         </>
