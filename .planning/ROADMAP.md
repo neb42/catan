@@ -172,7 +172,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 **Goal:** Enable turn-based gameplay with dice rolling and resource distribution  
 **Duration:** 1 week  
 **Dependencies:** Phase 3  
-**Plans:** 2 plans (from original 02-XX series)
+**Plans:** 5 plans
 
 ### Requirements (6)
 
@@ -188,6 +188,14 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 1. **Dice roll distributes resources** — Roll dice, see animation, correct players get correct resources
 2. **Turn structure flows** — Can progress from setup → first turn → second turn, correct player order
 3. **Resource tracking persists** — Resources display correctly for all players, counts accurate after multiple turns
+
+### Plans
+
+- [ ] 04-01-PLAN.md — Turn state foundation (backend + shared schemas + resource distribution)
+- [ ] 04-02-PLAN.md — Turn state frontend + WebSocket handlers
+- [ ] 04-03-PLAN.md — Dice roller UI with animation
+- [ ] 04-04-PLAN.md — Turn controls, resource hand, player highlighting
+- [ ] 04-05-PLAN.md — Integration and end-to-end verification
 
 ### Deliverables
 
