@@ -226,7 +226,14 @@ export default function Lobby() {
 
         case 'dice_rolled': {
           const gameStore = useGameStore.getState();
-          // Store dice result
+          // Update phase to 'main' FIRST (dice has been rolled)
+          // This must happen before setDiceRoll because setTurnState clears lastDiceRoll
+          gameStore.setTurnState({
+            phase: 'main',
+            currentPlayerId: gameStore.turnCurrentPlayerId || '',
+            turnNumber: gameStore.turnNumber,
+          });
+          // Store dice result AFTER setTurnState (which clears lastDiceRoll)
           gameStore.setDiceRoll({
             dice1: message.dice1,
             dice2: message.dice2,
@@ -238,12 +245,6 @@ export default function Lobby() {
           for (const grant of message.resourcesDistributed) {
             gameStore.updatePlayerResources(grant.playerId, grant.resources);
           }
-          // Update phase to 'main' (dice has been rolled)
-          gameStore.setTurnState({
-            phase: 'main',
-            currentPlayerId: gameStore.turnCurrentPlayerId || '',
-            turnNumber: gameStore.turnNumber,
-          });
           break;
         }
 
