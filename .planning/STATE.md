@@ -7,7 +7,7 @@
 
 ## Current Position
 
-Phase: 4 of 7 (Turn Structure & Resources)  
+Phase: 4 of 9 (Turn Structure & Resources)  
 Plan: 5 of 5 in current phase  
 Status: Complete - awaiting phase verification  
 Last activity: 2026-01-29 - Completed 04-05-PLAN.md (Integration and verification)
@@ -20,9 +20,10 @@ Progress: ██████████████████ 100% (Phase 4 p
 
 ### Quick Tasks Completed
 
-| #   | Description                                                           | Date       | Commit  | Directory                                                                                             |
-| --- | --------------------------------------------------------------------- | ---------- | ------- | ----------------------------------------------------------------------------------------------------- |
-| 002 | Decouple PlayerList component into separate lobby and game components | 2026-01-28 | 6de8737 | [002-decouple-playerlist-component-into-separ](./quick/002-decouple-playerlist-component-into-separ/) |
+| #   | Description                                                           | Date       | Commit  | Directory                                                                                                 |
+| --- | --------------------------------------------------------------------- | ---------- | ------- | --------------------------------------------------------------------------------------------------------- |
+| 002 | Decouple PlayerList component into separate lobby and game components | 2026-01-28 | 6de8737 | [002-decouple-playerlist-component-into-separ](./quick/002-decouple-playerlist-component-into-separ/)     |
+| 003 | Split Phase 5 into Building/Trading/Robber phases                     | 2026-01-29 | 6787c3d | [003-split-phase-5-into-building-trading-robber](./quick/003-split-phase-5-into-building-trading-robber/) |
 
 ## Decisions
 
@@ -56,6 +57,6 @@ Progress: ██████████████████ 100% (Phase 4 p
 
 ## Session Continuity
 
-Last session: 2026-01-29 13:30 UTC
-Stopped at: Phase 4 complete, awaiting phase verification
+Last session: 2026-01-29 15:02 UTC
+Stopped at: Quick task 003 complete, Phase 4 awaiting verification
 Resume file: none
