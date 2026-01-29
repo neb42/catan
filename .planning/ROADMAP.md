@@ -191,8 +191,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-- [ ] 04-01-PLAN.md — Turn state foundation (backend + shared schemas + resource distribution)
-- [ ] 04-02-PLAN.md — Turn state frontend + WebSocket handlers
+- [x] 04-01-PLAN.md — Turn state foundation (backend + shared schemas + resource distribution)
+- [x] 04-02-PLAN.md — Turn state frontend + WebSocket handlers
 - [ ] 04-03-PLAN.md — Dice roller UI with animation
 - [ ] 04-04-PLAN.md — Turn controls, resource hand, player highlighting
 - [ ] 04-05-PLAN.md — Integration and end-to-end verification

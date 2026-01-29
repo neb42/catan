@@ -3,20 +3,20 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-29  
-**Last activity:** 2026-01-29 - Completed 04-01-PLAN.md (Turn State Foundation)
+**Last activity:** 2026-01-29 - Completed 04-02-PLAN.md (WebSocket handlers + gameStore turn state)
 
 ## Current Position
 
 Phase: 4 of 8 (Turn Structure & Resources)  
-Plan: 1 of 5 in current phase  
+Plan: 2 of 5 in current phase  
 Status: In progress  
-Last activity: 2026-01-29 - Completed 04-01-PLAN.md
+Last activity: 2026-01-29 - Completed 04-02-PLAN.md
 
-Progress: ██████████░░░░░ 65% (Phase 4 started)
+Progress: ██████████░░░░░ 68% (Phase 4 in progress)
 
 ## Blockers/Concerns
 
-- None - Phase 4 Plan 1 complete, ready for Plan 04-02 (WebSocket handlers)
+- None - Phase 4 Plan 2 complete, ready for Plan 04-03 (Dice roller UI)
 
 ### Quick Tasks Completed
 
@@ -48,9 +48,10 @@ Progress: ██████████░░░░░ 65% (Phase 4 started)
 | 04    | resourcesDistributed    | Include in DiceRolled message for client animation of all players             |
 | 04    | turnState nullable      | Null during placement phase, initialized when setup completes                 |
 | 04    | Robber deferred         | Dice roll 7 distributes resources normally until Phase 6                      |
+| 04    | Separate turn player ID | turnCurrentPlayerId distinct from placement currentPlayerId during transition |
 
 ## Session Continuity
 
-Last session: 2026-01-29 12:58 UTC
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-01-29 13:04 UTC
+Stopped at: Completed 04-02-PLAN.md
 Resume file: none
