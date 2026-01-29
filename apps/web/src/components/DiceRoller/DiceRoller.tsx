@@ -25,6 +25,31 @@ export function DiceRoller() {
 
   // Track if we've shown notification for current roll to prevent duplicates
   const lastNotifiedRollRef = useRef<string | null>(null);
+  // Track the last dice roll we processed to detect new rolls
+  // Initialize with current roll (if any) to prevent animation on reconnection
+  const lastProcessedRollRef = useRef<string | null>(
+    lastDiceRoll
+      ? `${lastDiceRoll.dice1}-${lastDiceRoll.dice2}-${lastDiceRoll.total}`
+      : null,
+  );
+
+  // Detect new dice rolls and trigger animation for ALL players (including observers)
+  useEffect(() => {
+    if (!lastDiceRoll) return;
+
+    const rollKey = `${lastDiceRoll.dice1}-${lastDiceRoll.dice2}-${lastDiceRoll.total}`;
+
+    // If this is a new roll we haven't processed yet
+    if (lastProcessedRollRef.current !== rollKey) {
+      lastProcessedRollRef.current = rollKey;
+
+      // If we're not already rolling (i.e., we're an observer), start the animation
+      if (!isRolling) {
+        setIsRolling(true);
+        setAnimating(true);
+      }
+    }
+  }, [lastDiceRoll, isRolling, setAnimating]);
 
   // Show notification for resources received
   const showResourceNotification = useCallback(() => {
