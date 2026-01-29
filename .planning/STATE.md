@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-29  
-**Last activity:** 2026-01-29 - Completed 05-02-PLAN.md (GameManager build methods and WebSocket handlers)
+**Last activity:** 2026-01-29 - Completed 05-03-PLAN.md (Frontend build mode state, hooks, and BuildControls)
 
 ## Current Position
 
 Phase: 5 of 12 (Building)  
-Plan: 2 of 5 in current phase  
+Plan: 3 of 5 in current phase  
 Status: In progress  
-Last activity: 2026-01-29 - Completed 05-02-PLAN.md (GameManager build methods and WebSocket handlers)
+Last activity: 2026-01-29 - Completed 05-03-PLAN.md
 
-Progress: ████████████████████░░░░░░░░░░░░░░░░ 58% (Phase 5 plan 2/5)
+Progress: █████████████████████████░░░░░░░░░░░ 66% (Phase 5 plan 3/5)
 
 ## Blockers/Concerns
 
@@ -59,9 +59,11 @@ Progress: ████████████████████░░░�
 | 05    | Reason-returning validators   | Functions return null or error string for clear user feedback                 |
 | 05    | Build validation chain        | Turn → phase → limit → resources → placement order for specific errors        |
 | 05    | Return resourcesSpent         | Build success includes spent resources for client animation                   |
+| 05    | Main-game validators separate | Different rules: connect to any owned network, not just last settlement       |
+| 05    | useCanBuild returns reason    | Provides both canBuild boolean and disabledReason for clear UX                |
 
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 05-02-PLAN.md (GameManager build methods and WebSocket handlers)
+Stopped at: Completed 05-03-PLAN.md (Frontend build mode state, hooks, and BuildControls)
 Resume file: none
