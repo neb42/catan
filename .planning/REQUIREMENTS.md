@@ -35,14 +35,14 @@
 
 ### Building
 
-- [ ] **BUILD-01**: User can build roads by spending resources (1 wood, 1 brick)
-- [ ] **BUILD-02**: User can build settlements by spending resources (1 wood, 1 brick, 1 sheep, 1 wheat)
-- [ ] **BUILD-03**: User can upgrade settlements to cities by spending resources (3 ore, 2 wheat)
-- [ ] **BUILD-04**: User can see building costs reference always visible on screen
-- [ ] **BUILD-05**: Game validates road placement (must connect to own road or settlement)
-- [ ] **BUILD-06**: Game validates settlement placement (2 vertices away from any settlement, adjacent to own road)
-- [ ] **BUILD-07**: Game highlights valid placement locations when user selects build action
-- [ ] **BUILD-08**: Game prevents invalid placements and shows clear error message
+- [x] **BUILD-01**: User can build roads by spending resources (1 wood, 1 brick) _(Completed 2026-01-30)_
+- [x] **BUILD-02**: User can build settlements by spending resources (1 wood, 1 brick, 1 sheep, 1 wheat) _(Completed 2026-01-30)_
+- [x] **BUILD-03**: User can upgrade settlements to cities by spending resources (3 ore, 2 wheat) _(Completed 2026-01-30)_
+- [x] **BUILD-04**: User can see building costs reference always visible on screen _(Completed 2026-01-30)_
+- [x] **BUILD-05**: Game validates road placement (must connect to own road or settlement) _(Completed 2026-01-30)_
+- [x] **BUILD-06**: Game validates settlement placement (2 vertices away from any settlement, adjacent to own road) _(Completed 2026-01-30)_
+- [x] **BUILD-07**: Game highlights valid placement locations when user selects build action _(Completed 2026-01-30)_
+- [x] **BUILD-08**: Game prevents invalid placements and shows clear error message _(Completed 2026-01-30)_
 
 ### Trading - Domestic
 
@@ -263,4 +263,4 @@ Requirements mapped to roadmap phases (100% coverage):
 
 ---
 
-_Last updated: 2026-01-20 after requirements definition_
+_Last updated: 2026-01-30 after Phase 5 (Building) completion_

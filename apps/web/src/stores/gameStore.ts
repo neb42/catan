@@ -7,7 +7,9 @@ import type {
   Road,
   Room,
   PlayerResources,
+  BuildingType,
 } from '@catan/shared';
+import { BUILDING_COSTS } from '@catan/shared';
 
 // Placement state slice
 interface PlacementSlice {
@@ -44,7 +46,13 @@ interface TurnSlice {
   }> | null;
 }
 
-interface GameStore extends PlacementSlice, TurnSlice {
+// Build mode state slice (for main game building)
+interface BuildSlice {
+  buildMode: BuildingType | null; // 'road' | 'settlement' | 'city' | null
+  isBuildPending: boolean; // Optimistic update in progress
+}
+
+interface GameStore extends PlacementSlice, TurnSlice, BuildSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
   gameStarted: boolean;
@@ -82,6 +90,7 @@ interface GameStore extends PlacementSlice, TurnSlice {
   }) => void;
   addSettlement: (settlement: Settlement) => void;
   addRoad: (road: Road) => void;
+  upgradeToCity: (vertexId: string) => void;
   setSelectedLocation: (id: string | null) => void;
   setLastPlacedSettlement: (id: string | null) => void;
   clearPlacementState: () => void;
@@ -104,6 +113,10 @@ interface GameStore extends PlacementSlice, TurnSlice {
     }> | null,
   ) => void;
   clearTurnState: () => void;
+
+  // Build actions
+  setBuildMode: (mode: BuildingType | null) => void;
+  setBuildPending: (pending: boolean) => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -134,6 +147,10 @@ export const useGameStore = create<GameStore>((set) => ({
   lastDiceRoll: null,
   isAnimating: false,
   lastResourcesDistributed: null,
+
+  // Build state
+  buildMode: null,
+  isBuildPending: false,
 
   // Existing actions
   setBoard: (board) => set({ board }),
@@ -187,6 +204,13 @@ export const useGameStore = create<GameStore>((set) => ({
       roads: [...state.roads, road],
     })),
 
+  upgradeToCity: (vertexId) =>
+    set((state) => ({
+      settlements: state.settlements.map((s) =>
+        s.vertexId === vertexId ? { ...s, isCity: true } : s,
+      ),
+    })),
+
   setSelectedLocation: (id) => set({ selectedLocationId: id }),
 
   setLastPlacedSettlement: (id) => set({ lastPlacedSettlementId: id }),
@@ -225,6 +249,10 @@ export const useGameStore = create<GameStore>((set) => ({
       isAnimating: false,
       lastResourcesDistributed: null,
     }),
+
+  // Build actions
+  setBuildMode: (mode) => set({ buildMode: mode }),
+  setBuildPending: (pending) => set({ isBuildPending: pending }),
 }));
 
 // CUSTOM HOOKS - prevent selector anti-pattern
@@ -313,3 +341,23 @@ export const useCanEndTurn = () =>
 
 export const useLastResourcesDistributed = () =>
   useGameStore((state) => state.lastResourcesDistributed);
+
+// Build state selector hooks
+export const useBuildMode = () => useGameStore((state) => state.buildMode);
+
+export const useIsBuildPending = () =>
+  useGameStore((state) => state.isBuildPending);
+
+export const useCanAfford = (buildingType: BuildingType) => {
+  return useGameStore((state) => {
+    const myId = state.myPlayerId;
+    if (!myId) return false;
+    const resources = state.playerResources[myId];
+    if (!resources) return false;
+    const cost = BUILDING_COSTS[buildingType];
+    return Object.entries(cost).every(
+      ([resource, amount]) =>
+        (resources[resource as keyof typeof resources] || 0) >= amount,
+    );
+  });
+};

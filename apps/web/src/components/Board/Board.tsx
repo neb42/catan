@@ -5,7 +5,7 @@ import { Port } from './Port';
 import { PlacementOverlay } from './PlacementOverlay';
 import { PlacementControls } from './PlacementControls';
 import { PlacedPieces } from './PlacedPieces';
-import { useGameStore } from '../../stores/gameStore';
+import { useGameStore, useBuildMode } from '../../stores/gameStore';
 import { useShallow } from 'zustand/react/shallow';
 
 interface BoardProps {
@@ -32,6 +32,13 @@ export function Board({ board }: BoardProps) {
     useShallow((state) => state.room?.players || []),
   );
   const playerIdToColor = new Map(players.map((p) => [p.id, p.color]));
+
+  // Get placement phase and build mode to determine if overlay should show
+  const placementPhase = useGameStore((state) => state.placementPhase);
+  const buildMode = useBuildMode();
+
+  // Show overlay during placement phase OR build mode
+  const showOverlay = placementPhase || buildMode;
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
@@ -64,7 +71,9 @@ export function Board({ board }: BoardProps) {
           <PlacedPieces board={board} playerIdToColor={playerIdToColor} />
 
           {/* Overlay renders INSIDE Layout to share coordinate system */}
-          <PlacementOverlay currentPlayerColor={currentPlayerColor} />
+          {showOverlay && (
+            <PlacementOverlay currentPlayerColor={currentPlayerColor} />
+          )}
         </Layout>
       </HexGrid>
 

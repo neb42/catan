@@ -7,7 +7,7 @@ interface VertexMarkerProps {
   isSelected: boolean;
   playerColor: string;
   invalidReason?: string;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
 }
 
 export function VertexMarker({

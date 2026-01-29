@@ -1,8 +1,11 @@
 import { motion } from 'motion/react';
 import type { Road, Settlement, BoardState } from '@catan/shared';
-import { getUniqueEdges, getUniqueVertices, PLAYER_COLOR_HEX } from '@catan/shared';
+import {
+  getUniqueEdges,
+  getUniqueVertices,
+  PLAYER_COLOR_HEX,
+} from '@catan/shared';
 import { useSettlements, useRoads } from '../../stores/gameStore';
-
 
 interface PlacedPiecesProps {
   board: BoardState;
@@ -105,7 +108,7 @@ export function PlacedPieces({ board, playerIdToColor }: PlacedPiecesProps) {
         );
       })}
 
-      {/* Render placed settlements */}
+      {/* Render placed settlements and cities */}
       {settlements.map((settlement) => {
         const vertex = vertexMap.get(settlement.vertexId);
         if (!vertex) return null;
@@ -120,20 +123,67 @@ export function PlacedPieces({ board, playerIdToColor }: PlacedPiecesProps) {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           >
-            {/* House shape for settlement */}
-            <path
-              d={`M ${vertex.x} ${vertex.y - 3}
-                  L ${vertex.x + 2} ${vertex.y - 1}
-                  L ${vertex.x + 2} ${vertex.y + 2}
-                  L ${vertex.x - 2} ${vertex.y + 2}
-                  L ${vertex.x - 2} ${vertex.y - 1} Z`}
-              fill={colorHex}
-              stroke="white"
-              strokeWidth={0.4}
-              style={{
-                filter: `drop-shadow(0 0 2px ${colorHex})`,
-              }}
-            />
+            {settlement.isCity ? (
+              /* City shape - larger building with tower */
+              <g>
+                {/* Main building body */}
+                <rect
+                  x={vertex.x - 2.5}
+                  y={vertex.y - 1}
+                  width={5}
+                  height={4}
+                  fill={colorHex}
+                  stroke="white"
+                  strokeWidth={0.4}
+                />
+                {/* Tower on left side */}
+                <rect
+                  x={vertex.x - 2.5}
+                  y={vertex.y - 4}
+                  width={2}
+                  height={3}
+                  fill={colorHex}
+                  stroke="white"
+                  strokeWidth={0.4}
+                />
+                {/* Tower battlement */}
+                <rect
+                  x={vertex.x - 2.8}
+                  y={vertex.y - 4.8}
+                  width={2.6}
+                  height={1}
+                  fill={colorHex}
+                  stroke="white"
+                  strokeWidth={0.3}
+                />
+                {/* Apply glow to entire group */}
+                <rect
+                  x={vertex.x - 3}
+                  y={vertex.y - 5}
+                  width={6}
+                  height={8}
+                  fill="transparent"
+                  style={{
+                    filter: `drop-shadow(0 0 3px ${colorHex})`,
+                  }}
+                />
+              </g>
+            ) : (
+              /* House shape for settlement */
+              <path
+                d={`M ${vertex.x} ${vertex.y - 3}
+                    L ${vertex.x + 2} ${vertex.y - 1}
+                    L ${vertex.x + 2} ${vertex.y + 2}
+                    L ${vertex.x - 2} ${vertex.y + 2}
+                    L ${vertex.x - 2} ${vertex.y - 1} Z`}
+                fill={colorHex}
+                stroke="white"
+                strokeWidth={0.4}
+                style={{
+                  filter: `drop-shadow(0 0 2px ${colorHex})`,
+                }}
+              />
+            )}
           </motion.g>
         );
       })}
