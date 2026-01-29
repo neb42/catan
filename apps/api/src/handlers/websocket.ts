@@ -462,6 +462,102 @@ export function handleWebSocketConnection(
         break;
       }
 
+      case 'build_road': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.buildRoad(message.edgeId, playerId);
+
+        if (!result.success) {
+          sendMessage(ws, {
+            type: 'build_failed',
+            reason: result.error || 'Build failed',
+          });
+          return;
+        }
+
+        // Broadcast successful road build to all players
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'road_built',
+          edgeId: message.edgeId,
+          playerId,
+          resourcesSpent: result.resourcesSpent || {},
+        });
+        break;
+      }
+
+      case 'build_settlement': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.buildSettlement(message.vertexId, playerId);
+
+        if (!result.success) {
+          sendMessage(ws, {
+            type: 'build_failed',
+            reason: result.error || 'Build failed',
+          });
+          return;
+        }
+
+        // Broadcast successful settlement build to all players
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'settlement_built',
+          vertexId: message.vertexId,
+          playerId,
+          resourcesSpent: result.resourcesSpent || {},
+        });
+        break;
+      }
+
+      case 'build_city': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.buildCity(message.vertexId, playerId);
+
+        if (!result.success) {
+          sendMessage(ws, {
+            type: 'build_failed',
+            reason: result.error || 'Build failed',
+          });
+          return;
+        }
+
+        // Broadcast successful city build to all players
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'city_built',
+          vertexId: message.vertexId,
+          playerId,
+          resourcesSpent: result.resourcesSpent || {},
+        });
+        break;
+      }
+
       default: {
         sendError(ws, 'Invalid room ID');
       }
