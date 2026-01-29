@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
+import { notifications } from '@mantine/notifications';
 import {
   useCanRollDice,
   useLastDiceRoll,
   useSocket,
   useGameStore,
+  useLastResourcesDistributed,
 } from '../../stores/gameStore';
 import styles from './dice.module.css';
 
@@ -13,11 +15,50 @@ export function DiceRoller() {
   const lastDiceRoll = useLastDiceRoll();
   const sendMessage = useSocket();
   const setAnimating = useGameStore((state) => state.setAnimating);
+  const myPlayerId = useGameStore((state) => state.myPlayerId);
+  const lastResourcesDistributed = useLastResourcesDistributed();
 
   const [isRolling, setIsRolling] = useState(false);
   const [displayValues, setDisplayValues] = useState<[number, number] | null>(
     null,
   );
+
+  // Track if we've shown notification for current roll to prevent duplicates
+  const lastNotifiedRollRef = useRef<string | null>(null);
+
+  // Show notification for resources received
+  const showResourceNotification = useCallback(() => {
+    if (!lastResourcesDistributed || !myPlayerId) return;
+
+    // Find resources for the current player
+    const myGrant = lastResourcesDistributed.find(
+      (grant) => grant.playerId === myPlayerId,
+    );
+
+    if (myGrant && myGrant.resources.length > 0) {
+      // Format resources as "+2 wood, +1 wheat"
+      const message = myGrant.resources
+        .map((r) => `+${r.count} ${r.type}`)
+        .join(', ');
+
+      notifications.show({
+        title: 'Resources received!',
+        message,
+        color: 'green',
+        autoClose: 3000,
+      });
+    } else if (
+      lastResourcesDistributed.length === 0 ||
+      !lastResourcesDistributed.some((g) => g.resources.length > 0)
+    ) {
+      // No one received resources
+      notifications.show({
+        message: 'No resources from this roll',
+        color: 'gray',
+        autoClose: 2000,
+      });
+    }
+  }, [lastResourcesDistributed, myPlayerId]);
 
   // When lastDiceRoll changes and we're rolling, finish the animation
   useEffect(() => {
@@ -27,12 +68,19 @@ export function DiceRoller() {
         setDisplayValues([lastDiceRoll.dice1, lastDiceRoll.dice2]);
         setIsRolling(false);
         setAnimating(false);
+
+        // Show resource notification after animation completes
+        const rollKey = `${lastDiceRoll.dice1}-${lastDiceRoll.dice2}-${lastDiceRoll.total}`;
+        if (lastNotifiedRollRef.current !== rollKey) {
+          lastNotifiedRollRef.current = rollKey;
+          showResourceNotification();
+        }
       }, 800); // Match animation duration
 
       return () => clearTimeout(timer);
     }
     return undefined;
-  }, [lastDiceRoll, isRolling, setAnimating]);
+  }, [lastDiceRoll, isRolling, setAnimating, showResourceNotification]);
 
   // If we have a dice roll but aren't rolling (e.g., reconnection), show the values
   useEffect(() => {
