@@ -128,7 +128,7 @@ export function BuildControls() {
   const turnPhase = useGameStore((state) => state.turnPhase);
 
   // Only show during main phase
-  if (turnPhase !== 'main') {
+  if (turnPhase !== 'main' && turnPhase !== 'roll') {
     return null;
   }
 
