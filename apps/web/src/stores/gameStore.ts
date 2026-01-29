@@ -28,7 +28,23 @@ interface PlacementSlice {
   lastPlacedSettlementId: string | null;
 }
 
-interface GameStore extends PlacementSlice {
+// Turn state slice (for main game phase)
+interface TurnSlice {
+  turnPhase: 'roll' | 'main' | null; // null = not in main game yet
+  turnCurrentPlayerId: string | null;
+  turnNumber: number;
+  lastDiceRoll: { dice1: number; dice2: number; total: number } | null;
+  isAnimating: boolean; // Prevent actions during animations
+  lastResourcesDistributed: Array<{
+    playerId: string;
+    resources: Array<{
+      type: 'wood' | 'brick' | 'sheep' | 'wheat' | 'ore';
+      count: number;
+    }>;
+  }> | null;
+}
+
+interface GameStore extends PlacementSlice, TurnSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
   gameStarted: boolean;
@@ -69,6 +85,25 @@ interface GameStore extends PlacementSlice {
   setSelectedLocation: (id: string | null) => void;
   setLastPlacedSettlement: (id: string | null) => void;
   clearPlacementState: () => void;
+
+  // Turn actions
+  setTurnState: (state: {
+    phase: 'roll' | 'main';
+    currentPlayerId: string;
+    turnNumber: number;
+  }) => void;
+  setDiceRoll: (roll: { dice1: number; dice2: number; total: number }) => void;
+  setAnimating: (animating: boolean) => void;
+  setLastResourcesDistributed: (
+    distribution: Array<{
+      playerId: string;
+      resources: Array<{
+        type: 'wood' | 'brick' | 'sheep' | 'wheat' | 'ore';
+        count: number;
+      }>;
+    }> | null,
+  ) => void;
+  clearTurnState: () => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -92,6 +127,13 @@ export const useGameStore = create<GameStore>((set) => ({
   roads: [],
   selectedLocationId: null,
   lastPlacedSettlementId: null,
+
+  // Turn state (main game phase)
+  turnPhase: null,
+  turnCurrentPlayerId: null,
+  lastDiceRoll: null,
+  isAnimating: false,
+  lastResourcesDistributed: null,
 
   // Existing actions
   setBoard: (board) => set({ board }),
@@ -157,6 +199,32 @@ export const useGameStore = create<GameStore>((set) => ({
       draftRound: null,
       selectedLocationId: null,
     }),
+
+  // Turn actions
+  setTurnState: (state) =>
+    set({
+      turnPhase: state.phase,
+      turnCurrentPlayerId: state.currentPlayerId,
+      turnNumber: state.turnNumber,
+      lastDiceRoll: null, // Clear dice roll when turn state changes
+    }),
+
+  setDiceRoll: (roll) => set({ lastDiceRoll: roll }),
+
+  setAnimating: (animating) => set({ isAnimating: animating }),
+
+  setLastResourcesDistributed: (distribution) =>
+    set({ lastResourcesDistributed: distribution }),
+
+  clearTurnState: () =>
+    set({
+      turnPhase: null,
+      turnCurrentPlayerId: null,
+      turnNumber: 0,
+      lastDiceRoll: null,
+      isAnimating: false,
+      lastResourcesDistributed: null,
+    }),
 }));
 
 // CUSTOM HOOKS - prevent selector anti-pattern
@@ -195,13 +263,53 @@ export const useSocket = () => useGameStore((state) => state.sendMessage); // Ex
 
 export const usePlayerResources = (playerId: string) =>
   useGameStore(
-    useShallow((state) =>
-      state.playerResources[playerId] || {
-        wood: 0,
-        brick: 0,
-        sheep: 0,
-        wheat: 0,
-        ore: 0,
-      },
+    useShallow(
+      (state) =>
+        state.playerResources[playerId] || {
+          wood: 0,
+          brick: 0,
+          sheep: 0,
+          wheat: 0,
+          ore: 0,
+        },
     ),
   );
+
+// Turn state selector hooks
+export const useTurnPhase = () => useGameStore((state) => state.turnPhase);
+
+export const useTurnCurrentPlayer = () =>
+  useGameStore((state) => state.turnCurrentPlayerId);
+
+export const useTurnNumber = () => useGameStore((state) => state.turnNumber);
+
+export const useLastDiceRoll = () =>
+  useGameStore((state) => state.lastDiceRoll);
+
+export const useIsAnimating = () => useGameStore((state) => state.isAnimating);
+
+export const useIsMyTurnInMainGame = () =>
+  useGameStore(
+    (state) =>
+      state.turnCurrentPlayerId === state.myPlayerId &&
+      state.turnPhase !== null,
+  );
+
+export const useCanRollDice = () =>
+  useGameStore(
+    (state) =>
+      state.turnPhase === 'roll' &&
+      state.turnCurrentPlayerId === state.myPlayerId &&
+      !state.isAnimating,
+  );
+
+export const useCanEndTurn = () =>
+  useGameStore(
+    (state) =>
+      state.turnPhase === 'main' &&
+      state.turnCurrentPlayerId === state.myPlayerId &&
+      !state.isAnimating,
+  );
+
+export const useLastResourcesDistributed = () =>
+  useGameStore((state) => state.lastResourcesDistributed);
