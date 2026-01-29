@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { MIN_PLAYERS, Player, Room, WebSocketMessage } from '@catan/shared';
+import {
+  MIN_PLAYERS,
+  Player,
+  Room,
+  WebSocketMessage,
+  ResourceType,
+} from '@catan/shared';
 import {
   Alert,
   Badge,
@@ -13,6 +19,7 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 
 import CreateRoom from './CreateRoom';
 import JoinRoom from './JoinRoom';
@@ -253,6 +260,86 @@ export default function Lobby() {
             phase: message.phase,
             currentPlayerId: message.currentPlayerId,
             turnNumber: message.turnNumber,
+          });
+          break;
+        }
+
+        case 'road_built': {
+          const gameStore = useGameStore.getState();
+          const { edgeId, playerId, resourcesSpent } = message;
+          gameStore.addRoad({ edgeId, playerId });
+
+          // Deduct resources from player
+          if (resourcesSpent) {
+            const resources = Object.entries(resourcesSpent).map(
+              ([type, count]) => ({
+                type: type as ResourceType,
+                count: -(count as number), // Negative to deduct
+              }),
+            );
+            gameStore.updatePlayerResources(playerId, resources);
+          }
+
+          // Show toast for local player
+          if (playerId === currentPlayerId) {
+            notifications.show({ message: 'Road built!', color: 'green' });
+          }
+          break;
+        }
+
+        case 'settlement_built': {
+          const gameStore = useGameStore.getState();
+          const { vertexId, playerId, resourcesSpent } = message;
+          gameStore.addSettlement({ vertexId, playerId, isCity: false });
+
+          // Deduct resources
+          if (resourcesSpent) {
+            const resources = Object.entries(resourcesSpent).map(
+              ([type, count]) => ({
+                type: type as ResourceType,
+                count: -(count as number),
+              }),
+            );
+            gameStore.updatePlayerResources(playerId, resources);
+          }
+
+          if (playerId === currentPlayerId) {
+            notifications.show({
+              message: 'Settlement built!',
+              color: 'green',
+            });
+          }
+          break;
+        }
+
+        case 'city_built': {
+          const gameStore = useGameStore.getState();
+          const { vertexId, playerId, resourcesSpent } = message;
+          // Update existing settlement to city
+          gameStore.upgradeToCity(vertexId);
+
+          // Deduct resources
+          if (resourcesSpent) {
+            const resources = Object.entries(resourcesSpent).map(
+              ([type, count]) => ({
+                type: type as ResourceType,
+                count: -(count as number),
+              }),
+            );
+            gameStore.updatePlayerResources(playerId, resources);
+          }
+
+          if (playerId === currentPlayerId) {
+            notifications.show({ message: 'City built!', color: 'green' });
+          }
+          break;
+        }
+
+        case 'build_failed': {
+          const { reason } = message;
+          notifications.show({
+            message: `Build failed: ${reason}`,
+            color: 'red',
           });
           break;
         }

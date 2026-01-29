@@ -90,6 +90,7 @@ interface GameStore extends PlacementSlice, TurnSlice, BuildSlice {
   }) => void;
   addSettlement: (settlement: Settlement) => void;
   addRoad: (road: Road) => void;
+  upgradeToCity: (vertexId: string) => void;
   setSelectedLocation: (id: string | null) => void;
   setLastPlacedSettlement: (id: string | null) => void;
   clearPlacementState: () => void;
@@ -201,6 +202,13 @@ export const useGameStore = create<GameStore>((set) => ({
   addRoad: (road) =>
     set((state) => ({
       roads: [...state.roads, road],
+    })),
+
+  upgradeToCity: (vertexId) =>
+    set((state) => ({
+      settlements: state.settlements.map((s) =>
+        s.vertexId === vertexId ? { ...s, isCity: true } : s,
+      ),
     })),
 
   setSelectedLocation: (id) => set({ selectedLocationId: id }),
