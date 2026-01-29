@@ -183,10 +183,15 @@ export const BuildCityMessageSchema = z.object({
 });
 
 // Building Phase Messages - Response/broadcast schemas (server -> clients)
-export const ResourceCostSchema = z.record(
-  z.enum(['wood', 'brick', 'sheep', 'wheat', 'ore']),
-  z.number(),
-);
+export const ResourceCostSchema = z
+  .object({
+    wood: z.number(),
+    brick: z.number(),
+    sheep: z.number(),
+    wheat: z.number(),
+    ore: z.number(),
+  })
+  .partial();
 
 export const RoadBuiltMessageSchema = z.object({
   type: z.literal('road_built'),
