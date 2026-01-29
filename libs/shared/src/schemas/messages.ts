@@ -166,6 +166,54 @@ export const TurnChangedMessageSchema = z.object({
   phase: z.enum(['roll', 'main']),
 });
 
+// Building Phase Messages - Request schemas (client -> server)
+export const BuildRoadMessageSchema = z.object({
+  type: z.literal('build_road'),
+  edgeId: z.string(),
+});
+
+export const BuildSettlementMessageSchema = z.object({
+  type: z.literal('build_settlement'),
+  vertexId: z.string(),
+});
+
+export const BuildCityMessageSchema = z.object({
+  type: z.literal('build_city'),
+  vertexId: z.string(),
+});
+
+// Building Phase Messages - Response/broadcast schemas (server -> clients)
+export const ResourceCostSchema = z.record(
+  z.enum(['wood', 'brick', 'sheep', 'wheat', 'ore']),
+  z.number(),
+);
+
+export const RoadBuiltMessageSchema = z.object({
+  type: z.literal('road_built'),
+  edgeId: z.string(),
+  playerId: z.string(),
+  resourcesSpent: ResourceCostSchema,
+});
+
+export const SettlementBuiltMessageSchema = z.object({
+  type: z.literal('settlement_built'),
+  vertexId: z.string(),
+  playerId: z.string(),
+  resourcesSpent: ResourceCostSchema,
+});
+
+export const CityBuiltMessageSchema = z.object({
+  type: z.literal('city_built'),
+  vertexId: z.string(),
+  playerId: z.string(),
+  resourcesSpent: ResourceCostSchema,
+});
+
+export const BuildFailedMessageSchema = z.object({
+  type: z.literal('build_failed'),
+  reason: z.string(),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -193,6 +241,14 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   DiceRolledMessageSchema,
   EndTurnMessageSchema,
   TurnChangedMessageSchema,
+  // Building phase messages
+  BuildRoadMessageSchema,
+  BuildSettlementMessageSchema,
+  BuildCityMessageSchema,
+  RoadBuiltMessageSchema,
+  SettlementBuiltMessageSchema,
+  CityBuiltMessageSchema,
+  BuildFailedMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -228,5 +284,18 @@ export type DiceRolledMessage = z.infer<typeof DiceRolledMessageSchema>;
 export type EndTurnMessage = z.infer<typeof EndTurnMessageSchema>;
 export type TurnChangedMessage = z.infer<typeof TurnChangedMessageSchema>;
 export type ResourceDistribution = z.infer<typeof ResourceDistributionSchema>;
+// Building phase message types
+export type BuildRoadMessage = z.infer<typeof BuildRoadMessageSchema>;
+export type BuildSettlementMessage = z.infer<
+  typeof BuildSettlementMessageSchema
+>;
+export type BuildCityMessage = z.infer<typeof BuildCityMessageSchema>;
+export type ResourceCost = z.infer<typeof ResourceCostSchema>;
+export type RoadBuiltMessage = z.infer<typeof RoadBuiltMessageSchema>;
+export type SettlementBuiltMessage = z.infer<
+  typeof SettlementBuiltMessageSchema
+>;
+export type CityBuiltMessage = z.infer<typeof CityBuiltMessageSchema>;
+export type BuildFailedMessage = z.infer<typeof BuildFailedMessageSchema>;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
