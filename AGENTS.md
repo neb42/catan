@@ -217,3 +217,9 @@ if (!result.success) {
 - NX handles module resolution via tsconfig paths
 - WebSocket communication uses Zod-validated messages
 - Shared types live in libs/shared for use across frontend and backend
+
+## File Operations
+
+### Writing Large Planning Documents
+
+When writing large markdown files during planning stages (>50KB or >1000 lines), write the content in chunks to avoid timeouts or memory issues.
