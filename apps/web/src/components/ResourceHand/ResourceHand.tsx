@@ -1,4 +1,4 @@
-import { Paper, Text, Stack } from '@mantine/core';
+import { Paper, Text, Stack, Group } from '@mantine/core';
 import { motion, AnimatePresence } from 'motion/react';
 import { useGameStore, usePlayerResources } from '../../stores/gameStore';
 
@@ -182,7 +182,7 @@ export function ResourceHand() {
         perspective: 1000,
       }}
     >
-      <Stack gap="sm" align="center">
+      <Stack gap="xs" align="center">
         {/* Header with count */}
         <Text
           size="sm"
@@ -192,6 +192,25 @@ export function ResourceHand() {
         >
           Your Resources ({totalCards})
         </Text>
+
+        {/* Resource counts */}
+        <Group gap={2} mt="xs">
+          {Object.entries(resources).map(([type, count]) => (
+            <Text
+              key={type}
+              size="xs"
+              c="dimmed"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              <span>{RESOURCE_CARDS[type].icon}</span>
+              <span>{count}</span>
+            </Text>
+          ))}
+        </Group>
 
         {/* Fanned hand container */}
         <div
