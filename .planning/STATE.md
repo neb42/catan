@@ -2,17 +2,17 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-01-29  
-**Last activity:** 2026-01-29 - Completed 05-04-PLAN.md (Build mode overlay integration)
+**Last Updated:** 2026-01-30  
+**Last activity:** 2026-01-30 - Completed Phase 5 (Building) with all 5 plans verified
 
 ## Current Position
 
-Phase: 5 of 12 (Building)  
-Plan: 4 of 5 in current phase  
-Status: In progress  
-Last activity: 2026-01-29 - Completed 05-04-PLAN.md
+Phase: 5 of 12 (Building) ✅ Complete  
+Plan: 5 of 5 in current phase  
+Status: Complete  
+Last activity: 2026-01-30 - Phase 5 verified and closed
 
-Progress: █████████████████████████████░░░░░░░ 70% (Phase 5 plan 4/5)
+Progress: ██████████████████████████████████████ 100% (Phase 5 complete)
 
 ## Blockers/Concerns
 
@@ -63,9 +63,10 @@ Progress: ███████████████████████�
 | 05    | useCanBuild returns reason    | Provides both canBuild boolean and disabledReason for clear UX                |
 | 05    | Single placement per mode     | Build mode exits after single click for clear UX                              |
 | 05    | Build overlay conditional     | PlacementOverlay renders for both placement phase AND build mode              |
+| 05    | City tower shape              | Cities render with distinct tower/castle shape vs settlement house shape      |
 
 ## Session Continuity
 
-Last session: 2026-01-29
-Stopped at: Completed 05-04-PLAN.md (Build mode overlay integration)
+Last session: 2026-01-30
+Stopped at: Completed Phase 5 (Building) - all plans verified
 Resume file: none

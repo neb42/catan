@@ -210,6 +210,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ## Phase 5: Building
 
 **Goal:** Enable building roads, settlements, and cities with cost validation  
+**Status:** ✅ Complete  
+**Completed:** 2026-01-30  
 **Duration:** 1 week  
 **Dependencies:** Phase 4  
 **Plans:** 5 plans
@@ -237,7 +239,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - [x] 05-02-PLAN.md — GameManager build methods and WebSocket handlers
 - [x] 05-03-PLAN.md — Frontend build state, hooks, and BuildControls component
 - [x] 05-04-PLAN.md — Build overlay integration and WebSocket message handlers
-- [ ] 05-05-PLAN.md — Human verification of complete building system
+- [x] 05-05-PLAN.md — Human verification of complete building system
 
 ### Deliverables
 
@@ -574,4 +576,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-01-29 - Split Phase 8 into Development Cards/Longest Road/Largest Army/Victory (now 12 phases)_
+_Last updated: 2026-01-30 - Phase 5 (Building) complete_
