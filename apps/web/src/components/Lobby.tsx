@@ -224,6 +224,38 @@ export default function Lobby() {
           break;
         }
 
+        case 'dice_rolled': {
+          const gameStore = useGameStore.getState();
+          // Store dice result
+          gameStore.setDiceRoll({
+            dice1: message.dice1,
+            dice2: message.dice2,
+            total: message.total,
+          });
+          // Store resource distribution for notification display
+          gameStore.setLastResourcesDistributed(message.resourcesDistributed);
+          // Update resources for all affected players
+          for (const grant of message.resourcesDistributed) {
+            gameStore.updatePlayerResources(grant.playerId, grant.resources);
+          }
+          // Update phase to 'main' (dice has been rolled)
+          gameStore.setTurnState({
+            phase: 'main',
+            currentPlayerId: gameStore.turnCurrentPlayerId || '',
+            turnNumber: gameStore.turnNumber,
+          });
+          break;
+        }
+
+        case 'turn_changed': {
+          useGameStore.getState().setTurnState({
+            phase: message.phase,
+            currentPlayerId: message.currentPlayerId,
+            turnNumber: message.turnNumber,
+          });
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
