@@ -7,10 +7,10 @@
 
 ## Overview
 
-9-phase roadmap derived from 68 v1 requirements. Each phase delivers working software with observable user value. Phases build sequentially — later phases depend on earlier foundations.
+12-phase roadmap derived from 68 v1 requirements. Each phase delivers working software with observable user value. Phases build sequentially — later phases depend on earlier foundations.
 
-**Estimated Timeline:** 9-11 weeks (1-1.5 weeks per phase avg)  
-**Delivery Strategy:** Ship after Phase 9 (v1 complete)
+**Estimated Timeline:** 12-14 weeks (1-1.5 weeks per phase avg)  
+**Delivery Strategy:** Ship after Phase 12 (v1 complete)
 
 ---
 
@@ -314,15 +314,13 @@ TBD
 
 ---
 
-## Phase 8: Advanced Features
+## Phase 8: Development Cards
 
-**Goal:** Development cards, longest road, largest army, victory  
-**Duration:** 1.5 weeks  
+**Goal:** Implement development card deck and all card types  
+**Duration:** 1 week  
 **Dependencies:** Phase 7
 
-### Requirements (19)
-
-**Development Cards (9):**
+### Requirements (9)
 
 - **DEV-01**: User can buy development card from deck for resources (1 ore, 1 sheep, 1 wheat)
 - **DEV-02**: Game draws from shuffled deck of 25 cards (14 Knight, 5 VP, 2 Road Building, 2 Year of Plenty, 2 Monopoly)
@@ -334,14 +332,85 @@ TBD
 - **DEV-08**: User can play Monopoly card to take all of one resource type from all players
 - **DEV-09**: Victory Point cards remain hidden from opponents until win condition
 
-**Scoring & Victory (10):**
+### Success Criteria
+
+1. **Dev cards work correctly** — Buy card, can't play same turn, can play next turn, each card type works as specified
+2. **VP cards stay hidden** — Opponents can't see VP cards in hand, revealed only on win or game end
+
+### Plans
+
+TBD
+
+### Deliverables
+
+- Development card deck system (shuffle, draw)
+- Dev card UI (hand display, play actions)
+- All 5 dev card implementations
+
+---
+
+## Phase 9: Longest Road
+
+**Goal:** Track longest road and award bonus points  
+**Duration:** 0.5 week  
+**Dependencies:** Phase 8 (needs Knight card for road blocking tests)
+
+### Requirements (3)
 
 - **SCORE-01**: Game calculates Longest Road (minimum 5 road segments) using graph traversal
 - **SCORE-02**: Game awards Longest Road card (2 VP) to player with longest continuous road
 - **SCORE-03**: Game transfers Longest Road card when another player surpasses length (ties favor current holder)
+
+### Success Criteria
+
+1. **Longest road calculates correctly** — Award at 5+ roads, transfers when surpassed, ties handled, opponent settlements block
+
+### Plans
+
+TBD
+
+### Deliverables
+
+- Longest road algorithm (DFS with blocking)
+- Longest road card UI and tracking
+
+---
+
+## Phase 10: Largest Army
+
+**Goal:** Track largest army and award bonus points  
+**Duration:** 0.5 week  
+**Dependencies:** Phase 8 (needs Knight card to be implemented)
+
+### Requirements (3)
+
 - **SCORE-04**: Game calculates Largest Army (minimum 3 knights played)
 - **SCORE-05**: Game awards Largest Army card (2 VP) to player with most knights played
 - **SCORE-06**: Game transfers Largest Army card when another player surpasses count (ties favor current holder)
+
+### Success Criteria
+
+1. **Largest army calculates correctly** — Award at 3+ knights, transfers when surpassed, ties handled
+
+### Plans
+
+TBD
+
+### Deliverables
+
+- Largest army tracking
+- Largest army card UI
+
+---
+
+## Phase 11: Victory
+
+**Goal:** Calculate victory points and detect game end  
+**Duration:** 0.5 week  
+**Dependencies:** Phase 9 and 10 (needs longest road/largest army for VP calculation)
+
+### Requirements (4)
+
 - **SCORE-07**: Game calculates total victory points (settlements=1, cities=2, longest road=2, largest army=2, VP cards=1 each)
 - **SCORE-08**: User can see all players' public victory point counts
 - **SCORE-09**: Game detects when player reaches 10 victory points
@@ -349,29 +418,24 @@ TBD
 
 ### Success Criteria
 
-1. **Dev cards work correctly** — Buy card, can't play same turn, can play next turn, each card type works as specified
-2. **Longest road calculates correctly** — Award at 5+ roads, transfers when surpassed, ties handled, opponent settlements block
-3. **Largest army calculates correctly** — Award at 3+ knights, transfers when surpassed, ties handled
-4. **Victory detection works** — Player reaches 10 VP, game ends immediately, winner announced
-5. **VP cards stay hidden** — Opponents can't see VP cards in hand, revealed only on win or game end
+1. **Victory detection works** — Player reaches 10 VP, game ends immediately, winner announced
+
+### Plans
+
+TBD
 
 ### Deliverables
 
-- Development card deck system (shuffle, draw)
-- Dev card UI (hand display, play actions)
-- All 5 dev card implementations
-- Longest road algorithm (DFS with blocking)
-- Largest army tracking
 - Victory point calculation system
 - Win detection and end game UI
 
 ---
 
-## Phase 9: Resilience & Polish
+## Phase 12: Resilience & Polish
 
 **Goal:** Handle disconnects, finalize lobby, polish UX  
 **Duration:** 1 week  
-**Dependencies:** Phase 8
+**Dependencies:** Phase 11
 
 ### Requirements (10)
 
@@ -424,8 +488,11 @@ TBD
 | Phase 5: Building                     | 8            | 12%        |
 | Phase 6: Trading                      | 6            | 9%         |
 | Phase 7: Robber                       | 8            | 12%        |
-| Phase 8: Advanced Features            | 19           | 28%        |
-| Phase 9: Resilience & Polish          | 10           | 15%        |
+| Phase 8: Development Cards            | 9            | 13%        |
+| Phase 9: Longest Road                 | 3            | 4%         |
+| Phase 10: Largest Army                | 3            | 4%         |
+| Phase 11: Victory                     | 4            | 6%         |
+| Phase 12: Resilience & Polish         | 10           | 15%        |
 
 **Phase Dependencies:**
 
@@ -436,7 +503,10 @@ TBD
 - Phase 6 depends on Phase 5 (needs building system)
 - Phase 7 depends on Phase 6 (needs trading system for resource management context)
 - Phase 8 depends on Phase 7 (needs robber/complete mechanics)
-- Phase 9 depends on Phase 8 (needs complete game)
+- Phase 9 depends on Phase 8 (needs Knight card for road blocking tests)
+- Phase 10 depends on Phase 8 (needs Knight card to be implemented)
+- Phase 11 depends on Phase 9 and 10 (needs longest road/largest army for VP calculation)
+- Phase 12 depends on Phase 11 (needs complete game)
 
 **No orphaned requirements.** All 68 v1 requirements mapped to exactly one phase.
 
@@ -444,13 +514,13 @@ TBD
 
 ## Risks & Mitigations
 
-| Risk                           | Phase     | Impact   | Mitigation                                                          |
-| ------------------------------ | --------- | -------- | ------------------------------------------------------------------- |
-| Longest road algorithm bugs    | Phase 8   | High     | DFS with comprehensive test cases, validate against known scenarios |
-| State desynchronization        | Phase 1-9 | Critical | Server-authoritative, full-state broadcasts, state versioning       |
-| WebSocket connection drops     | Phase 9   | High     | Heartbeat pings, auto-reconnect, state recovery                     |
-| Trade UI complexity            | Phase 6   | Medium   | Prototype early, iterate with user testing                          |
-| Mobile touch targets too small | Phase 9   | Medium   | Design for 44px minimum, test on real devices                       |
+| Risk                           | Phase      | Impact   | Mitigation                                                          |
+| ------------------------------ | ---------- | -------- | ------------------------------------------------------------------- |
+| Longest road algorithm bugs    | Phase 9    | High     | DFS with comprehensive test cases, validate against known scenarios |
+| State desynchronization        | Phase 1-12 | Critical | Server-authoritative, full-state broadcasts, state versioning       |
+| WebSocket connection drops     | Phase 12   | High     | Heartbeat pings, auto-reconnect, state recovery                     |
+| Trade UI complexity            | Phase 6    | Medium   | Prototype early, iterate with user testing                          |
+| Mobile touch targets too small | Phase 12   | Medium   | Design for 44px minimum, test on real devices                       |
 
 ---
 
@@ -499,4 +569,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-01-29 - Split Phase 5 into Building/Trading/Robber (now 9 phases)_
+_Last updated: 2026-01-29 - Split Phase 8 into Development Cards/Longest Road/Largest Army/Victory (now 12 phases)_
