@@ -170,7 +170,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ## Phase 4: Turn Structure & Resources
 
 **Goal:** Enable turn-based gameplay with dice rolling and resource distribution  
-**Duration:** 1 week  
+**Status:** ✅ Complete  
+**Completed:** 2026-01-29  
 **Dependencies:** Phase 3  
 **Plans:** 5 plans
 
@@ -193,9 +194,9 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 - [x] 04-01-PLAN.md — Turn state foundation (backend + shared schemas + resource distribution)
 - [x] 04-02-PLAN.md — Turn state frontend + WebSocket handlers
-- [ ] 04-03-PLAN.md — Dice roller UI with animation
-- [ ] 04-04-PLAN.md — Turn controls, resource hand, player highlighting
-- [ ] 04-05-PLAN.md — Integration and end-to-end verification
+- [x] 04-03-PLAN.md — Dice roller UI with animation
+- [x] 04-04-PLAN.md — Turn controls, resource hand, player highlighting
+- [x] 04-05-PLAN.md — Integration and end-to-end verification
 
 ### Deliverables
 
