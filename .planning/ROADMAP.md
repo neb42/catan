@@ -7,10 +7,10 @@
 
 ## Overview
 
-8-phase roadmap derived from 72 v1 requirements. Each phase delivers working software with observable user value. Phases build sequentially — later phases depend on earlier foundations.
+7-phase roadmap derived from 68 v1 requirements. Each phase delivers working software with observable user value. Phases build sequentially — later phases depend on earlier foundations.
 
-**Estimated Timeline:** 8-10 weeks (1-1.5 weeks per phase avg)  
-**Delivery Strategy:** Ship after Phase 8 (v1 complete)
+**Estimated Timeline:** 7-9 weeks (1-1.5 weeks per phase avg)  
+**Delivery Strategy:** Ship after Phase 7 (v1 complete)
 
 ---
 
@@ -207,41 +207,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 5: Client Rendering
-
-**Goal:** Visual board with interactive hex grid and action UI  
-**Duration:** 1 week  
-**Dependencies:** Phase 4
-
-### Requirements (4)
-
-- **TURN-05**: User can see clear indicator of whose turn it is
-- **BUILD-07**: Game highlights valid placement locations when user selects build action
-- **UX-01**: User sees clear visual indicator of current turn and phase
-- **UX-04**: User can view player list with colors and current scores
-
-### Success Criteria
-
-1. **Hex board renders correctly** — SVG board with hexes, numbers, ports, ocean, all pieces visible
-2. **Turn indicators are prominent** — Current player highlighted, turn phase shown clearly
-3. **Valid placements highlight** — Click "Build Road", valid edges glow/highlight in real-time
-4. **Player dashboard visible** — All players listed with colors, scores, resource counts, current turn marked
-
-### Deliverables
-
-- Hex board component with react-hexgrid
-- Piece rendering (roads, settlements, cities)
-- Placement highlighting system
-- Turn/phase UI components
-- Player list dashboard
-
----
-
-## Phase 6: Game Mechanics
+## Phase 5: Game Mechanics
 
 **Goal:** Complete building, trading, and robber systems  
 **Duration:** 2 weeks  
-**Dependencies:** Phase 5
+**Dependencies:** Phase 4
 
 ### Requirements (22)
 
@@ -297,11 +267,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 7: Advanced Features
+## Phase 6: Advanced Features
 
 **Goal:** Development cards, longest road, largest army, victory  
 **Duration:** 1.5 weeks  
-**Dependencies:** Phase 6
+**Dependencies:** Phase 5
 
 ### Requirements (19)
 
@@ -350,11 +320,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 8: Resilience & Polish
+## Phase 7: Resilience & Polish
 
 **Goal:** Handle disconnects, finalize lobby, polish UX  
 **Duration:** 1 week  
-**Dependencies:** Phase 7
+**Dependencies:** Phase 6
 
 ### Requirements (10)
 
@@ -396,30 +366,28 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ## Validation Matrix
 
-**Requirements Coverage:** 72/72 (100%)
+**Requirements Coverage:** 68/68 (100%)
 
 | Phase                                 | Requirements | Percentage |
 | ------------------------------------- | ------------ | ---------- |
-| Phase 1: Foundation                   | 6            | 8%         |
+| Phase 1: Foundation                   | 6            | 9%         |
 | Phase 2: Board Generation & Rendering | 3            | 4%         |
 | Phase 3: Initial Placement            | 2            | 3%         |
-| Phase 4: Turn Structure & Resources   | 6            | 8%         |
-| Phase 5: Client Rendering             | 4            | 6%         |
-| Phase 6: Game Mechanics               | 22           | 31%        |
-| Phase 7: Advanced Features            | 19           | 26%        |
-| Phase 8: Resilience & Polish          | 10           | 14%        |
+| Phase 4: Turn Structure & Resources   | 6            | 9%         |
+| Phase 5: Game Mechanics               | 22           | 32%        |
+| Phase 6: Advanced Features            | 19           | 28%        |
+| Phase 7: Resilience & Polish          | 10           | 15%        |
 
 **Phase Dependencies:**
 
 - Phase 2 depends on Phase 1 (needs room system)
 - Phase 3 depends on Phase 2 (needs board to place on)
 - Phase 4 depends on Phase 3 (needs initial placement complete)
-- Phase 5 depends on Phase 4 (needs game state to render)
-- Phase 6 depends on Phase 5 (needs placement UI)
-- Phase 7 depends on Phase 6 (needs building/resources)
-- Phase 8 depends on Phase 7 (needs complete game)
+- Phase 5 depends on Phase 4 (needs turn structure)
+- Phase 6 depends on Phase 5 (needs building/resources)
+- Phase 7 depends on Phase 6 (needs complete game)
 
-**No orphaned requirements.** All 72 v1 requirements mapped to exactly one phase.
+**No orphaned requirements.** All 68 v1 requirements mapped to exactly one phase.
 
 ---
 
@@ -427,11 +395,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 | Risk                           | Phase     | Impact   | Mitigation                                                          |
 | ------------------------------ | --------- | -------- | ------------------------------------------------------------------- |
-| Longest road algorithm bugs    | Phase 7   | High     | DFS with comprehensive test cases, validate against known scenarios |
-| State desynchronization        | Phase 1-8 | Critical | Server-authoritative, full-state broadcasts, state versioning       |
-| WebSocket connection drops     | Phase 8   | High     | Heartbeat pings, auto-reconnect, state recovery                     |
-| Trade UI complexity            | Phase 6   | Medium   | Prototype early, iterate with user testing                          |
-| Mobile touch targets too small | Phase 8   | Medium   | Design for 44px minimum, test on real devices                       |
+| Longest road algorithm bugs    | Phase 6   | High     | DFS with comprehensive test cases, validate against known scenarios |
+| State desynchronization        | Phase 1-7 | Critical | Server-authoritative, full-state broadcasts, state versioning       |
+| WebSocket connection drops     | Phase 7   | High     | Heartbeat pings, auto-reconnect, state recovery                     |
+| Trade UI complexity            | Phase 5   | Medium   | Prototype early, iterate with user testing                          |
+| Mobile touch targets too small | Phase 7   | Medium   | Design for 44px minimum, test on real devices                       |
 
 ---
 
@@ -480,4 +448,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-01-20 after roadmap creation_
+_Last updated: 2026-01-29 after phase 5 removal_
