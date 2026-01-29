@@ -1,12 +1,20 @@
 import { Box, Container, Stack, Title, Text } from '@mantine/core';
 import { Board } from './Board/Board';
-import { useGameStore, useCurrentPlayer, useSocket } from '../stores/gameStore';
+import {
+  useGameStore,
+  useCurrentPlayer,
+  useSocket,
+  useTurnPhase,
+} from '../stores/gameStore';
 import { PlacementBanner } from './PlacementBanner';
 import { DraftOrderDisplay } from './DraftOrderDisplay';
 import { PlacementControls } from './Board/PlacementControls';
 import { usePlacementState } from '../hooks/usePlacementState';
 import { GamePlayerList } from './GamePlayerList';
 import { useShallow } from 'zustand/react/shallow';
+import { DiceRoller } from './DiceRoller/DiceRoller';
+import { TurnControls } from './TurnControls/TurnControls';
+import { ResourceHand } from './ResourceHand/ResourceHand';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
@@ -16,6 +24,10 @@ export function Game() {
   const { id: currentPlayerId } = useCurrentPlayer();
   const socket = useSocket();
   const { phase: placementPhase } = usePlacementState();
+  const turnPhase = useTurnPhase();
+
+  // Determine which phase UI to show
+  const isMainGamePhase = placementPhase === null && turnPhase !== null;
 
   if (!board) {
     return (
@@ -90,6 +102,40 @@ export function Game() {
         >
           <PlacementControls />
         </div>
+      )}
+
+      {/* Main game phase UI (dice roller, turn controls, resource hand) */}
+      {isMainGamePhase && (
+        <>
+          {/* Game controls panel (top-right) */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 80,
+              right: 16,
+              zIndex: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 16,
+            }}
+          >
+            <TurnControls />
+            <DiceRoller />
+          </div>
+
+          {/* Resource hand (bottom center) */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 24,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 20,
+            }}
+          >
+            <ResourceHand />
+          </div>
+        </>
       )}
     </Box>
   );
