@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-29  
-**Last activity:** 2026-01-29 - Completed 05-03-PLAN.md (Frontend build mode state, hooks, and BuildControls)
+**Last activity:** 2026-01-29 - Completed 05-04-PLAN.md (Build mode overlay integration)
 
 ## Current Position
 
 Phase: 5 of 12 (Building)  
-Plan: 3 of 5 in current phase  
+Plan: 4 of 5 in current phase  
 Status: In progress  
-Last activity: 2026-01-29 - Completed 05-03-PLAN.md
+Last activity: 2026-01-29 - Completed 05-04-PLAN.md
 
-Progress: █████████████████████████░░░░░░░░░░░ 66% (Phase 5 plan 3/5)
+Progress: █████████████████████████████░░░░░░░ 70% (Phase 5 plan 4/5)
 
 ## Blockers/Concerns
 
@@ -61,9 +61,11 @@ Progress: ███████████████████████�
 | 05    | Return resourcesSpent         | Build success includes spent resources for client animation                   |
 | 05    | Main-game validators separate | Different rules: connect to any owned network, not just last settlement       |
 | 05    | useCanBuild returns reason    | Provides both canBuild boolean and disabledReason for clear UX                |
+| 05    | Single placement per mode     | Build mode exits after single click for clear UX                              |
+| 05    | Build overlay conditional     | PlacementOverlay renders for both placement phase AND build mode              |
 
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 05-03-PLAN.md (Frontend build mode state, hooks, and BuildControls)
+Stopped at: Completed 05-04-PLAN.md (Build mode overlay integration)
 Resume file: none
