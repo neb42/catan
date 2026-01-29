@@ -1,4 +1,11 @@
-import { GameState, BoardState, ResourceType, TurnState } from '@catan/shared';
+import {
+  GameState,
+  BoardState,
+  ResourceType,
+  TurnState,
+  BUILDING_COSTS,
+  MAX_PIECES,
+} from '@catan/shared';
 import { calculateDraftPosition, isSetupComplete } from '@catan/shared';
 import { getUniqueVertices, getUniqueEdges, Vertex, Edge } from '@catan/shared';
 import {
@@ -6,6 +13,12 @@ import {
   isValidRoadPlacement,
   getInvalidSettlementReason,
   getInvalidRoadReason,
+  isValidMainGameSettlement,
+  isValidMainGameRoad,
+  isValidCityUpgrade,
+  getInvalidMainGameSettlementReason,
+  getInvalidMainGameRoadReason,
+  getInvalidCityUpgradeReason,
 } from './placement-validator';
 import { getAdjacentVertexIds } from './geometry-utils';
 import {
@@ -395,5 +408,267 @@ export class GameManager {
 
   getState(): GameState {
     return this.gameState;
+  }
+
+  // ============================================================================
+  // BUILDING HELPERS
+  // ============================================================================
+
+  /**
+   * Check if player has at least the required resources for a building cost.
+   */
+  hasResources(
+    playerId: string,
+    cost: Partial<Record<ResourceType, number>>,
+  ): boolean {
+    const playerResources = this.gameState.playerResources[playerId];
+    if (!playerResources) return false;
+
+    for (const [resource, amount] of Object.entries(cost)) {
+      const resourceType = resource as ResourceType;
+      if ((playerResources[resourceType] || 0) < (amount || 0)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Deduct resources from player. Assumes hasResources was already checked.
+   */
+  deductResources(
+    playerId: string,
+    cost: Partial<Record<ResourceType, number>>,
+  ): void {
+    const playerResources = this.gameState.playerResources[playerId];
+    if (!playerResources) return;
+
+    for (const [resource, amount] of Object.entries(cost)) {
+      const resourceType = resource as ResourceType;
+      playerResources[resourceType] =
+        (playerResources[resourceType] || 0) - (amount || 0);
+    }
+  }
+
+  /**
+   * Count pieces owned by a player (roads, settlements, cities).
+   */
+  countPlayerPieces(playerId: string): {
+    roads: number;
+    settlements: number;
+    cities: number;
+  } {
+    const roads = this.gameState.roads.filter(
+      (r) => r.playerId === playerId,
+    ).length;
+
+    let settlements = 0;
+    let cities = 0;
+    for (const s of this.gameState.settlements) {
+      if (s.playerId === playerId) {
+        if (s.isCity) {
+          cities++;
+        } else {
+          settlements++;
+        }
+      }
+    }
+
+    return { roads, settlements, cities };
+  }
+
+  // ============================================================================
+  // BUILD METHODS (Main Game)
+  // ============================================================================
+
+  /**
+   * Build a road during main game phase.
+   * Validates: turn, phase, piece limit, resources, placement.
+   */
+  buildRoad(
+    edgeId: string,
+    playerId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    resourcesSpent?: Partial<Record<ResourceType, number>>;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate we're in main game and main phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'main') {
+      return { success: false, error: 'Must roll dice first' };
+    }
+
+    // 3. Validate piece limit
+    const pieces = this.countPlayerPieces(playerId);
+    if (pieces.roads >= MAX_PIECES.roads) {
+      return { success: false, error: 'No more roads available' };
+    }
+
+    // 4. Validate resources
+    const cost = BUILDING_COSTS.road;
+    if (!this.hasResources(playerId, cost)) {
+      return { success: false, error: 'Not enough resources' };
+    }
+
+    // 5. Validate placement
+    const placementError = getInvalidMainGameRoadReason(
+      edgeId,
+      this.gameState,
+      playerId,
+      this.edges,
+    );
+    if (placementError) {
+      return { success: false, error: placementError };
+    }
+
+    // 6. All valid - deduct resources and place road
+    this.deductResources(playerId, cost);
+    this.gameState.roads.push({
+      edgeId,
+      playerId,
+    });
+
+    return {
+      success: true,
+      resourcesSpent: { ...cost },
+    };
+  }
+
+  /**
+   * Build a settlement during main game phase.
+   * Validates: turn, phase, piece limit, resources, placement.
+   */
+  buildSettlement(
+    vertexId: string,
+    playerId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    resourcesSpent?: Partial<Record<ResourceType, number>>;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate we're in main game and main phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'main') {
+      return { success: false, error: 'Must roll dice first' };
+    }
+
+    // 3. Validate piece limit
+    const pieces = this.countPlayerPieces(playerId);
+    if (pieces.settlements >= MAX_PIECES.settlements) {
+      return { success: false, error: 'No more settlements available' };
+    }
+
+    // 4. Validate resources
+    const cost = BUILDING_COSTS.settlement;
+    if (!this.hasResources(playerId, cost)) {
+      return { success: false, error: 'Not enough resources' };
+    }
+
+    // 5. Validate placement
+    const placementError = getInvalidMainGameSettlementReason(
+      vertexId,
+      this.gameState,
+      playerId,
+      this.vertices,
+      this.edges,
+    );
+    if (placementError) {
+      return { success: false, error: placementError };
+    }
+
+    // 6. All valid - deduct resources and place settlement
+    this.deductResources(playerId, cost);
+    this.gameState.settlements.push({
+      vertexId,
+      playerId,
+      isCity: false,
+    });
+
+    return {
+      success: true,
+      resourcesSpent: { ...cost },
+    };
+  }
+
+  /**
+   * Upgrade a settlement to a city during main game phase.
+   * Validates: turn, phase, piece limit, resources, placement (must be own settlement).
+   */
+  buildCity(
+    vertexId: string,
+    playerId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    resourcesSpent?: Partial<Record<ResourceType, number>>;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate we're in main game and main phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'main') {
+      return { success: false, error: 'Must roll dice first' };
+    }
+
+    // 3. Validate piece limit
+    const pieces = this.countPlayerPieces(playerId);
+    if (pieces.cities >= MAX_PIECES.cities) {
+      return { success: false, error: 'No more cities available' };
+    }
+
+    // 4. Validate resources
+    const cost = BUILDING_COSTS.city;
+    if (!this.hasResources(playerId, cost)) {
+      return { success: false, error: 'Not enough resources' };
+    }
+
+    // 5. Validate placement (must be own settlement that's not already a city)
+    const placementError = getInvalidCityUpgradeReason(
+      vertexId,
+      this.gameState,
+      playerId,
+    );
+    if (placementError) {
+      return { success: false, error: placementError };
+    }
+
+    // 6. All valid - deduct resources and upgrade settlement to city
+    this.deductResources(playerId, cost);
+
+    // Find the settlement and set isCity to true
+    const settlement = this.gameState.settlements.find(
+      (s) => s.vertexId === vertexId && s.playerId === playerId,
+    );
+    if (settlement) {
+      settlement.isCity = true;
+    }
+
+    return {
+      success: true,
+      resourcesSpent: { ...cost },
+    };
   }
 }
