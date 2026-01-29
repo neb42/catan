@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-29  
-**Last activity:** 2026-01-29 - Completed 05-01-PLAN.md (Building system foundation)
+**Last activity:** 2026-01-29 - Completed 05-02-PLAN.md (GameManager build methods and WebSocket handlers)
 
 ## Current Position
 
 Phase: 5 of 12 (Building)  
-Plan: 1 of 5 in current phase  
+Plan: 2 of 5 in current phase  
 Status: In progress  
-Last activity: 2026-01-29 - Completed 05-01-PLAN.md (Building system foundation)
+Last activity: 2026-01-29 - Completed 05-02-PLAN.md (GameManager build methods and WebSocket handlers)
 
-Progress: ████████████████████░░░░░░░░░░░░░░░░ 56% (Phase 5 started)
+Progress: ████████████████████░░░░░░░░░░░░░░░░ 58% (Phase 5 plan 2/5)
 
 ## Blockers/Concerns
 
@@ -57,9 +57,11 @@ Progress: ████████████████████░░░�
 | 04    | State update ordering         | setTurnState must be called before setDiceRoll to preserve dice values        |
 | 05    | Separate main-game validators | Setup validators require just-placed settlement; main-game allows any network |
 | 05    | Reason-returning validators   | Functions return null or error string for clear user feedback                 |
+| 05    | Build validation chain        | Turn → phase → limit → resources → placement order for specific errors        |
+| 05    | Return resourcesSpent         | Build success includes spent resources for client animation                   |
 
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 05-01-PLAN.md (Building system foundation)
+Stopped at: Completed 05-02-PLAN.md (GameManager build methods and WebSocket handlers)
 Resume file: none
