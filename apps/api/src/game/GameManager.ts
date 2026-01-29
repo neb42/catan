@@ -1,4 +1,4 @@
-import { GameState, BoardState, ResourceType } from '@catan/shared';
+import { GameState, BoardState, ResourceType, TurnState } from '@catan/shared';
 import { calculateDraftPosition, isSetupComplete } from '@catan/shared';
 import { getUniqueVertices, getUniqueEdges, Vertex, Edge } from '@catan/shared';
 import {
@@ -8,6 +8,10 @@ import {
   getInvalidRoadReason,
 } from './placement-validator';
 import { getAdjacentVertexIds } from './geometry-utils';
+import {
+  distributeResources,
+  PlayerResourceGrant,
+} from './resource-distributor';
 
 export class GameManager {
   private gameState: GameState;
@@ -43,12 +47,20 @@ export class GameManager {
           { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
         ]),
       ),
+      turnState: null, // null during setup, initialized when main game starts
     };
   }
 
   getCurrentPlayerId(): string {
-    if (!this.gameState.placement) return '';
-    return this.playerIds[this.gameState.placement.currentPlayerIndex];
+    // During placement phase
+    if (this.gameState.placement) {
+      return this.playerIds[this.gameState.placement.currentPlayerIndex];
+    }
+    // During main game
+    if (this.gameState.turnState) {
+      return this.gameState.turnState.currentPlayerId;
+    }
+    return '';
   }
 
   getPlacementPhase(): 'settlement' | 'road' | null {
@@ -259,11 +271,126 @@ export class GameManager {
     );
     if (setupComplete) {
       this.gameState.placement = null; // Clear placement state to indicate game start
-      // Initialize first turn of main game (Phase 4)
-      // For now just leave it null or set to main game state if defined
+      this.startMainGame(); // Initialize turn state for main game
     }
 
     return { success: true, setupComplete };
+  }
+
+  /**
+   * Initializes turn state when transitioning from setup to main game.
+   * First player in player order starts with roll phase.
+   */
+  private startMainGame(): void {
+    this.gameState.turnState = {
+      phase: 'roll',
+      currentPlayerId: this.playerIds[0], // First player starts
+      turnNumber: 1,
+      lastDiceRoll: null,
+    };
+  }
+
+  /**
+   * Rolls dice for the current player.
+   * Distributes resources if total is not 7 (robber handling is Phase 6).
+   */
+  rollDice(playerId: string): {
+    success: boolean;
+    error?: string;
+    dice1?: number;
+    dice2?: number;
+    total?: number;
+    resourcesDistributed?: PlayerResourceGrant[];
+  } {
+    // Validate it's the player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // Validate we're in main game and roll phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'roll') {
+      return { success: false, error: 'Not in roll phase' };
+    }
+
+    // Generate dice values
+    const dice1 = Math.floor(Math.random() * 6) + 1;
+    const dice2 = Math.floor(Math.random() * 6) + 1;
+    const total = dice1 + dice2;
+
+    // Distribute resources (skip robber logic for now - Phase 6)
+    let resourcesDistributed: PlayerResourceGrant[] = [];
+    if (total !== 7) {
+      resourcesDistributed = distributeResources(
+        total,
+        this.gameState.board.hexes,
+        this.gameState.settlements,
+        this.vertices,
+        this.gameState.playerResources,
+      );
+    }
+    // Note: When total === 7, robber logic will be added in Phase 6
+
+    // Update turn state
+    this.gameState.turnState.lastDiceRoll = { dice1, dice2, total };
+    this.gameState.turnState.phase = 'main';
+
+    return {
+      success: true,
+      dice1,
+      dice2,
+      total,
+      resourcesDistributed,
+    };
+  }
+
+  /**
+   * Ends the current player's turn and advances to the next player.
+   */
+  endTurn(playerId: string): {
+    success: boolean;
+    error?: string;
+    nextPlayerId?: string;
+    turnNumber?: number;
+  } {
+    // Validate it's the player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // Validate we're in main game and main phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'main') {
+      return { success: false, error: 'Cannot end turn during roll phase' };
+    }
+
+    // Advance to next player
+    const currentIndex = this.playerIds.indexOf(
+      this.gameState.turnState.currentPlayerId,
+    );
+    const nextIndex = (currentIndex + 1) % this.playerIds.length;
+    const nextPlayerId = this.playerIds[nextIndex];
+    const nextTurnNumber = this.gameState.turnState.turnNumber + 1;
+
+    // Update turn state
+    this.gameState.turnState = {
+      phase: 'roll',
+      currentPlayerId: nextPlayerId,
+      turnNumber: nextTurnNumber,
+      lastDiceRoll: null,
+    };
+
+    return {
+      success: true,
+      nextPlayerId,
+      turnNumber: nextTurnNumber,
+    };
   }
 
   getState(): GameState {

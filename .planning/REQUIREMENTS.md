@@ -21,16 +21,16 @@
 
 ### Turn Structure & Dice
 
-- [ ] **TURN-01**: User can roll two dice on their turn with animated result
-- [ ] **TURN-02**: Game distributes resources to players with settlements/cities adjacent to rolled number
-- [ ] **TURN-03**: User progresses through turn phases: roll → main (trade/build) → end turn
-- [ ] **TURN-04**: Game enforces round-robin turn order across all players
+- [x] **TURN-01**: User can roll two dice on their turn with animated result _(Completed 2026-01-29)_
+- [x] **TURN-02**: Game distributes resources to players with settlements/cities adjacent to rolled number _(Completed 2026-01-29)_
+- [x] **TURN-03**: User progresses through turn phases: roll → main (trade/build) → end turn _(Completed 2026-01-29)_
+- [x] **TURN-04**: Game enforces round-robin turn order across all players _(Completed 2026-01-29)_
 - [ ] **TURN-05**: User can see clear indicator of whose turn it is
 
 ### Resource Management
 
-- [ ] **RES-01**: User can view their own resource cards (wood, brick, sheep, wheat, ore)
-- [ ] **RES-02**: Game tracks resource counts for all players
+- [x] **RES-01**: User can view their own resource cards (wood, brick, sheep, wheat, ore) _(Completed 2026-01-29)_
+- [x] **RES-02**: Game tracks resource counts for all players _(Completed 2026-01-29)_
 - [ ] **RES-03**: User can see opponent resource counts (total only, not breakdown)
 
 ### Building

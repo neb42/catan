@@ -1,0 +1,139 @@
+.diceContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  perspective: 1000px;
+}
+
+.diceRow {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.die {
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  font-family: 'Fraunces', serif;
+  color: #1a1a1a;
+  border: 2px solid #e5e5e5;
+  transform-style: preserve-3d;
+}
+
+.dieRobber {
+  color: #dc2626;
+  border-color: #dc2626;
+  box-shadow:
+    0 4px 12px rgba(220, 38, 38, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes roll {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg) scale(1);
+  }
+  25% {
+    transform: rotateX(180deg) rotateY(90deg) scale(1.15);
+  }
+  50% {
+    transform: rotateX(360deg) rotateY(180deg) scale(1.2);
+  }
+  75% {
+    transform: rotateX(540deg) rotateY(270deg) scale(1.15);
+  }
+  100% {
+    transform: rotateX(720deg) rotateY(360deg) scale(1);
+  }
+}
+
+.rolling {
+  animation: roll 0.8s ease-out;
+}
+
+.result {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'Fraunces', serif;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resultTotal {
+  font-size: 32px;
+  color: #1a1a1a;
+}
+
+.resultTotalRobber {
+  color: #dc2626;
+}
+
+.rollButton {
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.rollButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.rollButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.rollButton:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.robberWarning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 14px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

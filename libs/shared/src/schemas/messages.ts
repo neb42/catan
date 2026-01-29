@@ -132,6 +132,40 @@ export const InvalidPlacementMessageSchema = z.object({
   reason: z.string(),
 });
 
+// Turn Phase Messages
+export const RollDiceMessageSchema = z.object({
+  type: z.literal('roll_dice'),
+});
+
+export const ResourceDistributionSchema = z.object({
+  playerId: z.string(),
+  resources: z.array(
+    z.object({
+      type: z.enum(['wood', 'brick', 'sheep', 'wheat', 'ore']),
+      count: z.number(),
+    }),
+  ),
+});
+
+export const DiceRolledMessageSchema = z.object({
+  type: z.literal('dice_rolled'),
+  dice1: z.number().min(1).max(6),
+  dice2: z.number().min(1).max(6),
+  total: z.number().min(2).max(12),
+  resourcesDistributed: z.array(ResourceDistributionSchema),
+});
+
+export const EndTurnMessageSchema = z.object({
+  type: z.literal('end_turn'),
+});
+
+export const TurnChangedMessageSchema = z.object({
+  type: z.literal('turn_changed'),
+  currentPlayerId: z.string(),
+  turnNumber: z.number(),
+  phase: z.enum(['roll', 'main']),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -146,7 +180,7 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   GameStartedMessageSchema,
   RoomStateMessageSchema,
   ErrorMessageSchema,
-  // New placement messages
+  // Placement messages
   PlaceSettlementMessageSchema,
   PlaceRoadMessageSchema,
   SettlementPlacedMessageSchema,
@@ -154,6 +188,11 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   PlacementTurnMessageSchema,
   SetupCompleteMessageSchema,
   InvalidPlacementMessageSchema,
+  // Turn phase messages
+  RollDiceMessageSchema,
+  DiceRolledMessageSchema,
+  EndTurnMessageSchema,
+  TurnChangedMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -183,5 +222,11 @@ export type SetupCompleteMessage = z.infer<typeof SetupCompleteMessageSchema>;
 export type InvalidPlacementMessage = z.infer<
   typeof InvalidPlacementMessageSchema
 >;
+// Turn phase message types
+export type RollDiceMessage = z.infer<typeof RollDiceMessageSchema>;
+export type DiceRolledMessage = z.infer<typeof DiceRolledMessageSchema>;
+export type EndTurnMessage = z.infer<typeof EndTurnMessageSchema>;
+export type TurnChangedMessage = z.infer<typeof TurnChangedMessageSchema>;
+export type ResourceDistribution = z.infer<typeof ResourceDistributionSchema>;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;

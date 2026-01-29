@@ -368,11 +368,21 @@ export function handleWebSocketConnection(
 
         if (result.setupComplete) {
           // Setup phase complete
+          const turnState = gameManager.getState().turnState;
           roomManager.broadcastToRoom(currentRoomId, {
             type: 'setup_complete',
-            // In a real game, this would be the first player of the main phase
-            nextPlayerId: gameManager.getCurrentPlayerId() || playerId,
+            nextPlayerId: turnState?.currentPlayerId || playerId,
           });
+
+          // Also broadcast initial turn state for main game
+          if (turnState) {
+            roomManager.broadcastToRoom(currentRoomId, {
+              type: 'turn_changed',
+              currentPlayerId: turnState.currentPlayerId,
+              turnNumber: turnState.turnNumber,
+              phase: turnState.phase,
+            });
+          }
         } else {
           // Broadcast next turn info
           const nextPlayerId = gameManager.getCurrentPlayerId();
@@ -390,6 +400,65 @@ export function handleWebSocketConnection(
             });
           }
         }
+        break;
+      }
+
+      case 'roll_dice': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.rollDice(playerId);
+
+        if (!result.success) {
+          sendError(ws, result.error || 'Cannot roll dice');
+          return;
+        }
+
+        // Broadcast dice roll result to all players
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'dice_rolled',
+          dice1: result.dice1!,
+          dice2: result.dice2!,
+          total: result.total!,
+          resourcesDistributed: result.resourcesDistributed || [],
+        });
+        break;
+      }
+
+      case 'end_turn': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.endTurn(playerId);
+
+        if (!result.success) {
+          sendError(ws, result.error || 'Cannot end turn');
+          return;
+        }
+
+        // Broadcast turn change to all players
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'turn_changed',
+          currentPlayerId: result.nextPlayerId!,
+          turnNumber: result.turnNumber!,
+          phase: 'roll',
+        });
         break;
       }
 

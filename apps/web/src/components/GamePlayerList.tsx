@@ -2,24 +2,25 @@ import { Player, PLAYER_COLOR_HEX } from '@catan/shared';
 import { Avatar, Badge, Card, Stack, Text } from '@mantine/core';
 import { motion } from 'motion/react';
 import { useShallow } from 'zustand/react/shallow';
-import { useCurrentPlayer, useGameStore } from '../stores/gameStore';
+import {
+  useCurrentPlayer,
+  useGameStore,
+  useTurnCurrentPlayer,
+} from '../stores/gameStore';
 
 type GamePlayerListProps = {
   players: Player[];
 };
 
-// Resource icon mapping
-const RESOURCE_ICONS: Record<string, string> = {
-  wood: '🪵',
-  brick: '🧱',
-  sheep: '🐑',
-  wheat: '🌾',
-  ore: '⛰️',
-};
-
 export function GamePlayerList({ players }: GamePlayerListProps) {
-  // Get active player from store for turn highlighting
-  const { id: activePlayerId } = useCurrentPlayer();
+  // Get active player from store for placement phase highlighting
+  const { id: placementPlayerId } = useCurrentPlayer();
+
+  // Get current player for main game phase
+  const turnCurrentPlayerId = useTurnCurrentPlayer();
+
+  // Use main game player if available, otherwise use placement player
+  const activePlayerId = turnCurrentPlayerId || placementPlayerId;
 
   // Read all player resources once at the top level with shallow equality
   const allPlayerResources = useGameStore(
@@ -107,31 +108,28 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   {player.nickname}
                 </Text>
 
-                {/* Resource counts */}
-                <Stack gap={2} mt="xs">
-                  {Object.entries(playerResources).map(([type, count]) => (
-                    <Text
-                      key={type}
-                      size="xs"
-                      c="dimmed"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 4,
-                      }}
-                    >
-                      <span>{RESOURCE_ICONS[type]}</span>
-                      <span>{count}</span>
-                    </Text>
-                  ))}
-                </Stack>
+                {/* Total card count */}
+                <Text size="sm" c="dimmed" fw={500}>
+                  {Object.values(playerResources).reduce(
+                  (sum, count) => sum + count,
+                  0,
+                  )}{' '}
+                  Cards
+                </Text>
 
                 {/* Active turn indicator */}
-                {isActiveTurn && (
-                  <Badge size="xs" color="blue" variant="light" mt={2}>
-                    Taking Turn
-                  </Badge>
-                )}
+                <Badge
+                  size="xs"
+                  color="teal"
+                  variant="light"
+                  mt={2}
+                  style={{
+                  fontFamily: 'Fraunces, serif',
+                  opacity: isActiveTurn ? 1 : 0,
+                  }}
+                >
+                  Current Turn
+                </Badge>
               </Stack>
             </Card>
           </motion.div>
