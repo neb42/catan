@@ -129,17 +129,21 @@ export function Game() {
             style={{
               position: 'absolute',
               bottom: 24,
-              left: '50%',
-              transform: 'translateX(-50%)',
+              left: '16px',
               zIndex: 20,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 12,
+            }}
+          >
+            <ResourceHand />
+          </div>
+            <div
+            style={{
+              position: 'absolute',
+              bottom: 24,
+              right: '16px',
+              zIndex: 20,
             }}
           >
             <BuildControls />
-            <ResourceHand />
           </div>
         </>
       )}
