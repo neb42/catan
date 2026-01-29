@@ -41,6 +41,7 @@ const emptyGameState: GameState = {
     turnNumber: 0,
   },
   playerResources: {},
+  turnState: null, // null during setup
 };
 
 describe('isValidSettlementPlacement', () => {
