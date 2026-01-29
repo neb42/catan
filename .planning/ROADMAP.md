@@ -233,7 +233,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-- [ ] 05-01-PLAN.md — Building schemas, constants, and main-game placement validators
+- [x] 05-01-PLAN.md — Building schemas, constants, and main-game placement validators
 - [ ] 05-02-PLAN.md — GameManager build methods and WebSocket handlers
 - [ ] 05-03-PLAN.md — Frontend build state, hooks, and BuildControls component
 - [ ] 05-04-PLAN.md — Build overlay integration and WebSocket message handlers
