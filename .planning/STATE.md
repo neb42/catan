@@ -2,22 +2,21 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-01-28  
-**Last activity:** 2026-01-28 - Phase 3 complete with all UAT gaps closed (plans 03-08, 03-09)
+**Last Updated:** 2026-01-29  
+**Last activity:** 2026-01-29 - Completed 04-01-PLAN.md (Turn State Foundation)
 
 ## Current Position
 
-Phase: 3 of 8 (Initial Placement)  
-Plan: 9 of 9 in current phase  
-Status: ✅ Complete + Verified (All UAT gaps closed)  
-Last activity: 2026-01-28 - Executed plans 03-08 and 03-09, re-verified phase goal
+Phase: 4 of 8 (Turn Structure & Resources)  
+Plan: 1 of 5 in current phase  
+Status: In progress  
+Last activity: 2026-01-29 - Completed 04-01-PLAN.md
 
-Progress: ██████████ 100%
+Progress: ██████████░░░░░ 65% (Phase 4 started)
 
 ## Blockers/Concerns
 
-- None - Phase 3 fully complete with all UAT gaps closed (10/10 tests passing)
-- Ready for Phase 4 (Turn Structure & Resources)
+- None - Phase 4 Plan 1 complete, ready for Plan 04-02 (WebSocket handlers)
 
 ### Quick Tasks Completed
 
@@ -45,9 +44,13 @@ Progress: ██████████ 100%
 | 03    | Phase transition        | clearPlacementState() clears placement UI, enabling main game phase UI        |
 | 03    | Resource state tracking | Use Record<string, PlayerResources> for flexible per-player resource tracking |
 | 03    | Display all resources   | Show all 5 resource types even at 0 for consistent layout                     |
+| 04    | TurnPhase enum          | Uses 'roll' \| 'main' only - 'end' is a transition not a discrete state       |
+| 04    | resourcesDistributed    | Include in DiceRolled message for client animation of all players             |
+| 04    | turnState nullable      | Null during placement phase, initialized when setup completes                 |
+| 04    | Robber deferred         | Dice roll 7 distributes resources normally until Phase 6                      |
 
 ## Session Continuity
 
-Last session: 2026-01-28 16:45 UTC
-Stopped at: Phase 3 complete (all 9 plans executed, verified)
+Last session: 2026-01-29 12:58 UTC
+Stopped at: Completed 04-01-PLAN.md
 Resume file: none
