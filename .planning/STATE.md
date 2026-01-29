@@ -3,20 +3,20 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-29  
-**Last activity:** 2026-01-29 - Completed 04-02-PLAN.md (WebSocket handlers + gameStore turn state)
+**Last activity:** 2026-01-29 - Completed 04-04-PLAN.md (Turn controls, resource hand, player highlighting)
 
 ## Current Position
 
 Phase: 4 of 8 (Turn Structure & Resources)  
-Plan: 2 of 5 in current phase  
+Plan: 4 of 5 in current phase  
 Status: In progress  
-Last activity: 2026-01-29 - Completed 04-02-PLAN.md
+Last activity: 2026-01-29 - Completed 04-04-PLAN.md
 
-Progress: ██████████░░░░░ 68% (Phase 4 in progress)
+Progress: ██████████████░ 72% (Phase 4 in progress)
 
 ## Blockers/Concerns
 
-- None - Phase 4 Plan 2 complete, ready for Plan 04-03 (Dice roller UI)
+- None - Phase 4 Plan 4 complete, ready for Plan 04-05 (Integration)
 
 ### Quick Tasks Completed
 
@@ -49,9 +49,12 @@ Progress: ██████████░░░░░ 68% (Phase 4 in progress
 | 04    | turnState nullable      | Null during placement phase, initialized when setup completes                 |
 | 04    | Robber deferred         | Dice roll 7 distributes resources normally until Phase 6                      |
 | 04    | Separate turn player ID | turnCurrentPlayerId distinct from placement currentPlayerId during transition |
+| 04    | TurnControls visibility | Component returns null when turnPhase is null (during placement phase)        |
+| 04    | Fan layout algorithm    | Cards overlap with -25px margin, rotation 4deg per card from center           |
+| 04    | Dual-phase highlighting | GamePlayerList uses turnCurrentPlayerId or placementPlayerId for highlighting |
 
 ## Session Continuity
 
-Last session: 2026-01-29 13:04 UTC
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-01-29 13:11 UTC
+Stopped at: Completed 04-04-PLAN.md
 Resume file: none
