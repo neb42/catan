@@ -12,15 +12,6 @@ type GamePlayerListProps = {
   players: Player[];
 };
 
-// Resource icon mapping
-const RESOURCE_ICONS: Record<string, string> = {
-  wood: '🪵',
-  brick: '🧱',
-  sheep: '🐑',
-  wheat: '🌾',
-  ore: '⛰️',
-};
-
 export function GamePlayerList({ players }: GamePlayerListProps) {
   // Get active player from store for placement phase highlighting
   const { id: placementPlayerId } = useCurrentPlayer();
@@ -117,39 +108,28 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   {player.nickname}
                 </Text>
 
-                {/* Resource counts */}
-                <Stack gap={2} mt="xs">
-                  {Object.entries(playerResources).map(([type, count]) => (
-                    <Text
-                      key={type}
-                      size="xs"
-                      c="dimmed"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 4,
-                      }}
-                    >
-                      <span>{RESOURCE_ICONS[type]}</span>
-                      <span>{count}</span>
-                    </Text>
-                  ))}
-                </Stack>
+                {/* Total card count */}
+                <Text size="sm" c="dimmed" fw={500}>
+                  {Object.values(playerResources).reduce(
+                  (sum, count) => sum + count,
+                  0,
+                  )}{' '}
+                  Cards
+                </Text>
 
                 {/* Active turn indicator */}
-                {isActiveTurn && (
-                  <Badge
-                    size="xs"
-                    color="teal"
-                    variant="light"
-                    mt={2}
-                    style={{
-                      fontFamily: 'Fraunces, serif',
-                    }}
-                  >
-                    Current Turn
-                  </Badge>
-                )}
+                <Badge
+                  size="xs"
+                  color="teal"
+                  variant="light"
+                  mt={2}
+                  style={{
+                  fontFamily: 'Fraunces, serif',
+                  opacity: isActiveTurn ? 1 : 0,
+                  }}
+                >
+                  Current Turn
+                </Badge>
               </Stack>
             </Card>
           </motion.div>
