@@ -7,10 +7,10 @@
 
 ## Overview
 
-7-phase roadmap derived from 68 v1 requirements. Each phase delivers working software with observable user value. Phases build sequentially — later phases depend on earlier foundations.
+9-phase roadmap derived from 68 v1 requirements. Each phase delivers working software with observable user value. Phases build sequentially — later phases depend on earlier foundations.
 
-**Estimated Timeline:** 7-9 weeks (1-1.5 weeks per phase avg)  
-**Delivery Strategy:** Ship after Phase 7 (v1 complete)
+**Estimated Timeline:** 9-11 weeks (1-1.5 weeks per phase avg)  
+**Delivery Strategy:** Ship after Phase 9 (v1 complete)
 
 ---
 
@@ -207,15 +207,13 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 5: Game Mechanics
+## Phase 5: Building
 
-**Goal:** Complete building, trading, and robber systems  
-**Duration:** 2 weeks  
+**Goal:** Enable building roads, settlements, and cities with cost validation  
+**Duration:** 1 week  
 **Dependencies:** Phase 4
 
-### Requirements (22)
-
-**Building (8):**
+### Requirements (8)
 
 - **BUILD-01**: User can build roads by spending resources (1 wood, 1 brick)
 - **BUILD-02**: User can build settlements by spending resources (1 wood, 1 brick, 1 sheep, 1 wheat)
@@ -223,9 +221,33 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - **BUILD-04**: User can see building costs reference always visible on screen
 - **BUILD-05**: Game validates road placement (must connect to own road or settlement)
 - **BUILD-06**: Game validates settlement placement (2 vertices away from any settlement, adjacent to own road)
+- **BUILD-07**: Game validates city upgrade (must be own settlement)
 - **BUILD-08**: Game prevents invalid placements and shows clear error message
 
-**Trading (6):**
+### Success Criteria
+
+1. **Building system works end-to-end** — Buy road/settlement/city, resources deducted, piece placed, validation prevents illegal moves
+2. **Cost validation works** — Cannot build without sufficient resources, correct amounts deducted
+3. **Placement validation works** — Roads must connect, settlements 2 away, cities on own settlements
+
+### Plans
+
+TBD
+
+### Deliverables
+
+- Building system (costs, validation, placement)
+- Building cost reference card UI
+
+---
+
+## Phase 6: Trading
+
+**Goal:** Enable domestic and maritime trading between players and bank  
+**Duration:** 1 week  
+**Dependencies:** Phase 5
+
+### Requirements (6)
 
 - **TRADE-01**: User can propose trade offer to specific player (offering X resources for Y resources)
 - **TRADE-02**: User can accept or reject incoming trade offers
@@ -233,6 +255,31 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - **TRADE-04**: User can trade 4:1 with bank (any 4 of one resource for any 1 other resource)
 - **TRADE-05**: User can trade 3:1 at generic port (any 3 of one resource for any 1 other resource)
 - **TRADE-06**: User can trade 2:1 at specific resource port (2 of specific resource for any 1 other resource)
+
+### Success Criteria
+
+1. **Domestic trading works** — Propose trade, opponent accepts, resources transfer correctly
+2. **Maritime trading works** — Trade with bank at 4:1, trade at 3:1 port, trade at 2:1 specific port
+3. **Trade validation works** — Cannot trade resources you don't have, port rates apply correctly
+
+### Plans
+
+TBD
+
+### Deliverables
+
+- Domestic trade UI (offer, accept/reject)
+- Maritime trade UI (bank and port rates)
+
+---
+
+## Phase 7: Robber
+
+**Goal:** Implement robber mechanics for 7 rolls  
+**Duration:** 0.5-1 week  
+**Dependencies:** Phase 6
+
+### Requirements (8)
 
 **Robber (5):**
 
@@ -250,28 +297,28 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Success Criteria
 
-1. **Building system works end-to-end** — Buy road/settlement/city, resources deducted, piece placed, validation prevents illegal moves
-2. **Domestic trading works** — Propose trade, opponent accepts, resources transfer correctly
-3. **Maritime trading works** — Trade with bank at 4:1, trade at 3:1 port, trade at 2:1 specific port
-4. **Robber triggers on 7** — Roll 7, discard UI appears for 8+ card players, then robber moves, steal works
-5. **Feedback system works** — Every action shows toast/notification, errors display clearly
+1. **Robber triggers on 7** — Roll 7, discard UI appears for 8+ card players, then robber moves, steal works
+2. **Robber blocking works** — Hex with robber produces no resources, robber can be placed on any hex
+3. **Feedback system works** — Every action shows toast/notification, errors display clearly
+4. **Opponent resources visible** — Can see total card count for other players
+
+### Plans
+
+TBD
 
 ### Deliverables
 
-- Building system (costs, validation, placement)
-- Building cost reference card UI
-- Domestic trade UI (offer, accept/reject)
-- Maritime trade UI (bank and port rates)
 - Robber system (discard UI, move UI, steal logic)
 - Action feedback system (toasts/notifications)
+- Opponent resource count display
 
 ---
 
-## Phase 6: Advanced Features
+## Phase 8: Advanced Features
 
 **Goal:** Development cards, longest road, largest army, victory  
 **Duration:** 1.5 weeks  
-**Dependencies:** Phase 5
+**Dependencies:** Phase 7
 
 ### Requirements (19)
 
@@ -320,11 +367,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
-## Phase 7: Resilience & Polish
+## Phase 9: Resilience & Polish
 
 **Goal:** Handle disconnects, finalize lobby, polish UX  
 **Duration:** 1 week  
-**Dependencies:** Phase 6
+**Dependencies:** Phase 8
 
 ### Requirements (10)
 
@@ -374,9 +421,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 | Phase 2: Board Generation & Rendering | 3            | 4%         |
 | Phase 3: Initial Placement            | 2            | 3%         |
 | Phase 4: Turn Structure & Resources   | 6            | 9%         |
-| Phase 5: Game Mechanics               | 22           | 32%        |
-| Phase 6: Advanced Features            | 19           | 28%        |
-| Phase 7: Resilience & Polish          | 10           | 15%        |
+| Phase 5: Building                     | 8            | 12%        |
+| Phase 6: Trading                      | 6            | 9%         |
+| Phase 7: Robber                       | 8            | 12%        |
+| Phase 8: Advanced Features            | 19           | 28%        |
+| Phase 9: Resilience & Polish          | 10           | 15%        |
 
 **Phase Dependencies:**
 
@@ -384,8 +433,10 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - Phase 3 depends on Phase 2 (needs board to place on)
 - Phase 4 depends on Phase 3 (needs initial placement complete)
 - Phase 5 depends on Phase 4 (needs turn structure)
-- Phase 6 depends on Phase 5 (needs building/resources)
-- Phase 7 depends on Phase 6 (needs complete game)
+- Phase 6 depends on Phase 5 (needs building system)
+- Phase 7 depends on Phase 6 (needs trading system for resource management context)
+- Phase 8 depends on Phase 7 (needs robber/complete mechanics)
+- Phase 9 depends on Phase 8 (needs complete game)
 
 **No orphaned requirements.** All 68 v1 requirements mapped to exactly one phase.
 
@@ -395,11 +446,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 | Risk                           | Phase     | Impact   | Mitigation                                                          |
 | ------------------------------ | --------- | -------- | ------------------------------------------------------------------- |
-| Longest road algorithm bugs    | Phase 6   | High     | DFS with comprehensive test cases, validate against known scenarios |
-| State desynchronization        | Phase 1-7 | Critical | Server-authoritative, full-state broadcasts, state versioning       |
-| WebSocket connection drops     | Phase 7   | High     | Heartbeat pings, auto-reconnect, state recovery                     |
-| Trade UI complexity            | Phase 5   | Medium   | Prototype early, iterate with user testing                          |
-| Mobile touch targets too small | Phase 7   | Medium   | Design for 44px minimum, test on real devices                       |
+| Longest road algorithm bugs    | Phase 8   | High     | DFS with comprehensive test cases, validate against known scenarios |
+| State desynchronization        | Phase 1-9 | Critical | Server-authoritative, full-state broadcasts, state versioning       |
+| WebSocket connection drops     | Phase 9   | High     | Heartbeat pings, auto-reconnect, state recovery                     |
+| Trade UI complexity            | Phase 6   | Medium   | Prototype early, iterate with user testing                          |
+| Mobile touch targets too small | Phase 9   | Medium   | Design for 44px minimum, test on real devices                       |
 
 ---
 
@@ -448,4 +499,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-01-29 after phase 5 removal_
+_Last updated: 2026-01-29 - Split Phase 5 into Building/Trading/Robber (now 9 phases)_
