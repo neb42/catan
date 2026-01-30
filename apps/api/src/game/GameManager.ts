@@ -6,6 +6,9 @@ import {
   BUILDING_COSTS,
   MAX_PIECES,
   ActiveTrade,
+  OwnedDevCard,
+  DevelopmentCardType,
+  DEV_CARD_COST,
 } from '@catan/shared';
 import { calculateDraftPosition, isSetupComplete } from '@catan/shared';
 import { getUniqueVertices, getUniqueEdges, Vertex, Edge } from '@catan/shared';
@@ -41,6 +44,7 @@ import {
   executeSteal,
   validateRobberPlacement,
 } from './robber-logic';
+import { createShuffledDeck, canBuyDevCard, drawCard } from './dev-card-logic';
 
 export class GameManager {
   private gameState: GameState;
@@ -53,6 +57,13 @@ export class GameManager {
   private pendingDiscards: Map<string, number> = new Map(); // playerId -> targetCount
   private robberPhase: 'none' | 'discarding' | 'moving' | 'stealing' = 'none';
   private robberMover: string | null = null; // playerId who rolled 7
+
+  // Development card state
+  private devCardDeck: DevelopmentCardType[] = [];
+  private deckIndex = 0;
+  private playerDevCards: Map<string, OwnedDevCard[]> = new Map(); // playerId -> owned cards
+  private playedDevCardThisTurn = false;
+  private knightsPlayed: Map<string, number> = new Map(); // playerId -> count
 
   constructor(board: BoardState, playerIds: string[]) {
     this.playerIds = playerIds;
@@ -84,6 +95,16 @@ export class GameManager {
       turnState: null, // null during setup, initialized when main game starts
       robberHexId: null, // null during setup, set to desert hex when main game starts
     };
+
+    // Initialize development card deck
+    this.devCardDeck = createShuffledDeck();
+    this.deckIndex = 0;
+
+    // Initialize player dev cards and knights played for each player
+    for (const playerId of playerIds) {
+      this.playerDevCards.set(playerId, []);
+      this.knightsPlayed.set(playerId, 0);
+    }
   }
 
   getCurrentPlayerId(): string {
@@ -452,6 +473,9 @@ export class GameManager {
 
     // Clear any active trade (auto-cancel on turn end)
     this.activeTrade = null;
+
+    // Reset dev card played flag for next turn
+    this.playedDevCardThisTurn = false;
 
     // Advance to next player
     const currentIndex = this.playerIds.indexOf(
@@ -1234,5 +1258,94 @@ export class GameManager {
    */
   getGameState(): GameState {
     return this.gameState;
+  }
+
+  // ============================================================================
+  // DEVELOPMENT CARD METHODS
+  // ============================================================================
+
+  /**
+   * Get the number of cards remaining in the deck.
+   */
+  getDeckRemaining(): number {
+    return this.devCardDeck.length - this.deckIndex;
+  }
+
+  /**
+   * Get development cards owned by a player.
+   */
+  getPlayerDevCards(playerId: string): OwnedDevCard[] {
+    return this.playerDevCards.get(playerId) || [];
+  }
+
+  /**
+   * Get the number of knights played by a player.
+   */
+  getKnightsPlayed(playerId: string): number {
+    return this.knightsPlayed.get(playerId) || 0;
+  }
+
+  /**
+   * Buy a development card from the deck.
+   * Validates turn, phase, resources, and deck availability.
+   */
+  buyDevCard(playerId: string): {
+    success: boolean;
+    error?: string;
+    card?: OwnedDevCard;
+    deckRemaining?: number;
+  } {
+    // 1. Validate it's player's turn and main phase
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+    if (
+      !this.gameState.turnState ||
+      this.gameState.turnState.phase !== 'main'
+    ) {
+      return { success: false, error: 'Can only buy during main phase' };
+    }
+
+    // 2. Validate can buy (resources + deck)
+    const resources = this.gameState.playerResources[playerId];
+    const check = canBuyDevCard(playerId, resources, this.getDeckRemaining());
+    if (!check.canBuy) {
+      return { success: false, error: check.reason };
+    }
+
+    // 3. Draw card from deck
+    const { card: cardType, newIndex } = drawCard(
+      this.devCardDeck,
+      this.deckIndex,
+    );
+    if (!cardType) {
+      return { success: false, error: 'Deck is empty' };
+    }
+    this.deckIndex = newIndex;
+
+    // 4. Deduct resources
+    const cost = DEV_CARD_COST;
+    resources.ore -= cost.ore;
+    resources.sheep -= cost.sheep;
+    resources.wheat -= cost.wheat;
+
+    // 5. Create owned card with current turn
+    const currentTurn = this.gameState.turnState?.turnNumber || 1;
+    const ownedCard: OwnedDevCard = {
+      id: crypto.randomUUID(),
+      type: cardType,
+      purchasedOnTurn: currentTurn,
+    };
+
+    // 6. Add to player's hand
+    const playerCards = this.playerDevCards.get(playerId) || [];
+    playerCards.push(ownedCard);
+    this.playerDevCards.set(playerId, playerCards);
+
+    return {
+      success: true,
+      card: ownedCard,
+      deckRemaining: this.getDeckRemaining(),
+    };
   }
 }
