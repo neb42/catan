@@ -391,6 +391,9 @@ export class GameManager {
       return { success: false, error: 'Cannot end turn during roll phase' };
     }
 
+    // Clear any active trade (auto-cancel on turn end)
+    this.activeTrade = null;
+
     // Advance to next player
     const currentIndex = this.playerIds.indexOf(
       this.gameState.turnState.currentPlayerId,
@@ -681,14 +684,14 @@ export class GameManager {
   }
 
   // ============================================================================
-  // TRADE METHODS (Stubs - implemented in 06-02)
+  // TRADE METHODS
   // ============================================================================
 
   private activeTrade: ActiveTrade | null = null;
 
   /**
    * Propose a domestic trade to other players.
-   * Stub implementation - full logic in 06-02.
+   * Uses validateProposeTrade from trade-validator.
    */
   proposeTrade(
     playerId: string,
@@ -698,11 +701,6 @@ export class GameManager {
     success: boolean;
     error?: string;
   } {
-    // Validate it's player's turn
-    if (playerId !== this.getCurrentPlayerId()) {
-      return { success: false, error: 'Not your turn' };
-    }
-
     // Validate we're in main game and main phase
     if (!this.gameState.turnState) {
       return { success: false, error: 'Game not in main phase' };
@@ -717,29 +715,30 @@ export class GameManager {
       return { success: false, error: 'Trade already in progress' };
     }
 
-    // Check player has the resources they're offering
-    for (const [resource, amount] of Object.entries(offering)) {
-      const resourceType = resource as ResourceType;
-      const playerAmount =
-        this.gameState.playerResources[playerId]?.[resourceType] || 0;
-      if (playerAmount < (amount || 0)) {
-        return { success: false, error: 'Not enough resources to offer' };
-      }
+    // Validate using trade-validator
+    const playerResources = this.gameState.playerResources[playerId];
+    if (!playerResources) {
+      return { success: false, error: 'Player not found' };
     }
 
-    // Initialize trade with all other players as pending
-    const responses: Record<string, 'pending' | 'accepted' | 'declined'> = {};
-    for (const pid of this.playerIds) {
-      if (pid !== playerId) {
-        responses[pid] = 'pending';
-      }
+    const validation = validateProposeTrade(
+      playerId,
+      offering,
+      requesting,
+      playerResources,
+      this.getCurrentPlayerId(),
+    );
+
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
     }
 
+    // Initialize trade with empty responses (will be filled as players respond)
     this.activeTrade = {
       proposerId: playerId,
       offering: offering as Record<ResourceType, number>,
       requesting: requesting as Record<ResourceType, number>,
-      responses,
+      responses: {},
     };
 
     return { success: true };
@@ -747,7 +746,7 @@ export class GameManager {
 
   /**
    * Respond to a trade proposal (accept/decline).
-   * Stub implementation - full logic in 06-02.
+   * Uses validateTradeResponse from trade-validator.
    */
   respondToTrade(
     playerId: string,
@@ -755,44 +754,55 @@ export class GameManager {
   ): {
     success: boolean;
     error?: string;
+    allResponded?: boolean;
   } {
     // Check if there's an active trade
     if (!this.activeTrade) {
       return { success: false, error: 'No active trade' };
     }
 
-    // Can't respond to your own trade
-    if (this.activeTrade.proposerId === playerId) {
-      return { success: false, error: 'Cannot respond to your own trade' };
-    }
+    // Validate using trade-validator
+    const validation = validateTradeResponse(
+      playerId,
+      this.activeTrade.proposerId,
+      this.activeTrade.responses,
+    );
 
-    // Check if player has already responded
-    if (this.activeTrade.responses[playerId] !== 'pending') {
-      return { success: false, error: 'Already responded to trade' };
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
     }
 
     // If accepting, check player has the requested resources
     if (response === 'accept') {
-      for (const [resource, amount] of Object.entries(
-        this.activeTrade.requesting,
-      )) {
-        const resourceType = resource as ResourceType;
-        const playerAmount =
-          this.gameState.playerResources[playerId]?.[resourceType] || 0;
-        if (playerAmount < (amount || 0)) {
-          return { success: false, error: 'Not enough resources to accept' };
+      const playerResources = this.gameState.playerResources[playerId];
+      if (playerResources) {
+        for (const [resource, amount] of Object.entries(
+          this.activeTrade.requesting,
+        )) {
+          const resourceType = resource as ResourceType;
+          const playerAmount = playerResources[resourceType] || 0;
+          if (playerAmount < (amount || 0)) {
+            return { success: false, error: 'Not enough resources to accept' };
+          }
         }
       }
     }
 
+    // Update response
     this.activeTrade.responses[playerId] =
       response === 'accept' ? 'accepted' : 'declined';
-    return { success: true };
+
+    // Check if all non-proposer players have responded
+    const allResponded = this.playerIds
+      .filter((id) => id !== this.activeTrade!.proposerId)
+      .every((id) => this.activeTrade!.responses[id] !== undefined);
+
+    return { success: true, allResponded };
   }
 
   /**
    * Select a trade partner who accepted, execute the trade.
-   * Stub implementation - full logic in 06-02.
+   * Uses validatePartnerSelection from trade-validator.
    */
   selectTradePartner(partnerId: string): {
     success: boolean;
@@ -806,9 +816,22 @@ export class GameManager {
       return { success: false, error: 'No active trade' };
     }
 
-    // Check if partner accepted
-    if (this.activeTrade.responses[partnerId] !== 'accepted') {
-      return { success: false, error: 'Partner has not accepted trade' };
+    // Validate using trade-validator
+    const partnerResources = this.gameState.playerResources[partnerId];
+    if (!partnerResources) {
+      return { success: false, error: 'Partner not found' };
+    }
+
+    const validation = validatePartnerSelection(
+      this.activeTrade.proposerId,
+      partnerId,
+      this.activeTrade.responses,
+      partnerResources,
+      this.activeTrade.requesting,
+    );
+
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
     }
 
     const proposerId = this.activeTrade.proposerId;
@@ -843,7 +866,7 @@ export class GameManager {
 
   /**
    * Cancel the current trade proposal.
-   * Stub implementation - full logic in 06-02.
+   * Only the proposer should be able to cancel (validated at handler level).
    */
   cancelTrade(): {
     success: boolean;
@@ -859,7 +882,7 @@ export class GameManager {
 
   /**
    * Execute a bank/port trade.
-   * Stub implementation - full logic in 06-02.
+   * Uses validateBankTrade from trade-validator and getPlayerPortAccess for port rates.
    */
   executeBankTrade(
     playerId: string,
@@ -885,29 +908,30 @@ export class GameManager {
       return { success: false, error: 'Must roll dice first' };
     }
 
-    // Check player has the resources they're giving
-    for (const [resource, amount] of Object.entries(giving)) {
-      const resourceType = resource as ResourceType;
-      const playerAmount =
-        this.gameState.playerResources[playerId]?.[resourceType] || 0;
-      if (playerAmount < (amount || 0)) {
-        return { success: false, error: 'Not enough resources' };
-      }
+    // Get player resources
+    const playerResources = this.gameState.playerResources[playerId];
+    if (!playerResources) {
+      return { success: false, error: 'Player not found' };
     }
 
-    // Basic 4:1 bank trade validation
-    // Port logic will be added in 06-02
-    const totalGiving = Object.values(giving).reduce(
-      (sum, val) => sum + (val || 0),
-      0,
-    );
-    const totalReceiving = Object.values(receiving).reduce(
-      (sum, val) => sum + (val || 0),
-      0,
+    // Calculate port access for player
+    const portAccess = getPlayerPortAccess(
+      playerId,
+      this.gameState.settlements,
+      this.gameState.board,
     );
 
-    if (totalGiving !== totalReceiving * 4) {
-      return { success: false, error: 'Invalid bank trade ratio (4:1)' };
+    // Validate using trade-validator
+    const validation = validateBankTrade(
+      playerId,
+      giving,
+      receiving,
+      playerResources,
+      portAccess,
+    );
+
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
     }
 
     // Execute trade
@@ -926,5 +950,12 @@ export class GameManager {
       gave: giving,
       received: receiving,
     };
+  }
+
+  /**
+   * Get the current active trade, if any.
+   */
+  getActiveTrade(): ActiveTrade | null {
+    return this.activeTrade;
   }
 }
