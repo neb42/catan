@@ -14,7 +14,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <MantineProvider defaultColorScheme="light">
-      <Notifications position="bottom-center" />
+      <Notifications position="bottom-center" autoClose={3000} />
       <BrowserRouter>
         <App />
       </BrowserRouter>
