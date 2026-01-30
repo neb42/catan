@@ -1219,4 +1219,20 @@ export class GameManager {
   getRobberMover(): string | null {
     return this.robberMover;
   }
+
+  /**
+   * Get resources for a specific player.
+   */
+  getPlayerResources(
+    playerId: string,
+  ): Record<ResourceType, number> | undefined {
+    return this.gameState.playerResources[playerId];
+  }
+
+  /**
+   * Get the full game state (for accessing robberHexId, etc).
+   */
+  getGameState(): GameState {
+    return this.gameState;
+  }
 }
