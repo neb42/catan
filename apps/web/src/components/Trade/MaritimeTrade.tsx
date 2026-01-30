@@ -154,85 +154,87 @@ export function MaritimeTrade() {
         </Alert>
       )}
 
-      {/* Give section */}
-      <Stack gap="xs">
-        <Text fw={600} size="sm" c="dimmed">
-          Give (select one resource)
-        </Text>
-        {RESOURCE_TYPES.map((resource) => {
-          const rate = rates[resource];
-          const maxCanGive = Math.floor(playerResources[resource] / rate);
-          const isSelected = giving.resource === resource;
-          const canAfford = maxCanGive > 0;
+      <Group justify="space-around" align="flex-start">
+        {/* Give section */}
+        <Stack gap="xs">
+          <Text fw={600} size="sm" c="dimmed">
+            Give (select one resource)
+          </Text>
+          {RESOURCE_TYPES.map((resource) => {
+            const rate = rates[resource];
+            const maxCanGive = Math.floor(playerResources[resource] / rate);
+            const isSelected = giving.resource === resource;
+            const canAfford = maxCanGive > 0;
 
-          return (
-            <Group
-              key={`give-${resource}`}
-              gap="xs"
-              style={{
-                cursor: canAfford ? 'pointer' : 'not-allowed',
-                opacity: canAfford ? 1 : 0.5,
-                backgroundColor: isSelected
-                  ? 'var(--mantine-color-blue-light)'
-                  : undefined,
-                padding: '4px 8px',
-                borderRadius: 4,
-              }}
-              onClick={() => canAfford && handleGiveSelect(resource)}
-            >
-              <ResourceSelector
-                resource={resource}
-                value={isSelected ? giving.amount : 0}
-                max={playerResources[resource]}
-                onChange={() => {}}
-                rateLabel={`(${rate}:1)`}
-                disabled={true}
-              />
-              <Text size="xs" c="dimmed">
-                (have {playerResources[resource]})
-              </Text>
-            </Group>
-          );
-        })}
-      </Stack>
+            return (
+              <Group
+                key={`give-${resource}`}
+                gap="xs"
+                style={{
+                  cursor: canAfford ? 'pointer' : 'not-allowed',
+                  opacity: canAfford ? 1 : 0.5,
+                  backgroundColor: isSelected
+                    ? 'var(--mantine-color-blue-light)'
+                    : undefined,
+                  padding: '4px 8px',
+                  borderRadius: 4,
+                }}
+                onClick={() => canAfford && handleGiveSelect(resource)}
+              >
+                <ResourceSelector
+                  resource={resource}
+                  value={isSelected ? giving.amount : 0}
+                  max={playerResources[resource]}
+                  onChange={() => {}}
+                  rateLabel={`(${rate}:1)`}
+                  disabled={true}
+                />
+                <Text size="xs" c="dimmed">
+                  (have {playerResources[resource]})
+                </Text>
+              </Group>
+            );
+          })}
+        </Stack>
 
-      <Divider />
+        <Divider />
 
-      {/* Receive section */}
-      <Stack gap="xs">
-        <Text fw={600} size="sm" c="dimmed">
-          Receive (select one resource)
-        </Text>
-        {RESOURCE_TYPES.map((resource) => {
-          const isSelected = receiving.resource === resource;
-          const isGiving = giving.resource === resource;
+        {/* Receive section */}
+        <Stack gap="xs">
+          <Text fw={600} size="sm" c="dimmed">
+            Receive (select one resource)
+          </Text>
+          {RESOURCE_TYPES.map((resource) => {
+            const isSelected = receiving.resource === resource;
+            const isGiving = giving.resource === resource;
 
-          return (
-            <Group
-              key={`receive-${resource}`}
-              gap="xs"
-              style={{
-                cursor: isGiving ? 'not-allowed' : 'pointer',
-                opacity: isGiving ? 0.5 : 1,
-                backgroundColor: isSelected
-                  ? 'var(--mantine-color-green-light)'
-                  : undefined,
-                padding: '4px 8px',
-                borderRadius: 4,
-              }}
-              onClick={() => !isGiving && handleReceiveSelect(resource)}
-            >
-              <ResourceSelector
-                resource={resource}
-                value={isSelected ? receiving.amount : 0}
-                max={99}
-                onChange={() => {}}
-                disabled={true}
-              />
-            </Group>
-          );
-        })}
-      </Stack>
+            return (
+              <Group
+                key={`receive-${resource}`}
+                gap="xs"
+                style={{
+                  cursor: isGiving ? 'not-allowed' : 'pointer',
+                  opacity: isGiving ? 0.5 : 1,
+                  backgroundColor: isSelected
+                    ? 'var(--mantine-color-green-light)'
+                    : undefined,
+                  padding: '4px 8px',
+                  borderRadius: 4,
+                }}
+                onClick={() => !isGiving && handleReceiveSelect(resource)}
+              >
+                <ResourceSelector
+                  resource={resource}
+                  value={isSelected ? receiving.amount : 0}
+                  max={99}
+                  onChange={() => {}}
+                  disabled={true}
+                />
+              </Group>
+            );
+          })}
+        </Stack>
+      </Group>
 
       <Divider />
 
