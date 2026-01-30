@@ -173,7 +173,7 @@ export function Game() {
       <WaitingForDiscardsOverlay />
 
       {/* Game log - shows action history */}
-      <GameLog />
+      {/* <GameLog /> */}
 
       {/* Debug panel - development only */}
       <DebugPanel />
