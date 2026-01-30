@@ -39,3 +39,22 @@ export const MAX_PIECES = {
   settlements: 5,
   cities: 4,
 } as const;
+
+// Development card cost (1 ore, 1 sheep, 1 wheat)
+export const DEV_CARD_COST = {
+  ore: 1,
+  sheep: 1,
+  wheat: 1,
+} as const;
+
+// Development card deck composition (25 total cards - matches Catan rules)
+export const DEV_DECK_COMPOSITION = {
+  knight: 14,
+  victory_point: 5,
+  road_building: 2,
+  year_of_plenty: 2,
+  monopoly: 2,
+} as const;
+
+// Total number of development cards in deck
+export const DEV_DECK_SIZE = 25;
