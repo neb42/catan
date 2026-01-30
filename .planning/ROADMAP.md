@@ -273,7 +273,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 **Plans:** 7 plans
 
-- [ ] 06-01-PLAN.md — Add trade message schemas and types to shared library
+- [x] 06-01-PLAN.md — Add trade message schemas and types to shared library
 - [ ] 06-02-PLAN.md — Backend trade logic (validation, port access, GameManager methods)
 - [ ] 06-03-PLAN.md — WebSocket handlers for trade messages
 - [ ] 06-04-PLAN.md — Frontend trade state (store slice, port access hook, selectors)

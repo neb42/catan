@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed Phase 5 (Building) with all 5 plans verified
+**Last activity:** 2026-01-30 - Completed 06-01-PLAN.md (Trade Message Schemas)
 
 ## Current Position
 
-Phase: 5 of 12 (Building) ✅ Complete  
-Plan: 5 of 5 in current phase  
-Status: Complete  
-Last activity: 2026-01-30 - Phase 5 verified and closed
+Phase: 6 of 12 (Trading)  
+Plan: 1 of 7 in current phase  
+Status: In progress  
+Last activity: 2026-01-30 - Completed 06-01-PLAN.md
 
-Progress: ██████████████████████████████████████ 100% (Phase 5 complete)
+Progress: ████████████████████████████████████████ (Phase 6 started)
 
 ## Blockers/Concerns
 
@@ -64,9 +64,11 @@ Progress: ███████████████████████�
 | 05    | Single placement per mode     | Build mode exits after single click for clear UX                              |
 | 05    | Build overlay conditional     | PlacementOverlay renders for both placement phase AND build mode              |
 | 05    | City tower shape              | Cities render with distinct tower/castle shape vs settlement house shape      |
+| 06    | ResourceRecordSchema pattern  | Reusable z.record for trade offer resource maps                               |
+| 06    | ActiveTrade separate          | Managed by GameManager, not included in GameStateSchema                       |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed Phase 5 (Building) - all plans verified
+Stopped at: Completed 06-01-PLAN.md (Trade Message Schemas)
 Resume file: none
