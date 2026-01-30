@@ -950,6 +950,90 @@ export function handleWebSocketConnection(
         break;
       }
 
+      case 'play_dev_card': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Not in a room');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        // Get the card to determine its type
+        const playerCards = gameManager.getPlayerDevCards(playerId);
+        const card = playerCards.find((c) => c.id === message.cardId);
+
+        if (!card) {
+          sendMessage(ws, {
+            type: 'dev_card_play_failed',
+            reason: 'Card not found',
+          });
+          return;
+        }
+
+        // Route based on card type
+        switch (card.type) {
+          case 'knight': {
+            const result = gameManager.playKnight(playerId, message.cardId);
+
+            if (!result.success) {
+              sendMessage(ws, {
+                type: 'dev_card_play_failed',
+                reason: result.error || 'Cannot play knight',
+              });
+              return;
+            }
+
+            // Broadcast knight played to all players
+            roomManager.broadcastToRoom(currentRoomId, {
+              type: 'dev_card_played',
+              playerId,
+              cardType: 'knight',
+              cardId: message.cardId,
+            });
+
+            // Send robber_move_required to the knight player
+            sendMessage(ws, {
+              type: 'robber_move_required',
+              currentHexId: result.currentRobberHex,
+            });
+            break;
+          }
+
+          case 'victory_point': {
+            // VP cards cannot be played - they auto-score
+            sendMessage(ws, {
+              type: 'dev_card_play_failed',
+              reason:
+                'Victory point cards cannot be played - they score automatically',
+            });
+            break;
+          }
+
+          case 'road_building':
+          case 'year_of_plenty':
+          case 'monopoly': {
+            // Other dev cards not yet implemented
+            sendMessage(ws, {
+              type: 'dev_card_play_failed',
+              reason: `${card.type} card not yet implemented`,
+            });
+            break;
+          }
+
+          default: {
+            sendMessage(ws, {
+              type: 'dev_card_play_failed',
+              reason: 'Unknown card type',
+            });
+          }
+        }
+        break;
+      }
+
       default: {
         sendError(ws, 'Invalid room ID');
       }
