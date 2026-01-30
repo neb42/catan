@@ -150,7 +150,8 @@ function MessagesView() {
 export function DebugPanel() {
   // Only render in development mode
   // Using process.env which Vite replaces at build time
-  const isDev = process.env['NODE_ENV'] === 'development';
+  // const isDev = process.env['NODE_ENV'] === 'development';
+  const isDev = true;
 
   const isOpen = useDebugPanelOpen();
   const setOpen = useGameStore((s) => s.setDebugPanelOpen);
