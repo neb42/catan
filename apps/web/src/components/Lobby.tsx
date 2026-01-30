@@ -599,6 +599,70 @@ export default function Lobby() {
           break;
         }
 
+        // ============================================================================
+        // DEVELOPMENT CARD HANDLERS
+        // ============================================================================
+
+        case 'dev_card_purchased': {
+          // Buyer receives their card (only sent to buyer)
+          const gameStore = useGameStore.getState();
+          gameStore.addMyDevCard(message.card);
+          gameStore.setDeckRemaining(message.deckRemaining);
+          showGameNotification('Development card purchased!', 'success');
+          break;
+        }
+
+        case 'dev_card_purchased_public': {
+          // Other players see someone bought a card
+          const gameStore = useGameStore.getState();
+          gameStore.setDeckRemaining(message.deckRemaining);
+          // Increment opponent's card count
+          const currentCount =
+            gameStore.opponentDevCardCounts[message.playerId] || 0;
+          gameStore.setOpponentDevCardCount(message.playerId, currentCount + 1);
+          // Show notification
+          const buyer = room?.players.find((p) => p.id === message.playerId);
+          const nickname = buyer?.nickname || 'A player';
+          showGameNotification(`${nickname} bought a development card`, 'info');
+          break;
+        }
+
+        case 'dev_card_played': {
+          const gameStore = useGameStore.getState();
+          const myId = gameStore.myPlayerId;
+
+          if (message.playerId === myId) {
+            // Remove card from my hand
+            gameStore.removeMyDevCard(message.cardId);
+            gameStore.setHasPlayedDevCardThisTurn(true);
+          } else {
+            // Decrement opponent's card count
+            const currentCount =
+              gameStore.opponentDevCardCounts[message.playerId] || 0;
+            if (currentCount > 0) {
+              gameStore.setOpponentDevCardCount(
+                message.playerId,
+                currentCount - 1,
+              );
+            }
+          }
+
+          // Increment knights played if knight
+          if (message.cardType === 'knight') {
+            gameStore.incrementKnightsPlayed(message.playerId);
+            // Show notification
+            const player = room?.players.find((p) => p.id === message.playerId);
+            const nickname = player?.nickname || 'A player';
+            showGameNotification(`${nickname} played a Knight!`, 'info');
+          }
+          break;
+        }
+
+        case 'dev_card_play_failed': {
+          showGameNotification(`${message.reason}`, 'error');
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
