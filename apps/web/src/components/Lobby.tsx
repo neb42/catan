@@ -761,6 +761,45 @@ export default function Lobby() {
           break;
         }
 
+        case 'road_building_required': {
+          // Player needs to place roads (up to 2)
+          const gameStore = useGameStore.getState();
+          gameStore.setDevCardPlayPhase('road_building');
+          gameStore.setRoadsPlacedThisCard(0);
+          break;
+        }
+
+        case 'road_building_placed': {
+          // A road was placed during Road Building
+          const gameStore = useGameStore.getState();
+          const { playerId: rbPlayerId, edgeId, roadsRemaining } = message;
+
+          // Add the road to state
+          gameStore.addRoad({ edgeId, playerId: rbPlayerId });
+
+          // Update roads placed count
+          gameStore.setRoadsPlacedThisCard(2 - (roadsRemaining ?? 0));
+          break;
+        }
+
+        case 'road_building_completed': {
+          // Road Building completed
+          const gameStore = useGameStore.getState();
+          gameStore.setDevCardPlayPhase(null);
+          gameStore.setRoadsPlacedThisCard(0);
+
+          const { playerId: rbCompletedPlayerId, edgesPlaced } = message;
+          const rbPlayer = room?.players.find(
+            (p) => p.id === rbCompletedPlayerId,
+          );
+          const rbNickname = rbPlayer?.nickname || 'A player';
+          showGameNotification(
+            `${rbNickname} placed ${edgesPlaced?.length || 0} free roads!`,
+            'success',
+          );
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
