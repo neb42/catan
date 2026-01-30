@@ -27,6 +27,7 @@ import LandingForm from './LandingForm';
 import { LobbyPlayerList } from './LobbyPlayerList';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useGameStore } from '../stores/gameStore';
+import { showGameNotification } from '@web/components/Feedback';
 
 const WS_URL = 'ws://localhost:3333/ws';
 
@@ -252,6 +253,11 @@ export default function Lobby() {
           for (const grant of message.resourcesDistributed) {
             gameStore.updatePlayerResources(grant.playerId, grant.resources);
           }
+          // Show notification for dice roll
+          showGameNotification(`Rolled ${message.total}`, 'info');
+          if (message.total === 7) {
+            showGameNotification('Robber activated!', 'warning');
+          }
           break;
         }
 
@@ -284,10 +290,10 @@ export default function Lobby() {
             gameStore.updatePlayerResources(playerId, resources);
           }
 
-          // Show toast for local player
-          if (playerId === currentPlayerId) {
-            notifications.show({ message: 'Road built!', color: 'green' });
-          }
+          // Show notification for road built
+          const builder = room?.players.find((p) => p.id === playerId);
+          const nickname = builder?.nickname || 'A player';
+          showGameNotification(`${nickname} built a road`, 'success');
           break;
         }
 
@@ -307,12 +313,10 @@ export default function Lobby() {
             gameStore.updatePlayerResources(playerId, resources);
           }
 
-          if (playerId === currentPlayerId) {
-            notifications.show({
-              message: 'Settlement built!',
-              color: 'green',
-            });
-          }
+          // Show notification for settlement built
+          const builder = room?.players.find((p) => p.id === playerId);
+          const nickname = builder?.nickname || 'A player';
+          showGameNotification(`${nickname} built a settlement`, 'success');
           break;
         }
 
@@ -333,18 +337,16 @@ export default function Lobby() {
             gameStore.updatePlayerResources(playerId, resources);
           }
 
-          if (playerId === currentPlayerId) {
-            notifications.show({ message: 'City built!', color: 'green' });
-          }
+          // Show notification for city built
+          const builder = room?.players.find((p) => p.id === playerId);
+          const nickname = builder?.nickname || 'A player';
+          showGameNotification(`${nickname} upgraded to a city`, 'success');
           break;
         }
 
         case 'build_failed': {
           const { reason } = message;
-          notifications.show({
-            message: `Build failed: ${reason}`,
-            color: 'red',
-          });
+          showGameNotification(`Build failed: ${reason}`, 'error');
           break;
         }
 
@@ -419,7 +421,13 @@ export default function Lobby() {
 
           gameStore.clearTrade();
           gameStore.setTradeModalOpen(false);
-          notifications.show({ message: 'Trade completed!', color: 'green' });
+          // Show trade notification
+          const proposer = room?.players.find((p) => p.id === proposerId);
+          const partner = room?.players.find((p) => p.id === partnerId);
+          showGameNotification(
+            `Trade completed: ${proposer?.nickname || 'Player'} ↔ ${partner?.nickname || 'Player'}`,
+            'success',
+          );
           break;
         }
 
@@ -453,12 +461,12 @@ export default function Lobby() {
             ...additions,
           ]);
 
-          if (playerId === currentPlayerId) {
-            notifications.show({
-              message: 'Bank trade complete!',
-              color: 'blue',
-            });
-          }
+          // Show bank trade notification
+          const trader = room?.players.find((p) => p.id === playerId);
+          showGameNotification(
+            `${trader?.nickname || 'A player'} traded with the bank`,
+            'info',
+          );
           break;
         }
 
@@ -499,6 +507,12 @@ export default function Lobby() {
           if (message.playerId === myId) {
             gameStore.setDiscardRequired(false, 0, null);
           }
+          // Show notification for discard
+          const discardingPlayer = room?.players.find(
+            (p) => p.id === message.playerId,
+          );
+          const nickname = discardingPlayer?.nickname || 'A player';
+          showGameNotification(`${nickname} discarded cards`, 'info');
           break;
         }
 
@@ -516,6 +530,12 @@ export default function Lobby() {
           const gameStore = useGameStore.getState();
           gameStore.setRobberHexId(message.hexId);
           gameStore.setRobberPlacementMode(false);
+          // Show notification for robber moved
+          const movingPlayer = room?.players.find(
+            (p) => p.id === message.playerId,
+          );
+          const nickname = movingPlayer?.nickname || 'A player';
+          showGameNotification(`${nickname} moved the robber`, 'info');
           break;
         }
 
@@ -539,6 +559,22 @@ export default function Lobby() {
           }
           // Clear steal state
           gameStore.setStealRequired(false, []);
+          // Show notification for steal
+          const thief = room?.players.find((p) => p.id === message.thiefId);
+          const victim = room?.players.find((p) => p.id === message.victimId);
+          const thiefNickname = thief?.nickname || 'A player';
+          const victimNickname = victim?.nickname || 'someone';
+          if (message.resourceType) {
+            showGameNotification(
+              `${thiefNickname} stole from ${victimNickname}`,
+              'info',
+            );
+          } else {
+            showGameNotification(
+              `${thiefNickname} stole nothing (no cards)`,
+              'info',
+            );
+          }
           break;
         }
 
@@ -556,6 +592,8 @@ export default function Lobby() {
           } else {
             setGeneralError(message.message);
             useGameStore.getState().setLastError(message.message);
+            // Show error notification during gameplay
+            showGameNotification(message.message, 'error');
           }
           break;
         }
