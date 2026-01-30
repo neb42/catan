@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PLAYER_COLORS, ROOM_ID_LENGTH } from '../constants';
 import { BoardStateSchema } from './board';
+import {
+  DevelopmentCardTypeSchema,
+  OwnedDevCardSchema,
+  ResourceTypeSchema,
+} from './game';
 import { PlayerSchema } from './player';
 import { RoomSchema } from './room';
 
@@ -362,6 +367,94 @@ export const RobberTriggeredMessageSchema = z.object({
   ),
 });
 
+// Development Card Messages - Client -> Server
+export const BuyDevCardMessageSchema = z.object({
+  type: z.literal('buy_dev_card'),
+});
+
+export const PlayDevCardMessageSchema = z.object({
+  type: z.literal('play_dev_card'),
+  cardId: z.string(),
+});
+
+export const YearOfPlentySelectMessageSchema = z.object({
+  type: z.literal('year_of_plenty_select'),
+  resources: z.tuple([ResourceTypeSchema, ResourceTypeSchema]), // Exactly 2 resources
+});
+
+export const MonopolySelectMessageSchema = z.object({
+  type: z.literal('monopoly_select'),
+  resourceType: ResourceTypeSchema,
+});
+
+export const RoadBuildingPlaceMessageSchema = z.object({
+  type: z.literal('road_building_place'),
+  edgeId: z.string(),
+});
+
+// Development Card Messages - Server -> Client
+export const DevCardPurchasedMessageSchema = z.object({
+  type: z.literal('dev_card_purchased'),
+  playerId: z.string(),
+  card: OwnedDevCardSchema, // Full card info for buyer
+  deckRemaining: z.number(),
+});
+
+export const DevCardPurchasedPublicMessageSchema = z.object({
+  type: z.literal('dev_card_purchased_public'),
+  playerId: z.string(),
+  deckRemaining: z.number(),
+});
+
+export const DevCardPlayedMessageSchema = z.object({
+  type: z.literal('dev_card_played'),
+  playerId: z.string(),
+  cardType: DevelopmentCardTypeSchema,
+  cardId: z.string(),
+});
+
+export const YearOfPlentyRequiredMessageSchema = z.object({
+  type: z.literal('year_of_plenty_required'),
+  bankResources: z.record(ResourceTypeSchema, z.number()), // Available bank resources
+});
+
+export const YearOfPlentyCompletedMessageSchema = z.object({
+  type: z.literal('year_of_plenty_completed'),
+  playerId: z.string(),
+  resources: z.tuple([ResourceTypeSchema, ResourceTypeSchema]),
+});
+
+export const MonopolyExecutedMessageSchema = z.object({
+  type: z.literal('monopoly_executed'),
+  playerId: z.string(),
+  resourceType: ResourceTypeSchema,
+  totalCollected: z.number(),
+  fromPlayers: z.record(z.string(), z.number()), // playerId -> amount taken
+});
+
+export const RoadBuildingRequiredMessageSchema = z.object({
+  type: z.literal('road_building_required'),
+  roadsRemaining: z.number(), // 0, 1, or 2
+});
+
+export const RoadBuildingPlacedMessageSchema = z.object({
+  type: z.literal('road_building_placed'),
+  playerId: z.string(),
+  edgeId: z.string(),
+  roadsRemaining: z.number(),
+});
+
+export const RoadBuildingCompletedMessageSchema = z.object({
+  type: z.literal('road_building_completed'),
+  playerId: z.string(),
+  edgesPlaced: z.array(z.string()),
+});
+
+export const DevCardPlayFailedMessageSchema = z.object({
+  type: z.literal('dev_card_play_failed'),
+  reason: z.string(),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -423,6 +516,23 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   StealRequiredMessageSchema,
   StolenMessageSchema,
   NoStealPossibleMessageSchema,
+  // Development card messages - client to server
+  BuyDevCardMessageSchema,
+  PlayDevCardMessageSchema,
+  YearOfPlentySelectMessageSchema,
+  MonopolySelectMessageSchema,
+  RoadBuildingPlaceMessageSchema,
+  // Development card messages - server to clients
+  DevCardPurchasedMessageSchema,
+  DevCardPurchasedPublicMessageSchema,
+  DevCardPlayedMessageSchema,
+  YearOfPlentyRequiredMessageSchema,
+  YearOfPlentyCompletedMessageSchema,
+  MonopolyExecutedMessageSchema,
+  RoadBuildingRequiredMessageSchema,
+  RoadBuildingPlacedMessageSchema,
+  RoadBuildingCompletedMessageSchema,
+  DevCardPlayFailedMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -516,6 +626,45 @@ export type StealRequiredMessage = z.infer<typeof StealRequiredMessageSchema>;
 export type StolenMessage = z.infer<typeof StolenMessageSchema>;
 export type NoStealPossibleMessage = z.infer<
   typeof NoStealPossibleMessageSchema
+>;
+// Development card message types - client to server
+export type BuyDevCardMessage = z.infer<typeof BuyDevCardMessageSchema>;
+export type PlayDevCardMessage = z.infer<typeof PlayDevCardMessageSchema>;
+export type YearOfPlentySelectMessage = z.infer<
+  typeof YearOfPlentySelectMessageSchema
+>;
+export type MonopolySelectMessage = z.infer<typeof MonopolySelectMessageSchema>;
+export type RoadBuildingPlaceMessage = z.infer<
+  typeof RoadBuildingPlaceMessageSchema
+>;
+// Development card message types - server to clients
+export type DevCardPurchasedMessage = z.infer<
+  typeof DevCardPurchasedMessageSchema
+>;
+export type DevCardPurchasedPublicMessage = z.infer<
+  typeof DevCardPurchasedPublicMessageSchema
+>;
+export type DevCardPlayedMessage = z.infer<typeof DevCardPlayedMessageSchema>;
+export type YearOfPlentyRequiredMessage = z.infer<
+  typeof YearOfPlentyRequiredMessageSchema
+>;
+export type YearOfPlentyCompletedMessage = z.infer<
+  typeof YearOfPlentyCompletedMessageSchema
+>;
+export type MonopolyExecutedMessage = z.infer<
+  typeof MonopolyExecutedMessageSchema
+>;
+export type RoadBuildingRequiredMessage = z.infer<
+  typeof RoadBuildingRequiredMessageSchema
+>;
+export type RoadBuildingPlacedMessage = z.infer<
+  typeof RoadBuildingPlacedMessageSchema
+>;
+export type RoadBuildingCompletedMessage = z.infer<
+  typeof RoadBuildingCompletedMessageSchema
+>;
+export type DevCardPlayFailedMessage = z.infer<
+  typeof DevCardPlayFailedMessageSchema
 >;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
