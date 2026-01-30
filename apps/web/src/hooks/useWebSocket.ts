@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { WebSocketMessage, WebSocketMessageSchema } from '@catan/shared';
 
 import { WebSocketClient } from '../services/websocket';
+import { useGameStore } from '../stores/gameStore';
 
 interface UseWebSocketOptions {
   url: string;
@@ -37,6 +38,11 @@ export function useWebSocket({ url, onMessage }: UseWebSocketOptions) {
             return;
           }
 
+          // Log received message for debugging
+          useGameStore
+            .getState()
+            .addDebugMessage('received', result.data.type, result.data);
+
           onMessageRef.current(result.data);
         } catch (error) {
           console.error('Failed to parse WebSocket message', error);
@@ -54,6 +60,8 @@ export function useWebSocket({ url, onMessage }: UseWebSocketOptions) {
   }, [url]);
 
   const sendMessage = useCallback((message: WebSocketMessage) => {
+    // Log sent message for debugging
+    useGameStore.getState().addDebugMessage('sent', message.type, message);
     clientRef.current?.sendMessage(message);
   }, []);
 

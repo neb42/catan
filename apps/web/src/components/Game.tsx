@@ -16,6 +16,10 @@ import { DiceRoller } from './DiceRoller/DiceRoller';
 import { TurnControls } from './TurnControls/TurnControls';
 import { ResourceHand } from './ResourceHand/ResourceHand';
 import { BuildControls } from './BuildControls/BuildControls';
+import { TradeModal } from './Trade/TradeModal';
+import { TradeResponseModal } from './Trade/TradeResponseModal';
+import { TradeButton } from './Trade/TradeButton';
+import { DebugPanel } from './Debug/DebugPanel';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
@@ -135,18 +139,30 @@ export function Game() {
           >
             <ResourceHand />
           </div>
-            <div
+          <div
             style={{
               position: 'absolute',
               bottom: 24,
               right: '16px',
               zIndex: 20,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+              alignItems: 'flex-end',
             }}
           >
+            <TradeButton />
             <BuildControls />
           </div>
         </>
       )}
+
+      {/* Trade modals - render at root level, they control their own visibility */}
+      <TradeModal />
+      <TradeResponseModal />
+
+      {/* Debug panel - development only */}
+      <DebugPanel />
     </Box>
   );
 }

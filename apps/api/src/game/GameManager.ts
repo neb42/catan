@@ -5,6 +5,7 @@ import {
   TurnState,
   BUILDING_COSTS,
   MAX_PIECES,
+  ActiveTrade,
 } from '@catan/shared';
 import { calculateDraftPosition, isSetupComplete } from '@catan/shared';
 import { getUniqueVertices, getUniqueEdges, Vertex, Edge } from '@catan/shared';
@@ -25,6 +26,13 @@ import {
   distributeResources,
   PlayerResourceGrant,
 } from './resource-distributor';
+import {
+  validateProposeTrade,
+  validateTradeResponse,
+  validatePartnerSelection,
+  validateBankTrade,
+} from './trade-validator';
+import { getPlayerPortAccess } from './port-access';
 
 export class GameManager {
   private gameState: GameState;
@@ -383,6 +391,9 @@ export class GameManager {
       return { success: false, error: 'Cannot end turn during roll phase' };
     }
 
+    // Clear any active trade (auto-cancel on turn end)
+    this.activeTrade = null;
+
     // Advance to next player
     const currentIndex = this.playerIds.indexOf(
       this.gameState.turnState.currentPlayerId,
@@ -670,5 +681,281 @@ export class GameManager {
       success: true,
       resourcesSpent: { ...cost },
     };
+  }
+
+  // ============================================================================
+  // TRADE METHODS
+  // ============================================================================
+
+  private activeTrade: ActiveTrade | null = null;
+
+  /**
+   * Propose a domestic trade to other players.
+   * Uses validateProposeTrade from trade-validator.
+   */
+  proposeTrade(
+    playerId: string,
+    offering: Partial<Record<ResourceType, number>>,
+    requesting: Partial<Record<ResourceType, number>>,
+  ): {
+    success: boolean;
+    error?: string;
+  } {
+    // Validate we're in main game and main phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'main') {
+      return { success: false, error: 'Must roll dice first' };
+    }
+
+    // Check if already trading
+    if (this.activeTrade) {
+      return { success: false, error: 'Trade already in progress' };
+    }
+
+    // Validate using trade-validator
+    const playerResources = this.gameState.playerResources[playerId];
+    if (!playerResources) {
+      return { success: false, error: 'Player not found' };
+    }
+
+    const validation = validateProposeTrade(
+      playerId,
+      offering,
+      requesting,
+      playerResources,
+      this.getCurrentPlayerId(),
+    );
+
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
+    }
+
+    // Initialize trade with empty responses (will be filled as players respond)
+    this.activeTrade = {
+      proposerId: playerId,
+      offering: offering as Record<ResourceType, number>,
+      requesting: requesting as Record<ResourceType, number>,
+      responses: {},
+    };
+
+    return { success: true };
+  }
+
+  /**
+   * Respond to a trade proposal (accept/decline).
+   * Uses validateTradeResponse from trade-validator.
+   */
+  respondToTrade(
+    playerId: string,
+    response: 'accept' | 'decline',
+  ): {
+    success: boolean;
+    error?: string;
+    allResponded?: boolean;
+  } {
+    // Check if there's an active trade
+    if (!this.activeTrade) {
+      return { success: false, error: 'No active trade' };
+    }
+
+    // Validate using trade-validator
+    const validation = validateTradeResponse(
+      playerId,
+      this.activeTrade.proposerId,
+      this.activeTrade.responses,
+    );
+
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
+    }
+
+    // If accepting, check player has the requested resources
+    if (response === 'accept') {
+      const playerResources = this.gameState.playerResources[playerId];
+      if (playerResources) {
+        for (const [resource, amount] of Object.entries(
+          this.activeTrade.requesting,
+        )) {
+          const resourceType = resource as ResourceType;
+          const playerAmount = playerResources[resourceType] || 0;
+          if (playerAmount < (amount || 0)) {
+            return { success: false, error: 'Not enough resources to accept' };
+          }
+        }
+      }
+    }
+
+    // Update response
+    this.activeTrade.responses[playerId] =
+      response === 'accept' ? 'accepted' : 'declined';
+
+    // Check if all non-proposer players have responded
+    const allResponded = this.playerIds
+      .filter((id) => id !== this.activeTrade!.proposerId)
+      .every((id) => this.activeTrade!.responses[id] !== undefined);
+
+    return { success: true, allResponded };
+  }
+
+  /**
+   * Select a trade partner who accepted, execute the trade.
+   * Uses validatePartnerSelection from trade-validator.
+   */
+  selectTradePartner(partnerId: string): {
+    success: boolean;
+    error?: string;
+    proposerId?: string;
+    proposerGave?: Partial<Record<ResourceType, number>>;
+    partnerGave?: Partial<Record<ResourceType, number>>;
+  } {
+    // Check if there's an active trade
+    if (!this.activeTrade) {
+      return { success: false, error: 'No active trade' };
+    }
+
+    // Validate using trade-validator
+    const partnerResources = this.gameState.playerResources[partnerId];
+    if (!partnerResources) {
+      return { success: false, error: 'Partner not found' };
+    }
+
+    const validation = validatePartnerSelection(
+      this.activeTrade.proposerId,
+      partnerId,
+      this.activeTrade.responses,
+      partnerResources,
+      this.activeTrade.requesting,
+    );
+
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
+    }
+
+    const proposerId = this.activeTrade.proposerId;
+    const proposerGave = { ...this.activeTrade.offering };
+    const partnerGave = { ...this.activeTrade.requesting };
+
+    // Execute the trade - transfer resources
+    // Deduct from proposer (offering), add to partner
+    for (const [resource, amount] of Object.entries(proposerGave)) {
+      const resourceType = resource as ResourceType;
+      this.gameState.playerResources[proposerId][resourceType] -= amount || 0;
+      this.gameState.playerResources[partnerId][resourceType] += amount || 0;
+    }
+
+    // Deduct from partner (requesting), add to proposer
+    for (const [resource, amount] of Object.entries(partnerGave)) {
+      const resourceType = resource as ResourceType;
+      this.gameState.playerResources[partnerId][resourceType] -= amount || 0;
+      this.gameState.playerResources[proposerId][resourceType] += amount || 0;
+    }
+
+    // Clear active trade
+    this.activeTrade = null;
+
+    return {
+      success: true,
+      proposerId,
+      proposerGave,
+      partnerGave,
+    };
+  }
+
+  /**
+   * Cancel the current trade proposal.
+   * Only the proposer should be able to cancel (validated at handler level).
+   */
+  cancelTrade(): {
+    success: boolean;
+    error?: string;
+  } {
+    if (!this.activeTrade) {
+      return { success: false, error: 'No active trade' };
+    }
+
+    this.activeTrade = null;
+    return { success: true };
+  }
+
+  /**
+   * Execute a bank/port trade.
+   * Uses validateBankTrade from trade-validator and getPlayerPortAccess for port rates.
+   */
+  executeBankTrade(
+    playerId: string,
+    giving: Partial<Record<ResourceType, number>>,
+    receiving: Partial<Record<ResourceType, number>>,
+  ): {
+    success: boolean;
+    error?: string;
+    gave?: Partial<Record<ResourceType, number>>;
+    received?: Partial<Record<ResourceType, number>>;
+  } {
+    // Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // Validate we're in main game and main phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'main') {
+      return { success: false, error: 'Must roll dice first' };
+    }
+
+    // Get player resources
+    const playerResources = this.gameState.playerResources[playerId];
+    if (!playerResources) {
+      return { success: false, error: 'Player not found' };
+    }
+
+    // Calculate port access for player
+    const portAccess = getPlayerPortAccess(
+      playerId,
+      this.gameState.settlements,
+      this.gameState.board,
+    );
+
+    // Validate using trade-validator
+    const validation = validateBankTrade(
+      playerId,
+      giving,
+      receiving,
+      playerResources,
+      portAccess,
+    );
+
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
+    }
+
+    // Execute trade
+    for (const [resource, amount] of Object.entries(giving)) {
+      const resourceType = resource as ResourceType;
+      this.gameState.playerResources[playerId][resourceType] -= amount || 0;
+    }
+
+    for (const [resource, amount] of Object.entries(receiving)) {
+      const resourceType = resource as ResourceType;
+      this.gameState.playerResources[playerId][resourceType] += amount || 0;
+    }
+
+    return {
+      success: true,
+      gave: giving,
+      received: receiving,
+    };
+  }
+
+  /**
+   * Get the current active trade, if any.
+   */
+  getActiveTrade(): ActiveTrade | null {
+    return this.activeTrade;
   }
 }

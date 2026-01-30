@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed Phase 5 (Building) with all 5 plans verified
+**Last activity:** 2026-01-30 - Completed quick task 005: Add debug panel with current game state and log of websocket messages
 
 ## Current Position
 
-Phase: 5 of 12 (Building) ✅ Complete  
-Plan: 5 of 5 in current phase  
+Phase: 6 of 12 (Trading) - Complete  
+Plan: 7 of 7 in current phase  
 Status: Complete  
-Last activity: 2026-01-30 - Phase 5 verified and closed
+Last activity: 2026-01-30 - Completed 06-07-PLAN.md (Integration and end-to-end verification)
 
-Progress: ██████████████████████████████████████ 100% (Phase 5 complete)
+Progress: ████████████████████████████████████████████████ (Phase 6 complete)
 
 ## Blockers/Concerns
 
@@ -25,6 +25,7 @@ Progress: ███████████████████████�
 | 002 | Decouple PlayerList component into separate lobby and game components  | 2026-01-28 | 6de8737 | [002-decouple-playerlist-component-into-separ](./quick/002-decouple-playerlist-component-into-separ/)     |
 | 003 | Split Phase 5 into Building/Trading/Robber phases                      | 2026-01-29 | 6787c3d | [003-split-phase-5-into-building-trading-robber](./quick/003-split-phase-5-into-building-trading-robber/) |
 | 004 | Split Phase 8 into Development Cards/Longest Road/Largest Army/Victory | 2026-01-29 | 6f16728 | [004-split-phase-8-into-4-phases](./quick/004-split-phase-8-into-4-phases/)                               |
+| 005 | Add debug panel with current game state                                | 2026-01-30 | a2c5f89 | [005-add-debug-panel-with-current-game-state-](./quick/005-add-debug-panel-with-current-game-state-/)     |
 
 ## Decisions
 
@@ -64,9 +65,23 @@ Progress: ███████████████████████�
 | 05    | Single placement per mode     | Build mode exits after single click for clear UX                              |
 | 05    | Build overlay conditional     | PlacementOverlay renders for both placement phase AND build mode              |
 | 05    | City tower shape              | Cities render with distinct tower/castle shape vs settlement house shape      |
+| 06    | ResourceRecordSchema pattern  | Reusable z.record for trade offer resource maps                               |
+| 06    | ActiveTrade separate          | Managed by GameManager, not included in GameStateSchema                       |
+| 06    | Trade methods in GameManager  | Implemented full methods since 06-02 runs in parallel                         |
+| 06    | Basic 4:1 bank ratio          | Bank trade validates 4:1 ratio; port logic added later                        |
+| 06    | TradeSlice interface          | Separate interface for trade state in gameStore                               |
+| 06    | Port access from shared       | Reuse getVertexFromCorner for port vertex calculation                         |
+| 06    | Empty trade responses         | Responses start empty, filled as players respond (not pre-populated)          |
+| 06    | Trade auto-cancel on turn end | Active trade cleared in endTurn method for clean state management             |
+| 06    | Click-to-select maritime      | Maritime trade uses clickable rows instead of dropdowns for simpler UX        |
+| 06    | ResourceSelector reusable     | Extracted quantity +/- controls for use in both trade types                   |
+| 06    | Blocking modal pattern        | Use opened={true} with no-op onClose for modal that requires action           |
+| 06    | Combined resource updates     | Single updatePlayerResources call with all changes for efficiency             |
+
+| 06 | Edge-to-corner mapping | Edge i connects corners `(i+5)%6` and `i` for pointy-top hexes |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed Phase 5 (Building) - all plans verified
+Stopped at: Completed Phase 6 (Trading) - All 7 plans complete
 Resume file: none

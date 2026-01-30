@@ -558,6 +558,145 @@ export function handleWebSocketConnection(
         break;
       }
 
+      // ============================================================================
+      // TRADING PHASE HANDLERS
+      // ============================================================================
+
+      case 'propose_trade': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.proposeTrade(
+          playerId,
+          message.offering,
+          message.requesting,
+        );
+        if (!result.success) {
+          sendError(ws, result.error || 'Invalid trade proposal');
+          return;
+        }
+
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'trade_proposed',
+          proposerId: playerId,
+          offering: message.offering,
+          requesting: message.requesting,
+        });
+        break;
+      }
+
+      case 'respond_trade': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.respondToTrade(playerId, message.response);
+        if (!result.success) {
+          sendError(ws, result.error || 'Invalid trade response');
+          return;
+        }
+
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'trade_response',
+          playerId,
+          response: message.response === 'accept' ? 'accepted' : 'declined',
+        });
+        break;
+      }
+
+      case 'select_trade_partner': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.selectTradePartner(message.partnerId);
+        if (!result.success) {
+          sendError(ws, result.error || 'Invalid trade partner');
+          return;
+        }
+
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'trade_executed',
+          proposerId: result.proposerId!,
+          partnerId: message.partnerId,
+          proposerGave: result.proposerGave!,
+          partnerGave: result.partnerGave!,
+        });
+        break;
+      }
+
+      case 'cancel_trade': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.cancelTrade();
+        if (!result.success) {
+          sendError(ws, result.error || 'Cannot cancel trade');
+          return;
+        }
+
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'trade_cancelled',
+        });
+        break;
+      }
+
+      case 'execute_bank_trade': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Room not found');
+          return;
+        }
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.executeBankTrade(
+          playerId,
+          message.giving,
+          message.receiving,
+        );
+        if (!result.success) {
+          sendError(ws, result.error || 'Invalid bank trade');
+          return;
+        }
+
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'bank_trade_executed',
+          playerId,
+          gave: result.gave!,
+          received: result.received!,
+        });
+        break;
+      }
+
       default: {
         sendError(ws, 'Invalid room ID');
       }
