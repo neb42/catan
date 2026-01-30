@@ -67,6 +67,27 @@ interface TradeSlice {
   tradeModalOpen: boolean;
 }
 
+// Robber state slice
+interface RobberSlice {
+  // Discard state
+  discardRequired: boolean;
+  discardTarget: number;
+  discardResources: PlayerResources | null; // Current resources to discard from
+  selectedForDiscard: Record<ResourceType, number>;
+
+  // Robber placement state
+  robberPlacementMode: boolean;
+  robberHexId: string | null;
+
+  // Steal state
+  stealRequired: boolean;
+  stealCandidates: Array<{
+    playerId: string;
+    nickname: string;
+    cardCount: number;
+  }>;
+}
+
 // Game log state slice
 interface GameLogEntry {
   id: string;
@@ -97,6 +118,7 @@ interface GameStore
     TurnSlice,
     BuildSlice,
     TradeSlice,
+    RobberSlice,
     GameLogSlice,
     DebugSlice {
   board: BoardState | null;
@@ -173,6 +195,26 @@ interface GameStore
   clearTrade: () => void;
   setTradeModalOpen: (open: boolean) => void;
 
+  // Robber actions
+  setDiscardRequired: (
+    required: boolean,
+    target: number,
+    resources: PlayerResources | null,
+  ) => void;
+  toggleDiscardSelection: (resource: ResourceType, delta: number) => void;
+  clearDiscardSelection: () => void;
+  setRobberPlacementMode: (mode: boolean) => void;
+  setRobberHexId: (hexId: string | null) => void;
+  setStealRequired: (
+    required: boolean,
+    candidates: Array<{
+      playerId: string;
+      nickname: string;
+      cardCount: number;
+    }>,
+  ) => void;
+  clearRobberState: () => void;
+
   // Game log actions
   addLogEntry: (
     message: string,
@@ -226,6 +268,16 @@ export const useGameStore = create<GameStore>((set) => ({
   // Trade state
   activeTrade: null,
   tradeModalOpen: false,
+
+  // Robber state
+  discardRequired: false,
+  discardTarget: 0,
+  discardResources: null,
+  selectedForDiscard: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
+  robberPlacementMode: false,
+  robberHexId: null,
+  stealRequired: false,
+  stealCandidates: [],
 
   // Game log state
   gameLog: [],
@@ -349,6 +401,55 @@ export const useGameStore = create<GameStore>((set) => ({
     })),
   clearTrade: () => set({ activeTrade: null }),
   setTradeModalOpen: (open) => set({ tradeModalOpen: open }),
+
+  // Robber actions
+  setDiscardRequired: (required, target, resources) =>
+    set({
+      discardRequired: required,
+      discardTarget: target,
+      discardResources: resources,
+      selectedForDiscard: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
+    }),
+
+  toggleDiscardSelection: (resource, delta) =>
+    set((state) => {
+      const current = state.selectedForDiscard[resource] || 0;
+      const newVal = Math.max(0, current + delta);
+      // Don't exceed what player has
+      const max = state.discardResources?.[resource] || 0;
+      return {
+        selectedForDiscard: {
+          ...state.selectedForDiscard,
+          [resource]: Math.min(newVal, max),
+        },
+      };
+    }),
+
+  clearDiscardSelection: () =>
+    set({
+      selectedForDiscard: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
+    }),
+
+  setRobberPlacementMode: (mode) => set({ robberPlacementMode: mode }),
+
+  setRobberHexId: (hexId) => set({ robberHexId: hexId }),
+
+  setStealRequired: (required, candidates) =>
+    set({
+      stealRequired: required,
+      stealCandidates: candidates,
+    }),
+
+  clearRobberState: () =>
+    set({
+      discardRequired: false,
+      discardTarget: 0,
+      discardResources: null,
+      selectedForDiscard: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
+      robberPlacementMode: false,
+      stealRequired: false,
+      stealCandidates: [],
+    }),
 
   // Game log actions
   addLogEntry: (message, type = 'info') =>
@@ -493,3 +594,31 @@ export const useDebugPanelOpen = () =>
 
 // Game log selector hook
 export const useGameLog = () => useGameStore((state) => state.gameLog);
+
+// Robber state selector hooks
+export const useDiscardRequired = () =>
+  useGameStore((state) => state.discardRequired);
+export const useDiscardTarget = () =>
+  useGameStore((state) => state.discardTarget);
+export const useDiscardResources = () =>
+  useGameStore((state) => state.discardResources);
+export const useSelectedForDiscard = () =>
+  useGameStore((state) => state.selectedForDiscard);
+export const useRobberPlacementMode = () =>
+  useGameStore((state) => state.robberPlacementMode);
+export const useRobberHexId = () => useGameStore((state) => state.robberHexId);
+export const useStealRequired = () =>
+  useGameStore((state) => state.stealRequired);
+export const useStealCandidates = () =>
+  useGameStore((state) => state.stealCandidates);
+
+// Combined hook for discard modal
+export const useDiscardState = () =>
+  useGameStore(
+    useShallow((state) => ({
+      required: state.discardRequired,
+      target: state.discardTarget,
+      resources: state.discardResources,
+      selected: state.selectedForDiscard,
+    })),
+  );
