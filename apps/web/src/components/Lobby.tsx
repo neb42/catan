@@ -663,6 +663,104 @@ export default function Lobby() {
           break;
         }
 
+        case 'year_of_plenty_required': {
+          // Player needs to select 2 resources from bank
+          useGameStore.getState().setDevCardPlayPhase('year_of_plenty');
+          break;
+        }
+
+        case 'year_of_plenty_completed': {
+          // Year of Plenty completed - update resources
+          const gameStore = useGameStore.getState();
+          gameStore.setDevCardPlayPhase(null);
+
+          // Update resources for the player
+          const { playerId: yopPlayerId, resources: yopResources } = message;
+          const currentResources = {
+            ...gameStore.playerResources[yopPlayerId],
+          };
+
+          yopResources.forEach((r: ResourceType) => {
+            currentResources[r] = (currentResources[r] || 0) + 1;
+          });
+
+          // Convert to array format for updatePlayerResources
+          const resourceUpdates = Object.entries(currentResources).map(
+            ([type, count]) => ({
+              type: type as ResourceType,
+              count: count as number,
+            }),
+          );
+          gameStore.updatePlayerResources(yopPlayerId, resourceUpdates);
+
+          // Show notification
+          const yopPlayer = room?.players.find((p) => p.id === yopPlayerId);
+          const yopNickname = yopPlayer?.nickname || 'A player';
+          showGameNotification(
+            `${yopNickname} took ${yopResources.join(' and ')} from the bank!`,
+            'info',
+          );
+          break;
+        }
+
+        case 'monopoly_required': {
+          // Player needs to select a resource type for monopoly
+          useGameStore.getState().setDevCardPlayPhase('monopoly');
+          break;
+        }
+
+        case 'monopoly_executed': {
+          // Monopoly completed - update all affected resources
+          const gameStore = useGameStore.getState();
+          gameStore.setDevCardPlayPhase(null);
+
+          const {
+            playerId: monopolyPlayerId,
+            resourceType: monopolyResource,
+            totalCollected,
+            fromPlayers,
+          } = message;
+
+          // Take resources from victims
+          Object.entries(fromPlayers).forEach(([victimId, amount]) => {
+            const victimResources = { ...gameStore.playerResources[victimId] };
+            victimResources[monopolyResource as ResourceType] = 0;
+            const victimUpdates = Object.entries(victimResources).map(
+              ([type, count]) => ({
+                type: type as ResourceType,
+                count: count as number,
+              }),
+            );
+            gameStore.updatePlayerResources(victimId, victimUpdates);
+          });
+
+          // Give resources to monopoly player
+          const monopolyResources = {
+            ...gameStore.playerResources[monopolyPlayerId],
+          };
+          monopolyResources[monopolyResource as ResourceType] =
+            (monopolyResources[monopolyResource as ResourceType] || 0) +
+            totalCollected;
+          const monopolyUpdates = Object.entries(monopolyResources).map(
+            ([type, count]) => ({
+              type: type as ResourceType,
+              count: count as number,
+            }),
+          );
+          gameStore.updatePlayerResources(monopolyPlayerId, monopolyUpdates);
+
+          // Show notification
+          const monopolyPlayer = room?.players.find(
+            (p) => p.id === monopolyPlayerId,
+          );
+          const monopolyNickname = monopolyPlayer?.nickname || 'A player';
+          showGameNotification(
+            `${monopolyNickname} collected ${totalCollected} ${monopolyResource} via Monopoly!`,
+            'warning',
+          );
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);

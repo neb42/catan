@@ -432,6 +432,10 @@ export const MonopolyExecutedMessageSchema = z.object({
   fromPlayers: z.record(z.string(), z.number()), // playerId -> amount taken
 });
 
+export const MonopolyRequiredMessageSchema = z.object({
+  type: z.literal('monopoly_required'),
+});
+
 export const RoadBuildingRequiredMessageSchema = z.object({
   type: z.literal('road_building_required'),
   roadsRemaining: z.number(), // 0, 1, or 2
@@ -528,6 +532,7 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   DevCardPlayedMessageSchema,
   YearOfPlentyRequiredMessageSchema,
   YearOfPlentyCompletedMessageSchema,
+  MonopolyRequiredMessageSchema,
   MonopolyExecutedMessageSchema,
   RoadBuildingRequiredMessageSchema,
   RoadBuildingPlacedMessageSchema,
