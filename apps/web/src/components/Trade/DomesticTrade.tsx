@@ -139,39 +139,42 @@ export function DomesticTrade() {
 
   return (
     <Stack gap="md">
-      {/* You Give section */}
-      <Stack gap="xs">
-        <Text fw={600} size="sm" c="dimmed">
-          You Give
-        </Text>
-        {RESOURCE_TYPES.map((resource) => (
-          <ResourceSelector
-            key={`offer-${resource}`}
-            resource={resource}
-            value={offering[resource]}
-            max={playerResources[resource]}
-            onChange={(v) => handleOfferingChange(resource, v)}
-          />
-        ))}
-      </Stack>
+      <Group justify="space-around" align="flex-start">
+        {/* You Give section */}
+        <Stack gap="xs">
+          <Text fw={600} size="sm" c="dimmed">
+            You Give
+          </Text>
+          {RESOURCE_TYPES.map((resource) => (
+            <ResourceSelector
+              key={`offer-${resource}`}
+              resource={resource}
+              value={offering[resource]}
+              max={playerResources[resource]}
+              onChange={(v) => handleOfferingChange(resource, v)}
+              showMax
+            />
+          ))}
+        </Stack>
 
-      <Divider />
+        <Divider />
 
-      {/* You Want section */}
-      <Stack gap="xs">
-        <Text fw={600} size="sm" c="dimmed">
-          You Want
-        </Text>
-        {RESOURCE_TYPES.map((resource) => (
-          <ResourceSelector
-            key={`request-${resource}`}
-            resource={resource}
-            value={requesting[resource]}
-            max={99}
-            onChange={(v) => handleRequestingChange(resource, v)}
-          />
-        ))}
-      </Stack>
+        {/* You Want section */}
+        <Stack gap="xs">
+          <Text fw={600} size="sm" c="dimmed">
+            You Want
+          </Text>
+          {RESOURCE_TYPES.map((resource) => (
+            <ResourceSelector
+              key={`request-${resource}`}
+              resource={resource}
+              value={requesting[resource]}
+              max={99}
+              onChange={(v) => handleRequestingChange(resource, v)}
+            />
+          ))}
+        </Stack>
+      </Group>
 
       <Divider />
 
