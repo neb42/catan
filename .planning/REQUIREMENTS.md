@@ -31,7 +31,7 @@
 
 - [x] **RES-01**: User can view their own resource cards (wood, brick, sheep, wheat, ore) _(Completed 2026-01-29)_
 - [x] **RES-02**: Game tracks resource counts for all players _(Completed 2026-01-29)_
-- [ ] **RES-03**: User can see opponent resource counts (total only, not breakdown)
+- [x] **RES-03**: User can see opponent resource counts (total only, not breakdown) _(Completed 2026-01-30)_
 
 ### Building
 
@@ -58,11 +58,11 @@
 
 ### Robber
 
-- [ ] **ROBBER-01**: When 7 is rolled, players with 8+ cards choose half (rounded down) to discard
-- [ ] **ROBBER-02**: User can move robber to any land hex (including where robber currently sits)
-- [ ] **ROBBER-03**: User can steal one random resource card from adjacent player when moving robber
-- [ ] **ROBBER-04**: Game allows self-blocking (placing robber on own hex)
-- [ ] **ROBBER-05**: Hex with robber does not distribute resources when its number is rolled
+- [x] **ROBBER-01**: When 7 is rolled, players with 8+ cards choose half (rounded down) to discard _(Completed 2026-01-30)_
+- [x] **ROBBER-02**: User can move robber to any land hex (including where robber currently sits) _(Completed 2026-01-30)_
+- [x] **ROBBER-03**: User can steal one random resource card from adjacent player when moving robber _(Completed 2026-01-30)_
+- [x] **ROBBER-04**: Game allows self-blocking (placing robber on own hex) _(Completed 2026-01-30)_
+- [x] **ROBBER-05**: Hex with robber does not distribute resources when its number is rolled _(Completed 2026-01-30)_
 
 ### Development Cards
 
@@ -99,8 +99,8 @@
 ### UX & Polish
 
 - [ ] **UX-01**: User sees clear visual indicator of current turn and phase
-- [ ] **UX-02**: User receives feedback confirmation for all actions (build, trade, roll, etc.)
-- [ ] **UX-03**: User sees error messages when attempting invalid actions
+- [x] **UX-02**: User receives feedback confirmation for all actions (build, trade, roll, etc.) _(Completed 2026-01-30)_
+- [x] **UX-03**: User sees error messages when attempting invalid actions _(Completed 2026-01-30)_
 - [ ] **UX-04**: User can view player list with colors and current scores
 - [ ] **UX-05**: User can view scrollable game log showing all actions with timestamps
 - [ ] **UX-06**: Game interface is responsive and playable on mobile devices
