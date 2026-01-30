@@ -7,6 +7,7 @@ import {
   useRemainingPieces,
 } from '../../hooks/useBuildMode';
 import { useGameStore } from '../../stores/gameStore';
+import { BuyDevCardButton } from '../DevCard/BuyDevCardButton';
 
 // Resource emoji icons for inline display
 const RESOURCE_ICONS: Record<string, string> = {
@@ -184,6 +185,9 @@ export function BuildControls() {
             onClick={() => handleBuildClick('city')}
           />
         </Group>
+
+        {/* Buy Dev Card button */}
+        <BuyDevCardButton />
 
         {/* Cancel button when in build mode */}
         {buildMode && (

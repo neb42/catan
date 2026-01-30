@@ -1,5 +1,13 @@
 import { Player, PLAYER_COLOR_HEX } from '@catan/shared';
-import { Avatar, Badge, Card, Stack, Text } from '@mantine/core';
+import {
+  Avatar,
+  Badge,
+  Card,
+  Group,
+  Stack,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 import { motion } from 'motion/react';
 import { useShallow } from 'zustand/react/shallow';
 import {
@@ -26,6 +34,12 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
   const allPlayerResources = useGameStore(
     useShallow((state) => state.playerResources),
   );
+
+  // Dev card state for badges
+  const opponentDevCardCounts = useGameStore((s) => s.opponentDevCardCounts);
+  const knightsPlayed = useGameStore((s) => s.knightsPlayed);
+  const myDevCards = useGameStore((s) => s.myDevCards);
+  const myPlayerId = useGameStore((s) => s.myPlayerId);
 
   // Color mapping for backgrounds
   const colorMap: Record<string, string> = PLAYER_COLOR_HEX;
@@ -111,11 +125,33 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 {/* Total card count */}
                 <Text size="sm" c="dimmed" fw={500}>
                   {Object.values(playerResources).reduce(
-                  (sum, count) => sum + count,
-                  0,
+                    (sum, count) => sum + count,
+                    0,
                   )}{' '}
                   Cards
                 </Text>
+
+                {/* Dev card and knight counts */}
+                <Group gap="xs">
+                  {/* Dev card count */}
+                  <Tooltip label="Development cards" position="top">
+                    <Badge size="sm" color="violet" variant="light">
+                      📜{' '}
+                      {player.id === myPlayerId
+                        ? myDevCards.length
+                        : opponentDevCardCounts[player.id] || 0}
+                    </Badge>
+                  </Tooltip>
+
+                  {/* Knights played */}
+                  {(knightsPlayed[player.id] || 0) > 0 && (
+                    <Tooltip label="Knights played" position="top">
+                      <Badge size="sm" color="orange" variant="light">
+                        ⚔️ {knightsPlayed[player.id]}
+                      </Badge>
+                    </Tooltip>
+                  )}
+                </Group>
 
                 {/* Active turn indicator */}
                 <Badge
@@ -124,8 +160,8 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   variant="light"
                   mt={2}
                   style={{
-                  fontFamily: 'Fraunces, serif',
-                  opacity: isActiveTurn ? 1 : 0,
+                    fontFamily: 'Fraunces, serif',
+                    opacity: isActiveTurn ? 1 : 0,
                   }}
                 >
                   Current Turn
