@@ -368,7 +368,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 **Plans:** 8 plans
 
-- [ ] 08-01-PLAN.md — Dev card types, schemas, and WebSocket messages
+- [x] 08-01-PLAN.md — Dev card types, schemas, and WebSocket messages
 - [ ] 08-02-PLAN.md — Deck management and purchase logic in GameManager
 - [ ] 08-03-PLAN.md — Buy WebSocket handler and frontend state
 - [ ] 08-04-PLAN.md — Knight card play (reuses robber flow)

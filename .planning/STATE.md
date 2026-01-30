@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 07-07-PLAN.md (Full Robber Integration)
+**Last activity:** 2026-01-30 - Completed 08-01-PLAN.md (Dev Card Shared Library Foundation)
 
 ## Current Position
 
-Phase: 7 of 12 (Robber)  
-Plan: 7 of 7 in current phase  
-Status: Phase complete  
-Last activity: 2026-01-30 - Completed 07-07-PLAN.md
+Phase: 8 of 12 (Development Cards)  
+Plan: 1 of 8 in current phase  
+Status: In progress  
+Last activity: 2026-01-30 - Completed 08-01-PLAN.md
 
-Progress: █████████████████████████████████████████████████████████████████ (Phase 7: 7/7 plans - COMPLETE)
+Progress: ██████████████████████████████████████████████████████████████████░░░░ (Phase 8: 1/8 plans)
 
 ## Blockers/Concerns
 
@@ -90,9 +90,13 @@ Progress: ███████████████████████�
 | 07    | Blocking DiscardModal            | opened=true with no-op onClose forces completion                              |
 | 07    | StealModal reuses pattern        | Same blocking modal pattern as DiscardModal for consistent UX                 |
 | 07    | Block all players during discard | WaitingForDiscardsOverlay blocks non-discarding players during robber flow    |
+| 08    | OwnedDevCard purchasedOnTurn     | Track purchase turn for same-turn play restriction (DEV-03)                   |
+| 08    | Separate purchase messages       | DevCardPurchased vs DevCardPurchasedPublic hides VP cards from opponents      |
+| 08    | YearOfPlentySelect uses tuple    | z.tuple enforces exactly 2 resources at type level                            |
+| 08    | RoadBuildingPlace per-road       | Single edge per message for sequential placement with UI updates              |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 07-07-PLAN.md (Full Robber Integration) - Phase 7 Complete
-Resume file: .planning/phases/08-development-cards/08-01-PLAN.md
+Stopped at: Completed 08-01-PLAN.md (Dev Card Shared Library Foundation)
+Resume file: .planning/phases/08-development-cards/08-02-PLAN.md
