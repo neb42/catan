@@ -67,6 +67,18 @@ interface TradeSlice {
   tradeModalOpen: boolean;
 }
 
+// Game log state slice
+interface GameLogEntry {
+  id: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  timestamp: Date;
+}
+
+interface GameLogSlice {
+  gameLog: GameLogEntry[];
+}
+
 // Debug state slice
 interface DebugMessage {
   direction: 'sent' | 'received';
@@ -85,6 +97,7 @@ interface GameStore
     TurnSlice,
     BuildSlice,
     TradeSlice,
+    GameLogSlice,
     DebugSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
@@ -160,6 +173,13 @@ interface GameStore
   clearTrade: () => void;
   setTradeModalOpen: (open: boolean) => void;
 
+  // Game log actions
+  addLogEntry: (
+    message: string,
+    type?: 'info' | 'success' | 'warning' | 'error',
+  ) => void;
+  clearGameLog: () => void;
+
   // Debug actions
   addDebugMessage: (
     direction: 'sent' | 'received',
@@ -206,6 +226,9 @@ export const useGameStore = create<GameStore>((set) => ({
   // Trade state
   activeTrade: null,
   tradeModalOpen: false,
+
+  // Game log state
+  gameLog: [],
 
   // Debug state
   debugMessages: [],
@@ -326,6 +349,21 @@ export const useGameStore = create<GameStore>((set) => ({
     })),
   clearTrade: () => set({ activeTrade: null }),
   setTradeModalOpen: (open) => set({ tradeModalOpen: open }),
+
+  // Game log actions
+  addLogEntry: (message, type = 'info') =>
+    set((state) => ({
+      gameLog: [
+        ...state.gameLog.slice(-99), // Keep last 100 entries
+        {
+          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          message,
+          type,
+          timestamp: new Date(),
+        },
+      ],
+    })),
+  clearGameLog: () => set({ gameLog: [] }),
 
   // Debug actions
   addDebugMessage: (direction, type, data) =>
@@ -452,3 +490,6 @@ export const useDebugMessages = () =>
 
 export const useDebugPanelOpen = () =>
   useGameStore((state) => state.debugPanelOpen);
+
+// Game log selector hook
+export const useGameLog = () => useGameStore((state) => state.gameLog);
