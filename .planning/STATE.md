@@ -3,14 +3,14 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 06-04-PLAN.md (Frontend Trade State)
+**Last activity:** 2026-01-30 - Completed 06-06-PLAN.md (Trade Response UI)
 
 ## Current Position
 
 Phase: 6 of 12 (Trading)  
-Plan: 4 of 7 in current phase  
+Plan: 6 of 7 in current phase  
 Status: In progress  
-Last activity: 2026-01-30 - Completed 06-04-PLAN.md
+Last activity: 2026-01-30 - Completed 06-06-PLAN.md
 
 Progress: ████████████████████████████████████████ (Phase 6 in progress)
 
@@ -72,9 +72,11 @@ Progress: ███████████████████████�
 | 06    | Port access from shared       | Reuse getVertexFromCorner for port vertex calculation                         |
 | 06    | Empty trade responses         | Responses start empty, filled as players respond (not pre-populated)          |
 | 06    | Trade auto-cancel on turn end | Active trade cleared in endTurn method for clean state management             |
+| 06    | Blocking modal pattern        | Use opened={true} with no-op onClose for modal that requires action           |
+| 06    | Combined resource updates     | Single updatePlayerResources call with all changes for efficiency             |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 06-04-PLAN.md (Frontend Trade State)
+Stopped at: Completed 06-06-PLAN.md (Trade Response UI)
 Resume file: none
