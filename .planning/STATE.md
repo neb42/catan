@@ -3,14 +3,14 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 06-03-PLAN.md (WebSocket Trade Handlers)
+**Last activity:** 2026-01-30 - Completed 06-04-PLAN.md (Frontend Trade State)
 
 ## Current Position
 
 Phase: 6 of 12 (Trading)  
-Plan: 3 of 7 in current phase  
+Plan: 4 of 7 in current phase  
 Status: In progress  
-Last activity: 2026-01-30 - Completed 06-03-PLAN.md
+Last activity: 2026-01-30 - Completed 06-04-PLAN.md
 
 Progress: ████████████████████████████████████████ (Phase 6 in progress)
 
@@ -68,9 +68,11 @@ Progress: ███████████████████████�
 | 06    | ActiveTrade separate          | Managed by GameManager, not included in GameStateSchema                       |
 | 06    | Trade methods in GameManager  | Implemented full methods since 06-02 runs in parallel                         |
 | 06    | Basic 4:1 bank ratio          | Bank trade validates 4:1 ratio; port logic added later                        |
+| 06    | TradeSlice interface          | Separate interface for trade state in gameStore                               |
+| 06    | Port access from shared       | Reuse getVertexFromCorner for port vertex calculation                         |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 06-03-PLAN.md (WebSocket Trade Handlers)
+Stopped at: Completed 06-04-PLAN.md (Frontend Trade State)
 Resume file: none
