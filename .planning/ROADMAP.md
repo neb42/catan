@@ -366,7 +366,16 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-TBD
+**Plans:** 8 plans
+
+- [ ] 08-01-PLAN.md — Dev card types, schemas, and WebSocket messages
+- [ ] 08-02-PLAN.md — Deck management and purchase logic in GameManager
+- [ ] 08-03-PLAN.md — Buy WebSocket handler and frontend state
+- [ ] 08-04-PLAN.md — Knight card play (reuses robber flow)
+- [ ] 08-05-PLAN.md — Road Building card (2 free roads)
+- [ ] 08-06-PLAN.md — Year of Plenty and Monopoly cards
+- [ ] 08-07-PLAN.md — Dev card hand UI and player list integration
+- [ ] 08-08-PLAN.md — Human verification checkpoint
 
 ### Deliverables
 
