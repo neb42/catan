@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 06-05-PLAN.md (Trade UI Components)
+**Last activity:** 2026-01-30 - Completed Phase 6 (Trading)
 
 ## Current Position
 
-Phase: 6 of 12 (Trading)  
-Plan: 5 of 7 in current phase  
-Status: In progress  
-Last activity: 2026-01-30 - Completed 06-05-PLAN.md
+Phase: 6 of 12 (Trading) - Complete  
+Plan: 7 of 7 in current phase  
+Status: Complete  
+Last activity: 2026-01-30 - Completed 06-07-PLAN.md (Integration and end-to-end verification)
 
-Progress: ████████████████████████████████████████ (Phase 6 in progress)
+Progress: ████████████████████████████████████████████████ (Phase 6 complete)
 
 ## Blockers/Concerns
 
@@ -77,8 +77,10 @@ Progress: ███████████████████████�
 | 06    | Blocking modal pattern        | Use opened={true} with no-op onClose for modal that requires action           |
 | 06    | Combined resource updates     | Single updatePlayerResources call with all changes for efficiency             |
 
+| 06 | Edge-to-corner mapping | Edge i connects corners `(i+5)%6` and `i` for pointy-top hexes |
+
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 06-05-PLAN.md (Trade UI Components)
+Stopped at: Completed Phase 6 (Trading) - All 7 plans complete
 Resume file: none

@@ -9,15 +9,22 @@ export interface PortAccess {
 
 /**
  * Gets the two vertex IDs that a port connects to.
- * Port is on edge of hex, which connects corners i and (i+1)%6.
+ * Port is on edge of hex. For pointy-top hexes:
+ * - Edge angles: 0=0°, 1=60°, 2=120°, 3=180°, 4=240°, 5=300°
+ * - Corner angles: 0=30°, 1=90°, 2=150°, 3=210°, 4=270°, 5=330°
+ * Edge i (at angle i*60°) is bordered by corners at (i*60 - 30)° and (i*60 + 30)°
+ * This means edge i connects corner (i+5)%6 and corner i.
  */
 function getPortVertexIds(
   port: Port,
   size = { x: 10, y: 10 },
 ): [string, string] {
   const hex = { q: port.hexQ, r: port.hexR };
-  const v1 = getVertexFromCorner(hex, port.edge, size);
-  const v2 = getVertexFromCorner(hex, (port.edge + 1) % 6, size);
+  // Edge i connects corner (i+5)%6 to corner i
+  const corner1 = (port.edge + 5) % 6;
+  const corner2 = port.edge;
+  const v1 = getVertexFromCorner(hex, corner1, size);
+  const v2 = getVertexFromCorner(hex, corner2, size);
   return [v1.id, v2.id];
 }
 

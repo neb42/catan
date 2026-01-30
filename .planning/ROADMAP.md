@@ -251,6 +251,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ## Phase 6: Trading
 
 **Goal:** Enable domestic and maritime trading between players and bank  
+**Status:** Complete  
+**Completed:** 2026-01-30  
 **Duration:** 1 week  
 **Dependencies:** Phase 5
 
@@ -274,12 +276,12 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 **Plans:** 7 plans
 
 - [x] 06-01-PLAN.md — Add trade message schemas and types to shared library
-- [ ] 06-02-PLAN.md — Backend trade logic (validation, port access, GameManager methods)
-- [ ] 06-03-PLAN.md — WebSocket handlers for trade messages
-- [ ] 06-04-PLAN.md — Frontend trade state (store slice, port access hook, selectors)
-- [ ] 06-05-PLAN.md — Trade UI components (modal, domestic trade, maritime trade)
-- [ ] 06-06-PLAN.md — Trade response UI and WebSocket integration
-- [ ] 06-07-PLAN.md — Integration and end-to-end verification
+- [x] 06-02-PLAN.md — Backend trade logic (validation, port access, GameManager methods)
+- [x] 06-03-PLAN.md — WebSocket handlers for trade messages
+- [x] 06-04-PLAN.md — Frontend trade state (store slice, port access hook, selectors)
+- [x] 06-05-PLAN.md — Trade UI components (modal, domestic trade, maritime trade)
+- [x] 06-06-PLAN.md — Trade response UI and WebSocket integration
+- [x] 06-07-PLAN.md — Integration and end-to-end verification
 
 ### Deliverables
 
@@ -584,4 +586,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-01-30 - Phase 5 (Building) complete_
+_Last updated: 2026-01-30 - Phase 6 (Trading) complete_
