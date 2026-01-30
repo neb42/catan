@@ -20,6 +20,12 @@ import { TradeModal } from './Trade/TradeModal';
 import { TradeResponseModal } from './Trade/TradeResponseModal';
 import { TradeButton } from './Trade/TradeButton';
 import { DebugPanel } from './Debug/DebugPanel';
+import {
+  DiscardModal,
+  StealModal,
+  WaitingForDiscardsOverlay,
+} from '@web/components/Robber';
+import { GameLog } from '@web/components/Feedback';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
@@ -160,6 +166,14 @@ export function Game() {
       {/* Trade modals - render at root level, they control their own visibility */}
       <TradeModal />
       <TradeResponseModal />
+
+      {/* Robber modals - render at root level, they control their own visibility */}
+      <DiscardModal />
+      <StealModal />
+      <WaitingForDiscardsOverlay />
+
+      {/* Game log - shows action history */}
+      {/* <GameLog /> */}
 
       {/* Debug panel - development only */}
       <DebugPanel />

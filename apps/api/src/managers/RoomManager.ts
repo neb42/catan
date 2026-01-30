@@ -131,4 +131,16 @@ export class RoomManager {
     const room = this.rooms.get(roomId);
     return room?.board ?? null;
   }
+
+  /**
+   * Get the WebSocket connection for a specific player in a room.
+   * Used for sending targeted messages (e.g., robber discard_required).
+   */
+  getPlayerWebSocket(roomId: string, playerId: string): WebSocket | undefined {
+    const room = this.rooms.get(roomId);
+    if (!room) return undefined;
+
+    const player = room.players.get(playerId);
+    return player?.ws;
+  }
 }

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { HexGrid, Layout, Pattern } from 'react-hexgrid';
 import { BoardState } from '@catan/shared';
 import { TerrainHex } from './TerrainHex';
@@ -5,8 +6,14 @@ import { Port } from './Port';
 import { PlacementOverlay } from './PlacementOverlay';
 import { PlacementControls } from './PlacementControls';
 import { PlacedPieces } from './PlacedPieces';
-import { useGameStore, useBuildMode } from '../../stores/gameStore';
+import {
+  useGameStore,
+  useBuildMode,
+  useRobberHexId,
+  useRobberPlacementMode,
+} from '../../stores/gameStore';
 import { useShallow } from 'zustand/react/shallow';
+import { RobberFigure, RobberPlacement } from '@web/components/Robber';
 
 interface BoardProps {
   board: BoardState;
@@ -40,6 +47,39 @@ export function Board({ board }: BoardProps) {
   // Show overlay during placement phase OR build mode
   const showOverlay = placementPhase || buildMode;
 
+  // Robber state
+  const robberHexId = useRobberHexId();
+  const robberPlacementMode = useRobberPlacementMode();
+
+  // Layout size constant (must match Layout props)
+  const hexSize = { x: 10, y: 10 };
+  const spacing = 1.05;
+
+  // Calculate hex centers for robber placement and rendering
+  // Using pointy-top hex formula: x = size.x * (√3 * q + √3/2 * r) * spacing
+  //                               y = size.y * (3/2 * r) * spacing
+  const hexesWithCenters = useMemo(() => {
+    return board.hexes.map((hex) => ({
+      q: hex.q,
+      r: hex.r,
+      terrain: hex.terrain,
+      center: {
+        x:
+          hexSize.x *
+          (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r) *
+          spacing,
+        y: hexSize.y * ((3 / 2) * hex.r) * spacing,
+      },
+    }));
+  }, [board.hexes]);
+
+  // Get robber position from hex ID
+  const robberPosition = useMemo(() => {
+    if (!robberHexId) return null;
+    const hex = hexesWithCenters.find((h) => `${h.q},${h.r}` === robberHexId);
+    return hex?.center || null;
+  }, [robberHexId, hexesWithCenters]);
+
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <HexGrid width="100%" height="100%" viewBox="-50 -50 100 100">
@@ -67,8 +107,22 @@ export function Board({ board }: BoardProps) {
             <Port key={i} port={port} />
           ))}
 
+          {/* Robber figure on current hex (render before pieces so it's behind settlements) */}
+          {robberPosition && (
+            <RobberFigure
+              x={robberPosition.x}
+              y={robberPosition.y}
+              size={hexSize.x * 0.4}
+            />
+          )}
+
           {/* Render placed pieces (roads and settlements) */}
           <PlacedPieces board={board} playerIdToColor={playerIdToColor} />
+
+          {/* Robber placement overlay (render after pieces so it's clickable) */}
+          {robberPlacementMode && (
+            <RobberPlacement hexes={hexesWithCenters} hexSize={hexSize.x} />
+          )}
 
           {/* Overlay renders INSIDE Layout to share coordinate system */}
           {showOverlay && (

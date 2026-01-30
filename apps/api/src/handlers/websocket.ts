@@ -430,6 +430,54 @@ export function handleWebSocketConnection(
           total: result.total!,
           resourcesDistributed: result.resourcesDistributed || [],
         });
+
+        // Handle robber triggered (rolled 7)
+        if (result.robberTriggered) {
+          // Send discard_required to each player who must discard
+          for (const {
+            playerId: discardPlayerId,
+            targetCount,
+          } of result.mustDiscardPlayers || []) {
+            const playerWs = roomManager.getPlayerWebSocket(
+              currentRoomId,
+              discardPlayerId,
+            );
+            if (playerWs && playerWs.readyState === WebSocket.OPEN) {
+              const playerResources =
+                gameManager.getPlayerResources(discardPlayerId);
+              playerWs.send(
+                JSON.stringify({
+                  type: 'discard_required',
+                  playerId: discardPlayerId,
+                  targetCount,
+                  currentResources: playerResources,
+                }),
+              );
+            }
+          }
+
+          // Also broadcast robber_triggered so all clients know robber flow is active
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'robber_triggered',
+            mustDiscardPlayers: result.mustDiscardPlayers || [],
+          });
+
+          // If no discards needed, immediately send robber_move_required
+          if (result.proceedToRobberMove) {
+            const moverWs = roomManager.getPlayerWebSocket(
+              currentRoomId,
+              playerId,
+            );
+            if (moverWs && moverWs.readyState === WebSocket.OPEN) {
+              moverWs.send(
+                JSON.stringify({
+                  type: 'robber_move_required',
+                  currentHexId: gameManager.getGameState().robberHexId,
+                }),
+              );
+            }
+          }
+        }
         break;
       }
 
@@ -693,6 +741,154 @@ export function handleWebSocketConnection(
           playerId,
           gave: result.gave!,
           received: result.received!,
+        });
+        break;
+      }
+
+      // ============================================================================
+      // ROBBER PHASE HANDLERS
+      // ============================================================================
+
+      case 'discard_submitted': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Not in a room');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.submitDiscard(playerId, message.resources);
+
+        if (!result.success) {
+          sendError(ws, result.error || 'Invalid discard');
+          return;
+        }
+
+        // Broadcast discard completion to all players
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'discard_completed',
+          playerId,
+          discarded: result.discarded,
+        });
+
+        // If all discards done, notify and trigger robber move
+        if (result.allDiscardsDone) {
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'all_discards_complete',
+          });
+
+          // Send robber_move_required to the player who rolled 7
+          const robberMover = gameManager.getRobberMover();
+          if (robberMover) {
+            const moverWs = roomManager.getPlayerWebSocket(
+              currentRoomId,
+              robberMover,
+            );
+            if (moverWs && moverWs.readyState === WebSocket.OPEN) {
+              moverWs.send(
+                JSON.stringify({
+                  type: 'robber_move_required',
+                  currentHexId: gameManager.getGameState().robberHexId,
+                }),
+              );
+            }
+          }
+        }
+        break;
+      }
+
+      case 'move_robber': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Not in a room');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.moveRobber(playerId, message.hexId);
+
+        if (!result.success) {
+          sendError(ws, result.error || 'Invalid robber placement');
+          return;
+        }
+
+        // Broadcast robber moved to all
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'robber_moved',
+          hexId: message.hexId,
+          playerId,
+        });
+
+        // Handle steal phase
+        if (result.noStealPossible) {
+          // Broadcast no steal possible
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'no_steal_possible',
+          });
+        } else if (result.autoStolen) {
+          // Single victim - auto-steal already executed
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'stolen',
+            thiefId: playerId,
+            victimId: result.autoStolen.victimId,
+            resourceType: result.autoStolen.resourceType,
+          });
+        } else if (
+          result.stealCandidates &&
+          result.stealCandidates.length > 1
+        ) {
+          // Multiple candidates - send steal_required to thief
+          // Get nicknames for candidates
+          const room = roomManager.getRoom(currentRoomId);
+          const candidatesWithNicknames = result.stealCandidates.map((c) => ({
+            playerId: c.playerId,
+            nickname: room?.players.get(c.playerId)?.nickname || 'Unknown',
+            cardCount: c.cardCount,
+          }));
+
+          ws.send(
+            JSON.stringify({
+              type: 'steal_required',
+              candidates: candidatesWithNicknames,
+            }),
+          );
+        }
+        break;
+      }
+
+      case 'steal_target': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Not in a room');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.stealFrom(playerId, message.victimId);
+
+        if (!result.success) {
+          sendError(ws, result.error || 'Invalid steal target');
+          return;
+        }
+
+        // Broadcast theft result
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'stolen',
+          thiefId: playerId,
+          victimId: message.victimId,
+          resourceType: result.resourceType,
         });
         break;
       }

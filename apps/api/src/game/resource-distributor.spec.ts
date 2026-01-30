@@ -90,6 +90,7 @@ describe('distributeResources', () => {
       settlements,
       vertices,
       playerResources,
+      null, // No robber blocking
     );
 
     // Check return value
@@ -115,6 +116,7 @@ describe('distributeResources', () => {
       settlements,
       vertices,
       playerResources,
+      null, // No robber blocking
     );
 
     expect(result).toHaveLength(1);
@@ -138,6 +140,7 @@ describe('distributeResources', () => {
       settlements,
       vertices,
       playerResources,
+      null, // No robber blocking
     );
 
     expect(result).toHaveLength(0);
@@ -156,6 +159,7 @@ describe('distributeResources', () => {
       settlements,
       vertices,
       playerResources,
+      null, // No robber blocking
     );
 
     expect(result).toHaveLength(0);
@@ -182,6 +186,7 @@ describe('distributeResources', () => {
       settlements,
       vertices,
       playerResources,
+      null, // No robber blocking
     );
 
     expect(result).toHaveLength(2);
@@ -219,6 +224,7 @@ describe('distributeResources', () => {
       settlements,
       vertices,
       playerResources,
+      null, // No robber blocking
     );
 
     expect(result).toHaveLength(1);
@@ -246,6 +252,7 @@ describe('distributeResources', () => {
       settlements,
       vertices,
       playerResources,
+      null, // No robber blocking
     );
 
     expect(result).toHaveLength(0);
@@ -272,6 +279,7 @@ describe('distributeResources', () => {
       settlements,
       vertices,
       playerResources,
+      null, // No robber blocking
     );
 
     expect(result).toHaveLength(1);
@@ -282,5 +290,83 @@ describe('distributeResources', () => {
 
     expect(playerResources['player1'].wood).toBe(1);
     expect(playerResources['player1'].brick).toBe(1);
+  });
+
+  // Robber blocking tests
+  it('does not distribute resources from hex with robber', () => {
+    const hexes: Hex[] = [createHex(0, 0, 'forest', 8)];
+    const vertices: Vertex[] = [createVertex('v1', ['0,0'])];
+    const settlements: Settlement[] = [createSettlement('v1', 'player1')];
+    const playerResources: Record<string, PlayerResources> = {
+      player1: createPlayerResources(),
+    };
+
+    const result = distributeResources(
+      8,
+      hexes,
+      settlements,
+      vertices,
+      playerResources,
+      '0,0', // Robber on this hex
+    );
+
+    // No resources distributed because robber blocks
+    expect(result).toHaveLength(0);
+    expect(playerResources['player1'].wood).toBe(0);
+  });
+
+  it('distributes resources from adjacent hexes when robber blocks one', () => {
+    // Two hexes with same number, robber on one
+    const hexes: Hex[] = [
+      createHex(0, 0, 'forest', 8),
+      createHex(1, 0, 'hills', 8),
+    ];
+    const vertices: Vertex[] = [
+      createVertex('v1', ['0,0', '1,0']), // Adjacent to both hexes
+    ];
+    const settlements: Settlement[] = [createSettlement('v1', 'player1')];
+    const playerResources: Record<string, PlayerResources> = {
+      player1: createPlayerResources(),
+    };
+
+    const result = distributeResources(
+      8,
+      hexes,
+      settlements,
+      vertices,
+      playerResources,
+      '0,0', // Robber blocks forest hex only
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].playerId).toBe('player1');
+    // Should only get brick from hills (forest blocked by robber)
+    expect(result[0].resources).toHaveLength(1);
+    expect(result[0].resources).toContainEqual({ type: 'brick', count: 1 });
+
+    expect(playerResources['player1'].wood).toBe(0); // Blocked
+    expect(playerResources['player1'].brick).toBe(1); // Not blocked
+  });
+
+  it('robberHexId null means no blocking (backward compat)', () => {
+    const hexes: Hex[] = [createHex(0, 0, 'forest', 8)];
+    const vertices: Vertex[] = [createVertex('v1', ['0,0'])];
+    const settlements: Settlement[] = [createSettlement('v1', 'player1')];
+    const playerResources: Record<string, PlayerResources> = {
+      player1: createPlayerResources(),
+    };
+
+    const result = distributeResources(
+      8,
+      hexes,
+      settlements,
+      vertices,
+      playerResources,
+      null, // No robber - null means no blocking
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].resources).toContainEqual({ type: 'wood', count: 1 });
+    expect(playerResources['player1'].wood).toBe(1);
   });
 });

@@ -33,6 +33,14 @@ import {
   validateBankTrade,
 } from './trade-validator';
 import { getPlayerPortAccess } from './port-access';
+import {
+  mustDiscard,
+  getDiscardTarget,
+  validateDiscard,
+  getStealCandidates,
+  executeSteal,
+  validateRobberPlacement,
+} from './robber-logic';
 
 export class GameManager {
   private gameState: GameState;
@@ -40,6 +48,11 @@ export class GameManager {
   private edges: Edge[];
   private playerIds: string[];
   private lastPlacedSettlementId: string | null = null;
+
+  // Robber state tracking
+  private pendingDiscards: Map<string, number> = new Map(); // playerId -> targetCount
+  private robberPhase: 'none' | 'discarding' | 'moving' | 'stealing' = 'none';
+  private robberMover: string | null = null; // playerId who rolled 7
 
   constructor(board: BoardState, playerIds: string[]) {
     this.playerIds = playerIds;
@@ -69,6 +82,7 @@ export class GameManager {
         ]),
       ),
       turnState: null, // null during setup, initialized when main game starts
+      robberHexId: null, // null during setup, set to desert hex when main game starts
     };
   }
 
@@ -303,6 +317,14 @@ export class GameManager {
    * First player in player order starts with roll phase.
    */
   private startMainGame(): void {
+    // Initialize robber position on desert hex
+    const desertHex = this.gameState.board.hexes.find(
+      (h) => h.terrain === 'desert',
+    );
+    if (desertHex) {
+      this.gameState.robberHexId = `${desertHex.q},${desertHex.r}`;
+    }
+
     this.gameState.turnState = {
       phase: 'roll',
       currentPlayerId: this.playerIds[0], // First player starts
@@ -313,7 +335,7 @@ export class GameManager {
 
   /**
    * Rolls dice for the current player.
-   * Distributes resources if total is not 7 (robber handling is Phase 6).
+   * Distributes resources if total is not 7, otherwise triggers robber flow.
    */
   rollDice(playerId: string): {
     success: boolean;
@@ -322,6 +344,9 @@ export class GameManager {
     dice2?: number;
     total?: number;
     resourcesDistributed?: PlayerResourceGrant[];
+    robberTriggered?: boolean;
+    mustDiscardPlayers?: Array<{ playerId: string; targetCount: number }>;
+    proceedToRobberMove?: boolean;
   } {
     // Validate it's the player's turn
     if (playerId !== this.getCurrentPlayerId()) {
@@ -342,22 +367,56 @@ export class GameManager {
     const dice2 = Math.floor(Math.random() * 6) + 1;
     const total = dice1 + dice2;
 
-    // Distribute resources (skip robber logic for now - Phase 6)
-    let resourcesDistributed: PlayerResourceGrant[] = [];
-    if (total !== 7) {
-      resourcesDistributed = distributeResources(
-        total,
-        this.gameState.board.hexes,
-        this.gameState.settlements,
-        this.vertices,
-        this.gameState.playerResources,
-      );
-    }
-    // Note: When total === 7, robber logic will be added in Phase 6
-
-    // Update turn state
+    // Update turn state with dice roll
     this.gameState.turnState.lastDiceRoll = { dice1, dice2, total };
     this.gameState.turnState.phase = 'main';
+
+    // Handle robber on 7
+    if (total === 7) {
+      // Find players who must discard (8+ cards)
+      const mustDiscardPlayers: Array<{
+        playerId: string;
+        targetCount: number;
+      }> = [];
+      for (const [pId, resources] of Object.entries(
+        this.gameState.playerResources,
+      )) {
+        if (mustDiscard(resources)) {
+          const target = getDiscardTarget(resources);
+          this.pendingDiscards.set(pId, target);
+          mustDiscardPlayers.push({ playerId: pId, targetCount: target });
+        }
+      }
+
+      this.robberMover = playerId;
+
+      if (mustDiscardPlayers.length > 0) {
+        this.robberPhase = 'discarding';
+      } else {
+        this.robberPhase = 'moving';
+      }
+
+      return {
+        success: true,
+        dice1,
+        dice2,
+        total,
+        resourcesDistributed: [], // No resources on 7
+        robberTriggered: true,
+        mustDiscardPlayers,
+        proceedToRobberMove: mustDiscardPlayers.length === 0,
+      };
+    }
+
+    // Normal roll - distribute resources
+    const resourcesDistributed = distributeResources(
+      total,
+      this.gameState.board.hexes,
+      this.gameState.settlements,
+      this.vertices,
+      this.gameState.playerResources,
+      this.gameState.robberHexId,
+    );
 
     return {
       success: true,
@@ -957,5 +1016,223 @@ export class GameManager {
    */
   getActiveTrade(): ActiveTrade | null {
     return this.activeTrade;
+  }
+
+  // ============================================================================
+  // ROBBER METHODS
+  // ============================================================================
+
+  /**
+   * Submit discards when rolling a 7 triggers discard phase.
+   * Players with 8+ cards must discard half (rounded down).
+   */
+  submitDiscard(
+    playerId: string,
+    resources: Partial<Record<ResourceType, number>>,
+  ): {
+    success: boolean;
+    error?: string;
+    allDiscardsDone?: boolean;
+    discarded?: Partial<Record<ResourceType, number>>;
+  } {
+    // Check player needs to discard
+    const targetCount = this.pendingDiscards.get(playerId);
+    if (targetCount === undefined) {
+      return { success: false, error: 'You do not need to discard' };
+    }
+
+    // Validate discard
+    const currentResources = this.gameState.playerResources[playerId];
+    const validation = validateDiscard(
+      resources,
+      currentResources,
+      targetCount,
+    );
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
+    }
+
+    // Apply discard - deduct resources
+    for (const [resource, count] of Object.entries(resources)) {
+      const resType = resource as ResourceType;
+      const discarding = count ?? 0;
+      if (discarding > 0) {
+        this.gameState.playerResources[playerId][resType] -= discarding;
+      }
+    }
+
+    // Remove from pending
+    this.pendingDiscards.delete(playerId);
+
+    // Check if all done
+    const allDone = this.pendingDiscards.size === 0;
+    if (allDone) {
+      this.robberPhase = 'moving';
+    }
+
+    return { success: true, allDiscardsDone: allDone, discarded: resources };
+  }
+
+  /**
+   * Move robber to a new hex after rolling 7 (and discards complete).
+   */
+  moveRobber(
+    playerId: string,
+    hexId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    stealCandidates?: Array<{ playerId: string; cardCount: number }>;
+    noStealPossible?: boolean;
+    autoStolen?: { victimId: string; resourceType: ResourceType | null };
+  } {
+    // Verify it's robber mover's turn
+    if (playerId !== this.robberMover) {
+      return { success: false, error: 'Not your turn to move robber' };
+    }
+
+    if (this.robberPhase !== 'moving') {
+      return { success: false, error: 'Not in robber move phase' };
+    }
+
+    // Validate placement
+    const validation = validateRobberPlacement(
+      hexId,
+      this.gameState.board.hexes,
+    );
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
+    }
+
+    // Move robber
+    this.gameState.robberHexId = hexId;
+
+    // Get steal candidates
+    const candidates = getStealCandidates(
+      hexId,
+      this.gameState.settlements,
+      this.vertices,
+      this.gameState.playerResources,
+      playerId,
+    );
+
+    if (candidates.length === 0) {
+      // No one to steal from - robber phase complete
+      this.robberPhase = 'none';
+      this.robberMover = null;
+      return { success: true, noStealPossible: true };
+    }
+
+    if (candidates.length === 1) {
+      // Auto-steal from single victim
+      const victim = candidates[0];
+      const stolen = this.executeStealInternal(playerId, victim.playerId);
+      this.robberPhase = 'none';
+      this.robberMover = null;
+      return {
+        success: true,
+        stealCandidates: candidates,
+        autoStolen: { victimId: victim.playerId, resourceType: stolen },
+      };
+    }
+
+    // Multiple candidates - need player to choose
+    this.robberPhase = 'stealing';
+    return { success: true, stealCandidates: candidates };
+  }
+
+  /**
+   * Choose a player to steal from after moving robber (when multiple options).
+   */
+  stealFrom(
+    playerId: string,
+    victimId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    resourceType?: ResourceType | null;
+  } {
+    if (playerId !== this.robberMover) {
+      return { success: false, error: 'Not your turn to steal' };
+    }
+
+    if (this.robberPhase !== 'stealing') {
+      return { success: false, error: 'Not in steal phase' };
+    }
+
+    // Validate victim is adjacent to robber
+    const candidates = getStealCandidates(
+      this.gameState.robberHexId!,
+      this.gameState.settlements,
+      this.vertices,
+      this.gameState.playerResources,
+      playerId,
+    );
+
+    if (!candidates.some((c) => c.playerId === victimId)) {
+      return { success: false, error: 'Invalid steal target' };
+    }
+
+    const stolen = this.executeStealInternal(playerId, victimId);
+    this.robberPhase = 'none';
+    this.robberMover = null;
+
+    return { success: true, resourceType: stolen };
+  }
+
+  /**
+   * Internal helper to transfer a random resource from victim to thief.
+   */
+  private executeStealInternal(
+    thiefId: string,
+    victimId: string,
+  ): ResourceType | null {
+    const victimResources = this.gameState.playerResources[victimId];
+    const stolen = executeSteal(victimResources);
+
+    if (stolen) {
+      // Transfer resource
+      this.gameState.playerResources[victimId][stolen] -= 1;
+      this.gameState.playerResources[thiefId][stolen] += 1;
+    }
+
+    return stolen;
+  }
+
+  /**
+   * Get map of players who still need to discard and their target counts.
+   */
+  getPendingDiscards(): Map<string, number> {
+    return new Map(this.pendingDiscards);
+  }
+
+  /**
+   * Get current robber phase.
+   */
+  getRobberPhase(): string {
+    return this.robberPhase;
+  }
+
+  /**
+   * Get the player who rolled 7 and is controlling the robber.
+   */
+  getRobberMover(): string | null {
+    return this.robberMover;
+  }
+
+  /**
+   * Get resources for a specific player.
+   */
+  getPlayerResources(
+    playerId: string,
+  ): Record<ResourceType, number> | undefined {
+    return this.gameState.playerResources[playerId];
+  }
+
+  /**
+   * Get the full game state (for accessing robberHexId, etc).
+   */
+  getGameState(): GameState {
+    return this.gameState;
   }
 }

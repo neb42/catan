@@ -293,6 +293,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ## Phase 7: Robber
 
 **Goal:** Implement robber mechanics for 7 rolls  
+**Status:** ✅ Complete  
+**Completed:** 2026-01-30  
 **Duration:** 0.5-1 week  
 **Dependencies:** Phase 6
 
@@ -321,7 +323,15 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-TBD
+**Plans:** 7 plans
+
+- [x] 07-01-PLAN.md — Robber schemas, GameState robber position, resource distributor blocking
+- [x] 07-02-PLAN.md — GameManager robber methods (discard, move, steal)
+- [x] 07-03-PLAN.md — WebSocket handlers for robber messages
+- [x] 07-04-PLAN.md — Frontend robber state, discard modal, robber placement overlay
+- [x] 07-05-PLAN.md — Steal modal and opponent resource counts
+- [x] 07-06-PLAN.md — Feedback system (toast notifications + game log)
+- [x] 07-07-PLAN.md — Integration and end-to-end verification
 
 ### Deliverables
 
@@ -586,4 +596,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-01-30 - Phase 6 (Trading) complete_
+_Last updated: 2026-01-30 - Phase 7 (Robber) complete_

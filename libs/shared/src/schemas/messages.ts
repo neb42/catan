@@ -285,6 +285,83 @@ export const BankTradeExecutedMessageSchema = z.object({
   received: ResourceRecordSchema,
 });
 
+// Robber Phase Messages - Client -> Server
+export const DiscardSubmittedMessageSchema = z.object({
+  type: z.literal('discard_submitted'),
+  resources: ResourceRecordSchema, // What player is discarding
+});
+
+export const MoveRobberMessageSchema = z.object({
+  type: z.literal('move_robber'),
+  hexId: z.string(), // "q,r" format
+});
+
+export const StealTargetMessageSchema = z.object({
+  type: z.literal('steal_target'),
+  victimId: z.string(),
+});
+
+// Robber Phase Messages - Server -> Client
+export const DiscardRequiredMessageSchema = z.object({
+  type: z.literal('discard_required'),
+  playerId: z.string(),
+  targetCount: z.number(), // How many cards to discard
+  currentResources: ResourceRecordSchema, // Player's current resources
+});
+
+export const DiscardCompletedMessageSchema = z.object({
+  type: z.literal('discard_completed'),
+  playerId: z.string(),
+  discarded: ResourceRecordSchema,
+});
+
+export const AllDiscardsCompleteMessageSchema = z.object({
+  type: z.literal('all_discards_complete'),
+});
+
+export const RobberMoveRequiredMessageSchema = z.object({
+  type: z.literal('robber_move_required'),
+  currentHexId: z.string().nullable(),
+});
+
+export const RobberMovedMessageSchema = z.object({
+  type: z.literal('robber_moved'),
+  hexId: z.string(),
+  playerId: z.string(),
+});
+
+export const StealRequiredMessageSchema = z.object({
+  type: z.literal('steal_required'),
+  candidates: z.array(
+    z.object({
+      playerId: z.string(),
+      nickname: z.string(),
+      cardCount: z.number(),
+    }),
+  ),
+});
+
+export const StolenMessageSchema = z.object({
+  type: z.literal('stolen'),
+  thiefId: z.string(),
+  victimId: z.string(),
+  resourceType: z.enum(['wood', 'brick', 'sheep', 'wheat', 'ore']).nullable(), // null if victim had no cards
+});
+
+export const NoStealPossibleMessageSchema = z.object({
+  type: z.literal('no_steal_possible'),
+});
+
+export const RobberTriggeredMessageSchema = z.object({
+  type: z.literal('robber_triggered'),
+  mustDiscardPlayers: z.array(
+    z.object({
+      playerId: z.string(),
+      targetCount: z.number(),
+    }),
+  ),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -332,6 +409,20 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   TradeExecutedMessageSchema,
   TradeCancelledMessageSchema,
   BankTradeExecutedMessageSchema,
+  // Robber phase messages - client to server
+  DiscardSubmittedMessageSchema,
+  MoveRobberMessageSchema,
+  StealTargetMessageSchema,
+  // Robber phase messages - server to clients
+  DiscardRequiredMessageSchema,
+  DiscardCompletedMessageSchema,
+  AllDiscardsCompleteMessageSchema,
+  RobberTriggeredMessageSchema,
+  RobberMoveRequiredMessageSchema,
+  RobberMovedMessageSchema,
+  StealRequiredMessageSchema,
+  StolenMessageSchema,
+  NoStealPossibleMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -397,6 +488,34 @@ export type TradeExecutedMessage = z.infer<typeof TradeExecutedMessageSchema>;
 export type TradeCancelledMessage = z.infer<typeof TradeCancelledMessageSchema>;
 export type BankTradeExecutedMessage = z.infer<
   typeof BankTradeExecutedMessageSchema
+>;
+// Robber phase message types - client to server
+export type DiscardSubmittedMessage = z.infer<
+  typeof DiscardSubmittedMessageSchema
+>;
+export type MoveRobberMessage = z.infer<typeof MoveRobberMessageSchema>;
+export type StealTargetMessage = z.infer<typeof StealTargetMessageSchema>;
+// Robber phase message types - server to clients
+export type DiscardRequiredMessage = z.infer<
+  typeof DiscardRequiredMessageSchema
+>;
+export type DiscardCompletedMessage = z.infer<
+  typeof DiscardCompletedMessageSchema
+>;
+export type AllDiscardsCompleteMessage = z.infer<
+  typeof AllDiscardsCompleteMessageSchema
+>;
+export type RobberTriggeredMessage = z.infer<
+  typeof RobberTriggeredMessageSchema
+>;
+export type RobberMoveRequiredMessage = z.infer<
+  typeof RobberMoveRequiredMessageSchema
+>;
+export type RobberMovedMessage = z.infer<typeof RobberMovedMessageSchema>;
+export type StealRequiredMessage = z.infer<typeof StealRequiredMessageSchema>;
+export type StolenMessage = z.infer<typeof StolenMessageSchema>;
+export type NoStealPossibleMessage = z.infer<
+  typeof NoStealPossibleMessageSchema
 >;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;

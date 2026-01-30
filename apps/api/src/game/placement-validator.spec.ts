@@ -40,6 +40,7 @@ const mockEdges: Edge[] = [
 const emptyGameState: GameState = {
   board: { hexes: [], ports: [] },
   settlements: [],
+  robberHexId: null,
   roads: [],
   placement: {
     currentPlayerIndex: 0,
@@ -209,6 +210,7 @@ const extendedMockEdges: Edge[] = [
 const mainGameState: GameState = {
   board: { hexes: [], ports: [] },
   settlements: [],
+  robberHexId: null,
   roads: [],
   placement: null, // null during main game
   playerResources: {

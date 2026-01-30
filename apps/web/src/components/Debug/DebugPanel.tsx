@@ -33,6 +33,15 @@ function StateView() {
       myPlayerId: s.myPlayerId,
       gameStarted: s.gameStarted,
       lastDiceRoll: s.lastDiceRoll,
+      // Robber state
+      waitingForDiscards: s.waitingForDiscards,
+      playersWhoMustDiscard: s.playersWhoMustDiscard,
+      discardRequired: s.discardRequired,
+      discardTarget: s.discardTarget,
+      robberPlacementMode: s.robberPlacementMode,
+      robberHexId: s.robberHexId,
+      stealRequired: s.stealRequired,
+      stealCandidates: s.stealCandidates,
     })),
   );
 

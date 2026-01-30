@@ -34,6 +34,7 @@ export interface PlayerResourceGrant {
  * @param settlements - All settlements/cities placed
  * @param vertices - All unique vertices (for adjacency lookup)
  * @param playerResources - Player resource records to mutate in-place
+ * @param robberHexId - Hex ID where robber is placed (null if no blocking)
  * @returns Array of resource grants per player for broadcasting
  */
 export function distributeResources(
@@ -42,10 +43,14 @@ export function distributeResources(
   settlements: Settlement[],
   vertices: Vertex[],
   playerResources: Record<string, PlayerResources>,
+  robberHexId: string | null,
 ): PlayerResourceGrant[] {
-  // Find all hexes that match the dice roll (excluding desert)
+  // Find all hexes that match the dice roll (excluding desert and robber hex)
   const matchingHexes = hexes.filter(
-    (hex) => hex.number === diceTotal && hex.terrain !== 'desert',
+    (hex) =>
+      hex.number === diceTotal &&
+      hex.terrain !== 'desert' &&
+      `${hex.q},${hex.r}` !== robberHexId,
   );
 
   if (matchingHexes.length === 0) {

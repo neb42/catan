@@ -84,6 +84,7 @@ export type ActiveTrade = z.infer<typeof ActiveTradeSchema>;
 export const GameStateSchema = z.object({
   board: BoardStateSchema,
   settlements: z.array(SettlementSchema),
+  robberHexId: z.string().nullable(), // "q,r" format, null if not set
   roads: z.array(RoadSchema),
   placement: PlacementStateSchema.nullable(), // null when not in setup
   playerResources: z.record(z.string(), PlayerResourcesSchema), // playerId -> resources
