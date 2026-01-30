@@ -1286,6 +1286,82 @@ export class GameManager {
   }
 
   /**
+   * Get all knights played by all players (for Largest Army tracking).
+   */
+  getAllKnightsPlayed(): Record<string, number> {
+    const result: Record<string, number> = {};
+    this.knightsPlayed.forEach((count, playerId) => {
+      result[playerId] = count;
+    });
+    return result;
+  }
+
+  /**
+   * Play a Knight development card.
+   * Validates card ownership, same-turn restriction, one-per-turn restriction.
+   * Enters robber move phase (skipping discard).
+   */
+  playKnight(
+    playerId: string,
+    cardId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    currentRobberHex?: string | null;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate not already in a robber/dev card flow
+    if (this.robberPhase !== 'none') {
+      return { success: false, error: 'Robber flow already in progress' };
+    }
+
+    // 3. Find and validate the card
+    const playerCards = this.playerDevCards.get(playerId) || [];
+    const cardIndex = playerCards.findIndex((c) => c.id === cardId);
+    if (cardIndex === -1) {
+      return { success: false, error: 'Card not found' };
+    }
+
+    const card = playerCards[cardIndex];
+    if (card.type !== 'knight') {
+      return { success: false, error: 'Not a Knight card' };
+    }
+
+    // 4. Check play restrictions (same-turn, one-per-turn)
+    const currentTurn = this.gameState.turnState?.turnNumber || 1;
+    if (card.purchasedOnTurn === currentTurn) {
+      return { success: false, error: 'Cannot play card purchased this turn' };
+    }
+    if (this.playedDevCardThisTurn) {
+      return { success: false, error: 'Already played a dev card this turn' };
+    }
+
+    // 5. Remove card from player's hand
+    playerCards.splice(cardIndex, 1);
+    this.playerDevCards.set(playerId, playerCards);
+
+    // 6. Increment knight count
+    const currentKnights = this.knightsPlayed.get(playerId) || 0;
+    this.knightsPlayed.set(playerId, currentKnights + 1);
+
+    // 7. Mark dev card played this turn
+    this.playedDevCardThisTurn = true;
+
+    // 8. Enter robber move phase (skip discarding)
+    this.robberPhase = 'moving';
+    this.robberMover = playerId;
+
+    return {
+      success: true,
+      currentRobberHex: this.gameState.robberHexId,
+    };
+  }
+
+  /**
    * Buy a development card from the deck.
    * Validates turn, phase, resources, and deck availability.
    */
