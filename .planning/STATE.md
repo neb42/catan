@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 07-06-PLAN.md (Action feedback system)
+**Last activity:** 2026-01-30 - Completed 07-03-PLAN.md (WebSocket robber handlers)
 
 ## Current Position
 
 Phase: 7 of 12 (Robber)  
-Plan: 6 of 7 in current phase  
+Plan: 3 of 7 in current phase  
 Status: In progress  
-Last activity: 2026-01-30 - Completed 07-06-PLAN.md
+Last activity: 2026-01-30 - Completed 07-03-PLAN.md
 
-Progress: ████████████████████████████████████████████████████░░░░ (Phase 7: 6/7 plans)
+Progress: █████████████████████████████████████████████████████░░░ (Phase 7: 3/7 plans)
 
 ## Blockers/Concerns
 
@@ -83,9 +83,11 @@ Progress: ███████████████████████�
 | 07    | Robber blocking filter         | Hexes matching robberHexId excluded from resource distribution                |
 | 07    | Text chars for expand/collapse | Used ▲/▼ instead of icon library to avoid new dependency                      |
 | 07    | Dual notification API          | Standalone showGameNotification + useGameNotifications hook for flexibility   |
+| 07    | Targeted WebSocket messages    | Use getPlayerWebSocket for player-specific messages (discard_required)        |
+| 07    | Broadcast robber_triggered     | All clients receive notification when robber flow starts                      |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 07-06-PLAN.md (Action feedback system)
-Resume file: .planning/phases/07-robber/07-07-PLAN.md
+Stopped at: Completed 07-03-PLAN.md (WebSocket robber handlers)
+Resume file: .planning/phases/07-robber/07-04-PLAN.md
