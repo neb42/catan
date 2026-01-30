@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 06-01-PLAN.md (Trade Message Schemas)
+**Last activity:** 2026-01-30 - Completed 06-03-PLAN.md (WebSocket Trade Handlers)
 
 ## Current Position
 
 Phase: 6 of 12 (Trading)  
-Plan: 1 of 7 in current phase  
+Plan: 3 of 7 in current phase  
 Status: In progress  
-Last activity: 2026-01-30 - Completed 06-01-PLAN.md
+Last activity: 2026-01-30 - Completed 06-03-PLAN.md
 
-Progress: ████████████████████████████████████████ (Phase 6 started)
+Progress: ████████████████████████████████████████ (Phase 6 in progress)
 
 ## Blockers/Concerns
 
@@ -66,9 +66,11 @@ Progress: ███████████████████████�
 | 05    | City tower shape              | Cities render with distinct tower/castle shape vs settlement house shape      |
 | 06    | ResourceRecordSchema pattern  | Reusable z.record for trade offer resource maps                               |
 | 06    | ActiveTrade separate          | Managed by GameManager, not included in GameStateSchema                       |
+| 06    | Trade methods in GameManager  | Implemented full methods since 06-02 runs in parallel                         |
+| 06    | Basic 4:1 bank ratio          | Bank trade validates 4:1 ratio; port logic added later                        |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 06-01-PLAN.md (Trade Message Schemas)
+Stopped at: Completed 06-03-PLAN.md (WebSocket Trade Handlers)
 Resume file: none
