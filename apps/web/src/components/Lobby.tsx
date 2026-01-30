@@ -462,6 +462,92 @@ export default function Lobby() {
           break;
         }
 
+        // ============================================================================
+        // ROBBER PHASE HANDLERS
+        // ============================================================================
+
+        case 'discard_required': {
+          // Only show discard modal if this is for current player
+          const myId = useGameStore.getState().myPlayerId;
+          if (message.playerId === myId) {
+            useGameStore
+              .getState()
+              .setDiscardRequired(
+                true,
+                message.targetCount,
+                message.currentResources,
+              );
+          }
+          break;
+        }
+
+        case 'discard_completed': {
+          const gameStore = useGameStore.getState();
+          // Update player resources (deduct discarded)
+          const currentResources = gameStore.playerResources[message.playerId];
+          if (currentResources && message.discarded) {
+            const deductions = Object.entries(message.discarded)
+              .filter(([_, count]) => (count as number) > 0)
+              .map(([type, count]) => ({
+                type: type as ResourceType,
+                count: -(count as number),
+              }));
+            gameStore.updatePlayerResources(message.playerId, deductions);
+          }
+          // Clear own discard modal if it was us
+          const myId = gameStore.myPlayerId;
+          if (message.playerId === myId) {
+            gameStore.setDiscardRequired(false, 0, null);
+          }
+          break;
+        }
+
+        case 'all_discards_complete': {
+          // All discards done - robber mover will receive robber_move_required
+          break;
+        }
+
+        case 'robber_move_required': {
+          useGameStore.getState().setRobberPlacementMode(true);
+          break;
+        }
+
+        case 'robber_moved': {
+          const gameStore = useGameStore.getState();
+          gameStore.setRobberHexId(message.hexId);
+          gameStore.setRobberPlacementMode(false);
+          break;
+        }
+
+        case 'steal_required': {
+          useGameStore.getState().setStealRequired(true, message.candidates);
+          break;
+        }
+
+        case 'stolen': {
+          // Update resources for thief and victim
+          const gameStore = useGameStore.getState();
+          if (message.resourceType) {
+            // Victim loses resource
+            gameStore.updatePlayerResources(message.victimId, [
+              { type: message.resourceType, count: -1 },
+            ]);
+            // Thief gains resource
+            gameStore.updatePlayerResources(message.thiefId, [
+              { type: message.resourceType, count: 1 },
+            ]);
+          }
+          // Clear steal state
+          gameStore.setStealRequired(false, []);
+          break;
+        }
+
+        case 'no_steal_possible': {
+          // No one to steal from - just continue
+          useGameStore.getState().setStealRequired(false, []);
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
