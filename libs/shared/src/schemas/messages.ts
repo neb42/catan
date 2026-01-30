@@ -219,6 +219,72 @@ export const BuildFailedMessageSchema = z.object({
   reason: z.string(),
 });
 
+// Resource record schema for trade offers (reusable)
+const ResourceRecordSchema = z.record(
+  z.enum(['wood', 'brick', 'sheep', 'wheat', 'ore']),
+  z.number(),
+);
+
+// Trading Phase Messages - Client -> Server
+export const ProposeTradeMessageSchema = z.object({
+  type: z.literal('propose_trade'),
+  offering: ResourceRecordSchema,
+  requesting: ResourceRecordSchema,
+});
+
+export const RespondTradeMessageSchema = z.object({
+  type: z.literal('respond_trade'),
+  response: z.enum(['accept', 'decline']),
+});
+
+export const SelectTradePartnerMessageSchema = z.object({
+  type: z.literal('select_trade_partner'),
+  partnerId: z.string(),
+});
+
+export const CancelTradeMessageSchema = z.object({
+  type: z.literal('cancel_trade'),
+});
+
+export const ExecuteBankTradeMessageSchema = z.object({
+  type: z.literal('execute_bank_trade'),
+  giving: ResourceRecordSchema,
+  receiving: ResourceRecordSchema,
+});
+
+// Trading Phase Messages - Server -> Client broadcasts
+export const TradeProposedMessageSchema = z.object({
+  type: z.literal('trade_proposed'),
+  proposerId: z.string(),
+  offering: ResourceRecordSchema,
+  requesting: ResourceRecordSchema,
+});
+
+export const TradeResponseMessageSchema = z.object({
+  type: z.literal('trade_response'),
+  playerId: z.string(),
+  response: z.enum(['accepted', 'declined']),
+});
+
+export const TradeExecutedMessageSchema = z.object({
+  type: z.literal('trade_executed'),
+  proposerId: z.string(),
+  partnerId: z.string(),
+  proposerGave: ResourceRecordSchema,
+  partnerGave: ResourceRecordSchema,
+});
+
+export const TradeCancelledMessageSchema = z.object({
+  type: z.literal('trade_cancelled'),
+});
+
+export const BankTradeExecutedMessageSchema = z.object({
+  type: z.literal('bank_trade_executed'),
+  playerId: z.string(),
+  gave: ResourceRecordSchema,
+  received: ResourceRecordSchema,
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -254,6 +320,18 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   SettlementBuiltMessageSchema,
   CityBuiltMessageSchema,
   BuildFailedMessageSchema,
+  // Trading phase messages - client to server
+  ProposeTradeMessageSchema,
+  RespondTradeMessageSchema,
+  SelectTradePartnerMessageSchema,
+  CancelTradeMessageSchema,
+  ExecuteBankTradeMessageSchema,
+  // Trading phase messages - server to clients
+  TradeProposedMessageSchema,
+  TradeResponseMessageSchema,
+  TradeExecutedMessageSchema,
+  TradeCancelledMessageSchema,
+  BankTradeExecutedMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -302,5 +380,23 @@ export type SettlementBuiltMessage = z.infer<
 >;
 export type CityBuiltMessage = z.infer<typeof CityBuiltMessageSchema>;
 export type BuildFailedMessage = z.infer<typeof BuildFailedMessageSchema>;
+// Trading phase message types - client to server
+export type ProposeTradeMessage = z.infer<typeof ProposeTradeMessageSchema>;
+export type RespondTradeMessage = z.infer<typeof RespondTradeMessageSchema>;
+export type SelectTradePartnerMessage = z.infer<
+  typeof SelectTradePartnerMessageSchema
+>;
+export type CancelTradeMessage = z.infer<typeof CancelTradeMessageSchema>;
+export type ExecuteBankTradeMessage = z.infer<
+  typeof ExecuteBankTradeMessageSchema
+>;
+// Trading phase message types - server to clients
+export type TradeProposedMessage = z.infer<typeof TradeProposedMessageSchema>;
+export type TradeResponseMessage = z.infer<typeof TradeResponseMessageSchema>;
+export type TradeExecutedMessage = z.infer<typeof TradeExecutedMessageSchema>;
+export type TradeCancelledMessage = z.infer<typeof TradeCancelledMessageSchema>;
+export type BankTradeExecutedMessage = z.infer<
+  typeof BankTradeExecutedMessageSchema
+>;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
