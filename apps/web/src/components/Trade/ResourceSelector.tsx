@@ -24,6 +24,7 @@ interface ResourceSelectorProps {
   onChange: (value: number) => void;
   rateLabel?: string; // Optional rate label like "(2:1)"
   disabled?: boolean;
+  showMax?: boolean;
 }
 
 export function ResourceSelector({
@@ -33,6 +34,7 @@ export function ResourceSelector({
   onChange,
   rateLabel,
   disabled = false,
+  showMax = false,
 }: ResourceSelectorProps) {
   return (
     <Group gap="xs" align="center">
@@ -55,8 +57,8 @@ export function ResourceSelector({
         -
       </ActionIcon>
 
-      <Text w={30} ta="center" fw={600}>
-        {value}
+      <Text w={40} ta="center" fw={600}>
+        {showMax ? `${value} / ${max}` : value} 
       </Text>
 
       <ActionIcon
