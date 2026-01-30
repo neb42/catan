@@ -8,6 +8,7 @@ import type {
   Room,
   PlayerResources,
   BuildingType,
+  ResourceType,
 } from '@catan/shared';
 import { BUILDING_COSTS } from '@catan/shared';
 
@@ -52,7 +53,21 @@ interface BuildSlice {
   isBuildPending: boolean; // Optimistic update in progress
 }
 
-interface GameStore extends PlacementSlice, TurnSlice, BuildSlice {
+// Trade state slice
+interface TradeSlice {
+  // Active trade proposal (null if none)
+  activeTrade: {
+    proposerId: string;
+    offering: Record<ResourceType, number>;
+    requesting: Record<ResourceType, number>;
+    responses: Record<string, 'pending' | 'accepted' | 'declined'>;
+  } | null;
+
+  // UI state
+  tradeModalOpen: boolean;
+}
+
+interface GameStore extends PlacementSlice, TurnSlice, BuildSlice, TradeSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
   gameStarted: boolean;
@@ -117,6 +132,15 @@ interface GameStore extends PlacementSlice, TurnSlice, BuildSlice {
   // Build actions
   setBuildMode: (mode: BuildingType | null) => void;
   setBuildPending: (pending: boolean) => void;
+
+  // Trade actions
+  setActiveTrade: (trade: TradeSlice['activeTrade']) => void;
+  updateTradeResponse: (
+    playerId: string,
+    response: 'accepted' | 'declined',
+  ) => void;
+  clearTrade: () => void;
+  setTradeModalOpen: (open: boolean) => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -151,6 +175,10 @@ export const useGameStore = create<GameStore>((set) => ({
   // Build state
   buildMode: null,
   isBuildPending: false,
+
+  // Trade state
+  activeTrade: null,
+  tradeModalOpen: false,
 
   // Existing actions
   setBoard: (board) => set({ board }),
@@ -253,6 +281,20 @@ export const useGameStore = create<GameStore>((set) => ({
   // Build actions
   setBuildMode: (mode) => set({ buildMode: mode }),
   setBuildPending: (pending) => set({ isBuildPending: pending }),
+
+  // Trade actions
+  setActiveTrade: (trade) => set({ activeTrade: trade }),
+  updateTradeResponse: (playerId, response) =>
+    set((state) => ({
+      activeTrade: state.activeTrade
+        ? {
+            ...state.activeTrade,
+            responses: { ...state.activeTrade.responses, [playerId]: response },
+          }
+        : null,
+    })),
+  clearTrade: () => set({ activeTrade: null }),
+  setTradeModalOpen: (open) => set({ tradeModalOpen: open }),
 }));
 
 // CUSTOM HOOKS - prevent selector anti-pattern
