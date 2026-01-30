@@ -1013,13 +1013,67 @@ export function handleWebSocketConnection(
             break;
           }
 
-          case 'road_building':
-          case 'year_of_plenty':
-          case 'monopoly': {
-            // Other dev cards not yet implemented
+          case 'road_building': {
+            // Road building not yet implemented
             sendMessage(ws, {
               type: 'dev_card_play_failed',
               reason: `${card.type} card not yet implemented`,
+            });
+            break;
+          }
+
+          case 'year_of_plenty': {
+            const result = gameManager.playYearOfPlenty(
+              playerId,
+              message.cardId,
+            );
+
+            if (!result.success) {
+              sendMessage(ws, {
+                type: 'dev_card_play_failed',
+                reason: result.error || 'Cannot play Year of Plenty',
+              });
+              return;
+            }
+
+            // Broadcast card played to all players
+            roomManager.broadcastToRoom(currentRoomId, {
+              type: 'dev_card_played',
+              playerId,
+              cardType: 'year_of_plenty',
+              cardId: message.cardId,
+            });
+
+            // Send resource picker to player
+            sendMessage(ws, {
+              type: 'year_of_plenty_required',
+              bankResources: result.bankResources,
+            });
+            break;
+          }
+
+          case 'monopoly': {
+            const result = gameManager.playMonopoly(playerId, message.cardId);
+
+            if (!result.success) {
+              sendMessage(ws, {
+                type: 'dev_card_play_failed',
+                reason: result.error || 'Cannot play Monopoly',
+              });
+              return;
+            }
+
+            // Broadcast card played to all players (but don't reveal choice yet)
+            roomManager.broadcastToRoom(currentRoomId, {
+              type: 'dev_card_played',
+              playerId,
+              cardType: 'monopoly',
+              cardId: message.cardId,
+            });
+
+            // Send resource picker to player
+            sendMessage(ws, {
+              type: 'monopoly_required',
             });
             break;
           }
@@ -1031,6 +1085,78 @@ export function handleWebSocketConnection(
             });
           }
         }
+        break;
+      }
+
+      case 'year_of_plenty_select': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Not in a room');
+          return;
+        }
+
+        const room = roomManager.getRoom(currentRoomId);
+        if (!room?.gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const { resources } = message;
+        const result = room.gameManager.completeYearOfPlenty(
+          playerId,
+          resources,
+        );
+
+        if (!result.success) {
+          sendMessage(ws, {
+            type: 'dev_card_play_failed',
+            reason: result.error || 'Failed to complete Year of Plenty',
+          });
+          return;
+        }
+
+        // Broadcast completion to all players
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'year_of_plenty_completed',
+          playerId,
+          resources,
+        });
+        break;
+      }
+
+      case 'monopoly_select': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Not in a room');
+          return;
+        }
+
+        const room = roomManager.getRoom(currentRoomId);
+        if (!room?.gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const { resourceType } = message;
+        const result = room.gameManager.completeMonopoly(
+          playerId,
+          resourceType,
+        );
+
+        if (!result.success) {
+          sendMessage(ws, {
+            type: 'dev_card_play_failed',
+            reason: result.error || 'Failed to complete Monopoly',
+          });
+          return;
+        }
+
+        // Broadcast to all players (public announcement)
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'monopoly_executed',
+          playerId,
+          resourceType,
+          totalCollected: result.totalCollected,
+          fromPlayers: result.fromPlayers,
+        });
         break;
       }
 
