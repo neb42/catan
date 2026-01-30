@@ -70,6 +70,8 @@ Progress: ███████████████████████�
 | 06    | Basic 4:1 bank ratio          | Bank trade validates 4:1 ratio; port logic added later                        |
 | 06    | TradeSlice interface          | Separate interface for trade state in gameStore                               |
 | 06    | Port access from shared       | Reuse getVertexFromCorner for port vertex calculation                         |
+| 06    | Empty trade responses         | Responses start empty, filled as players respond (not pre-populated)          |
+| 06    | Trade auto-cancel on turn end | Active trade cleared in endTurn method for clean state management             |
 
 ## Session Continuity
 
