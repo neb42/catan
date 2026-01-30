@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 08-02-PLAN.md (Deck Management and Purchase System)
+**Last activity:** 2026-01-30 - Completed 08-03-PLAN.md (WebSocket Handler & Frontend State)
 
 ## Current Position
 
 Phase: 8 of 12 (Development Cards)  
-Plan: 2 of 8 in current phase  
+Plan: 3 of 8 in current phase  
 Status: In progress  
-Last activity: 2026-01-30 - Completed 08-02-PLAN.md
+Last activity: 2026-01-30 - Completed 08-03-PLAN.md
 
-Progress: ██████████████████████████████████████████████████████████████████░░░░ (Phase 8: 2/8 plans)
+Progress: ██████████████████████████████████████████████████████████████████░░░░ (Phase 8: 3/8 plans)
 
 ## Blockers/Concerns
 
@@ -96,9 +96,11 @@ Progress: ███████████████████████�
 | 08    | RoadBuildingPlace per-road       | Single edge per message for sequential placement with UI updates              |
 | 08    | Index pointer for deck access    | Use deckIndex instead of mutating deck array for immutability                 |
 | 08    | Pure function logic extraction   | Dev card validation in dev-card-logic.ts following robber-logic pattern       |
+| 08    | DevCardSlice pattern             | Separate interface for dev card state in gameStore                            |
+| 08    | Knight before roll               | Knight cards can be played before rolling dice, other cards require main      |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 08-02-PLAN.md (Deck Management and Purchase System)
-Resume file: .planning/phases/08-development-cards/08-03-PLAN.md
+Stopped at: Completed 08-03-PLAN.md (WebSocket Handler & Frontend State)
+Resume file: .planning/phases/08-development-cards/08-04-PLAN.md
