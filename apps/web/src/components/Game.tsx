@@ -19,6 +19,7 @@ import { BuildControls } from './BuildControls/BuildControls';
 import { TradeModal } from './Trade/TradeModal';
 import { TradeResponseModal } from './Trade/TradeResponseModal';
 import { TradeButton } from './Trade/TradeButton';
+import { DebugPanel } from './Debug/DebugPanel';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
@@ -159,6 +160,9 @@ export function Game() {
       {/* Trade modals - render at root level, they control their own visibility */}
       <TradeModal />
       <TradeResponseModal />
+
+      {/* Debug panel - development only */}
+      <DebugPanel />
     </Box>
   );
 }
