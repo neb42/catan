@@ -19,7 +19,6 @@ import { BuildControls } from './BuildControls/BuildControls';
 import { TradeModal } from './Trade/TradeModal';
 import { TradeResponseModal } from './Trade/TradeResponseModal';
 import { TradeButton } from './Trade/TradeButton';
-import { TradeProposerView } from './Trade/TradeProposerView';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
@@ -153,18 +152,6 @@ export function Game() {
           >
             <TradeButton />
             <BuildControls />
-          </div>
-
-          {/* Trade proposer view - shows when player has active trade proposal */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 140,
-              right: '16px',
-              zIndex: 20,
-            }}
-          >
-            <TradeProposerView />
           </div>
         </>
       )}

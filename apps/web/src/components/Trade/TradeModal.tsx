@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { Modal, Tabs, Text, Group, Badge, ScrollArea } from '@mantine/core';
-import { useTradeModalOpen, useTradeActions } from '../../hooks/useTradeState';
+import {
+  useTradeModalOpen,
+  useTradeActions,
+  useActiveTrade,
+} from '../../hooks/useTradeState';
 import { usePortAccess } from '../../hooks/usePortAccess';
+import { useSocket, useGameStore } from '../../stores/gameStore';
 import { DomesticTrade } from './DomesticTrade';
 import { MaritimeTrade } from './MaritimeTrade';
 
@@ -18,6 +23,9 @@ export function TradeModal() {
   const isOpen = useTradeModalOpen();
   const { setTradeModalOpen } = useTradeActions();
   const portAccess = usePortAccess();
+  const activeTrade = useActiveTrade();
+  const myPlayerId = useGameStore((state) => state.myPlayerId);
+  const sendMessage = useSocket();
 
   // Track active tab for potential future analytics or state
   const [activeTab, setActiveTab] = useState<string | null>('players');
@@ -30,6 +38,10 @@ export function TradeModal() {
   };
 
   const handleClose = () => {
+    // If there's an active trade and we're the proposer, cancel it
+    if (activeTrade && activeTrade.proposerId === myPlayerId) {
+      sendMessage?.({ type: 'cancel_trade' });
+    }
     setTradeModalOpen(false);
     // Reset tab to default when closing
     setActiveTab('players');

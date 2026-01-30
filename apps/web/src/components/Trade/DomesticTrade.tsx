@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Button, Divider, Stack, Text, Group } from '@mantine/core';
+import { Button, Divider, Stack, Text, Group, Badge } from '@mantine/core';
 import { ResourceType } from '@catan/shared';
 import { ResourceSelector } from './ResourceSelector';
 import { useGameStore, useSocket } from '../../stores/gameStore';
@@ -66,15 +66,73 @@ export function DomesticTrade() {
   // Show waiting state if we have an active trade proposal from us
   const isWaiting = activeTrade && activeTrade.proposerId === myPlayerId;
 
+  // Get room for player names
+  const room = useGameStore((state) => state.room);
+
+  // Get all non-proposer players with their response status
+  const otherPlayers = useMemo(() => {
+    if (!activeTrade || !room) return [];
+    return room.players
+      .filter((p) => p.id !== activeTrade.proposerId)
+      .map((p) => ({
+        ...p,
+        response: activeTrade.responses[p.id] || 'pending',
+      }));
+  }, [activeTrade, room]);
+
+  const handleSelectPartner = (partnerId: string) => {
+    sendMessage?.({ type: 'select_trade_partner', partnerId });
+  };
+
+  const handleCancel = () => {
+    sendMessage?.({ type: 'cancel_trade' });
+  };
+
   if (isWaiting) {
     return (
-      <Stack align="center" py="xl">
-        <Text size="lg" fw={500}>
+      <Stack gap="md">
+        <Text size="lg" fw={500} ta="center">
           Waiting for responses...
         </Text>
-        <Text size="sm" c="dimmed">
+        <Text size="sm" c="dimmed" ta="center">
           Other players are reviewing your trade offer
         </Text>
+
+        <Divider my="xs" />
+
+        {/* Response status for each player */}
+        <Stack gap="xs">
+          {otherPlayers.map((player) => (
+            <Group key={player.id} justify="space-between">
+              <Text size="sm">{player.nickname}</Text>
+              {player.response === 'pending' && (
+                <Badge color="gray">Pending</Badge>
+              )}
+              {player.response === 'accepted' && (
+                <Group gap="xs">
+                  <Badge color="green">Accepted</Badge>
+                  <Button
+                    size="xs"
+                    onClick={() => handleSelectPartner(player.id)}
+                  >
+                    Trade
+                  </Button>
+                </Group>
+              )}
+              {player.response === 'declined' && (
+                <Badge color="red">Declined</Badge>
+              )}
+            </Group>
+          ))}
+        </Stack>
+
+        <Divider my="xs" />
+
+        <Group justify="center">
+          <Button color="red" variant="outline" onClick={handleCancel}>
+            Cancel Trade
+          </Button>
+        </Group>
       </Stack>
     );
   }
