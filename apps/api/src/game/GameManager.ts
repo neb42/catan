@@ -5,6 +5,7 @@ import {
   TurnState,
   BUILDING_COSTS,
   MAX_PIECES,
+  ActiveTrade,
 } from '@catan/shared';
 import { calculateDraftPosition, isSetupComplete } from '@catan/shared';
 import { getUniqueVertices, getUniqueEdges, Vertex, Edge } from '@catan/shared';
@@ -25,6 +26,13 @@ import {
   distributeResources,
   PlayerResourceGrant,
 } from './resource-distributor';
+import {
+  validateProposeTrade,
+  validateTradeResponse,
+  validatePartnerSelection,
+  validateBankTrade,
+} from './trade-validator';
+import { getPlayerPortAccess } from './port-access';
 
 export class GameManager {
   private gameState: GameState;
@@ -669,6 +677,254 @@ export class GameManager {
     return {
       success: true,
       resourcesSpent: { ...cost },
+    };
+  }
+
+  // ============================================================================
+  // TRADE METHODS (Stubs - implemented in 06-02)
+  // ============================================================================
+
+  private activeTrade: ActiveTrade | null = null;
+
+  /**
+   * Propose a domestic trade to other players.
+   * Stub implementation - full logic in 06-02.
+   */
+  proposeTrade(
+    playerId: string,
+    offering: Partial<Record<ResourceType, number>>,
+    requesting: Partial<Record<ResourceType, number>>,
+  ): {
+    success: boolean;
+    error?: string;
+  } {
+    // Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // Validate we're in main game and main phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'main') {
+      return { success: false, error: 'Must roll dice first' };
+    }
+
+    // Check if already trading
+    if (this.activeTrade) {
+      return { success: false, error: 'Trade already in progress' };
+    }
+
+    // Check player has the resources they're offering
+    for (const [resource, amount] of Object.entries(offering)) {
+      const resourceType = resource as ResourceType;
+      const playerAmount =
+        this.gameState.playerResources[playerId]?.[resourceType] || 0;
+      if (playerAmount < (amount || 0)) {
+        return { success: false, error: 'Not enough resources to offer' };
+      }
+    }
+
+    // Initialize trade with all other players as pending
+    const responses: Record<string, 'pending' | 'accepted' | 'declined'> = {};
+    for (const pid of this.playerIds) {
+      if (pid !== playerId) {
+        responses[pid] = 'pending';
+      }
+    }
+
+    this.activeTrade = {
+      proposerId: playerId,
+      offering: offering as Record<ResourceType, number>,
+      requesting: requesting as Record<ResourceType, number>,
+      responses,
+    };
+
+    return { success: true };
+  }
+
+  /**
+   * Respond to a trade proposal (accept/decline).
+   * Stub implementation - full logic in 06-02.
+   */
+  respondToTrade(
+    playerId: string,
+    response: 'accept' | 'decline',
+  ): {
+    success: boolean;
+    error?: string;
+  } {
+    // Check if there's an active trade
+    if (!this.activeTrade) {
+      return { success: false, error: 'No active trade' };
+    }
+
+    // Can't respond to your own trade
+    if (this.activeTrade.proposerId === playerId) {
+      return { success: false, error: 'Cannot respond to your own trade' };
+    }
+
+    // Check if player has already responded
+    if (this.activeTrade.responses[playerId] !== 'pending') {
+      return { success: false, error: 'Already responded to trade' };
+    }
+
+    // If accepting, check player has the requested resources
+    if (response === 'accept') {
+      for (const [resource, amount] of Object.entries(
+        this.activeTrade.requesting,
+      )) {
+        const resourceType = resource as ResourceType;
+        const playerAmount =
+          this.gameState.playerResources[playerId]?.[resourceType] || 0;
+        if (playerAmount < (amount || 0)) {
+          return { success: false, error: 'Not enough resources to accept' };
+        }
+      }
+    }
+
+    this.activeTrade.responses[playerId] =
+      response === 'accept' ? 'accepted' : 'declined';
+    return { success: true };
+  }
+
+  /**
+   * Select a trade partner who accepted, execute the trade.
+   * Stub implementation - full logic in 06-02.
+   */
+  selectTradePartner(partnerId: string): {
+    success: boolean;
+    error?: string;
+    proposerId?: string;
+    proposerGave?: Partial<Record<ResourceType, number>>;
+    partnerGave?: Partial<Record<ResourceType, number>>;
+  } {
+    // Check if there's an active trade
+    if (!this.activeTrade) {
+      return { success: false, error: 'No active trade' };
+    }
+
+    // Check if partner accepted
+    if (this.activeTrade.responses[partnerId] !== 'accepted') {
+      return { success: false, error: 'Partner has not accepted trade' };
+    }
+
+    const proposerId = this.activeTrade.proposerId;
+    const proposerGave = { ...this.activeTrade.offering };
+    const partnerGave = { ...this.activeTrade.requesting };
+
+    // Execute the trade - transfer resources
+    // Deduct from proposer (offering), add to partner
+    for (const [resource, amount] of Object.entries(proposerGave)) {
+      const resourceType = resource as ResourceType;
+      this.gameState.playerResources[proposerId][resourceType] -= amount || 0;
+      this.gameState.playerResources[partnerId][resourceType] += amount || 0;
+    }
+
+    // Deduct from partner (requesting), add to proposer
+    for (const [resource, amount] of Object.entries(partnerGave)) {
+      const resourceType = resource as ResourceType;
+      this.gameState.playerResources[partnerId][resourceType] -= amount || 0;
+      this.gameState.playerResources[proposerId][resourceType] += amount || 0;
+    }
+
+    // Clear active trade
+    this.activeTrade = null;
+
+    return {
+      success: true,
+      proposerId,
+      proposerGave,
+      partnerGave,
+    };
+  }
+
+  /**
+   * Cancel the current trade proposal.
+   * Stub implementation - full logic in 06-02.
+   */
+  cancelTrade(): {
+    success: boolean;
+    error?: string;
+  } {
+    if (!this.activeTrade) {
+      return { success: false, error: 'No active trade' };
+    }
+
+    this.activeTrade = null;
+    return { success: true };
+  }
+
+  /**
+   * Execute a bank/port trade.
+   * Stub implementation - full logic in 06-02.
+   */
+  executeBankTrade(
+    playerId: string,
+    giving: Partial<Record<ResourceType, number>>,
+    receiving: Partial<Record<ResourceType, number>>,
+  ): {
+    success: boolean;
+    error?: string;
+    gave?: Partial<Record<ResourceType, number>>;
+    received?: Partial<Record<ResourceType, number>>;
+  } {
+    // Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // Validate we're in main game and main phase
+    if (!this.gameState.turnState) {
+      return { success: false, error: 'Game not in main phase' };
+    }
+
+    if (this.gameState.turnState.phase !== 'main') {
+      return { success: false, error: 'Must roll dice first' };
+    }
+
+    // Check player has the resources they're giving
+    for (const [resource, amount] of Object.entries(giving)) {
+      const resourceType = resource as ResourceType;
+      const playerAmount =
+        this.gameState.playerResources[playerId]?.[resourceType] || 0;
+      if (playerAmount < (amount || 0)) {
+        return { success: false, error: 'Not enough resources' };
+      }
+    }
+
+    // Basic 4:1 bank trade validation
+    // Port logic will be added in 06-02
+    const totalGiving = Object.values(giving).reduce(
+      (sum, val) => sum + (val || 0),
+      0,
+    );
+    const totalReceiving = Object.values(receiving).reduce(
+      (sum, val) => sum + (val || 0),
+      0,
+    );
+
+    if (totalGiving !== totalReceiving * 4) {
+      return { success: false, error: 'Invalid bank trade ratio (4:1)' };
+    }
+
+    // Execute trade
+    for (const [resource, amount] of Object.entries(giving)) {
+      const resourceType = resource as ResourceType;
+      this.gameState.playerResources[playerId][resourceType] -= amount || 0;
+    }
+
+    for (const [resource, amount] of Object.entries(receiving)) {
+      const resourceType = resource as ResourceType;
+      this.gameState.playerResources[playerId][resourceType] += amount || 0;
+    }
+
+    return {
+      success: true,
+      gave: giving,
+      received: receiving,
     };
   }
 }
