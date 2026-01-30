@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 08-01-PLAN.md (Dev Card Shared Library Foundation)
+**Last activity:** 2026-01-30 - Completed 08-02-PLAN.md (Deck Management and Purchase System)
 
 ## Current Position
 
 Phase: 8 of 12 (Development Cards)  
-Plan: 1 of 8 in current phase  
+Plan: 2 of 8 in current phase  
 Status: In progress  
-Last activity: 2026-01-30 - Completed 08-01-PLAN.md
+Last activity: 2026-01-30 - Completed 08-02-PLAN.md
 
-Progress: ██████████████████████████████████████████████████████████████████░░░░ (Phase 8: 1/8 plans)
+Progress: ██████████████████████████████████████████████████████████████████░░░░ (Phase 8: 2/8 plans)
 
 ## Blockers/Concerns
 
@@ -94,9 +94,11 @@ Progress: ███████████████████████�
 | 08    | Separate purchase messages       | DevCardPurchased vs DevCardPurchasedPublic hides VP cards from opponents      |
 | 08    | YearOfPlentySelect uses tuple    | z.tuple enforces exactly 2 resources at type level                            |
 | 08    | RoadBuildingPlace per-road       | Single edge per message for sequential placement with UI updates              |
+| 08    | Index pointer for deck access    | Use deckIndex instead of mutating deck array for immutability                 |
+| 08    | Pure function logic extraction   | Dev card validation in dev-card-logic.ts following robber-logic pattern       |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 08-01-PLAN.md (Dev Card Shared Library Foundation)
-Resume file: .planning/phases/08-development-cards/08-02-PLAN.md
+Stopped at: Completed 08-02-PLAN.md (Deck Management and Purchase System)
+Resume file: .planning/phases/08-development-cards/08-03-PLAN.md
