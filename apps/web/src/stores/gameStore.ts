@@ -67,7 +67,25 @@ interface TradeSlice {
   tradeModalOpen: boolean;
 }
 
-interface GameStore extends PlacementSlice, TurnSlice, BuildSlice, TradeSlice {
+// Debug state slice
+interface DebugMessage {
+  direction: 'sent' | 'received';
+  type: string;
+  data: unknown;
+  timestamp: Date;
+}
+
+interface DebugSlice {
+  debugMessages: DebugMessage[];
+  debugPanelOpen: boolean;
+}
+
+interface GameStore
+  extends PlacementSlice,
+    TurnSlice,
+    BuildSlice,
+    TradeSlice,
+    DebugSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
   gameStarted: boolean;
@@ -141,6 +159,15 @@ interface GameStore extends PlacementSlice, TurnSlice, BuildSlice, TradeSlice {
   ) => void;
   clearTrade: () => void;
   setTradeModalOpen: (open: boolean) => void;
+
+  // Debug actions
+  addDebugMessage: (
+    direction: 'sent' | 'received',
+    type: string,
+    data: unknown,
+  ) => void;
+  setDebugPanelOpen: (open: boolean) => void;
+  clearDebugMessages: () => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -179,6 +206,10 @@ export const useGameStore = create<GameStore>((set) => ({
   // Trade state
   activeTrade: null,
   tradeModalOpen: false,
+
+  // Debug state
+  debugMessages: [],
+  debugPanelOpen: false,
 
   // Existing actions
   setBoard: (board) => set({ board }),
@@ -295,6 +326,17 @@ export const useGameStore = create<GameStore>((set) => ({
     })),
   clearTrade: () => set({ activeTrade: null }),
   setTradeModalOpen: (open) => set({ tradeModalOpen: open }),
+
+  // Debug actions
+  addDebugMessage: (direction, type, data) =>
+    set((state) => ({
+      debugMessages: [
+        { direction, type, data, timestamp: new Date() },
+        ...state.debugMessages,
+      ].slice(0, 100), // Limit to 100 messages
+    })),
+  setDebugPanelOpen: (open) => set({ debugPanelOpen: open }),
+  clearDebugMessages: () => set({ debugMessages: [] }),
 }));
 
 // CUSTOM HOOKS - prevent selector anti-pattern
@@ -403,3 +445,10 @@ export const useCanAfford = (buildingType: BuildingType) => {
     );
   });
 };
+
+// Debug state selector hooks
+export const useDebugMessages = () =>
+  useGameStore((state) => state.debugMessages);
+
+export const useDebugPanelOpen = () =>
+  useGameStore((state) => state.debugPanelOpen);
