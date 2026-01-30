@@ -893,6 +893,63 @@ export function handleWebSocketConnection(
         break;
       }
 
+      // ============================================================================
+      // DEVELOPMENT CARD HANDLERS
+      // ============================================================================
+
+      case 'buy_dev_card': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Not in a room');
+          return;
+        }
+
+        const gameManager = roomManager.getGameManager(currentRoomId);
+        if (!gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const result = gameManager.buyDevCard(playerId);
+
+        if (!result.success) {
+          // Send error only to buyer
+          sendMessage(ws, {
+            type: 'dev_card_play_failed',
+            reason: result.error || 'Purchase failed',
+          });
+          return;
+        }
+
+        // Send full card info to buyer only
+        sendMessage(ws, {
+          type: 'dev_card_purchased',
+          playerId,
+          card: result.card,
+          deckRemaining: result.deckRemaining,
+        });
+
+        // Send hidden info to all other players in room
+        const room = roomManager.getRoom(currentRoomId);
+        if (room) {
+          room.players.forEach((player) => {
+            if (
+              player.id !== playerId &&
+              player.ws &&
+              player.ws.readyState === WebSocket.OPEN
+            ) {
+              player.ws.send(
+                JSON.stringify({
+                  type: 'dev_card_purchased_public',
+                  playerId,
+                  deckRemaining: result.deckRemaining,
+                }),
+              );
+            }
+          });
+        }
+        break;
+      }
+
       default: {
         sendError(ws, 'Invalid room ID');
       }
