@@ -502,6 +502,8 @@ export default function Lobby() {
               }));
             gameStore.updatePlayerResources(message.playerId, deductions);
           }
+          // Remove this player from the list of players who must discard
+          gameStore.removePlayerFromDiscard(message.playerId);
           // Clear own discard modal if it was us
           const myId = gameStore.myPlayerId;
           if (message.playerId === myId) {
@@ -517,7 +519,20 @@ export default function Lobby() {
         }
 
         case 'all_discards_complete': {
-          // All discards done - robber mover will receive robber_move_required
+          // All discards done - clear the waiting state for all players
+          useGameStore.getState().setWaitingForDiscards(false, []);
+          // robber mover will receive robber_move_required separately
+          break;
+        }
+
+        case 'robber_triggered': {
+          // Block ALL players until discards are complete
+          const { mustDiscardPlayers } = message;
+          if (mustDiscardPlayers && mustDiscardPlayers.length > 0) {
+            // Extract just the player IDs from the objects
+            const playerIds = mustDiscardPlayers.map((p) => p.playerId);
+            useGameStore.getState().setWaitingForDiscards(true, playerIds);
+          }
           break;
         }
 

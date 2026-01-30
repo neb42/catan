@@ -20,7 +20,11 @@ import { TradeModal } from './Trade/TradeModal';
 import { TradeResponseModal } from './Trade/TradeResponseModal';
 import { TradeButton } from './Trade/TradeButton';
 import { DebugPanel } from './Debug/DebugPanel';
-import { DiscardModal, StealModal } from '@web/components/Robber';
+import {
+  DiscardModal,
+  StealModal,
+  WaitingForDiscardsOverlay,
+} from '@web/components/Robber';
 import { GameLog } from '@web/components/Feedback';
 
 export function Game() {
@@ -166,6 +170,7 @@ export function Game() {
       {/* Robber modals - render at root level, they control their own visibility */}
       <DiscardModal />
       <StealModal />
+      <WaitingForDiscardsOverlay />
 
       {/* Game log - shows action history */}
       <GameLog />

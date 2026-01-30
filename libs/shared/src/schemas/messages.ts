@@ -352,6 +352,16 @@ export const NoStealPossibleMessageSchema = z.object({
   type: z.literal('no_steal_possible'),
 });
 
+export const RobberTriggeredMessageSchema = z.object({
+  type: z.literal('robber_triggered'),
+  mustDiscardPlayers: z.array(
+    z.object({
+      playerId: z.string(),
+      targetCount: z.number(),
+    }),
+  ),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -407,6 +417,7 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   DiscardRequiredMessageSchema,
   DiscardCompletedMessageSchema,
   AllDiscardsCompleteMessageSchema,
+  RobberTriggeredMessageSchema,
   RobberMoveRequiredMessageSchema,
   RobberMovedMessageSchema,
   StealRequiredMessageSchema,
@@ -493,6 +504,9 @@ export type DiscardCompletedMessage = z.infer<
 >;
 export type AllDiscardsCompleteMessage = z.infer<
   typeof AllDiscardsCompleteMessageSchema
+>;
+export type RobberTriggeredMessage = z.infer<
+  typeof RobberTriggeredMessageSchema
 >;
 export type RobberMoveRequiredMessage = z.infer<
   typeof RobberMoveRequiredMessageSchema

@@ -250,8 +250,27 @@ export function useCanBuild(buildingType: BuildingType): {
   );
   const myPlayerId = useGameStore((state) => state.myPlayerId);
   const isBuildPending = useGameStore((state) => state.isBuildPending);
+  const waitingForDiscards = useGameStore((state) => state.waitingForDiscards);
+  const robberPlacementMode = useGameStore(
+    (state) => state.robberPlacementMode,
+  );
+  const stealRequired = useGameStore((state) => state.stealRequired);
 
   return useMemo(() => {
+    // Check if blocked by robber phase
+    if (waitingForDiscards) {
+      return { canBuild: false, disabledReason: 'Waiting for discards' };
+    }
+    if (robberPlacementMode) {
+      return { canBuild: false, disabledReason: 'Move the robber first' };
+    }
+    if (stealRequired) {
+      return {
+        canBuild: false,
+        disabledReason: 'Choose a player to steal from',
+      };
+    }
+
     // Check if it's our turn and main phase
     if (turnPhase !== 'main') {
       return { canBuild: false, disabledReason: 'Not in main phase' };
@@ -299,6 +318,9 @@ export function useCanBuild(buildingType: BuildingType): {
 
     return { canBuild: true, disabledReason: null };
   }, [
+    waitingForDiscards,
+    robberPlacementMode,
+    stealRequired,
     turnPhase,
     turnCurrentPlayerId,
     myPlayerId,

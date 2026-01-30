@@ -69,7 +69,11 @@ interface TradeSlice {
 
 // Robber state slice
 interface RobberSlice {
-  // Discard state
+  // Blocking state - blocks ALL players during discard phase
+  waitingForDiscards: boolean;
+  playersWhoMustDiscard: string[]; // Player IDs who still need to discard
+
+  // Discard state (for current player's modal)
   discardRequired: boolean;
   discardTarget: number;
   discardResources: PlayerResources | null; // Current resources to discard from
@@ -196,6 +200,8 @@ interface GameStore
   setTradeModalOpen: (open: boolean) => void;
 
   // Robber actions
+  setWaitingForDiscards: (waiting: boolean, playerIds: string[]) => void;
+  removePlayerFromDiscard: (playerId: string) => void;
   setDiscardRequired: (
     required: boolean,
     target: number,
@@ -270,6 +276,8 @@ export const useGameStore = create<GameStore>((set) => ({
   tradeModalOpen: false,
 
   // Robber state
+  waitingForDiscards: false,
+  playersWhoMustDiscard: [],
   discardRequired: false,
   discardTarget: 0,
   discardResources: null,
@@ -403,6 +411,24 @@ export const useGameStore = create<GameStore>((set) => ({
   setTradeModalOpen: (open) => set({ tradeModalOpen: open }),
 
   // Robber actions
+  setWaitingForDiscards: (waiting, playerIds) =>
+    set({
+      waitingForDiscards: waiting,
+      playersWhoMustDiscard: playerIds,
+    }),
+
+  removePlayerFromDiscard: (playerId) =>
+    set((state) => {
+      const remaining = state.playersWhoMustDiscard.filter(
+        (id) => id !== playerId,
+      );
+      // If no more players need to discard, clear waiting state
+      return {
+        playersWhoMustDiscard: remaining,
+        waitingForDiscards: remaining.length > 0,
+      };
+    }),
+
   setDiscardRequired: (required, target, resources) =>
     set({
       discardRequired: required,
@@ -442,6 +468,8 @@ export const useGameStore = create<GameStore>((set) => ({
 
   clearRobberState: () =>
     set({
+      waitingForDiscards: false,
+      playersWhoMustDiscard: [],
       discardRequired: false,
       discardTarget: 0,
       discardResources: null,
@@ -551,7 +579,8 @@ export const useCanRollDice = () =>
     (state) =>
       state.turnPhase === 'roll' &&
       state.turnCurrentPlayerId === state.myPlayerId &&
-      !state.isAnimating,
+      !state.isAnimating &&
+      !state.waitingForDiscards,
   );
 
 export const useCanEndTurn = () =>
@@ -559,7 +588,10 @@ export const useCanEndTurn = () =>
     (state) =>
       state.turnPhase === 'main' &&
       state.turnCurrentPlayerId === state.myPlayerId &&
-      !state.isAnimating,
+      !state.isAnimating &&
+      !state.waitingForDiscards &&
+      !state.robberPlacementMode &&
+      !state.stealRequired,
   );
 
 export const useLastResourcesDistributed = () =>
@@ -596,6 +628,10 @@ export const useDebugPanelOpen = () =>
 export const useGameLog = () => useGameStore((state) => state.gameLog);
 
 // Robber state selector hooks
+export const useWaitingForDiscards = () =>
+  useGameStore((state) => state.waitingForDiscards);
+export const usePlayersWhoMustDiscard = () =>
+  useGameStore((state) => state.playersWhoMustDiscard);
 export const useDiscardRequired = () =>
   useGameStore((state) => state.discardRequired);
 export const useDiscardTarget = () =>
