@@ -70,6 +70,10 @@ export class GameManager {
   private monopolyPending = false;
   private pendingDevCardPlayerId: string | null = null;
 
+  // Road Building state
+  private roadBuildingRemaining = 0; // 0, 1, or 2 roads remaining
+  private roadBuildingEdges: string[] = []; // Edges placed during Road Building
+
   constructor(board: BoardState, playerIds: string[]) {
     this.playerIds = playerIds;
     // Assuming size {x: 10, y: 10} matching default in shared library
@@ -1647,5 +1651,165 @@ export class GameManager {
     this.pendingDevCardPlayerId = null;
 
     return { success: true, totalCollected, fromPlayers };
+  }
+
+  /**
+   * Play a Road Building development card.
+   * Validates card ownership, same-turn restriction, one-per-turn restriction.
+   * Enters road building mode, allowing up to 2 free roads.
+   */
+  playRoadBuilding(
+    playerId: string,
+    cardId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    roadsToPlace?: number;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate main phase
+    if (
+      !this.gameState.turnState ||
+      this.gameState.turnState.phase !== 'main'
+    ) {
+      return { success: false, error: 'Can only play during main phase' };
+    }
+
+    // 3. Validate not already in a dev card flow
+    if (this.robberPhase !== 'none') {
+      return { success: false, error: 'Robber flow already in progress' };
+    }
+    if (
+      this.yearOfPlentyPending ||
+      this.monopolyPending ||
+      this.roadBuildingRemaining > 0
+    ) {
+      return { success: false, error: 'Dev card effect already in progress' };
+    }
+
+    // 4. Find and validate the card
+    const playerCards = this.playerDevCards.get(playerId) || [];
+    const cardIndex = playerCards.findIndex((c) => c.id === cardId);
+    if (cardIndex === -1) {
+      return { success: false, error: 'Card not found' };
+    }
+
+    const card = playerCards[cardIndex];
+    if (card.type !== 'road_building') {
+      return { success: false, error: 'Not a Road Building card' };
+    }
+
+    // 5. Check play restrictions (same-turn, one-per-turn)
+    const currentTurn = this.gameState.turnState?.turnNumber || 1;
+    if (card.purchasedOnTurn === currentTurn) {
+      return { success: false, error: 'Cannot play card purchased this turn' };
+    }
+    if (this.playedDevCardThisTurn) {
+      return { success: false, error: 'Already played a dev card this turn' };
+    }
+
+    // 6. Calculate how many roads player can place (up to 2, limited by remaining pieces)
+    const playerRoads = this.gameState.roads.filter(
+      (r) => r.playerId === playerId,
+    ).length;
+    const roadsRemaining = MAX_PIECES.roads - playerRoads;
+    const roadsToPlace = Math.min(2, roadsRemaining);
+
+    if (roadsToPlace === 0) {
+      return { success: false, error: 'No road pieces remaining' };
+    }
+
+    // 7. Remove card from player's hand
+    playerCards.splice(cardIndex, 1);
+    this.playerDevCards.set(playerId, playerCards);
+
+    // 8. Mark dev card played this turn
+    this.playedDevCardThisTurn = true;
+
+    // 9. Enter Road Building mode
+    this.roadBuildingRemaining = roadsToPlace;
+    this.roadBuildingEdges = [];
+    this.pendingDevCardPlayerId = playerId;
+
+    return { success: true, roadsToPlace };
+  }
+
+  /**
+   * Place a road during Road Building card effect.
+   * Uses main-game road placement rules but costs no resources.
+   */
+  placeRoadBuildingRoad(
+    playerId: string,
+    edgeId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    roadsRemaining?: number;
+    complete?: boolean;
+    edgesPlaced?: string[];
+  } {
+    // 1. Validate player and mode
+    if (playerId !== this.pendingDevCardPlayerId) {
+      return { success: false, error: 'Not your turn' };
+    }
+    if (this.roadBuildingRemaining <= 0) {
+      return { success: false, error: 'Not in Road Building mode' };
+    }
+
+    // 2. Validate placement using main-game road rules
+    const errorReason = getInvalidMainGameRoadReason(
+      edgeId,
+      this.gameState,
+      playerId,
+      this.edges,
+    );
+    if (errorReason) {
+      return { success: false, error: errorReason };
+    }
+
+    // 3. Place road (no resource cost)
+    this.gameState.roads.push({ edgeId, playerId });
+    this.roadBuildingEdges.push(edgeId);
+    this.roadBuildingRemaining--;
+
+    // 4. Check if complete
+    const complete = this.roadBuildingRemaining === 0;
+
+    if (complete) {
+      // Reset Road Building state
+      const edgesPlaced = [...this.roadBuildingEdges];
+      this.roadBuildingEdges = [];
+      this.pendingDevCardPlayerId = null;
+      return {
+        success: true,
+        roadsRemaining: 0,
+        complete: true,
+        edgesPlaced,
+      };
+    }
+
+    return {
+      success: true,
+      roadsRemaining: this.roadBuildingRemaining,
+      complete: false,
+    };
+  }
+
+  /**
+   * Check if the game is in Road Building mode.
+   */
+  isInRoadBuildingMode(): boolean {
+    return this.roadBuildingRemaining > 0;
+  }
+
+  /**
+   * Get the number of roads remaining to place in Road Building mode.
+   */
+  getRoadBuildingRemaining(): number {
+    return this.roadBuildingRemaining;
   }
 }

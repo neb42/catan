@@ -1014,10 +1014,31 @@ export function handleWebSocketConnection(
           }
 
           case 'road_building': {
-            // Road building not yet implemented
+            const result = gameManager.playRoadBuilding(
+              playerId,
+              message.cardId,
+            );
+
+            if (!result.success) {
+              sendMessage(ws, {
+                type: 'dev_card_play_failed',
+                reason: result.error || 'Cannot play Road Building',
+              });
+              return;
+            }
+
+            // Broadcast card played to all players
+            roomManager.broadcastToRoom(currentRoomId, {
+              type: 'dev_card_played',
+              playerId,
+              cardType: 'road_building',
+              cardId: message.cardId,
+            });
+
+            // Send road_building_required to the player
             sendMessage(ws, {
-              type: 'dev_card_play_failed',
-              reason: `${card.type} card not yet implemented`,
+              type: 'road_building_required',
+              roadsRemaining: result.roadsToPlace,
             });
             break;
           }
@@ -1157,6 +1178,54 @@ export function handleWebSocketConnection(
           totalCollected: result.totalCollected,
           fromPlayers: result.fromPlayers,
         });
+        break;
+      }
+
+      case 'road_building_place': {
+        if (!currentRoomId || !playerId) {
+          sendError(ws, 'Not in a room');
+          return;
+        }
+
+        const room = roomManager.getRoom(currentRoomId);
+        if (!room?.gameManager) {
+          sendError(ws, 'Game not started');
+          return;
+        }
+
+        const { edgeId } = message;
+        const result = room.gameManager.placeRoadBuildingRoad(playerId, edgeId);
+
+        if (!result.success) {
+          sendMessage(ws, {
+            type: 'build_failed', // Reuse existing error type
+            reason: result.error,
+          });
+          return;
+        }
+
+        // Broadcast road placed to all players
+        roomManager.broadcastToRoom(currentRoomId, {
+          type: 'road_building_placed',
+          playerId,
+          edgeId,
+          roadsRemaining: result.roadsRemaining,
+        });
+
+        if (result.complete) {
+          // Broadcast completion to all players
+          roomManager.broadcastToRoom(currentRoomId, {
+            type: 'road_building_completed',
+            playerId,
+            edgesPlaced: result.edgesPlaced,
+          });
+        } else {
+          // Send updated required message to player
+          sendMessage(ws, {
+            type: 'road_building_required',
+            roadsRemaining: result.roadsRemaining,
+          });
+        }
         break;
       }
 
