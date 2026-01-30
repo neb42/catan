@@ -321,7 +321,15 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-TBD
+**Plans:** 7 plans
+
+- [ ] 07-01-PLAN.md — Robber schemas, GameState robber position, resource distributor blocking
+- [ ] 07-02-PLAN.md — GameManager robber methods (discard, move, steal)
+- [ ] 07-03-PLAN.md — WebSocket handlers for robber messages
+- [ ] 07-04-PLAN.md — Frontend robber state, discard modal, robber placement overlay
+- [ ] 07-05-PLAN.md — Steal modal and opponent resource counts
+- [ ] 07-06-PLAN.md — Feedback system (toast notifications + game log)
+- [ ] 07-07-PLAN.md — Integration and end-to-end verification
 
 ### Deliverables
 
