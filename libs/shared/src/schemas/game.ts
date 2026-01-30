@@ -66,6 +66,21 @@ export const TurnStateSchema = z.object({
 });
 export type TurnState = z.infer<typeof TurnStateSchema>;
 
+// Active trade state for tracking current trade proposal
+export const ActiveTradeSchema = z.object({
+  proposerId: z.string(),
+  offering: z.record(
+    z.enum(['wood', 'brick', 'sheep', 'wheat', 'ore']),
+    z.number(),
+  ),
+  requesting: z.record(
+    z.enum(['wood', 'brick', 'sheep', 'wheat', 'ore']),
+    z.number(),
+  ),
+  responses: z.record(z.string(), z.enum(['pending', 'accepted', 'declined'])),
+});
+export type ActiveTrade = z.infer<typeof ActiveTradeSchema>;
+
 export const GameStateSchema = z.object({
   board: BoardStateSchema,
   settlements: z.array(SettlementSchema),
