@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 07-03-PLAN.md (WebSocket robber handlers)
+**Last activity:** 2026-01-30 - Completed 07-04-PLAN.md (Frontend robber state and UI)
 
 ## Current Position
 
 Phase: 7 of 12 (Robber)  
-Plan: 3 of 7 in current phase  
+Plan: 4 of 7 in current phase  
 Status: In progress  
-Last activity: 2026-01-30 - Completed 07-03-PLAN.md
+Last activity: 2026-01-30 - Completed 07-04-PLAN.md
 
-Progress: █████████████████████████████████████████████████████░░░ (Phase 7: 3/7 plans)
+Progress: ████████████████████████████████████████████████████████░░ (Phase 7: 4/7 plans)
 
 ## Blockers/Concerns
 
@@ -85,9 +85,12 @@ Progress: ███████████████████████�
 | 07    | Dual notification API          | Standalone showGameNotification + useGameNotifications hook for flexibility   |
 | 07    | Targeted WebSocket messages    | Use getPlayerWebSocket for player-specific messages (discard_required)        |
 | 07    | Broadcast robber_triggered     | All clients receive notification when robber flow starts                      |
+| 07    | RobberSlice in gameStore       | Separate interface for discard, placement, and steal state                    |
+| 07    | Combined useDiscardState hook  | Multi-property selector prevents re-render anti-patterns                      |
+| 07    | Blocking DiscardModal          | opened=true with no-op onClose forces completion                              |
 
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 07-03-PLAN.md (WebSocket robber handlers)
-Resume file: .planning/phases/07-robber/07-04-PLAN.md
+Stopped at: Completed 07-04-PLAN.md (Frontend robber state and UI)
+Resume file: .planning/phases/07-robber/07-05-PLAN.md
