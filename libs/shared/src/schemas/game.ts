@@ -1,6 +1,24 @@
 import { z } from 'zod';
 import { BoardStateSchema } from './board';
 
+// Development card types
+export const DevelopmentCardTypeSchema = z.enum([
+  'knight',
+  'victory_point',
+  'road_building',
+  'year_of_plenty',
+  'monopoly',
+]);
+export type DevelopmentCardType = z.infer<typeof DevelopmentCardTypeSchema>;
+
+// Owned development card (tracks when purchased for same-turn restriction)
+export const OwnedDevCardSchema = z.object({
+  id: z.string(), // Unique card instance ID (crypto.randomUUID format)
+  type: DevelopmentCardTypeSchema,
+  purchasedOnTurn: z.number(), // Turn when purchased, for same-turn restriction
+});
+export type OwnedDevCard = z.infer<typeof OwnedDevCardSchema>;
+
 export const ResourceTypeSchema = z.enum([
   'wood',
   'brick',
