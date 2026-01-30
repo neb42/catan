@@ -46,6 +46,10 @@ export function TradeResponseModal() {
   const needsToRespond = useNeedsToRespondToTrade();
   const sendMessage = useSocket();
   const room = useGameStore((state) => state.room);
+  const myPlayerId = useGameStore((state) => state.myPlayerId);
+  const myResources = useGameStore(
+    (state) => state.playerResources[state.myPlayerId || ''],
+  );
 
   // Find proposer name
   const proposerName =
@@ -53,6 +57,15 @@ export function TradeResponseModal() {
     'Unknown';
 
   if (!needsToRespond || !activeTrade) return null;
+
+  // Check if player can afford what's being requested
+  const canAffordTrade =
+    myPlayerId &&
+    myResources &&
+    Object.entries(activeTrade.requesting).every(
+      ([resource, amount]) =>
+        (myResources[resource as ResourceType] || 0) >= amount,
+    );
 
   const handleAccept = () => {
     sendMessage?.({ type: 'respond_trade', response: 'accept' });
@@ -82,7 +95,11 @@ export function TradeResponseModal() {
         />
 
         <Group justify="center" mt="lg">
-          <Button color="green" onClick={handleAccept}>
+          <Button
+            color="green"
+            onClick={handleAccept}
+            disabled={!canAffordTrade}
+          >
             Accept
           </Button>
           <Button color="red" variant="outline" onClick={handleDecline}>
