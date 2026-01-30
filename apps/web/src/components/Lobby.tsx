@@ -256,11 +256,15 @@ export default function Lobby() {
         }
 
         case 'turn_changed': {
-          useGameStore.getState().setTurnState({
+          const gameStore = useGameStore.getState();
+          gameStore.setTurnState({
             phase: message.phase,
             currentPlayerId: message.currentPlayerId,
             turnNumber: message.turnNumber,
           });
+          // Clear any active trade when turn changes
+          gameStore.clearTrade();
+          gameStore.setTradeModalOpen(false);
           break;
         }
 
