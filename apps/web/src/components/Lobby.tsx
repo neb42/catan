@@ -688,23 +688,28 @@ export default function Lobby() {
           const gameStore = useGameStore.getState();
           gameStore.setDevCardPlayPhase(null);
 
-          // Update resources for the player
+          // Update resources for the player - only add the YoP resources
           const { playerId: yopPlayerId, resources: yopResources } = message;
-          const currentResources = {
-            ...gameStore.playerResources[yopPlayerId],
-          };
 
+          // Count how many of each resource type was selected
+          const resourceCounts: Record<ResourceType, number> = {
+            wood: 0,
+            brick: 0,
+            sheep: 0,
+            wheat: 0,
+            ore: 0,
+          };
           yopResources.forEach((r: ResourceType) => {
-            currentResources[r] = (currentResources[r] || 0) + 1;
+            resourceCounts[r] = (resourceCounts[r] || 0) + 1;
           });
 
-          // Convert to array format for updatePlayerResources
-          const resourceUpdates = Object.entries(currentResources).map(
-            ([type, count]) => ({
+          // Only pass the delta (resources gained from YoP) to updatePlayerResources
+          const resourceUpdates = Object.entries(resourceCounts)
+            .filter(([, count]) => count > 0)
+            .map(([type, count]) => ({
               type: type as ResourceType,
               count: count as number,
-            }),
-          );
+            }));
           gameStore.updatePlayerResources(yopPlayerId, resourceUpdates);
 
           // Show notification
@@ -735,33 +740,24 @@ export default function Lobby() {
             fromPlayers,
           } = message;
 
-          // Take resources from victims
+          // Take resources from victims - pass negative delta for the resource taken
           Object.entries(fromPlayers).forEach(([victimId, amount]) => {
-            const victimResources = { ...gameStore.playerResources[victimId] };
-            victimResources[monopolyResource as ResourceType] = 0;
-            const victimUpdates = Object.entries(victimResources).map(
-              ([type, count]) => ({
-                type: type as ResourceType,
-                count: count as number,
-              }),
-            );
-            gameStore.updatePlayerResources(victimId, victimUpdates);
+            // Only pass the delta (negative amount of the monopolized resource)
+            gameStore.updatePlayerResources(victimId, [
+              {
+                type: monopolyResource as ResourceType,
+                count: -(amount as number),
+              },
+            ]);
           });
 
-          // Give resources to monopoly player
-          const monopolyResources = {
-            ...gameStore.playerResources[monopolyPlayerId],
-          };
-          monopolyResources[monopolyResource as ResourceType] =
-            (monopolyResources[monopolyResource as ResourceType] || 0) +
-            totalCollected;
-          const monopolyUpdates = Object.entries(monopolyResources).map(
-            ([type, count]) => ({
-              type: type as ResourceType,
-              count: count as number,
-            }),
-          );
-          gameStore.updatePlayerResources(monopolyPlayerId, monopolyUpdates);
+          // Give resources to monopoly player - pass positive delta
+          gameStore.updatePlayerResources(monopolyPlayerId, [
+            {
+              type: monopolyResource as ResourceType,
+              count: totalCollected,
+            },
+          ]);
 
           // Show notification
           const monopolyPlayer = room?.players.find(
