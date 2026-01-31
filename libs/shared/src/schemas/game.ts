@@ -107,5 +107,9 @@ export const GameStateSchema = z.object({
   placement: PlacementStateSchema.nullable(), // null when not in setup
   playerResources: z.record(z.string(), PlayerResourcesSchema), // playerId -> resources
   turnState: TurnStateSchema.nullable(), // null during setup, populated during main game
+  // Longest road tracking
+  longestRoadHolderId: z.string().nullable(), // Player with longest road card, null if no one has 5+
+  longestRoadLength: z.number(), // Length of longest road holder's road (0 if no holder)
+  playerRoadLengths: z.record(z.string(), z.number()), // playerId -> current longest road length
 });
 export type GameState = z.infer<typeof GameStateSchema>;
