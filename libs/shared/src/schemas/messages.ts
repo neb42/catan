@@ -169,6 +169,7 @@ export const TurnChangedMessageSchema = z.object({
   currentPlayerId: z.string(),
   turnNumber: z.number(),
   phase: z.enum(['roll', 'main']),
+  robberHexId: z.string().nullable().optional(), // Initial robber position when transitioning from setup to main game
 });
 
 // Building Phase Messages - Request schemas (client -> server)

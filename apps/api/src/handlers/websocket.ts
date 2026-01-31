@@ -400,11 +400,13 @@ export function handleWebSocketConnection(
 
           // Also broadcast initial turn state for main game
           if (turnState) {
+            const gameState = gameManager.getState();
             roomManager.broadcastToRoom(currentRoomId, {
               type: 'turn_changed',
               currentPlayerId: turnState.currentPlayerId,
               turnNumber: turnState.turnNumber,
               phase: turnState.phase,
+              robberHexId: gameState.robberHexId, // Include initial robber position
             });
           }
         } else {

@@ -273,6 +273,10 @@ export default function Lobby() {
           gameStore.setTradeModalOpen(false);
           // Reset dev card play state for new turn
           gameStore.setHasPlayedDevCardThisTurn(false);
+          // Set initial robber position if provided (first turn after setup)
+          if (message.robberHexId !== undefined) {
+            gameStore.setRobberHexId(message.robberHexId);
+          }
           break;
         }
 
