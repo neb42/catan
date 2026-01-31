@@ -14,6 +14,8 @@ import {
   useCurrentPlayer,
   useGameStore,
   useTurnCurrentPlayer,
+  useLongestRoadHolder,
+  usePlayerRoadLengths,
 } from '../stores/gameStore';
 
 type GamePlayerListProps = {
@@ -41,6 +43,10 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
   const myDevCards = useGameStore((s) => s.myDevCards);
   const myPlayerId = useGameStore((s) => s.myPlayerId);
 
+  // Longest road state
+  const longestRoadHolderId = useLongestRoadHolder();
+  const playerRoadLengths = usePlayerRoadLengths();
+
   // Color mapping for backgrounds
   const colorMap: Record<string, string> = PLAYER_COLOR_HEX;
 
@@ -59,6 +65,10 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
           wheat: 0,
           ore: 0,
         };
+
+        // Road length and longest road status
+        const roadLength = playerRoadLengths[player.id] || 0;
+        const hasLongestRoad = player.id === longestRoadHolderId;
 
         return (
           <motion.div
@@ -131,6 +141,11 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   Cards
                 </Text>
 
+                {/* Road length stats */}
+                <Text size="sm" c="dimmed" fw={500}>
+                  Roads: {roadLength}
+                </Text>
+
                 {/* Dev card and knight counts */}
                 <Group gap="xs">
                   {/* Dev card count */}
@@ -150,6 +165,25 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                         ⚔️ {knightsPlayed[player.id]}
                       </Badge>
                     </Tooltip>
+                  )}
+
+                  {/* Longest Road badge */}
+                  {hasLongestRoad && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 30,
+                      }}
+                    >
+                      <Tooltip label="Longest Road (2 VP)" position="top">
+                        <Badge size="sm" color="green" variant="filled">
+                          🛤️ Longest
+                        </Badge>
+                      </Tooltip>
+                    </motion.div>
                   )}
                 </Group>
 
