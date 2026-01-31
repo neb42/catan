@@ -26,6 +26,7 @@ Progress: ███████████████████████�
 | 003 | Split Phase 5 into Building/Trading/Robber phases                      | 2026-01-29 | 6787c3d | [003-split-phase-5-into-building-trading-robber](./quick/003-split-phase-5-into-building-trading-robber/) |
 | 004 | Split Phase 8 into Development Cards/Longest Road/Largest Army/Victory | 2026-01-29 | 6f16728 | [004-split-phase-8-into-4-phases](./quick/004-split-phase-8-into-4-phases/)                               |
 | 005 | Add debug panel with current game state                                | 2026-01-30 | a2c5f89 | [005-add-debug-panel-with-current-game-state-](./quick/005-add-debug-panel-with-current-game-state-/)     |
+| 007 | Log all WebSocket messages to per-room log files for debugging         | 2026-01-31 | 59dc82d | [007-api-log-websocket-messages-to-file](./quick/007-api-log-websocket-messages-to-file/)                 |
 
 ## Decisions
 
