@@ -50,6 +50,9 @@ const emptyGameState: GameState = {
   },
   playerResources: {},
   turnState: null, // null during setup
+  longestRoadHolderId: null,
+  longestRoadLength: 0,
+  playerRoadLengths: {},
 };
 
 describe('isValidSettlementPlacement', () => {
@@ -223,6 +226,9 @@ const mainGameState: GameState = {
     turnNumber: 1,
     lastDiceRoll: { dice1: 3, dice2: 4, total: 7 },
   },
+  longestRoadHolderId: null,
+  longestRoadLength: 0,
+  playerRoadLengths: { p1: 0, p2: 0 },
 };
 
 describe('getEdgesAtVertex', () => {
