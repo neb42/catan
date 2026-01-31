@@ -26,6 +26,7 @@ export function DevCardButton({ card }: DevCardButtonProps) {
   const hasPlayedDevCardThisTurn = useGameStore(
     (s) => s.hasPlayedDevCardThisTurn,
   );
+  const devCardPlayPhase = useGameStore((s) => s.devCardPlayPhase);
   const sendMessage = useGameStore((s) => s.sendMessage);
 
   const info = CARD_INFO[card.type];
@@ -39,8 +40,13 @@ export function DevCardButton({ card }: DevCardButtonProps) {
     canPlay = false;
     disabledReason = 'Victory Point cards score automatically';
   } else {
+    // Block during dev card play phase (road building, year of plenty, monopoly)
+    if (devCardPlayPhase !== null && devCardPlayPhase !== 'none') {
+      canPlay = false;
+      disabledReason = 'Complete dev card action first';
+    }
     // Must be our turn
-    if (turnCurrentPlayerId !== myId) {
+    else if (turnCurrentPlayerId !== myId) {
       canPlay = false;
       disabledReason = 'Not your turn';
     }

@@ -12,6 +12,11 @@ export function useCanBuyDevCard(): { canBuy: boolean; reason?: string } {
       const myId = s.myPlayerId;
       if (!myId) return { canBuy: false, reason: 'Not in game' };
 
+      // Block during dev card play phase (road building, year of plenty, monopoly)
+      if (s.devCardPlayPhase !== null && s.devCardPlayPhase !== 'none') {
+        return { canBuy: false, reason: 'Complete dev card action first' };
+      }
+
       // Must be our turn
       if (s.turnCurrentPlayerId !== myId) {
         return { canBuy: false, reason: 'Not your turn' };

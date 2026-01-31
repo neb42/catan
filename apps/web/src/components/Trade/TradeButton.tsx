@@ -11,14 +11,19 @@ export function TradeButton() {
     (state) => state.robberPlacementMode,
   );
   const stealRequired = useGameStore((state) => state.stealRequired);
+  const devCardPlayPhase = useGameStore((state) => state.devCardPlayPhase);
 
   // Only show trade button during main phase of own turn
   if (turnPhase !== 'main' || !isMyTurn) {
     return null;
   }
 
-  // Block trading during robber phase
-  const isBlocked = waitingForDiscards || robberPlacementMode || stealRequired;
+  // Block trading during robber phase or dev card play phase
+  const isBlocked =
+    waitingForDiscards ||
+    robberPlacementMode ||
+    stealRequired ||
+    (devCardPlayPhase !== null && devCardPlayPhase !== 'none');
 
   return (
     <Button

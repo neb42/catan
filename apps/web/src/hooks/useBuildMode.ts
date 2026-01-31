@@ -255,8 +255,17 @@ export function useCanBuild(buildingType: BuildingType): {
     (state) => state.robberPlacementMode,
   );
   const stealRequired = useGameStore((state) => state.stealRequired);
+  const devCardPlayPhase = useGameStore((state) => state.devCardPlayPhase);
 
   return useMemo(() => {
+    // Check if blocked by dev card play phase (road building, year of plenty, monopoly)
+    if (devCardPlayPhase !== null && devCardPlayPhase !== 'none') {
+      return {
+        canBuild: false,
+        disabledReason: 'Complete dev card action first',
+      };
+    }
+
     // Check if blocked by robber phase
     if (waitingForDiscards) {
       return { canBuild: false, disabledReason: 'Waiting for discards' };
@@ -318,6 +327,7 @@ export function useCanBuild(buildingType: BuildingType): {
 
     return { canBuild: true, disabledReason: null };
   }, [
+    devCardPlayPhase,
     waitingForDiscards,
     robberPlacementMode,
     stealRequired,

@@ -699,7 +699,9 @@ export const useCanEndTurn = () =>
       !state.isAnimating &&
       !state.waitingForDiscards &&
       !state.robberPlacementMode &&
-      !state.stealRequired,
+      !state.stealRequired &&
+      // Block during dev card play phases (road building, year of plenty, monopoly)
+      (state.devCardPlayPhase === null || state.devCardPlayPhase === 'none'),
   );
 
 export const useLastResourcesDistributed = () =>
