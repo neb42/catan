@@ -18,8 +18,8 @@ export const PLAYER_COLOR_HEX: Record<string, string> = {
   purple: '#8E24AA',
   brown: '#6D4C41',
 };
-export const MAX_PLAYERS = 8;
-export const MIN_PLAYERS = 3;
+export const MAX_PLAYERS = 4;
+export const MIN_PLAYERS = 2;
 export const GRACE_PERIOD_MS = 3 * 60 * 1000; // 3 minutes
 export const ROOM_ID_LENGTH = 6;
 export const ROOM_ID_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -39,3 +39,22 @@ export const MAX_PIECES = {
   settlements: 5,
   cities: 4,
 } as const;
+
+// Development card cost (1 ore, 1 sheep, 1 wheat)
+export const DEV_CARD_COST = {
+  ore: 1,
+  sheep: 1,
+  wheat: 1,
+} as const;
+
+// Development card deck composition (25 total cards - matches Catan rules)
+export const DEV_DECK_COMPOSITION = {
+  knight: 14,
+  victory_point: 5,
+  road_building: 2,
+  year_of_plenty: 2,
+  monopoly: 2,
+} as const;
+
+// Total number of development cards in deck
+export const DEV_DECK_SIZE = 25;

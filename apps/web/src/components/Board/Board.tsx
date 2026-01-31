@@ -14,6 +14,7 @@ import {
 } from '../../stores/gameStore';
 import { useShallow } from 'zustand/react/shallow';
 import { RobberFigure, RobberPlacement } from '@web/components/Robber';
+import { RoadBuildingEdgeOverlay } from '../CardPlay/RoadBuildingOverlay';
 
 interface BoardProps {
   board: BoardState;
@@ -128,6 +129,9 @@ export function Board({ board }: BoardProps) {
           {showOverlay && (
             <PlacementOverlay currentPlayerColor={currentPlayerColor} />
           )}
+
+          {/* Road Building overlay for dev card effect */}
+          <RoadBuildingEdgeOverlay />
         </Layout>
       </HexGrid>
 

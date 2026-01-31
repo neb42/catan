@@ -2,17 +2,17 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-01-30  
-**Last activity:** 2026-01-30 - Completed 07-07-PLAN.md (Full Robber Integration)
+**Last Updated:** 2026-01-31  
+**Last activity:** 2026-01-31 - Completed quick task 007: Log WebSocket messages to file
 
 ## Current Position
 
-Phase: 7 of 12 (Robber)  
-Plan: 7 of 7 in current phase  
-Status: Phase complete  
-Last activity: 2026-01-30 - Completed 07-07-PLAN.md
+Phase: 8 of 12 (Development Cards)  
+Plan: 6 of 8 in current phase  
+Status: In progress  
+Last activity: 2026-01-30 - Completed 08-06-PLAN.md
 
-Progress: █████████████████████████████████████████████████████████████████ (Phase 7: 7/7 plans - COMPLETE)
+Progress: ██████████████████████████████████████████████████████████████████████████████░░ (Phase 8: 6/8 plans)
 
 ## Blockers/Concerns
 
@@ -26,6 +26,7 @@ Progress: ███████████████████████�
 | 003 | Split Phase 5 into Building/Trading/Robber phases                      | 2026-01-29 | 6787c3d | [003-split-phase-5-into-building-trading-robber](./quick/003-split-phase-5-into-building-trading-robber/) |
 | 004 | Split Phase 8 into Development Cards/Longest Road/Largest Army/Victory | 2026-01-29 | 6f16728 | [004-split-phase-8-into-4-phases](./quick/004-split-phase-8-into-4-phases/)                               |
 | 005 | Add debug panel with current game state                                | 2026-01-30 | a2c5f89 | [005-add-debug-panel-with-current-game-state-](./quick/005-add-debug-panel-with-current-game-state-/)     |
+| 007 | Log all WebSocket messages to per-room log files for debugging         | 2026-01-31 | 59dc82d | [007-api-log-websocket-messages-to-file](./quick/007-api-log-websocket-messages-to-file/)                 |
 
 ## Decisions
 
@@ -90,9 +91,19 @@ Progress: ███████████████████████�
 | 07    | Blocking DiscardModal            | opened=true with no-op onClose forces completion                              |
 | 07    | StealModal reuses pattern        | Same blocking modal pattern as DiscardModal for consistent UX                 |
 | 07    | Block all players during discard | WaitingForDiscardsOverlay blocks non-discarding players during robber flow    |
+| 08    | OwnedDevCard purchasedOnTurn     | Track purchase turn for same-turn play restriction (DEV-03)                   |
+| 08    | Separate purchase messages       | DevCardPurchased vs DevCardPurchasedPublic hides VP cards from opponents      |
+| 08    | YearOfPlentySelect uses tuple    | z.tuple enforces exactly 2 resources at type level                            |
+| 08    | RoadBuildingPlace per-road       | Single edge per message for sequential placement with UI updates              |
+| 08    | Index pointer for deck access    | Use deckIndex instead of mutating deck array for immutability                 |
+| 08    | Pure function logic extraction   | Dev card validation in dev-card-logic.ts following robber-logic pattern       |
+| 08    | DevCardSlice pattern             | Separate interface for dev card state in gameStore                            |
+| 08    | Knight before roll               | Knight cards can be played before rolling dice, other cards require main      |
+| 08    | yearOfPlentyPending pattern      | Use boolean flags + pendingDevCardPlayerId for tracking card effect flow      |
+| 08    | Blocking modal for card effects  | Consistent with DiscardModal - opened=true, no close button required          |
 
 ## Session Continuity
 
-Last session: 2026-01-30
-Stopped at: Completed 07-07-PLAN.md (Full Robber Integration) - Phase 7 Complete
-Resume file: .planning/phases/08-development-cards/08-01-PLAN.md
+Last session: 2026-01-31
+Stopped at: Completed quick task 007: Log WebSocket messages to file
+Resume file: .planning/phases/08-development-cards/08-07-PLAN.md

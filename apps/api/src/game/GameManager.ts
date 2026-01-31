@@ -6,6 +6,9 @@ import {
   BUILDING_COSTS,
   MAX_PIECES,
   ActiveTrade,
+  OwnedDevCard,
+  DevelopmentCardType,
+  DEV_CARD_COST,
 } from '@catan/shared';
 import { calculateDraftPosition, isSetupComplete } from '@catan/shared';
 import { getUniqueVertices, getUniqueEdges, Vertex, Edge } from '@catan/shared';
@@ -41,6 +44,7 @@ import {
   executeSteal,
   validateRobberPlacement,
 } from './robber-logic';
+import { createShuffledDeck, canBuyDevCard, drawCard } from './dev-card-logic';
 
 export class GameManager {
   private gameState: GameState;
@@ -53,6 +57,22 @@ export class GameManager {
   private pendingDiscards: Map<string, number> = new Map(); // playerId -> targetCount
   private robberPhase: 'none' | 'discarding' | 'moving' | 'stealing' = 'none';
   private robberMover: string | null = null; // playerId who rolled 7
+
+  // Development card state
+  private devCardDeck: DevelopmentCardType[] = [];
+  private deckIndex = 0;
+  private playerDevCards: Map<string, OwnedDevCard[]> = new Map(); // playerId -> owned cards
+  private playedDevCardThisTurn = false;
+  private knightsPlayed: Map<string, number> = new Map(); // playerId -> count
+
+  // Dev card effect pending state
+  private yearOfPlentyPending = false;
+  private monopolyPending = false;
+  private pendingDevCardPlayerId: string | null = null;
+
+  // Road Building state
+  private roadBuildingRemaining = 0; // 0, 1, or 2 roads remaining
+  private roadBuildingEdges: string[] = []; // Edges placed during Road Building
 
   constructor(board: BoardState, playerIds: string[]) {
     this.playerIds = playerIds;
@@ -84,6 +104,16 @@ export class GameManager {
       turnState: null, // null during setup, initialized when main game starts
       robberHexId: null, // null during setup, set to desert hex when main game starts
     };
+
+    // Initialize development card deck
+    this.devCardDeck = createShuffledDeck();
+    this.deckIndex = 0;
+
+    // Initialize player dev cards and knights played for each player
+    for (const playerId of playerIds) {
+      this.playerDevCards.set(playerId, []);
+      this.knightsPlayed.set(playerId, 0);
+    }
   }
 
   getCurrentPlayerId(): string {
@@ -452,6 +482,9 @@ export class GameManager {
 
     // Clear any active trade (auto-cancel on turn end)
     this.activeTrade = null;
+
+    // Reset dev card played flag for next turn
+    this.playedDevCardThisTurn = false;
 
     // Advance to next player
     const currentIndex = this.playerIds.indexOf(
@@ -1234,5 +1267,549 @@ export class GameManager {
    */
   getGameState(): GameState {
     return this.gameState;
+  }
+
+  // ============================================================================
+  // DEVELOPMENT CARD METHODS
+  // ============================================================================
+
+  /**
+   * Get the number of cards remaining in the deck.
+   */
+  getDeckRemaining(): number {
+    return this.devCardDeck.length - this.deckIndex;
+  }
+
+  /**
+   * Get development cards owned by a player.
+   */
+  getPlayerDevCards(playerId: string): OwnedDevCard[] {
+    return this.playerDevCards.get(playerId) || [];
+  }
+
+  /**
+   * Get the number of knights played by a player.
+   */
+  getKnightsPlayed(playerId: string): number {
+    return this.knightsPlayed.get(playerId) || 0;
+  }
+
+  /**
+   * Get all knights played by all players (for Largest Army tracking).
+   */
+  getAllKnightsPlayed(): Record<string, number> {
+    const result: Record<string, number> = {};
+    this.knightsPlayed.forEach((count, playerId) => {
+      result[playerId] = count;
+    });
+    return result;
+  }
+
+  /**
+   * Play a Knight development card.
+   * Validates card ownership, same-turn restriction, one-per-turn restriction.
+   * Enters robber move phase (skipping discard).
+   */
+  playKnight(
+    playerId: string,
+    cardId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    currentRobberHex?: string | null;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate not already in a robber/dev card flow
+    if (this.robberPhase !== 'none') {
+      return { success: false, error: 'Robber flow already in progress' };
+    }
+
+    // 3. Find and validate the card
+    const playerCards = this.playerDevCards.get(playerId) || [];
+    const cardIndex = playerCards.findIndex((c) => c.id === cardId);
+    if (cardIndex === -1) {
+      return { success: false, error: 'Card not found' };
+    }
+
+    const card = playerCards[cardIndex];
+    if (card.type !== 'knight') {
+      return { success: false, error: 'Not a Knight card' };
+    }
+
+    // 4. Check play restrictions (same-turn, one-per-turn)
+    const currentTurn = this.gameState.turnState?.turnNumber || 1;
+    if (card.purchasedOnTurn === currentTurn) {
+      return { success: false, error: 'Cannot play card purchased this turn' };
+    }
+    if (this.playedDevCardThisTurn) {
+      return { success: false, error: 'Already played a dev card this turn' };
+    }
+
+    // 5. Remove card from player's hand
+    playerCards.splice(cardIndex, 1);
+    this.playerDevCards.set(playerId, playerCards);
+
+    // 6. Increment knight count
+    const currentKnights = this.knightsPlayed.get(playerId) || 0;
+    this.knightsPlayed.set(playerId, currentKnights + 1);
+
+    // 7. Mark dev card played this turn
+    this.playedDevCardThisTurn = true;
+
+    // 8. Enter robber move phase (skip discarding)
+    this.robberPhase = 'moving';
+    this.robberMover = playerId;
+
+    return {
+      success: true,
+      currentRobberHex: this.gameState.robberHexId,
+    };
+  }
+
+  /**
+   * Buy a development card from the deck.
+   * Validates turn, phase, resources, and deck availability.
+   */
+  buyDevCard(playerId: string): {
+    success: boolean;
+    error?: string;
+    card?: OwnedDevCard;
+    deckRemaining?: number;
+  } {
+    // 1. Validate it's player's turn and main phase
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+    if (
+      !this.gameState.turnState ||
+      this.gameState.turnState.phase !== 'main'
+    ) {
+      return { success: false, error: 'Can only buy during main phase' };
+    }
+
+    // 2. Validate can buy (resources + deck)
+    const resources = this.gameState.playerResources[playerId];
+    const check = canBuyDevCard(playerId, resources, this.getDeckRemaining());
+    if (!check.canBuy) {
+      return { success: false, error: check.reason };
+    }
+
+    // 3. Draw card from deck
+    const { card: cardType, newIndex } = drawCard(
+      this.devCardDeck,
+      this.deckIndex,
+    );
+    if (!cardType) {
+      return { success: false, error: 'Deck is empty' };
+    }
+    this.deckIndex = newIndex;
+
+    // 4. Deduct resources
+    const cost = DEV_CARD_COST;
+    resources.ore -= cost.ore;
+    resources.sheep -= cost.sheep;
+    resources.wheat -= cost.wheat;
+
+    // 5. Create owned card with current turn
+    const currentTurn = this.gameState.turnState?.turnNumber || 1;
+    const ownedCard: OwnedDevCard = {
+      id: crypto.randomUUID(),
+      type: cardType,
+      purchasedOnTurn: currentTurn,
+    };
+
+    // 6. Add to player's hand
+    const playerCards = this.playerDevCards.get(playerId) || [];
+    playerCards.push(ownedCard);
+    this.playerDevCards.set(playerId, playerCards);
+
+    return {
+      success: true,
+      card: ownedCard,
+      deckRemaining: this.getDeckRemaining(),
+    };
+  }
+
+  /**
+   * Play a Year of Plenty development card.
+   * Validates card ownership, same-turn restriction, one-per-turn restriction.
+   * Enters year of plenty mode, waiting for resource selection.
+   */
+  playYearOfPlenty(
+    playerId: string,
+    cardId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    bankResources?: Record<ResourceType, number>;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate main phase
+    if (
+      !this.gameState.turnState ||
+      this.gameState.turnState.phase !== 'main'
+    ) {
+      return { success: false, error: 'Can only play during main phase' };
+    }
+
+    // 3. Validate not already in a dev card flow
+    if (this.robberPhase !== 'none') {
+      return { success: false, error: 'Robber flow already in progress' };
+    }
+    if (this.yearOfPlentyPending || this.monopolyPending) {
+      return { success: false, error: 'Dev card effect already in progress' };
+    }
+
+    // 4. Find and validate the card
+    const playerCards = this.playerDevCards.get(playerId) || [];
+    const cardIndex = playerCards.findIndex((c) => c.id === cardId);
+    if (cardIndex === -1) {
+      return { success: false, error: 'Card not found' };
+    }
+
+    const card = playerCards[cardIndex];
+    if (card.type !== 'year_of_plenty') {
+      return { success: false, error: 'Not a Year of Plenty card' };
+    }
+
+    // 5. Check play restrictions (same-turn, one-per-turn)
+    const currentTurn = this.gameState.turnState?.turnNumber || 1;
+    if (card.purchasedOnTurn === currentTurn) {
+      return { success: false, error: 'Cannot play card purchased this turn' };
+    }
+    if (this.playedDevCardThisTurn) {
+      return { success: false, error: 'Already played a dev card this turn' };
+    }
+
+    // 6. Remove card from player's hand
+    playerCards.splice(cardIndex, 1);
+    this.playerDevCards.set(playerId, playerCards);
+
+    // 7. Mark dev card played this turn
+    this.playedDevCardThisTurn = true;
+
+    // 8. Enter Year of Plenty mode
+    this.yearOfPlentyPending = true;
+    this.pendingDevCardPlayerId = playerId;
+
+    // Calculate bank resources (simplified - assume infinite bank for now)
+    // In a full implementation, track bank depletion
+    const bankResources: Record<ResourceType, number> = {
+      wood: 19,
+      brick: 19,
+      sheep: 19,
+      wheat: 19,
+      ore: 19,
+    };
+
+    return { success: true, bankResources };
+  }
+
+  /**
+   * Complete Year of Plenty by selecting 2 resources from the bank.
+   */
+  completeYearOfPlenty(
+    playerId: string,
+    resources: [ResourceType, ResourceType],
+  ): {
+    success: boolean;
+    error?: string;
+  } {
+    if (!this.yearOfPlentyPending || this.pendingDevCardPlayerId !== playerId) {
+      return { success: false, error: 'Not in Year of Plenty mode' };
+    }
+
+    // Grant resources
+    const playerResources = this.gameState.playerResources[playerId];
+    resources.forEach((resource) => {
+      playerResources[resource] = (playerResources[resource] || 0) + 1;
+    });
+
+    // Clear pending state
+    this.yearOfPlentyPending = false;
+    this.pendingDevCardPlayerId = null;
+
+    return { success: true };
+  }
+
+  /**
+   * Play a Monopoly development card.
+   * Validates card ownership, same-turn restriction, one-per-turn restriction.
+   * Enters monopoly mode, waiting for resource type selection.
+   */
+  playMonopoly(
+    playerId: string,
+    cardId: string,
+  ): {
+    success: boolean;
+    error?: string;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate main phase
+    if (
+      !this.gameState.turnState ||
+      this.gameState.turnState.phase !== 'main'
+    ) {
+      return { success: false, error: 'Can only play during main phase' };
+    }
+
+    // 3. Validate not already in a dev card flow
+    if (this.robberPhase !== 'none') {
+      return { success: false, error: 'Robber flow already in progress' };
+    }
+    if (this.yearOfPlentyPending || this.monopolyPending) {
+      return { success: false, error: 'Dev card effect already in progress' };
+    }
+
+    // 4. Find and validate the card
+    const playerCards = this.playerDevCards.get(playerId) || [];
+    const cardIndex = playerCards.findIndex((c) => c.id === cardId);
+    if (cardIndex === -1) {
+      return { success: false, error: 'Card not found' };
+    }
+
+    const card = playerCards[cardIndex];
+    if (card.type !== 'monopoly') {
+      return { success: false, error: 'Not a Monopoly card' };
+    }
+
+    // 5. Check play restrictions (same-turn, one-per-turn)
+    const currentTurn = this.gameState.turnState?.turnNumber || 1;
+    if (card.purchasedOnTurn === currentTurn) {
+      return { success: false, error: 'Cannot play card purchased this turn' };
+    }
+    if (this.playedDevCardThisTurn) {
+      return { success: false, error: 'Already played a dev card this turn' };
+    }
+
+    // 6. Remove card from player's hand
+    playerCards.splice(cardIndex, 1);
+    this.playerDevCards.set(playerId, playerCards);
+
+    // 7. Mark dev card played this turn
+    this.playedDevCardThisTurn = true;
+
+    // 8. Enter Monopoly mode
+    this.monopolyPending = true;
+    this.pendingDevCardPlayerId = playerId;
+
+    return { success: true };
+  }
+
+  /**
+   * Complete Monopoly by selecting a resource type to take from all players.
+   */
+  completeMonopoly(
+    playerId: string,
+    resourceType: ResourceType,
+  ): {
+    success: boolean;
+    error?: string;
+    totalCollected?: number;
+    fromPlayers?: Record<string, number>;
+  } {
+    if (!this.monopolyPending || this.pendingDevCardPlayerId !== playerId) {
+      return { success: false, error: 'Not in Monopoly mode' };
+    }
+
+    let totalCollected = 0;
+    const fromPlayers: Record<string, number> = {};
+
+    // Take from all other players
+    this.playerIds.forEach((otherId) => {
+      if (otherId === playerId) return;
+
+      const otherResources = this.gameState.playerResources[otherId];
+      const amount = otherResources[resourceType] || 0;
+
+      if (amount > 0) {
+        otherResources[resourceType] = 0;
+        totalCollected += amount;
+        fromPlayers[otherId] = amount;
+      }
+    });
+
+    // Give to monopoly player
+    const playerResources = this.gameState.playerResources[playerId];
+    playerResources[resourceType] =
+      (playerResources[resourceType] || 0) + totalCollected;
+
+    // Clear pending state
+    this.monopolyPending = false;
+    this.pendingDevCardPlayerId = null;
+
+    return { success: true, totalCollected, fromPlayers };
+  }
+
+  /**
+   * Play a Road Building development card.
+   * Validates card ownership, same-turn restriction, one-per-turn restriction.
+   * Enters road building mode, allowing up to 2 free roads.
+   */
+  playRoadBuilding(
+    playerId: string,
+    cardId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    roadsToPlace?: number;
+  } {
+    // 1. Validate it's player's turn
+    if (playerId !== this.getCurrentPlayerId()) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    // 2. Validate main phase
+    if (
+      !this.gameState.turnState ||
+      this.gameState.turnState.phase !== 'main'
+    ) {
+      return { success: false, error: 'Can only play during main phase' };
+    }
+
+    // 3. Validate not already in a dev card flow
+    if (this.robberPhase !== 'none') {
+      return { success: false, error: 'Robber flow already in progress' };
+    }
+    if (
+      this.yearOfPlentyPending ||
+      this.monopolyPending ||
+      this.roadBuildingRemaining > 0
+    ) {
+      return { success: false, error: 'Dev card effect already in progress' };
+    }
+
+    // 4. Find and validate the card
+    const playerCards = this.playerDevCards.get(playerId) || [];
+    const cardIndex = playerCards.findIndex((c) => c.id === cardId);
+    if (cardIndex === -1) {
+      return { success: false, error: 'Card not found' };
+    }
+
+    const card = playerCards[cardIndex];
+    if (card.type !== 'road_building') {
+      return { success: false, error: 'Not a Road Building card' };
+    }
+
+    // 5. Check play restrictions (same-turn, one-per-turn)
+    const currentTurn = this.gameState.turnState?.turnNumber || 1;
+    if (card.purchasedOnTurn === currentTurn) {
+      return { success: false, error: 'Cannot play card purchased this turn' };
+    }
+    if (this.playedDevCardThisTurn) {
+      return { success: false, error: 'Already played a dev card this turn' };
+    }
+
+    // 6. Calculate how many roads player can place (up to 2, limited by remaining pieces)
+    const playerRoads = this.gameState.roads.filter(
+      (r) => r.playerId === playerId,
+    ).length;
+    const roadsRemaining = MAX_PIECES.roads - playerRoads;
+    const roadsToPlace = Math.min(2, roadsRemaining);
+
+    if (roadsToPlace === 0) {
+      return { success: false, error: 'No road pieces remaining' };
+    }
+
+    // 7. Remove card from player's hand
+    playerCards.splice(cardIndex, 1);
+    this.playerDevCards.set(playerId, playerCards);
+
+    // 8. Mark dev card played this turn
+    this.playedDevCardThisTurn = true;
+
+    // 9. Enter Road Building mode
+    this.roadBuildingRemaining = roadsToPlace;
+    this.roadBuildingEdges = [];
+    this.pendingDevCardPlayerId = playerId;
+
+    return { success: true, roadsToPlace };
+  }
+
+  /**
+   * Place a road during Road Building card effect.
+   * Uses main-game road placement rules but costs no resources.
+   */
+  placeRoadBuildingRoad(
+    playerId: string,
+    edgeId: string,
+  ): {
+    success: boolean;
+    error?: string;
+    roadsRemaining?: number;
+    complete?: boolean;
+    edgesPlaced?: string[];
+  } {
+    // 1. Validate player and mode
+    if (playerId !== this.pendingDevCardPlayerId) {
+      return { success: false, error: 'Not your turn' };
+    }
+    if (this.roadBuildingRemaining <= 0) {
+      return { success: false, error: 'Not in Road Building mode' };
+    }
+
+    // 2. Validate placement using main-game road rules
+    const errorReason = getInvalidMainGameRoadReason(
+      edgeId,
+      this.gameState,
+      playerId,
+      this.edges,
+    );
+    if (errorReason) {
+      return { success: false, error: errorReason };
+    }
+
+    // 3. Place road (no resource cost)
+    this.gameState.roads.push({ edgeId, playerId });
+    this.roadBuildingEdges.push(edgeId);
+    this.roadBuildingRemaining--;
+
+    // 4. Check if complete
+    const complete = this.roadBuildingRemaining === 0;
+
+    if (complete) {
+      // Reset Road Building state
+      const edgesPlaced = [...this.roadBuildingEdges];
+      this.roadBuildingEdges = [];
+      this.pendingDevCardPlayerId = null;
+      return {
+        success: true,
+        roadsRemaining: 0,
+        complete: true,
+        edgesPlaced,
+      };
+    }
+
+    return {
+      success: true,
+      roadsRemaining: this.roadBuildingRemaining,
+      complete: false,
+    };
+  }
+
+  /**
+   * Check if the game is in Road Building mode.
+   */
+  isInRoadBuildingMode(): boolean {
+    return this.roadBuildingRemaining > 0;
+  }
+
+  /**
+   * Get the number of roads remaining to place in Road Building mode.
+   */
+  getRoadBuildingRemaining(): number {
+    return this.roadBuildingRemaining;
   }
 }

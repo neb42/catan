@@ -26,6 +26,10 @@ import {
   WaitingForDiscardsOverlay,
 } from '@web/components/Robber';
 import { GameLog } from '@web/components/Feedback';
+import { RoadBuildingOverlay } from './CardPlay/RoadBuildingOverlay';
+import { ResourcePickerModal } from './CardPlay/ResourcePickerModal';
+import { MonopolyModal } from './CardPlay/MonopolyModal';
+import { DevCardHand } from './DevCard/DevCardHand';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
@@ -144,6 +148,7 @@ export function Game() {
             }}
           >
             <ResourceHand />
+            <DevCardHand />
           </div>
           <div
             style={{
@@ -171,6 +176,11 @@ export function Game() {
       <DiscardModal />
       <StealModal />
       <WaitingForDiscardsOverlay />
+
+      {/* Dev card modals - render at root level, they control their own visibility */}
+      <RoadBuildingOverlay />
+      <ResourcePickerModal />
+      <MonopolyModal />
 
       {/* Game log - shows action history */}
       {/* <GameLog /> */}

@@ -9,6 +9,7 @@ import type {
   PlayerResources,
   BuildingType,
   ResourceType,
+  OwnedDevCard,
 } from '@catan/shared';
 import { BUILDING_COSTS } from '@catan/shared';
 
@@ -92,6 +93,34 @@ interface RobberSlice {
   }>;
 }
 
+// Dev card state slice
+interface DevCardSlice {
+  // Own cards (full info for local player)
+  myDevCards: OwnedDevCard[];
+
+  // Opponent card counts (hidden info - just counts)
+  opponentDevCardCounts: Record<string, number>;
+
+  // Deck state
+  deckRemaining: number;
+
+  // Play state
+  hasPlayedDevCardThisTurn: boolean;
+
+  // Card play in progress
+  devCardPlayPhase:
+    | 'none'
+    | 'road_building'
+    | 'year_of_plenty'
+    | 'monopoly'
+    | null;
+  cardBeingPlayed: OwnedDevCard | null;
+  roadsPlacedThisCard: number; // For Road Building (0, 1, or 2)
+
+  // Knight tracking (for Largest Army - visible to all)
+  knightsPlayed: Record<string, number>;
+}
+
 // Game log state slice
 interface GameLogEntry {
   id: string;
@@ -123,6 +152,7 @@ interface GameStore
     BuildSlice,
     TradeSlice,
     RobberSlice,
+    DevCardSlice,
     GameLogSlice,
     DebugSlice {
   board: BoardState | null;
@@ -221,6 +251,21 @@ interface GameStore
   ) => void;
   clearRobberState: () => void;
 
+  // Dev card actions
+  setMyDevCards: (cards: OwnedDevCard[]) => void;
+  addMyDevCard: (card: OwnedDevCard) => void;
+  removeMyDevCard: (cardId: string) => void;
+  setDeckRemaining: (count: number) => void;
+  setOpponentDevCardCount: (playerId: string, count: number) => void;
+  incrementOpponentDevCardCount: (playerId: string) => void;
+  setHasPlayedDevCardThisTurn: (value: boolean) => void;
+  setDevCardPlayPhase: (phase: DevCardSlice['devCardPlayPhase']) => void;
+  setCardBeingPlayed: (card: OwnedDevCard | null) => void;
+  setRoadsPlacedThisCard: (count: number) => void;
+  setKnightsPlayed: (playerId: string, count: number) => void;
+  incrementKnightsPlayed: (playerId: string) => void;
+  clearDevCardState: () => void;
+
   // Game log actions
   addLogEntry: (
     message: string,
@@ -286,6 +331,16 @@ export const useGameStore = create<GameStore>((set) => ({
   robberHexId: null,
   stealRequired: false,
   stealCandidates: [],
+
+  // Dev card state
+  myDevCards: [],
+  opponentDevCardCounts: {},
+  deckRemaining: 25,
+  hasPlayedDevCardThisTurn: false,
+  devCardPlayPhase: null,
+  cardBeingPlayed: null,
+  roadsPlacedThisCard: 0,
+  knightsPlayed: {},
 
   // Game log state
   gameLog: [],
@@ -479,6 +534,59 @@ export const useGameStore = create<GameStore>((set) => ({
       stealCandidates: [],
     }),
 
+  // Dev card actions
+  setMyDevCards: (cards) => set({ myDevCards: cards }),
+  addMyDevCard: (card) =>
+    set((state) => ({
+      myDevCards: [...state.myDevCards, card],
+    })),
+  removeMyDevCard: (cardId) =>
+    set((state) => ({
+      myDevCards: state.myDevCards.filter((c) => c.id !== cardId),
+    })),
+  setDeckRemaining: (count) => set({ deckRemaining: count }),
+  setOpponentDevCardCount: (playerId, count) =>
+    set((state) => ({
+      opponentDevCardCounts: {
+        ...state.opponentDevCardCounts,
+        [playerId]: count,
+      },
+    })),
+  incrementOpponentDevCardCount: (playerId) =>
+    set((state) => ({
+      opponentDevCardCounts: {
+        ...state.opponentDevCardCounts,
+        [playerId]: (state.opponentDevCardCounts[playerId] || 0) + 1,
+      },
+    })),
+  setHasPlayedDevCardThisTurn: (value) =>
+    set({ hasPlayedDevCardThisTurn: value }),
+  setDevCardPlayPhase: (phase) => set({ devCardPlayPhase: phase }),
+  setCardBeingPlayed: (card) => set({ cardBeingPlayed: card }),
+  setRoadsPlacedThisCard: (count) => set({ roadsPlacedThisCard: count }),
+  setKnightsPlayed: (playerId, count) =>
+    set((state) => ({
+      knightsPlayed: { ...state.knightsPlayed, [playerId]: count },
+    })),
+  incrementKnightsPlayed: (playerId) =>
+    set((state) => ({
+      knightsPlayed: {
+        ...state.knightsPlayed,
+        [playerId]: (state.knightsPlayed[playerId] || 0) + 1,
+      },
+    })),
+  clearDevCardState: () =>
+    set({
+      myDevCards: [],
+      opponentDevCardCounts: {},
+      deckRemaining: 25,
+      hasPlayedDevCardThisTurn: false,
+      devCardPlayPhase: null,
+      cardBeingPlayed: null,
+      roadsPlacedThisCard: 0,
+      knightsPlayed: {},
+    }),
+
   // Game log actions
   addLogEntry: (message, type = 'info') =>
     set((state) => ({
@@ -591,7 +699,9 @@ export const useCanEndTurn = () =>
       !state.isAnimating &&
       !state.waitingForDiscards &&
       !state.robberPlacementMode &&
-      !state.stealRequired,
+      !state.stealRequired &&
+      // Block during dev card play phases (road building, year of plenty, monopoly)
+      (state.devCardPlayPhase === null || state.devCardPlayPhase === 'none'),
   );
 
 export const useLastResourcesDistributed = () =>
@@ -658,3 +768,20 @@ export const useDiscardState = () =>
       selected: state.selectedForDiscard,
     })),
   );
+
+// Dev card state selector hooks
+export const useMyDevCards = () => useGameStore((state) => state.myDevCards);
+export const useOpponentDevCardCounts = () =>
+  useGameStore((state) => state.opponentDevCardCounts);
+export const useDeckRemaining = () =>
+  useGameStore((state) => state.deckRemaining);
+export const useHasPlayedDevCardThisTurn = () =>
+  useGameStore((state) => state.hasPlayedDevCardThisTurn);
+export const useDevCardPlayPhase = () =>
+  useGameStore((state) => state.devCardPlayPhase);
+export const useCardBeingPlayed = () =>
+  useGameStore((state) => state.cardBeingPlayed);
+export const useRoadsPlacedThisCard = () =>
+  useGameStore((state) => state.roadsPlacedThisCard);
+export const useKnightsPlayed = (playerId: string) =>
+  useGameStore((state) => state.knightsPlayed[playerId] || 0);

@@ -9,6 +9,7 @@ import {
 } from '@catan/shared';
 
 import { GameManager } from '../game/GameManager';
+import { logMessage } from '../utils/message-logger';
 
 export type ManagedPlayer = Player & { ws: WebSocket };
 
@@ -82,6 +83,9 @@ export class RoomManager {
     if (!room) return;
 
     const payload = JSON.stringify(message);
+
+    // Log the broadcast message once (all players receive the same message)
+    logMessage(roomId, 'send', message);
 
     room.players.forEach((player) => {
       if (excludeId && player.id === excludeId) return;
