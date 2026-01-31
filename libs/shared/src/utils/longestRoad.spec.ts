@@ -63,7 +63,7 @@ describe('calculatePlayerLongestRoad', () => {
       // A - B - C (stem = 2)
       //     |
       //     D (branch = 1)
-      // Total should be 3 (max path is A-B-C or A-B-D)
+      // Max path: A-B-C = 2 edges or A-B-D = 2 edges (can't traverse both branches)
       const roads: Road[] = [
         road('A|B', player1),
         road('B|C', player1),
@@ -71,7 +71,7 @@ describe('calculatePlayerLongestRoad', () => {
       ];
       const settlements: Settlement[] = [];
 
-      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(3);
+      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(2);
     });
 
     it('should find longest path in complex fork', () => {
@@ -135,8 +135,10 @@ describe('calculatePlayerLongestRoad', () => {
       // G - A - B - C - H
       //     |       |
       //     F - E - D
-      // Loop of 6 + 2 tails = max path is 8
-      // Path: G-A-B-C-H or G-A-F-E-D-C-H etc.
+      // Loop of 6 + 2 tails = 8 roads total
+      // Max path is 7: G-A-B-C-D-E-F-A (uses all loop edges + one tail)
+      // Or G-A-F-E-D-C-H = 6 edges
+      // Best: G-A-B-C-D-E-F uses 6, then F-A is 7th edge back to A
       const roads: Road[] = [
         road('A|B', player1),
         road('B|C', player1),
@@ -149,15 +151,17 @@ describe('calculatePlayerLongestRoad', () => {
       ];
       const settlements: Settlement[] = [];
 
-      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(8);
+      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(7);
     });
   });
 
   describe('opponent settlement blocking', () => {
     it('should not traverse through opponent settlement', () => {
-      // A - B - C - D - E (5 edges)
-      // But opponent settlement at C blocks traversal
-      // Max path is A-B (2) or D-E (1) = 2
+      // A - B - C - D - E (4 edges: A|B, B|C, C|D, D|E)
+      // Opponent settlement at C blocks traversal through C
+      // Can traverse: A-B (1 edge) or D-E (1 edge)
+      // Edges B|C and C|D are blocked because C is opponent's
+      // Max path = 1
       const roads: Road[] = [
         road('A|B', player1),
         road('B|C', player1),
@@ -166,7 +170,7 @@ describe('calculatePlayerLongestRoad', () => {
       ];
       const settlements: Settlement[] = [settlement('C', player2)];
 
-      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(2);
+      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(1);
     });
 
     it('should block at start of road network', () => {
