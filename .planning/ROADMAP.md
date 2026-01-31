@@ -405,9 +405,9 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 **Plans:** 4 plans
 
-- [ ] 09-01-PLAN.md — Longest road algorithm (TDD with edge cases)
-- [ ] 09-02-PLAN.md — Backend integration (GameState, award management, WebSocket)
-- [ ] 09-03-PLAN.md — Frontend state and UI display
+- [x] 09-01-PLAN.md — Longest road algorithm (TDD with edge cases)
+- [x] 09-02-PLAN.md — Backend integration (GameState, award management, WebSocket)
+- [x] 09-03-PLAN.md — Frontend state and UI display
 - [ ] 09-04-PLAN.md — Human verification checkpoint
 
 ### Deliverables
@@ -610,4 +610,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-01-30 - Phase 7 (Robber) complete_
+_Last updated: 2026-01-31 - Phase 9 (Longest Road) 3/4 plans complete_
