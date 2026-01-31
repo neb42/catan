@@ -814,6 +814,47 @@ export default function Lobby() {
           break;
         }
 
+        // ============================================================================
+        // LONGEST ROAD HANDLERS
+        // ============================================================================
+
+        case 'longest_road_updated': {
+          const gameStore = useGameStore.getState();
+          const { holderId, holderLength, playerLengths, transferredFrom } =
+            message;
+
+          // Update state
+          gameStore.setLongestRoadState({
+            holderId,
+            holderLength,
+            playerLengths,
+          });
+
+          // Show toast if transferred
+          if (transferredFrom) {
+            const fromPlayer = room?.players.find(
+              (p) => p.id === transferredFrom,
+            );
+            const toPlayer = holderId
+              ? room?.players.find((p) => p.id === holderId)
+              : null;
+
+            if (toPlayer) {
+              showGameNotification(
+                `${toPlayer.nickname} takes Longest Road from ${fromPlayer?.nickname || 'nobody'}!`,
+                'success',
+              );
+            } else {
+              // Award lost (went below 5 or tie broke it)
+              showGameNotification(
+                `${fromPlayer?.nickname} loses Longest Road!`,
+                'warning',
+              );
+            }
+          }
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
