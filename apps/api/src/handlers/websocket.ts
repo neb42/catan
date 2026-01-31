@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { WebSocket } from 'ws';
 
 import {
+  DEV_CARD_COST,
   MAX_PLAYERS,
   MIN_PLAYERS,
   PLAYER_COLORS,
@@ -926,7 +927,7 @@ export function handleWebSocketConnection(
           playerId,
           card: result.card,
           deckRemaining: result.deckRemaining,
-          resourcesSpent: { ore: 1, sheep: 1, wheat: 1 },
+          resourcesSpent: DEV_CARD_COST,
         });
 
         // Send hidden info to all other players in room
