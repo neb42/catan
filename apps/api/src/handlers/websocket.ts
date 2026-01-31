@@ -19,13 +19,21 @@ import {
   ManagedRoom,
   RoomManager,
 } from '../managers/RoomManager';
+import { logMessage } from '../utils/message-logger';
 import { generateRoomId } from '../utils/room-id';
 
 const GAME_START_COUNTDOWN = 5;
 
-function sendMessage(socket: WebSocket, message: unknown): void {
+function sendMessage(
+  socket: WebSocket,
+  message: unknown,
+  roomId?: string,
+): void {
   if (socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify(message));
+    if (roomId) {
+      logMessage(roomId, 'send', message);
+    }
   }
 }
 
@@ -59,8 +67,12 @@ type ErrorMessage =
   | 'Invalid room ID'
   | 'Color already taken';
 
-function sendError(socket: WebSocket, message: ErrorMessage | string): void {
-  sendMessage(socket, { type: 'error', message });
+function sendError(
+  socket: WebSocket,
+  message: ErrorMessage | string,
+  roomId?: string,
+): void {
+  sendMessage(socket, { type: 'error', message }, roomId);
 }
 
 export function handleWebSocketConnection(
@@ -90,6 +102,13 @@ export function handleWebSocketConnection(
 
     const message = result.data;
 
+    // Log received message (use roomId from message for create/join, otherwise currentRoomId)
+    const logRoomId =
+      currentRoomId ||
+      ('roomId' in message ? message.roomId : null) ||
+      'no-room';
+    logMessage(logRoomId, 'recv', message);
+
     switch (message.type) {
       case 'create_room': {
         let roomId = generateRoomId();
@@ -111,11 +130,15 @@ export function handleWebSocketConnection(
         currentRoomId = roomId;
         playerId = player.id;
 
-        sendMessage(ws, {
-          type: 'room_created',
+        sendMessage(
+          ws,
+          {
+            type: 'room_created',
+            roomId,
+            player: serializePlayer(player),
+          },
           roomId,
-          player: serializePlayer(player),
-        });
+        );
 
         roomManager.broadcastToRoom(roomId, {
           type: 'room_state',
@@ -446,14 +469,14 @@ export function handleWebSocketConnection(
             if (playerWs && playerWs.readyState === WebSocket.OPEN) {
               const playerResources =
                 gameManager.getPlayerResources(discardPlayerId);
-              playerWs.send(
-                JSON.stringify({
-                  type: 'discard_required',
-                  playerId: discardPlayerId,
-                  targetCount,
-                  currentResources: playerResources,
-                }),
-              );
+              const discardMessage = {
+                type: 'discard_required',
+                playerId: discardPlayerId,
+                targetCount,
+                currentResources: playerResources,
+              };
+              playerWs.send(JSON.stringify(discardMessage));
+              logMessage(currentRoomId, 'send', discardMessage);
             }
           }
 
@@ -470,12 +493,12 @@ export function handleWebSocketConnection(
               playerId,
             );
             if (moverWs && moverWs.readyState === WebSocket.OPEN) {
-              moverWs.send(
-                JSON.stringify({
-                  type: 'robber_move_required',
-                  currentHexId: gameManager.getGameState().robberHexId,
-                }),
-              );
+              const robberMoveMessage = {
+                type: 'robber_move_required',
+                currentHexId: gameManager.getGameState().robberHexId,
+              };
+              moverWs.send(JSON.stringify(robberMoveMessage));
+              logMessage(currentRoomId, 'send', robberMoveMessage);
             }
           }
         }
@@ -526,10 +549,14 @@ export function handleWebSocketConnection(
         const result = gameManager.buildRoad(message.edgeId, playerId);
 
         if (!result.success) {
-          sendMessage(ws, {
-            type: 'build_failed',
-            reason: result.error || 'Build failed',
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'build_failed',
+              reason: result.error || 'Build failed',
+            },
+            currentRoomId,
+          );
           return;
         }
 
@@ -558,10 +585,14 @@ export function handleWebSocketConnection(
         const result = gameManager.buildSettlement(message.vertexId, playerId);
 
         if (!result.success) {
-          sendMessage(ws, {
-            type: 'build_failed',
-            reason: result.error || 'Build failed',
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'build_failed',
+              reason: result.error || 'Build failed',
+            },
+            currentRoomId,
+          );
           return;
         }
 
@@ -590,10 +621,14 @@ export function handleWebSocketConnection(
         const result = gameManager.buildCity(message.vertexId, playerId);
 
         if (!result.success) {
-          sendMessage(ws, {
-            type: 'build_failed',
-            reason: result.error || 'Build failed',
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'build_failed',
+              reason: result.error || 'Build failed',
+            },
+            currentRoomId,
+          );
           return;
         }
 
@@ -790,12 +825,12 @@ export function handleWebSocketConnection(
               robberMover,
             );
             if (moverWs && moverWs.readyState === WebSocket.OPEN) {
-              moverWs.send(
-                JSON.stringify({
-                  type: 'robber_move_required',
-                  currentHexId: gameManager.getGameState().robberHexId,
-                }),
-              );
+              const robberMoveMessage = {
+                type: 'robber_move_required',
+                currentHexId: gameManager.getGameState().robberHexId,
+              };
+              moverWs.send(JSON.stringify(robberMoveMessage));
+              logMessage(currentRoomId, 'send', robberMoveMessage);
             }
           }
         }
@@ -855,12 +890,12 @@ export function handleWebSocketConnection(
             cardCount: c.cardCount,
           }));
 
-          ws.send(
-            JSON.stringify({
-              type: 'steal_required',
-              candidates: candidatesWithNicknames,
-            }),
-          );
+          const stealMessage = {
+            type: 'steal_required',
+            candidates: candidatesWithNicknames,
+          };
+          ws.send(JSON.stringify(stealMessage));
+          logMessage(currentRoomId, 'send', stealMessage);
         }
         break;
       }
@@ -914,40 +949,48 @@ export function handleWebSocketConnection(
 
         if (!result.success) {
           // Send error only to buyer
-          sendMessage(ws, {
-            type: 'dev_card_play_failed',
-            reason: result.error || 'Purchase failed',
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'dev_card_play_failed',
+              reason: result.error || 'Purchase failed',
+            },
+            currentRoomId,
+          );
           return;
         }
 
         // Send full card info to buyer only
-        sendMessage(ws, {
-          type: 'dev_card_purchased',
-          playerId,
-          card: result.card,
-          deckRemaining: result.deckRemaining,
-          resourcesSpent: DEV_CARD_COST,
-        });
+        sendMessage(
+          ws,
+          {
+            type: 'dev_card_purchased',
+            playerId,
+            card: result.card,
+            deckRemaining: result.deckRemaining,
+            resourcesSpent: DEV_CARD_COST,
+          },
+          currentRoomId,
+        );
 
         // Send hidden info to all other players in room
         const room = roomManager.getRoom(currentRoomId);
         if (room) {
+          const publicMessage = {
+            type: 'dev_card_purchased_public',
+            playerId,
+            deckRemaining: result.deckRemaining,
+          };
           room.players.forEach((player) => {
             if (
               player.id !== playerId &&
               player.ws &&
               player.ws.readyState === WebSocket.OPEN
             ) {
-              player.ws.send(
-                JSON.stringify({
-                  type: 'dev_card_purchased_public',
-                  playerId,
-                  deckRemaining: result.deckRemaining,
-                }),
-              );
+              player.ws.send(JSON.stringify(publicMessage));
             }
           });
+          logMessage(currentRoomId, 'send', publicMessage);
         }
         break;
       }
@@ -969,10 +1012,14 @@ export function handleWebSocketConnection(
         const card = playerCards.find((c) => c.id === message.cardId);
 
         if (!card) {
-          sendMessage(ws, {
-            type: 'dev_card_play_failed',
-            reason: 'Card not found',
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'dev_card_play_failed',
+              reason: 'Card not found',
+            },
+            currentRoomId,
+          );
           return;
         }
 
@@ -982,10 +1029,14 @@ export function handleWebSocketConnection(
             const result = gameManager.playKnight(playerId, message.cardId);
 
             if (!result.success) {
-              sendMessage(ws, {
-                type: 'dev_card_play_failed',
-                reason: result.error || 'Cannot play knight',
-              });
+              sendMessage(
+                ws,
+                {
+                  type: 'dev_card_play_failed',
+                  reason: result.error || 'Cannot play knight',
+                },
+                currentRoomId,
+              );
               return;
             }
 
@@ -998,20 +1049,28 @@ export function handleWebSocketConnection(
             });
 
             // Send robber_move_required to the knight player
-            sendMessage(ws, {
-              type: 'robber_move_required',
-              currentHexId: result.currentRobberHex,
-            });
+            sendMessage(
+              ws,
+              {
+                type: 'robber_move_required',
+                currentHexId: result.currentRobberHex,
+              },
+              currentRoomId,
+            );
             break;
           }
 
           case 'victory_point': {
             // VP cards cannot be played - they auto-score
-            sendMessage(ws, {
-              type: 'dev_card_play_failed',
-              reason:
-                'Victory point cards cannot be played - they score automatically',
-            });
+            sendMessage(
+              ws,
+              {
+                type: 'dev_card_play_failed',
+                reason:
+                  'Victory point cards cannot be played - they score automatically',
+              },
+              currentRoomId,
+            );
             break;
           }
 
@@ -1022,10 +1081,14 @@ export function handleWebSocketConnection(
             );
 
             if (!result.success) {
-              sendMessage(ws, {
-                type: 'dev_card_play_failed',
-                reason: result.error || 'Cannot play Road Building',
-              });
+              sendMessage(
+                ws,
+                {
+                  type: 'dev_card_play_failed',
+                  reason: result.error || 'Cannot play Road Building',
+                },
+                currentRoomId,
+              );
               return;
             }
 
@@ -1038,10 +1101,14 @@ export function handleWebSocketConnection(
             });
 
             // Send road_building_required to the player
-            sendMessage(ws, {
-              type: 'road_building_required',
-              roadsRemaining: result.roadsToPlace,
-            });
+            sendMessage(
+              ws,
+              {
+                type: 'road_building_required',
+                roadsRemaining: result.roadsToPlace,
+              },
+              currentRoomId,
+            );
             break;
           }
 
@@ -1052,10 +1119,14 @@ export function handleWebSocketConnection(
             );
 
             if (!result.success) {
-              sendMessage(ws, {
-                type: 'dev_card_play_failed',
-                reason: result.error || 'Cannot play Year of Plenty',
-              });
+              sendMessage(
+                ws,
+                {
+                  type: 'dev_card_play_failed',
+                  reason: result.error || 'Cannot play Year of Plenty',
+                },
+                currentRoomId,
+              );
               return;
             }
 
@@ -1068,10 +1139,14 @@ export function handleWebSocketConnection(
             });
 
             // Send resource picker to player
-            sendMessage(ws, {
-              type: 'year_of_plenty_required',
-              bankResources: result.bankResources,
-            });
+            sendMessage(
+              ws,
+              {
+                type: 'year_of_plenty_required',
+                bankResources: result.bankResources,
+              },
+              currentRoomId,
+            );
             break;
           }
 
@@ -1079,10 +1154,14 @@ export function handleWebSocketConnection(
             const result = gameManager.playMonopoly(playerId, message.cardId);
 
             if (!result.success) {
-              sendMessage(ws, {
-                type: 'dev_card_play_failed',
-                reason: result.error || 'Cannot play Monopoly',
-              });
+              sendMessage(
+                ws,
+                {
+                  type: 'dev_card_play_failed',
+                  reason: result.error || 'Cannot play Monopoly',
+                },
+                currentRoomId,
+              );
               return;
             }
 
@@ -1095,17 +1174,25 @@ export function handleWebSocketConnection(
             });
 
             // Send resource picker to player
-            sendMessage(ws, {
-              type: 'monopoly_required',
-            });
+            sendMessage(
+              ws,
+              {
+                type: 'monopoly_required',
+              },
+              currentRoomId,
+            );
             break;
           }
 
           default: {
-            sendMessage(ws, {
-              type: 'dev_card_play_failed',
-              reason: 'Unknown card type',
-            });
+            sendMessage(
+              ws,
+              {
+                type: 'dev_card_play_failed',
+                reason: 'Unknown card type',
+              },
+              currentRoomId,
+            );
           }
         }
         break;
@@ -1130,10 +1217,14 @@ export function handleWebSocketConnection(
         );
 
         if (!result.success) {
-          sendMessage(ws, {
-            type: 'dev_card_play_failed',
-            reason: result.error || 'Failed to complete Year of Plenty',
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'dev_card_play_failed',
+              reason: result.error || 'Failed to complete Year of Plenty',
+            },
+            currentRoomId,
+          );
           return;
         }
 
@@ -1165,10 +1256,14 @@ export function handleWebSocketConnection(
         );
 
         if (!result.success) {
-          sendMessage(ws, {
-            type: 'dev_card_play_failed',
-            reason: result.error || 'Failed to complete Monopoly',
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'dev_card_play_failed',
+              reason: result.error || 'Failed to complete Monopoly',
+            },
+            currentRoomId,
+          );
           return;
         }
 
@@ -1199,10 +1294,14 @@ export function handleWebSocketConnection(
         const result = room.gameManager.placeRoadBuildingRoad(playerId, edgeId);
 
         if (!result.success) {
-          sendMessage(ws, {
-            type: 'build_failed', // Reuse existing error type
-            reason: result.error,
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'build_failed', // Reuse existing error type
+              reason: result.error,
+            },
+            currentRoomId,
+          );
           return;
         }
 
@@ -1223,16 +1322,20 @@ export function handleWebSocketConnection(
           });
         } else {
           // Send updated required message to player
-          sendMessage(ws, {
-            type: 'road_building_required',
-            roadsRemaining: result.roadsRemaining,
-          });
+          sendMessage(
+            ws,
+            {
+              type: 'road_building_required',
+              roadsRemaining: result.roadsRemaining,
+            },
+            currentRoomId,
+          );
         }
         break;
       }
 
       default: {
-        sendError(ws, 'Invalid room ID');
+        sendError(ws, 'Invalid room ID', currentRoomId || undefined);
       }
     }
   });
