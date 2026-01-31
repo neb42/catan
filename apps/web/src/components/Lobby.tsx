@@ -271,6 +271,8 @@ export default function Lobby() {
           // Clear any active trade when turn changes
           gameStore.clearTrade();
           gameStore.setTradeModalOpen(false);
+          // Reset dev card play state for new turn
+          gameStore.setHasPlayedDevCardThisTurn(false);
           break;
         }
 
@@ -608,6 +610,18 @@ export default function Lobby() {
           const gameStore = useGameStore.getState();
           gameStore.addMyDevCard(message.card);
           gameStore.setDeckRemaining(message.deckRemaining);
+
+          // Deduct resources from buyer
+          if (message.resourcesSpent) {
+            const resources = Object.entries(message.resourcesSpent).map(
+              ([type, count]) => ({
+                type: type as ResourceType,
+                count: -(count as number), // Negative to deduct
+              }),
+            );
+            gameStore.updatePlayerResources(message.playerId, resources);
+          }
+
           showGameNotification('Development card purchased!', 'success');
           break;
         }

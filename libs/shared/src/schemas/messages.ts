@@ -398,6 +398,7 @@ export const DevCardPurchasedMessageSchema = z.object({
   playerId: z.string(),
   card: OwnedDevCardSchema, // Full card info for buyer
   deckRemaining: z.number(),
+  resourcesSpent: ResourceCostSchema.optional(),
 });
 
 export const DevCardPurchasedPublicMessageSchema = z.object({

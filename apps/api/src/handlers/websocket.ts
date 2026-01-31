@@ -926,6 +926,7 @@ export function handleWebSocketConnection(
           playerId,
           card: result.card,
           deckRemaining: result.deckRemaining,
+          resourcesSpent: { ore: 1, sheep: 1, wheat: 1 },
         });
 
         // Send hidden info to all other players in room
