@@ -25,6 +25,10 @@ function getPlayerRoadsAtVertex(vertexId: string, playerRoads: Road[]): Road[] {
  * Key insight: Track visited EDGES, not nodes. Nodes can be revisited
  * (for loops), but edges cannot be reused.
  *
+ * Opponent settlement blocking: You CAN use an edge that connects to a blocked
+ * vertex (the road segment counts), but you CANNOT continue past that vertex.
+ * This correctly handles roads being "broken" by opponent settlements.
+ *
  * @param currentVertex Current position in traversal
  * @param visitedEdges Set of edge IDs already used in this path
  * @param playerRoads All roads belonging to the player
@@ -46,16 +50,19 @@ function dfs(
 
     const nextVertex = getOtherEndpoint(road.edgeId, currentVertex);
 
-    // Skip if blocked by opponent settlement
-    if (blockedVertices.has(nextVertex)) continue;
-
     // Mark edge as visited
     visitedEdges.add(road.edgeId);
 
-    // Recurse and track max length
-    const length =
-      1 + dfs(nextVertex, visitedEdges, playerRoads, blockedVertices);
-    maxLength = Math.max(maxLength, length);
+    // If next vertex is blocked by opponent settlement, count this edge but don't continue
+    if (blockedVertices.has(nextVertex)) {
+      // Edge counts, but we can't continue past the blocked vertex
+      maxLength = Math.max(maxLength, 1);
+    } else {
+      // Recurse and track max length
+      const length =
+        1 + dfs(nextVertex, visitedEdges, playerRoads, blockedVertices);
+      maxLength = Math.max(maxLength, length);
+    }
 
     // Backtrack - unmark edge
     visitedEdges.delete(road.edgeId);

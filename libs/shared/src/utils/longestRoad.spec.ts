@@ -156,12 +156,12 @@ describe('calculatePlayerLongestRoad', () => {
   });
 
   describe('opponent settlement blocking', () => {
-    it('should not traverse through opponent settlement', () => {
+    it('should count edges up to blocked vertex but not continue past', () => {
       // A - B - C - D - E (4 edges: A|B, B|C, C|D, D|E)
-      // Opponent settlement at C blocks traversal through C
-      // Can traverse: A-B (1 edge) or D-E (1 edge)
-      // Edges B|C and C|D are blocked because C is opponent's
-      // Max path = 1
+      // Opponent settlement at C blocks traversal THROUGH C
+      // Edges B|C and C|D still count (road segments exist), but can't continue past C
+      // Can traverse: A-B-C (2 edges) or D-E-C (2 edges)
+      // Max path = 2
       const roads: Road[] = [
         road('A|B', player1),
         road('B|C', player1),
@@ -170,14 +170,33 @@ describe('calculatePlayerLongestRoad', () => {
       ];
       const settlements: Settlement[] = [settlement('C', player2)];
 
-      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(1);
+      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(2);
     });
 
-    it('should block at start of road network', () => {
+    it('should handle road broken into 3+2 segments', () => {
+      // A - B - C - D - E - F (5 edges)
+      // Opponent settlement at C blocks traversal
+      // Segment 1: A-B-C (2 edges, can reach C but not pass)
+      // Segment 2: C-D-E-F (3 edges, can reach C but not pass)
+      // Max = 3
+      const roads: Road[] = [
+        road('A|B', player1),
+        road('B|C', player1),
+        road('C|D', player1),
+        road('D|E', player1),
+        road('E|F', player1),
+      ];
+      const settlements: Settlement[] = [settlement('C', player2)];
+
+      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(3);
+    });
+
+    it('should count edge to blocked vertex at network endpoint', () => {
       // Opponent at A
       // A - B - C - D (3 edges)
-      // Player cannot start from A, so must start from B
-      // Path: B-C-D = 2 (roads B|C and C|D)
+      // Player cannot start from A, so must start from B, C, or D
+      // Path from D: D-C-B-A = 3 edges (can reach A but not pass)
+      // Max = 3
       const roads: Road[] = [
         road('A|B', player1),
         road('B|C', player1),
@@ -185,7 +204,7 @@ describe('calculatePlayerLongestRoad', () => {
       ];
       const settlements: Settlement[] = [settlement('A', player2)];
 
-      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(2);
+      expect(calculatePlayerLongestRoad(roads, settlements, player1)).toBe(3);
     });
   });
 
