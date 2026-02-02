@@ -45,6 +45,10 @@ import {
   validateRobberPlacement,
 } from './robber-logic';
 import { createShuffledDeck, canBuyDevCard, drawCard } from './dev-card-logic';
+import {
+  recalculateLongestRoad,
+  LongestRoadResult,
+} from './longest-road-logic';
 
 export class GameManager {
   private gameState: GameState;
@@ -103,6 +107,9 @@ export class GameManager {
       ),
       turnState: null, // null during setup, initialized when main game starts
       robberHexId: null, // null during setup, set to desert hex when main game starts
+      longestRoadHolderId: null,
+      longestRoadLength: 0,
+      playerRoadLengths: Object.fromEntries(playerIds.map((id) => [id, 0])),
     };
 
     // Initialize development card deck
@@ -269,6 +276,7 @@ export class GameManager {
     success: boolean;
     error?: string;
     setupComplete: boolean;
+    longestRoadResult?: LongestRoadResult;
   } {
     // 1. Validate current player
     if (playerId !== this.getCurrentPlayerId()) {
@@ -339,7 +347,10 @@ export class GameManager {
       this.startMainGame(); // Initialize turn state for main game
     }
 
-    return { success: true, setupComplete };
+    // 7. Update longest road
+    const longestRoadResult = this.updateLongestRoad();
+
+    return { success: true, setupComplete, longestRoadResult };
   }
 
   /**
@@ -595,6 +606,7 @@ export class GameManager {
     success: boolean;
     error?: string;
     resourcesSpent?: Partial<Record<ResourceType, number>>;
+    longestRoadResult?: LongestRoadResult;
   } {
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
@@ -640,9 +652,13 @@ export class GameManager {
       playerId,
     });
 
+    // 7. Update longest road
+    const longestRoadResult = this.updateLongestRoad();
+
     return {
       success: true,
       resourcesSpent: { ...cost },
+      longestRoadResult,
     };
   }
 
@@ -657,6 +673,7 @@ export class GameManager {
     success: boolean;
     error?: string;
     resourcesSpent?: Partial<Record<ResourceType, number>>;
+    longestRoadResult?: LongestRoadResult;
   } {
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
@@ -704,9 +721,13 @@ export class GameManager {
       isCity: false,
     });
 
+    // 7. Update longest road (settlement can break opponent's road)
+    const longestRoadResult = this.updateLongestRoad();
+
     return {
       success: true,
       resourcesSpent: { ...cost },
+      longestRoadResult,
     };
   }
 
@@ -1751,6 +1772,7 @@ export class GameManager {
     roadsRemaining?: number;
     complete?: boolean;
     edgesPlaced?: string[];
+    longestRoadResult?: LongestRoadResult;
   } {
     // 1. Validate player and mode
     if (playerId !== this.pendingDevCardPlayerId) {
@@ -1776,7 +1798,10 @@ export class GameManager {
     this.roadBuildingEdges.push(edgeId);
     this.roadBuildingRemaining--;
 
-    // 4. Check if complete
+    // 4. Update longest road
+    const longestRoadResult = this.updateLongestRoad();
+
+    // 5. Check if complete
     const complete = this.roadBuildingRemaining === 0;
 
     if (complete) {
@@ -1789,6 +1814,7 @@ export class GameManager {
         roadsRemaining: 0,
         complete: true,
         edgesPlaced,
+        longestRoadResult,
       };
     }
 
@@ -1796,6 +1822,7 @@ export class GameManager {
       success: true,
       roadsRemaining: this.roadBuildingRemaining,
       complete: false,
+      longestRoadResult,
     };
   }
 
@@ -1811,5 +1838,34 @@ export class GameManager {
    */
   getRoadBuildingRemaining(): number {
     return this.roadBuildingRemaining;
+  }
+
+  // ============================================================================
+  // LONGEST ROAD METHODS
+  // ============================================================================
+
+  /**
+   * Recalculate longest road and update game state.
+   * Returns the result for broadcasting transfer events.
+   */
+  private updateLongestRoad(): LongestRoadResult {
+    const currentState = {
+      holderId: this.gameState.longestRoadHolderId,
+      length: this.gameState.longestRoadLength,
+    };
+
+    const result = recalculateLongestRoad(
+      this.gameState.roads,
+      this.gameState.settlements,
+      this.playerIds,
+      currentState,
+    );
+
+    // Update game state
+    this.gameState.longestRoadHolderId = result.newState.holderId;
+    this.gameState.longestRoadLength = result.newState.length;
+    this.gameState.playerRoadLengths = result.playerLengths;
+
+    return result;
   }
 }

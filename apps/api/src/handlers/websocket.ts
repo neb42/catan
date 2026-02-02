@@ -14,6 +14,7 @@ import {
 
 import { generateBoard } from '../game/board-generator';
 import { GameManager } from '../game/GameManager';
+import { LongestRoadResult } from '../game/longest-road-logic';
 import {
   ManagedPlayer,
   ManagedRoom,
@@ -73,6 +74,25 @@ function sendError(
   roomId?: string,
 ): void {
   sendMessage(socket, { type: 'error', message }, roomId);
+}
+
+/**
+ * Broadcast longest_road_updated if a transfer occurred.
+ */
+function broadcastLongestRoadIfTransferred(
+  roomManager: RoomManager,
+  roomId: string,
+  result: LongestRoadResult | undefined,
+): void {
+  if (!result?.transferred) return;
+
+  roomManager.broadcastToRoom(roomId, {
+    type: 'longest_road_updated',
+    holderId: result.newState.holderId,
+    holderLength: result.newState.length,
+    playerLengths: result.playerLengths,
+    transferredFrom: result.fromPlayerId ?? null,
+  });
 }
 
 export function handleWebSocketConnection(
@@ -390,6 +410,13 @@ export function handleWebSocketConnection(
           playerId,
         });
 
+        // Broadcast longest road if transferred
+        broadcastLongestRoadIfTransferred(
+          roomManager,
+          currentRoomId,
+          result.longestRoadResult,
+        );
+
         if (result.setupComplete) {
           // Setup phase complete
           const turnState = gameManager.getState().turnState;
@@ -569,6 +596,13 @@ export function handleWebSocketConnection(
           playerId,
           resourcesSpent: result.resourcesSpent || {},
         });
+
+        // Broadcast longest road if transferred
+        broadcastLongestRoadIfTransferred(
+          roomManager,
+          currentRoomId,
+          result.longestRoadResult,
+        );
         break;
       }
 
@@ -605,6 +639,13 @@ export function handleWebSocketConnection(
           playerId,
           resourcesSpent: result.resourcesSpent || {},
         });
+
+        // Broadcast longest road if transferred (settlement can break opponent's road)
+        broadcastLongestRoadIfTransferred(
+          roomManager,
+          currentRoomId,
+          result.longestRoadResult,
+        );
         break;
       }
 
@@ -1314,6 +1355,13 @@ export function handleWebSocketConnection(
           edgeId,
           roadsRemaining: result.roadsRemaining,
         });
+
+        // Broadcast longest road if transferred
+        broadcastLongestRoadIfTransferred(
+          roomManager,
+          currentRoomId,
+          result.longestRoadResult,
+        );
 
         if (result.complete) {
           // Broadcast completion to all players

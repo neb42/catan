@@ -7,3 +7,4 @@ export * from './constants';
 export * from './utils/coordinates';
 export * from './utils/hexGeometry';
 export * from './utils/snakeDraft';
+export * from './utils/longestRoad';

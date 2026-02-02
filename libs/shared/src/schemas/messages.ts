@@ -461,6 +461,15 @@ export const DevCardPlayFailedMessageSchema = z.object({
   reason: z.string(),
 });
 
+// Longest Road Messages - Server -> Client
+export const LongestRoadUpdatedMessageSchema = z.object({
+  type: z.literal('longest_road_updated'),
+  holderId: z.string().nullable(),
+  holderLength: z.number(),
+  playerLengths: z.record(z.string(), z.number()), // All players' road lengths
+  transferredFrom: z.string().nullable(), // Previous holder if transferred
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -540,6 +549,8 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   RoadBuildingPlacedMessageSchema,
   RoadBuildingCompletedMessageSchema,
   DevCardPlayFailedMessageSchema,
+  // Longest road messages
+  LongestRoadUpdatedMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -672,6 +683,10 @@ export type RoadBuildingCompletedMessage = z.infer<
 >;
 export type DevCardPlayFailedMessage = z.infer<
   typeof DevCardPlayFailedMessageSchema
+>;
+// Longest road message types
+export type LongestRoadUpdatedMessage = z.infer<
+  typeof LongestRoadUpdatedMessageSchema
 >;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;

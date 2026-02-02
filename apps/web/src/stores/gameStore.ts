@@ -121,6 +121,13 @@ interface DevCardSlice {
   knightsPlayed: Record<string, number>;
 }
 
+// Longest road state slice
+interface LongestRoadSlice {
+  longestRoadHolderId: string | null;
+  longestRoadLength: number;
+  playerRoadLengths: Record<string, number>;
+}
+
 // Game log state slice
 interface GameLogEntry {
   id: string;
@@ -153,6 +160,7 @@ interface GameStore
     TradeSlice,
     RobberSlice,
     DevCardSlice,
+    LongestRoadSlice,
     GameLogSlice,
     DebugSlice {
   board: BoardState | null;
@@ -266,6 +274,13 @@ interface GameStore
   incrementKnightsPlayed: (playerId: string) => void;
   clearDevCardState: () => void;
 
+  // Longest road actions
+  setLongestRoadState: (state: {
+    holderId: string | null;
+    holderLength: number;
+    playerLengths: Record<string, number>;
+  }) => void;
+
   // Game log actions
   addLogEntry: (
     message: string,
@@ -341,6 +356,11 @@ export const useGameStore = create<GameStore>((set) => ({
   cardBeingPlayed: null,
   roadsPlacedThisCard: 0,
   knightsPlayed: {},
+
+  // Longest road initial state
+  longestRoadHolderId: null,
+  longestRoadLength: 0,
+  playerRoadLengths: {},
 
   // Game log state
   gameLog: [],
@@ -587,6 +607,14 @@ export const useGameStore = create<GameStore>((set) => ({
       knightsPlayed: {},
     }),
 
+  // Longest road actions
+  setLongestRoadState: (state) =>
+    set({
+      longestRoadHolderId: state.holderId,
+      longestRoadLength: state.holderLength,
+      playerRoadLengths: state.playerLengths,
+    }),
+
   // Game log actions
   addLogEntry: (message, type = 'info') =>
     set((state) => ({
@@ -785,3 +813,10 @@ export const useRoadsPlacedThisCard = () =>
   useGameStore((state) => state.roadsPlacedThisCard);
 export const useKnightsPlayed = (playerId: string) =>
   useGameStore((state) => state.knightsPlayed[playerId] || 0);
+
+// Longest road state selector hooks
+export const useLongestRoadHolder = () =>
+  useGameStore((s) => s.longestRoadHolderId);
+
+export const usePlayerRoadLengths = () =>
+  useGameStore(useShallow((s) => s.playerRoadLengths));
