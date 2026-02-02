@@ -435,7 +435,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-TBD
+**Plans:** 3 plans
+
+- [ ] 10-01-PLAN.md — Backend logic (TDD) and GameState schema fields
+- [ ] 10-02-PLAN.md — WebSocket message schema and frontend state integration
+- [ ] 10-03-PLAN.md — UI display (Largest Army badge, knight counts) with verification
 
 ### Deliverables
 
