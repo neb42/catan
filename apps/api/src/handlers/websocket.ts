@@ -14,6 +14,7 @@ import {
 
 import { generateBoard } from '../game/board-generator';
 import { GameManager } from '../game/GameManager';
+import { LargestArmyResult } from '../game/largest-army-logic';
 import { LongestRoadResult } from '../game/longest-road-logic';
 import {
   ManagedPlayer,
@@ -91,6 +92,25 @@ function broadcastLongestRoadIfTransferred(
     holderId: result.newState.holderId,
     holderLength: result.newState.length,
     playerLengths: result.playerLengths,
+    transferredFrom: result.fromPlayerId ?? null,
+  });
+}
+
+/**
+ * Broadcast largest_army_updated if a transfer occurred.
+ */
+function broadcastLargestArmyIfTransferred(
+  roomManager: RoomManager,
+  roomId: string,
+  result: LargestArmyResult | undefined,
+): void {
+  if (!result?.transferred) return;
+
+  roomManager.broadcastToRoom(roomId, {
+    type: 'largest_army_updated',
+    holderId: result.newState.holderId,
+    holderKnights: result.newState.knights,
+    playerKnightCounts: result.knightCounts,
     transferredFrom: result.fromPlayerId ?? null,
   });
 }
@@ -1090,6 +1110,13 @@ export function handleWebSocketConnection(
               cardType: 'knight',
               cardId: message.cardId,
             });
+
+            // Broadcast largest army update if it transferred
+            broadcastLargestArmyIfTransferred(
+              roomManager,
+              currentRoomId,
+              result.largestArmyResult,
+            );
 
             // Send robber_move_required to the knight player
             sendMessage(
