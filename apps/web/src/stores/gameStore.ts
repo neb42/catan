@@ -128,6 +128,12 @@ interface LongestRoadSlice {
   playerRoadLengths: Record<string, number>;
 }
 
+// Largest army state slice
+interface LargestArmySlice {
+  largestArmyHolderId: string | null;
+  largestArmyKnights: number;
+}
+
 // Game log state slice
 interface GameLogEntry {
   id: string;
@@ -161,6 +167,7 @@ interface GameStore
     RobberSlice,
     DevCardSlice,
     LongestRoadSlice,
+    LargestArmySlice,
     GameLogSlice,
     DebugSlice {
   board: BoardState | null;
@@ -281,6 +288,13 @@ interface GameStore
     playerLengths: Record<string, number>;
   }) => void;
 
+  // Largest army actions
+  setLargestArmyState: (state: {
+    holderId: string | null;
+    holderKnights: number;
+    playerKnightCounts: Record<string, number>;
+  }) => void;
+
   // Game log actions
   addLogEntry: (
     message: string,
@@ -361,6 +375,10 @@ export const useGameStore = create<GameStore>((set) => ({
   longestRoadHolderId: null,
   longestRoadLength: 0,
   playerRoadLengths: {},
+
+  // Largest army initial state
+  largestArmyHolderId: null,
+  largestArmyKnights: 0,
 
   // Game log state
   gameLog: [],
@@ -615,6 +633,14 @@ export const useGameStore = create<GameStore>((set) => ({
       playerRoadLengths: state.playerLengths,
     }),
 
+  // Largest army actions
+  setLargestArmyState: (state) =>
+    set((prev) => ({
+      largestArmyHolderId: state.holderId,
+      largestArmyKnights: state.holderKnights,
+      knightsPlayed: { ...prev.knightsPlayed, ...state.playerKnightCounts },
+    })),
+
   // Game log actions
   addLogEntry: (message, type = 'info') =>
     set((state) => ({
@@ -820,3 +846,7 @@ export const useLongestRoadHolder = () =>
 
 export const usePlayerRoadLengths = () =>
   useGameStore(useShallow((s) => s.playerRoadLengths));
+
+// Largest army state selector hooks
+export const useLargestArmyHolder = () =>
+  useGameStore((s) => s.largestArmyHolderId);

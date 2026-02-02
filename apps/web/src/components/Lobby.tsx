@@ -855,6 +855,51 @@ export default function Lobby() {
           break;
         }
 
+        // ============================================================================
+        // LARGEST ARMY HANDLERS
+        // ============================================================================
+
+        case 'largest_army_updated': {
+          const gameStore = useGameStore.getState();
+          const {
+            holderId,
+            holderKnights,
+            playerKnightCounts,
+            transferredFrom,
+          } = message;
+
+          // Update state
+          gameStore.setLargestArmyState({
+            holderId,
+            holderKnights,
+            playerKnightCounts,
+          });
+
+          // Show toast if transferred
+          if (transferredFrom) {
+            const fromPlayer = room?.players.find(
+              (p) => p.id === transferredFrom,
+            );
+            const toPlayer = holderId
+              ? room?.players.find((p) => p.id === holderId)
+              : null;
+
+            if (toPlayer) {
+              showGameNotification(
+                `${toPlayer.nickname} takes Largest Army from ${fromPlayer?.nickname || 'nobody'}!`,
+                'success',
+              );
+            } else {
+              // Award lost (tie broke it or other edge case)
+              showGameNotification(
+                `${fromPlayer?.nickname} loses Largest Army!`,
+                'warning',
+              );
+            }
+          }
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
