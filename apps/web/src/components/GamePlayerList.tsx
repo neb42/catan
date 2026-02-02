@@ -16,6 +16,7 @@ import {
   useTurnCurrentPlayer,
   useLongestRoadHolder,
   usePlayerRoadLengths,
+  useLargestArmyHolder,
 } from '../stores/gameStore';
 
 type GamePlayerListProps = {
@@ -47,6 +48,9 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
   const longestRoadHolderId = useLongestRoadHolder();
   const playerRoadLengths = usePlayerRoadLengths();
 
+  // Largest army state
+  const largestArmyHolderId = useLargestArmyHolder();
+
   // Color mapping for backgrounds
   const colorMap: Record<string, string> = PLAYER_COLOR_HEX;
 
@@ -69,6 +73,9 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
         // Road length and longest road status
         const roadLength = playerRoadLengths[player.id] || 0;
         const hasLongestRoad = player.id === longestRoadHolderId;
+
+        // Largest army status
+        const hasLargestArmy = player.id === largestArmyHolderId;
 
         return (
           <motion.div
@@ -181,6 +188,25 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                       <Tooltip label="Longest Road (2 VP)" position="top">
                         <Badge size="sm" color="green" variant="filled">
                           🛤️ Longest
+                        </Badge>
+                      </Tooltip>
+                    </motion.div>
+                  )}
+
+                  {/* Largest Army badge */}
+                  {hasLargestArmy && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 30,
+                      }}
+                    >
+                      <Tooltip label="Largest Army (2 VP)" position="top">
+                        <Badge size="sm" color="red" variant="filled">
+                          🛡️ Largest
                         </Badge>
                       </Tooltip>
                     </motion.div>
