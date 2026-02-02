@@ -53,6 +53,9 @@ const emptyGameState: GameState = {
   longestRoadHolderId: null,
   longestRoadLength: 0,
   playerRoadLengths: {},
+  largestArmyHolderId: null,
+  largestArmyKnights: 0,
+  playerKnightCounts: {},
 };
 
 describe('isValidSettlementPlacement', () => {
@@ -229,6 +232,9 @@ const mainGameState: GameState = {
   longestRoadHolderId: null,
   longestRoadLength: 0,
   playerRoadLengths: { p1: 0, p2: 0 },
+  largestArmyHolderId: null,
+  largestArmyKnights: 0,
+  playerKnightCounts: { p1: 0, p2: 0 },
 };
 
 describe('getEdgesAtVertex', () => {

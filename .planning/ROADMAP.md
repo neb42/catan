@@ -420,7 +420,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ## Phase 10: Largest Army
 
 **Goal:** Track largest army and award bonus points  
-**Duration:** 0.5 week  
+**Status:** ✅ Complete  
+**Completed:** 2026-02-02  
 **Dependencies:** Phase 8 (needs Knight card to be implemented)
 
 ### Requirements (3)
@@ -435,7 +436,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-TBD
+**Plans:** 3 plans
+
+- [x] 10-01-PLAN.md — Backend logic (TDD) and GameState schema fields
+- [x] 10-02-PLAN.md — WebSocket message schema and frontend state integration
+- [x] 10-03-PLAN.md — UI display (Largest Army badge, knight counts) with verification
 
 ### Deliverables
 
@@ -610,4 +615,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-01-31 - Phase 9 (Longest Road) 3/4 plans complete_
+_Last updated: 2026-02-02 - Phase 10 (Largest Army) complete_
