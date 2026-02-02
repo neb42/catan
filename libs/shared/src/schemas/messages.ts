@@ -470,6 +470,15 @@ export const LongestRoadUpdatedMessageSchema = z.object({
   transferredFrom: z.string().nullable(), // Previous holder if transferred
 });
 
+// Largest Army Messages - Server -> Client
+export const LargestArmyUpdatedMessageSchema = z.object({
+  type: z.literal('largest_army_updated'),
+  holderId: z.string().nullable(),
+  holderKnights: z.number(),
+  playerKnightCounts: z.record(z.string(), z.number()), // All players' knight counts
+  transferredFrom: z.string().nullable(), // Previous holder if transferred
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -551,6 +560,8 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   DevCardPlayFailedMessageSchema,
   // Longest road messages
   LongestRoadUpdatedMessageSchema,
+  // Largest army messages
+  LargestArmyUpdatedMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -687,6 +698,10 @@ export type DevCardPlayFailedMessage = z.infer<
 // Longest road message types
 export type LongestRoadUpdatedMessage = z.infer<
   typeof LongestRoadUpdatedMessageSchema
+>;
+// Largest army message types
+export type LargestArmyUpdatedMessage = z.infer<
+  typeof LargestArmyUpdatedMessageSchema
 >;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
