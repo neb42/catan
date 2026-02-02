@@ -49,6 +49,10 @@ import {
   recalculateLongestRoad,
   LongestRoadResult,
 } from './longest-road-logic';
+import {
+  recalculateLargestArmy,
+  LargestArmyResult,
+} from './largest-army-logic';
 
 export class GameManager {
   private gameState: GameState;
@@ -110,6 +114,9 @@ export class GameManager {
       longestRoadHolderId: null,
       longestRoadLength: 0,
       playerRoadLengths: Object.fromEntries(playerIds.map((id) => [id, 0])),
+      largestArmyHolderId: null,
+      largestArmyKnights: 0,
+      playerKnightCounts: Object.fromEntries(playerIds.map((id) => [id, 0])),
     };
 
     // Initialize development card deck
@@ -1338,6 +1345,7 @@ export class GameManager {
     success: boolean;
     error?: string;
     currentRobberHex?: string | null;
+    largestArmyResult?: LargestArmyResult;
   } {
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
@@ -1378,16 +1386,20 @@ export class GameManager {
     const currentKnights = this.knightsPlayed.get(playerId) || 0;
     this.knightsPlayed.set(playerId, currentKnights + 1);
 
-    // 7. Mark dev card played this turn
+    // 7. Update largest army
+    const largestArmyResult = this.updateLargestArmy();
+
+    // 8. Mark dev card played this turn
     this.playedDevCardThisTurn = true;
 
-    // 8. Enter robber move phase (skip discarding)
+    // 9. Enter robber move phase (skip discarding)
     this.robberPhase = 'moving';
     this.robberMover = playerId;
 
     return {
       success: true,
       currentRobberHex: this.gameState.robberHexId,
+      largestArmyResult,
     };
   }
 
@@ -1865,6 +1877,35 @@ export class GameManager {
     this.gameState.longestRoadHolderId = result.newState.holderId;
     this.gameState.longestRoadLength = result.newState.length;
     this.gameState.playerRoadLengths = result.playerLengths;
+
+    return result;
+  }
+
+  // ============================================================================
+  // LARGEST ARMY METHODS
+  // ============================================================================
+
+  /**
+   * Recalculate largest army and update game state.
+   * Returns the result for broadcasting transfer events.
+   */
+  private updateLargestArmy(): LargestArmyResult {
+    const knightCounts: Record<string, number> = {};
+    this.knightsPlayed.forEach((count, playerId) => {
+      knightCounts[playerId] = count;
+    });
+
+    const currentState = {
+      holderId: this.gameState.largestArmyHolderId,
+      knights: this.gameState.largestArmyKnights,
+    };
+
+    const result = recalculateLargestArmy(knightCounts, currentState);
+
+    // Update game state
+    this.gameState.largestArmyHolderId = result.newState.holderId;
+    this.gameState.largestArmyKnights = result.newState.knights;
+    this.gameState.playerKnightCounts = result.knightCounts;
 
     return result;
   }
