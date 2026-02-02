@@ -111,5 +111,9 @@ export const GameStateSchema = z.object({
   longestRoadHolderId: z.string().nullable(), // Player with longest road card, null if no one has 5+
   longestRoadLength: z.number(), // Length of longest road holder's road (0 if no holder)
   playerRoadLengths: z.record(z.string(), z.number()), // playerId -> current longest road length
+  // Largest army tracking
+  largestArmyHolderId: z.string().nullable(), // Player with largest army card, null if no one has 3+
+  largestArmyKnights: z.number(), // Knight count of holder (0 if no holder)
+  playerKnightCounts: z.record(z.string(), z.number()), // playerId -> knights played
 });
 export type GameState = z.infer<typeof GameStateSchema>;
