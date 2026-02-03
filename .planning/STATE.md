@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-03  
-**Last activity:** 2026-02-03 - Completed Phase 11 Plans 01-03 (VP logic, victory integration, VP display)
+**Last activity:** 2026-02-03 - Completed Phase 11 Plans 01-04 (VP logic, victory integration, VP display, Victory UI)
 
 ## Current Position
 
 Phase: 11 of 12 (Victory Points & Win Detection)  
-Plan: 3 of 5 complete ✅ Ready for Plan 04  
+Plan: 4 of 5 complete ✅ Ready for Plan 05  
 Status: In Progress  
-Last activity: 2026-02-03 - Plans 11-01, 11-02, 11-03 complete; ready for 11-04 (Victory UI)
+Last activity: 2026-02-03 - Plans 11-01, 11-02, 11-03, 11-04 complete; ready for 11-05 (E2E test/polish)
 
-Progress: ███████████████████████████████████████████████████████████████████████████████████████████ (Phase 11: Plan 3/5)
+Progress: █████████████████████████████████████████████████████████████████████████████████████████████ (Phase 11: Plan 4/5)
 
 ## Blockers/Concerns
 
@@ -108,9 +108,11 @@ Progress: ███████████████████████�
 | 10    | Mirror longest-road pattern      | Largest army logic mirrors longest-road-logic.ts structure for consistency         |
 | 10    | LargestArmySlice minimal         | Only holderId and knights fields needed; knightsPlayed already exists in store     |
 | 11    | GameLifecyclePhaseSchema naming  | Distinct from GamePhaseSchema (placement phases like setup_settlement1)            |
+| 11    | victoryPhase state machine       | 'none' -> 'reveal' -> 'modal' for victory animation flow                           |
+| 11    | Auto-transition reveal           | VP reveal overlay auto-transitions to modal after 1.5 seconds                      |
 
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed Phase 11 Plans 01-03 - ready for Plan 04 (Victory UI)
-Resume file: .planning/phases/11-victory/11-04-PLAN.md
+Stopped at: Completed Phase 11 Plans 01-04 - ready for Plan 05 (E2E test or polish)
+Resume file: .planning/phases/11-victory/11-05-PLAN.md
