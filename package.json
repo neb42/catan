@@ -59,6 +59,7 @@
     "express": "^4.21.2",
     "honeycomb-grid": "^4.1.5",
     "motion": "^12.28.1",
+    "react-canvas-confetti": "^2.0.7",
     "react-hexgrid": "^2.0.1",
     "react-router-dom": "^7.12.0",
     "tslib": "^2.3.0",

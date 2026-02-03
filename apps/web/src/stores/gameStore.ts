@@ -134,10 +134,25 @@ interface LargestArmySlice {
   largestArmyKnights: number;
 }
 
+// Victory point breakdown type (matches VPBreakdown from shared)
+interface VPBreakdown {
+  settlements: number;
+  cities: number;
+  longestRoad: number;
+  largestArmy: number;
+  victoryPointCards: number;
+  total: number;
+}
+
 // Victory state slice
 interface VictorySlice {
   gameEnded: boolean;
   winnerId: string | null;
+  winnerNickname: string | null;
+  winnerVP: VPBreakdown | null;
+  allPlayerVP: Record<string, VPBreakdown>;
+  revealedVPCards: Array<{ playerId: string; cardCount: number }>;
+  victoryPhase: 'none' | 'reveal' | 'modal';
 }
 
 // Game log state slice
@@ -303,7 +318,14 @@ interface GameStore
   }) => void;
 
   // Victory actions
-  setVictoryState: (winnerId: string | null) => void;
+  setVictoryState: (data: {
+    winnerId: string;
+    winnerNickname: string;
+    winnerVP: VPBreakdown;
+    allPlayerVP: Record<string, VPBreakdown>;
+    revealedVPCards: Array<{ playerId: string; cardCount: number }>;
+  }) => void;
+  setVictoryPhase: (phase: 'none' | 'reveal' | 'modal') => void;
 
   // Game log actions
   addLogEntry: (
@@ -393,6 +415,11 @@ export const useGameStore = create<GameStore>((set) => ({
   // Victory initial state
   gameEnded: false,
   winnerId: null,
+  winnerNickname: null,
+  winnerVP: null,
+  allPlayerVP: {},
+  revealedVPCards: [],
+  victoryPhase: 'none',
 
   // Game log state
   gameLog: [],
@@ -656,11 +683,17 @@ export const useGameStore = create<GameStore>((set) => ({
     })),
 
   // Victory actions
-  setVictoryState: (winnerId) =>
+  setVictoryState: (data) =>
     set({
-      gameEnded: winnerId !== null,
-      winnerId,
+      gameEnded: true,
+      winnerId: data.winnerId,
+      winnerNickname: data.winnerNickname,
+      winnerVP: data.winnerVP,
+      allPlayerVP: data.allPlayerVP,
+      revealedVPCards: data.revealedVPCards,
+      victoryPhase: data.revealedVPCards.length > 0 ? 'reveal' : 'modal',
     }),
+  setVictoryPhase: (phase) => set({ victoryPhase: phase }),
 
   // Game log actions
   addLogEntry: (message, type = 'info') =>
@@ -875,6 +908,17 @@ export const useLargestArmyHolder = () =>
 // Victory state selector hooks
 export const useGameEnded = () => useGameStore((s) => s.gameEnded);
 export const useWinnerId = () => useGameStore((s) => s.winnerId);
+export const useVictoryState = () =>
+  useGameStore(
+    useShallow((s) => ({
+      winnerId: s.winnerId,
+      winnerNickname: s.winnerNickname,
+      winnerVP: s.winnerVP,
+      allPlayerVP: s.allPlayerVP,
+      revealedVPCards: s.revealedVPCards,
+      victoryPhase: s.victoryPhase,
+    })),
+  );
 
 /**
  * Calculate public victory points for a player.
