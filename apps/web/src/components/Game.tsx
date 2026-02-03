@@ -1,4 +1,4 @@
-import { Box, Container, Stack, Title, Text } from '@mantine/core';
+import { Box, Button, Container, Stack, Title, Text } from '@mantine/core';
 import { Board } from './Board/Board';
 import {
   useGameStore,
@@ -39,6 +39,7 @@ export function Game() {
   const players = useGameStore(
     useShallow((state) => state.room?.players || []),
   );
+  const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
   const { id: currentPlayerId } = useCurrentPlayer();
   const socket = useSocket();
   const { phase: placementPhase } = usePlacementState();
@@ -192,6 +193,27 @@ export function Game() {
 
       {/* Debug panel - development only */}
       <DebugPanel />
+
+      {/* Show Results button when modal has been dismissed */}
+      {gameEnded && victoryPhase === 'dismissed' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 16,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 30,
+          }}
+        >
+          <Button
+            color="yellow"
+            size="lg"
+            onClick={() => setVictoryPhase('modal')}
+          >
+            🏆 Show Results
+          </Button>
+        </div>
+      )}
 
       {/* Victory announcement - overlays when game ends */}
       {gameEnded && victoryPhase === 'reveal' && <VPRevealOverlay />}
