@@ -134,6 +134,12 @@ interface LargestArmySlice {
   largestArmyKnights: number;
 }
 
+// Victory state slice
+interface VictorySlice {
+  gameEnded: boolean;
+  winnerId: string | null;
+}
+
 // Game log state slice
 interface GameLogEntry {
   id: string;
@@ -168,6 +174,7 @@ interface GameStore
     DevCardSlice,
     LongestRoadSlice,
     LargestArmySlice,
+    VictorySlice,
     GameLogSlice,
     DebugSlice {
   board: BoardState | null;
@@ -295,6 +302,9 @@ interface GameStore
     playerKnightCounts: Record<string, number>;
   }) => void;
 
+  // Victory actions
+  setVictoryState: (winnerId: string | null) => void;
+
   // Game log actions
   addLogEntry: (
     message: string,
@@ -379,6 +389,10 @@ export const useGameStore = create<GameStore>((set) => ({
   // Largest army initial state
   largestArmyHolderId: null,
   largestArmyKnights: 0,
+
+  // Victory initial state
+  gameEnded: false,
+  winnerId: null,
 
   // Game log state
   gameLog: [],
@@ -641,6 +655,13 @@ export const useGameStore = create<GameStore>((set) => ({
       knightsPlayed: { ...prev.knightsPlayed, ...state.playerKnightCounts },
     })),
 
+  // Victory actions
+  setVictoryState: (winnerId) =>
+    set({
+      gameEnded: winnerId !== null,
+      winnerId,
+    }),
+
   // Game log actions
   addLogEntry: (message, type = 'info') =>
     set((state) => ({
@@ -850,3 +871,41 @@ export const usePlayerRoadLengths = () =>
 // Largest army state selector hooks
 export const useLargestArmyHolder = () =>
   useGameStore((s) => s.largestArmyHolderId);
+
+// Victory state selector hooks
+export const useGameEnded = () => useGameStore((s) => s.gameEnded);
+export const useWinnerId = () => useGameStore((s) => s.winnerId);
+
+/**
+ * Calculate public victory points for a player.
+ * Note: VP cards are hidden from opponents and NOT included in public VP.
+ * They are only revealed when a player wins.
+ */
+export function usePlayerPublicVP(playerId: string): {
+  settlements: number;
+  cities: number;
+  longestRoad: number;
+  largestArmy: number;
+  total: number;
+} {
+  return useGameStore(
+    useShallow((state) => {
+      const playerSettlements = state.settlements.filter(
+        (s) => s.playerId === playerId,
+      );
+      const settlementCount = playerSettlements.filter((s) => !s.isCity).length;
+      const cityCount = playerSettlements.filter((s) => s.isCity).length;
+      const longestRoad = state.longestRoadHolderId === playerId ? 2 : 0;
+      const largestArmy = state.largestArmyHolderId === playerId ? 2 : 0;
+
+      // Note: VP cards are hidden until game ends, so NOT included in public VP
+      return {
+        settlements: settlementCount,
+        cities: cityCount * 2,
+        longestRoad,
+        largestArmy,
+        total: settlementCount + cityCount * 2 + longestRoad + largestArmy,
+      };
+    }),
+  );
+}
