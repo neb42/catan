@@ -16,6 +16,7 @@ import { generateBoard } from '../game/board-generator';
 import { GameManager } from '../game/GameManager';
 import { LargestArmyResult } from '../game/largest-army-logic';
 import { LongestRoadResult } from '../game/longest-road-logic';
+import { VictoryResult } from '../game/victory-logic';
 import {
   ManagedPlayer,
   ManagedRoom,
@@ -112,6 +113,30 @@ function broadcastLargestArmyIfTransferred(
     holderKnights: result.newState.knights,
     playerKnightCounts: result.knightCounts,
     transferredFrom: result.fromPlayerId ?? null,
+  });
+}
+
+/**
+ * Broadcast victory message when game ends.
+ * All players receive complete VP breakdowns and revealed VP cards.
+ */
+function broadcastVictory(
+  roomManager: RoomManager,
+  roomId: string,
+  result: VictoryResult,
+): void {
+  const room = roomManager.getRoom(roomId);
+  const winner = room
+    ? Array.from(room.players.values()).find((p) => p.id === result.winnerId)
+    : null;
+
+  roomManager.broadcastToRoom(roomId, {
+    type: 'victory',
+    winnerId: result.winnerId!,
+    winnerNickname: winner?.nickname || 'Unknown',
+    winnerVP: result.winnerVP!,
+    allPlayerVP: result.allPlayerVP,
+    revealedVPCards: result.revealedVPCards,
   });
 }
 
@@ -386,6 +411,12 @@ export function handleWebSocketConnection(
           resourcesGranted: result.resourcesGranted,
         });
 
+        // Check for victory (setup phase settlements give VP)
+        if (result.victoryResult) {
+          broadcastVictory(roomManager, currentRoomId, result.victoryResult);
+          break; // Game is over
+        }
+
         // Broadcast next turn info
         const nextPlayerId = gameManager.getCurrentPlayerId();
         const nextPhase = gameManager.getPlacementPhase();
@@ -436,6 +467,12 @@ export function handleWebSocketConnection(
           currentRoomId,
           result.longestRoadResult,
         );
+
+        // Check for victory (longest road may have transferred)
+        if (result.victoryResult) {
+          broadcastVictory(roomManager, currentRoomId, result.victoryResult);
+          break; // Game is over
+        }
 
         if (result.setupComplete) {
           // Setup phase complete
@@ -623,6 +660,11 @@ export function handleWebSocketConnection(
           currentRoomId,
           result.longestRoadResult,
         );
+
+        // Check for victory (longest road may have transferred)
+        if (result.victoryResult) {
+          broadcastVictory(roomManager, currentRoomId, result.victoryResult);
+        }
         break;
       }
 
@@ -666,6 +708,11 @@ export function handleWebSocketConnection(
           currentRoomId,
           result.longestRoadResult,
         );
+
+        // Check for victory (settlement gives 1 VP)
+        if (result.victoryResult) {
+          broadcastVictory(roomManager, currentRoomId, result.victoryResult);
+        }
         break;
       }
 
@@ -702,6 +749,11 @@ export function handleWebSocketConnection(
           playerId,
           resourcesSpent: result.resourcesSpent || {},
         });
+
+        // Check for victory (city gives +1 VP net)
+        if (result.victoryResult) {
+          broadcastVictory(roomManager, currentRoomId, result.victoryResult);
+        }
         break;
       }
 
@@ -1118,6 +1170,16 @@ export function handleWebSocketConnection(
               result.largestArmyResult,
             );
 
+            // Check for victory (largest army may have transferred)
+            if (result.victoryResult) {
+              broadcastVictory(
+                roomManager,
+                currentRoomId,
+                result.victoryResult,
+              );
+              break; // Game is over - don't continue to robber move
+            }
+
             // Send robber_move_required to the knight player
             sendMessage(
               ws,
@@ -1389,6 +1451,12 @@ export function handleWebSocketConnection(
           currentRoomId,
           result.longestRoadResult,
         );
+
+        // Check for victory (longest road may have transferred)
+        if (result.victoryResult) {
+          broadcastVictory(roomManager, currentRoomId, result.victoryResult);
+          break;
+        }
 
         if (result.complete) {
           // Broadcast completion to all players
