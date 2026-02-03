@@ -86,6 +86,13 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
         const publicVP =
           settlementCount + cityCount * 2 + longestRoadVP + largestArmyVP;
 
+        // Calculate hidden VP from victory point cards (only for current player)
+        const vpCardCount =
+          player.id === myPlayerId
+            ? myDevCards.filter((c) => c.type === 'victory_point').length
+            : 0;
+        const trueVP = publicVP + vpCardCount;
+
         return (
           <motion.div
             key={player.id}
@@ -188,9 +195,20 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 </Group>
 
                 {/* Total Public VP */}
-                <Badge size="md" color="yellow" variant="filled" radius="sm">
-                  {publicVP} VP
-                </Badge>
+                <Tooltip
+                  label={
+                    player.id === myPlayerId && vpCardCount > 0
+                      ? `Includes ${vpCardCount} hidden Victory Point card${vpCardCount !== 1 ? 's' : ''}`
+                      : 'Victory Points'
+                  }
+                >
+                  <Badge size="md" color="yellow" variant="filled" radius="sm">
+                    {publicVP} VP
+                    {player.id === myPlayerId &&
+                      vpCardCount > 0 &&
+                      ` [${trueVP}]`}
+                  </Badge>
+                </Tooltip>
 
                 {/* Total card count */}
                 <Text size="sm" c="dimmed" fw={500}>
