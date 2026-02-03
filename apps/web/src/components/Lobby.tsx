@@ -900,6 +900,22 @@ export default function Lobby() {
           break;
         }
 
+        // ============================================================================
+        // VICTORY HANDLER
+        // ============================================================================
+
+        case 'victory': {
+          const gameStore = useGameStore.getState();
+          gameStore.setVictoryState({
+            winnerId: message.winnerId,
+            winnerNickname: message.winnerNickname,
+            winnerVP: message.winnerVP,
+            allPlayerVP: message.allPlayerVP,
+            revealedVPCards: message.revealedVPCards,
+          });
+          break;
+        }
+
         case 'error': {
           if (lastAction === 'create') {
             setCreateError(message.message);
