@@ -8,9 +8,9 @@
 ## Current Position
 
 Phase: 11 of 12 (Victory) ✅ Complete  
-Plan: 5 of 5 in current phase  
+Plan: 6 of 6 in current phase  
 Status: Complete  
-Last activity: 2026-02-03 - Phase 11 verified and complete
+Last activity: 2026-02-03 - Completed plan 11-06 (UAT fixes: block actions + modal reopen)
 
 Progress: ███████████████████████████████████████████████████████████████████████████████████████████ (Phase 11: Complete)
 
@@ -109,10 +109,11 @@ Progress: ███████████████████████�
 | 10    | LargestArmySlice minimal         | Only holderId and knights fields needed; knightsPlayed already exists in store     |
 | 11    | GameLifecyclePhaseSchema naming  | Distinct from GamePhaseSchema (placement phases like setup_settlement1)            |
 | 11    | victoryPhase state machine       | 'none' -> 'reveal' -> 'modal' for victory animation flow                           |
+| 11    | victoryPhase dismissed state     | 'dismissed' tracks closed modal; enables "Show Results" reopen button              |
 | 11    | Auto-transition reveal           | VP reveal overlay auto-transitions to modal after 1.5 seconds                      |
 
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed Phase 11 (Victory) - verified and complete
+Stopped at: Completed Phase 11 (Victory) - plan 6 UAT fixes complete
 Resume file: .planning/phases/12-resilience-polish/
