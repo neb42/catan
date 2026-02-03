@@ -15,7 +15,6 @@ import {
   useGameStore,
   useTurnCurrentPlayer,
   useLongestRoadHolder,
-  usePlayerRoadLengths,
   useLargestArmyHolder,
 } from '../stores/gameStore';
 
@@ -46,10 +45,12 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
 
   // Longest road state
   const longestRoadHolderId = useLongestRoadHolder();
-  const playerRoadLengths = usePlayerRoadLengths();
 
   // Largest army state
   const largestArmyHolderId = useLargestArmyHolder();
+
+  // Settlements for VP calculation
+  const settlements = useGameStore((s) => s.settlements);
 
   // Color mapping for backgrounds
   const colorMap: Record<string, string> = PLAYER_COLOR_HEX;
@@ -70,12 +71,20 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
           ore: 0,
         };
 
-        // Road length and longest road status
-        const roadLength = playerRoadLengths[player.id] || 0;
+        // VP calculation from existing state
+        const playerSettlements = settlements.filter(
+          (s) => s.playerId === player.id,
+        );
+        const settlementCount = playerSettlements.filter(
+          (s) => !s.isCity,
+        ).length;
+        const cityCount = playerSettlements.filter((s) => s.isCity).length;
         const hasLongestRoad = player.id === longestRoadHolderId;
-
-        // Largest army status
         const hasLargestArmy = player.id === largestArmyHolderId;
+        const longestRoadVP = hasLongestRoad ? 2 : 0;
+        const largestArmyVP = hasLargestArmy ? 2 : 0;
+        const publicVP =
+          settlementCount + cityCount * 2 + longestRoadVP + largestArmyVP;
 
         return (
           <motion.div
@@ -139,6 +148,50 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   {player.nickname}
                 </Text>
 
+                {/* VP Breakdown - inline compact format per CONTEXT.md */}
+                <Group gap={4} justify="center">
+                  {/* Settlements */}
+                  <Tooltip
+                    label={`${settlementCount} settlement${settlementCount !== 1 ? 's' : ''} (1 VP each)`}
+                  >
+                    <Text size="sm" fw={500}>
+                      🏠{settlementCount}
+                    </Text>
+                  </Tooltip>
+
+                  {/* Cities */}
+                  <Tooltip
+                    label={`${cityCount} ${cityCount !== 1 ? 'cities' : 'city'} (2 VP each)`}
+                  >
+                    <Text size="sm" fw={500}>
+                      🏰{cityCount}
+                    </Text>
+                  </Tooltip>
+
+                  {/* Longest Road (only show if player has it) */}
+                  {hasLongestRoad && (
+                    <Tooltip label="Longest Road (2 VP)">
+                      <Text size="sm" fw={500}>
+                        🛤️2
+                      </Text>
+                    </Tooltip>
+                  )}
+
+                  {/* Largest Army (only show if player has it) */}
+                  {hasLargestArmy && (
+                    <Tooltip label="Largest Army (2 VP)">
+                      <Text size="sm" fw={500}>
+                        ⚔️2
+                      </Text>
+                    </Tooltip>
+                  )}
+                </Group>
+
+                {/* Total Public VP */}
+                <Badge size="md" color="yellow" variant="filled" radius="sm">
+                  {publicVP} VP
+                </Badge>
+
                 {/* Total card count */}
                 <Text size="sm" c="dimmed" fw={500}>
                   {Object.values(playerResources).reduce(
@@ -146,11 +199,6 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                     0,
                   )}{' '}
                   Cards
-                </Text>
-
-                {/* Road length stats */}
-                <Text size="sm" c="dimmed" fw={500}>
-                  Roads: {roadLength}
                 </Text>
 
                 {/* Dev card and knight counts */}
@@ -172,44 +220,6 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                         ⚔️ {knightsPlayed[player.id]}
                       </Badge>
                     </Tooltip>
-                  )}
-
-                  {/* Longest Road badge */}
-                  {hasLongestRoad && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 500,
-                        damping: 30,
-                      }}
-                    >
-                      <Tooltip label="Longest Road (2 VP)" position="top">
-                        <Badge size="sm" color="green" variant="filled">
-                          🛤️ Longest
-                        </Badge>
-                      </Tooltip>
-                    </motion.div>
-                  )}
-
-                  {/* Largest Army badge */}
-                  {hasLargestArmy && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 500,
-                        damping: 30,
-                      }}
-                    >
-                      <Tooltip label="Largest Army (2 VP)" position="top">
-                        <Badge size="sm" color="red" variant="filled">
-                          🛡️ Largest
-                        </Badge>
-                      </Tooltip>
-                    </motion.div>
                   )}
                 </Group>
 
