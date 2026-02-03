@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-03  
-**Last activity:** 2026-02-03 - Completed Phase 11 (Victory)
+**Last activity:** 2025-06-10 - Completed quick task 008: Show true score with VP cards to card owner only
 
 ## Current Position
 
@@ -27,6 +27,7 @@ Progress: ███████████████████████�
 | 004 | Split Phase 8 into Development Cards/Longest Road/Largest Army/Victory | 2026-01-29 | 6f16728 | [004-split-phase-8-into-4-phases](./quick/004-split-phase-8-into-4-phases/)                               |
 | 005 | Add debug panel with current game state                                | 2026-01-30 | a2c5f89 | [005-add-debug-panel-with-current-game-state-](./quick/005-add-debug-panel-with-current-game-state-/)     |
 | 007 | Log all WebSocket messages to per-room log files for debugging         | 2026-01-31 | 59dc82d | [007-api-log-websocket-messages-to-file](./quick/007-api-log-websocket-messages-to-file/)                 |
+| 008 | Show true score with VP cards to card owner only                       | 2025-06-10 | b656938 | [008-show-true-score-with-vp-cards-to-card-ow](./quick/008-show-true-score-with-vp-cards-to-card-ow/)     |
 
 ## Decisions
 
