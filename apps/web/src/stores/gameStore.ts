@@ -152,7 +152,7 @@ interface VictorySlice {
   winnerVP: VPBreakdown | null;
   allPlayerVP: Record<string, VPBreakdown>;
   revealedVPCards: Array<{ playerId: string; cardCount: number }>;
-  victoryPhase: 'none' | 'reveal' | 'modal';
+  victoryPhase: 'none' | 'reveal' | 'modal' | 'dismissed';
 }
 
 // Game log state slice
@@ -325,7 +325,7 @@ interface GameStore
     allPlayerVP: Record<string, VPBreakdown>;
     revealedVPCards: Array<{ playerId: string; cardCount: number }>;
   }) => void;
-  setVictoryPhase: (phase: 'none' | 'reveal' | 'modal') => void;
+  setVictoryPhase: (phase: 'none' | 'reveal' | 'modal' | 'dismissed') => void;
 
   // Game log actions
   addLogEntry: (
