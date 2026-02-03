@@ -53,6 +53,7 @@ import {
   recalculateLargestArmy,
   LargestArmyResult,
 } from './largest-army-logic';
+import { checkForVictory, VictoryResult } from './victory-logic';
 
 export class GameManager {
   private gameState: GameState;
@@ -81,6 +82,9 @@ export class GameManager {
   // Road Building state
   private roadBuildingRemaining = 0; // 0, 1, or 2 roads remaining
   private roadBuildingEdges: string[] = []; // Edges placed during Road Building
+
+  // Game ended state
+  private gameEnded = false;
 
   constructor(board: BoardState, playerIds: string[]) {
     this.playerIds = playerIds;
@@ -160,7 +164,17 @@ export class GameManager {
     error?: string;
     resourcesGranted?: Array<{ type: ResourceType; count: number }>;
     isSecondSettlement: boolean;
+    victoryResult?: VictoryResult;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return {
+        success: false,
+        error: 'Game has ended',
+        isSecondSettlement: false,
+      };
+    }
+
     // 1. Validate current player
     if (playerId !== this.getCurrentPlayerId()) {
       return {
@@ -270,11 +284,15 @@ export class GameManager {
       }
     }
 
+    // 7. Check for victory (settlement gives 1 VP)
+    const victoryResult = this.checkVictory();
+
     return {
       success: true,
       resourcesGranted:
         resourcesGranted.length > 0 ? resourcesGranted : undefined,
       isSecondSettlement,
+      victoryResult: victoryResult || undefined,
     };
   }
 
@@ -286,7 +304,13 @@ export class GameManager {
     error?: string;
     setupComplete: boolean;
     longestRoadResult?: LongestRoadResult;
+    victoryResult?: VictoryResult;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended', setupComplete: false };
+    }
+
     // 1. Validate current player
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn', setupComplete: false };
@@ -359,7 +383,15 @@ export class GameManager {
     // 7. Update longest road
     const longestRoadResult = this.updateLongestRoad();
 
-    return { success: true, setupComplete, longestRoadResult };
+    // 8. Check for victory (longest road may have transferred)
+    const victoryResult = this.checkVictory();
+
+    return {
+      success: true,
+      setupComplete,
+      longestRoadResult,
+      victoryResult: victoryResult || undefined,
+    };
   }
 
   /**
@@ -616,7 +648,13 @@ export class GameManager {
     error?: string;
     resourcesSpent?: Partial<Record<ResourceType, number>>;
     longestRoadResult?: LongestRoadResult;
+    victoryResult?: VictoryResult;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -664,10 +702,14 @@ export class GameManager {
     // 7. Update longest road
     const longestRoadResult = this.updateLongestRoad();
 
+    // 8. Check for victory (longest road may have transferred)
+    const victoryResult = this.checkVictory();
+
     return {
       success: true,
       resourcesSpent: { ...cost },
       longestRoadResult,
+      victoryResult: victoryResult || undefined,
     };
   }
 
@@ -683,7 +725,13 @@ export class GameManager {
     error?: string;
     resourcesSpent?: Partial<Record<ResourceType, number>>;
     longestRoadResult?: LongestRoadResult;
+    victoryResult?: VictoryResult;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -733,10 +781,14 @@ export class GameManager {
     // 7. Update longest road (settlement can break opponent's road)
     const longestRoadResult = this.updateLongestRoad();
 
+    // 8. Check for victory (settlement gives 1 VP)
+    const victoryResult = this.checkVictory();
+
     return {
       success: true,
       resourcesSpent: { ...cost },
       longestRoadResult,
+      victoryResult: victoryResult || undefined,
     };
   }
 
@@ -751,7 +803,13 @@ export class GameManager {
     success: boolean;
     error?: string;
     resourcesSpent?: Partial<Record<ResourceType, number>>;
+    victoryResult?: VictoryResult;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -799,9 +857,13 @@ export class GameManager {
       settlement.isCity = true;
     }
 
+    // 7. Check for victory (city gives +1 VP net)
+    const victoryResult = this.checkVictory();
+
     return {
       success: true,
       resourcesSpent: { ...cost },
+      victoryResult: victoryResult || undefined,
     };
   }
 
@@ -1348,7 +1410,13 @@ export class GameManager {
     error?: string;
     currentRobberHex?: string | null;
     largestArmyResult?: LargestArmyResult;
+    victoryResult?: VictoryResult;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -1391,10 +1459,13 @@ export class GameManager {
     // 7. Update largest army
     const largestArmyResult = this.updateLargestArmy();
 
-    // 8. Mark dev card played this turn
+    // 8. Check for victory (largest army may have transferred)
+    const victoryResult = this.checkVictory();
+
+    // 9. Mark dev card played this turn
     this.playedDevCardThisTurn = true;
 
-    // 9. Enter robber move phase (skip discarding)
+    // 10. Enter robber move phase (skip discarding)
     this.robberPhase = 'moving';
     this.robberMover = playerId;
 
@@ -1402,6 +1473,7 @@ export class GameManager {
       success: true,
       currentRobberHex: this.gameState.robberHexId,
       largestArmyResult,
+      victoryResult: victoryResult || undefined,
     };
   }
 
@@ -1787,7 +1859,13 @@ export class GameManager {
     complete?: boolean;
     edgesPlaced?: string[];
     longestRoadResult?: LongestRoadResult;
+    victoryResult?: VictoryResult;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate player and mode
     if (playerId !== this.pendingDevCardPlayerId) {
       return { success: false, error: 'Not your turn' };
@@ -1815,7 +1893,27 @@ export class GameManager {
     // 4. Update longest road
     const longestRoadResult = this.updateLongestRoad();
 
-    // 5. Check if complete
+    // 5. Check for victory (longest road may have transferred)
+    const victoryResult = this.checkVictory();
+
+    // 6. Check if victory ends game immediately (even mid-road-building)
+    if (victoryResult) {
+      // Reset Road Building state - game is over
+      this.roadBuildingRemaining = 0;
+      const edgesPlaced = [...this.roadBuildingEdges];
+      this.roadBuildingEdges = [];
+      this.pendingDevCardPlayerId = null;
+      return {
+        success: true,
+        roadsRemaining: 0,
+        complete: true,
+        edgesPlaced,
+        longestRoadResult,
+        victoryResult,
+      };
+    }
+
+    // 7. Check if Road Building is complete
     const complete = this.roadBuildingRemaining === 0;
 
     if (complete) {
@@ -1910,5 +2008,40 @@ export class GameManager {
     this.gameState.playerKnightCounts = result.knightCounts;
 
     return result;
+  }
+
+  // ============================================================================
+  // VICTORY DETECTION METHODS
+  // ============================================================================
+
+  /**
+   * Check if any player has reached victory (10+ VP).
+   * If game ends, updates gamePhase and winnerId.
+   */
+  public checkVictory(): VictoryResult | null {
+    if (this.gameEnded) return null;
+
+    const result = checkForVictory(
+      this.playerIds,
+      this.gameState.settlements,
+      this.gameState.longestRoadHolderId,
+      this.gameState.largestArmyHolderId,
+      (playerId) => this.playerDevCards.get(playerId) || [],
+    );
+
+    if (result.gameEnded) {
+      this.gameEnded = true;
+      this.gameState.gamePhase = 'ended';
+      this.gameState.winnerId = result.winnerId;
+    }
+
+    return result.gameEnded ? result : null;
+  }
+
+  /**
+   * Check if the game has ended (a player has won).
+   */
+  public isGameEnded(): boolean {
+    return this.gameEnded;
   }
 }
