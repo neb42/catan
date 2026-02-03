@@ -56,6 +56,8 @@ const emptyGameState: GameState = {
   largestArmyHolderId: null,
   largestArmyKnights: 0,
   playerKnightCounts: {},
+  gamePhase: 'setup',
+  winnerId: null,
 };
 
 describe('isValidSettlementPlacement', () => {
@@ -235,6 +237,8 @@ const mainGameState: GameState = {
   largestArmyHolderId: null,
   largestArmyKnights: 0,
   playerKnightCounts: { p1: 0, p2: 0 },
+  gamePhase: 'playing',
+  winnerId: null,
 };
 
 describe('getEdgesAtVertex', () => {
