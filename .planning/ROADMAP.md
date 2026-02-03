@@ -469,13 +469,14 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ### Plans
 
-**Plans:** 5 plans
+**Plans:** 6 plans
 
 - [x] 11-01-PLAN.md — VP calculation logic (TDD) and victory message schemas
 - [x] 11-02-PLAN.md — Win detection integration in GameManager and WebSocket handlers
 - [x] 11-03-PLAN.md — Frontend VP display inline in player list
 - [x] 11-04-PLAN.md — Victory UI (reveal overlay + victory modal with confetti)
 - [x] 11-05-PLAN.md — Human verification checkpoint
+- [x] 11-06-PLAN.md — Block actions after victory + modal reopen (gap closure)
 
 ### Deliverables
 
