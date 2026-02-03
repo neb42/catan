@@ -430,6 +430,11 @@ export class GameManager {
     mustDiscardPlayers?: Array<{ playerId: string; targetCount: number }>;
     proceedToRobberMove?: boolean;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // Validate it's the player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -518,6 +523,11 @@ export class GameManager {
     nextPlayerId?: string;
     turnNumber?: number;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // Validate it's the player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -885,6 +895,11 @@ export class GameManager {
     success: boolean;
     error?: string;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // Validate we're in main game and main phase
     if (!this.gameState.turnState) {
       return { success: false, error: 'Game not in main phase' };
@@ -940,6 +955,11 @@ export class GameManager {
     error?: string;
     allResponded?: boolean;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // Check if there's an active trade
     if (!this.activeTrade) {
       return { success: false, error: 'No active trade' };
@@ -995,6 +1015,11 @@ export class GameManager {
     proposerGave?: Partial<Record<ResourceType, number>>;
     partnerGave?: Partial<Record<ResourceType, number>>;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // Check if there's an active trade
     if (!this.activeTrade) {
       return { success: false, error: 'No active trade' };
@@ -1056,6 +1081,11 @@ export class GameManager {
     success: boolean;
     error?: string;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     if (!this.activeTrade) {
       return { success: false, error: 'No active trade' };
     }
@@ -1078,6 +1108,11 @@ export class GameManager {
     gave?: Partial<Record<ResourceType, number>>;
     received?: Partial<Record<ResourceType, number>>;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -1160,6 +1195,11 @@ export class GameManager {
     allDiscardsDone?: boolean;
     discarded?: Partial<Record<ResourceType, number>>;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // Check player needs to discard
     const targetCount = this.pendingDiscards.get(playerId);
     if (targetCount === undefined) {
@@ -1211,6 +1251,11 @@ export class GameManager {
     noStealPossible?: boolean;
     autoStolen?: { victimId: string; resourceType: ResourceType | null };
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // Verify it's robber mover's turn
     if (playerId !== this.robberMover) {
       return { success: false, error: 'Not your turn to move robber' };
@@ -1277,6 +1322,11 @@ export class GameManager {
     error?: string;
     resourceType?: ResourceType | null;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     if (playerId !== this.robberMover) {
       return { success: false, error: 'Not your turn to steal' };
     }
@@ -1487,6 +1537,11 @@ export class GameManager {
     card?: OwnedDevCard;
     deckRemaining?: number;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate it's player's turn and main phase
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -1554,6 +1609,11 @@ export class GameManager {
     error?: string;
     bankResources?: Record<ResourceType, number>;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -1630,6 +1690,11 @@ export class GameManager {
     success: boolean;
     error?: string;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     if (!this.yearOfPlentyPending || this.pendingDevCardPlayerId !== playerId) {
       return { success: false, error: 'Not in Year of Plenty mode' };
     }
@@ -1659,6 +1724,11 @@ export class GameManager {
     success: boolean;
     error?: string;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
@@ -1727,6 +1797,11 @@ export class GameManager {
     totalCollected?: number;
     fromPlayers?: Record<string, number>;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     if (!this.monopolyPending || this.pendingDevCardPlayerId !== playerId) {
       return { success: false, error: 'Not in Monopoly mode' };
     }
@@ -1773,6 +1848,11 @@ export class GameManager {
     error?: string;
     roadsToPlace?: number;
   } {
+    // Guard: game has already ended
+    if (this.gameEnded) {
+      return { success: false, error: 'Game has ended' };
+    }
+
     // 1. Validate it's player's turn
     if (playerId !== this.getCurrentPlayerId()) {
       return { success: false, error: 'Not your turn' };
