@@ -452,7 +452,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 ## Phase 11: Victory
 
 **Goal:** Calculate victory points and detect game end  
-**Duration:** 0.5 week  
+**Status:** ✅ Complete  
+**Completed:** 2026-02-03  
 **Dependencies:** Phase 9 and 10 (needs longest road/largest army for VP calculation)
 
 ### Requirements (4)
@@ -470,11 +471,11 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 **Plans:** 5 plans
 
-- [ ] 11-01-PLAN.md — VP calculation logic (TDD) and victory message schemas
-- [ ] 11-02-PLAN.md — Win detection integration in GameManager and WebSocket handlers
-- [ ] 11-03-PLAN.md — Frontend VP display inline in player list
-- [ ] 11-04-PLAN.md — Victory UI (reveal overlay + victory modal with confetti)
-- [ ] 11-05-PLAN.md — Human verification checkpoint
+- [x] 11-01-PLAN.md — VP calculation logic (TDD) and victory message schemas
+- [x] 11-02-PLAN.md — Win detection integration in GameManager and WebSocket handlers
+- [x] 11-03-PLAN.md — Frontend VP display inline in player list
+- [x] 11-04-PLAN.md — Victory UI (reveal overlay + victory modal with confetti)
+- [x] 11-05-PLAN.md — Human verification checkpoint
 
 ### Deliverables
 
@@ -621,4 +622,4 @@ Future versions:
 
 ---
 
-_Last updated: 2026-02-02 - Phase 10 (Largest Army) complete_
+_Last updated: 2026-02-03 - Phase 11 (Victory) complete_
