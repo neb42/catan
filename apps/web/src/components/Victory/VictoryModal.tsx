@@ -9,7 +9,7 @@ import {
   Card,
 } from '@mantine/core';
 import { motion } from 'motion/react';
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
 import type { CreateTypes } from 'canvas-confetti';
 import { useVictoryState, useGameStore } from '../../stores/gameStore';
@@ -23,10 +23,14 @@ import { PLAYER_COLOR_HEX } from '@catan/shared';
  * Two actions: 'Close' (dismiss modal to view final board state) and 'Return to Lobby'."
  */
 export function VictoryModal() {
-  const { winnerId, winnerNickname, winnerVP, allPlayerVP } = useVictoryState();
+  const { winnerId, winnerNickname, winnerVP, allPlayerVP, victoryPhase } =
+    useVictoryState();
   const room = useGameStore((s) => s.room);
+  const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
   const confettiRef = useRef<CreateTypes | null>(null);
-  const [modalOpen, setModalOpen] = useState(true);
+
+  // Derive modal visibility from store state
+  const modalOpen = victoryPhase === 'modal';
 
   const handleInit = useCallback(({ confetti }: { confetti: CreateTypes }) => {
     confettiRef.current = confetti;
@@ -53,7 +57,7 @@ export function VictoryModal() {
     return () => clearTimeout(startDelay);
   }, []);
 
-  const handleClose = () => setModalOpen(false);
+  const handleClose = () => setVictoryPhase('dismissed');
   const handleReturnToLobby = () => {
     // Navigate to home/lobby - use window.location for simplicity
     window.location.href = '/';
