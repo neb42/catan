@@ -5,6 +5,7 @@ import {
   DevelopmentCardTypeSchema,
   OwnedDevCardSchema,
   ResourceTypeSchema,
+  VPBreakdownSchema,
 } from './game';
 import { PlayerSchema } from './player';
 import { RoomSchema } from './room';
@@ -479,6 +480,21 @@ export const LargestArmyUpdatedMessageSchema = z.object({
   transferredFrom: z.string().nullable(), // Previous holder if transferred
 });
 
+// Victory Messages - Server -> Client
+export const VictoryMessageSchema = z.object({
+  type: z.literal('victory'),
+  winnerId: z.string(),
+  winnerNickname: z.string(), // For display
+  winnerVP: VPBreakdownSchema,
+  allPlayerVP: z.record(z.string(), VPBreakdownSchema),
+  revealedVPCards: z.array(
+    z.object({
+      playerId: z.string(),
+      cardCount: z.number(),
+    }),
+  ),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -562,6 +578,8 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   LongestRoadUpdatedMessageSchema,
   // Largest army messages
   LargestArmyUpdatedMessageSchema,
+  // Victory messages
+  VictoryMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -703,5 +721,7 @@ export type LongestRoadUpdatedMessage = z.infer<
 export type LargestArmyUpdatedMessage = z.infer<
   typeof LargestArmyUpdatedMessageSchema
 >;
+// Victory message types
+export type VictoryMessage = z.infer<typeof VictoryMessageSchema>;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
