@@ -117,6 +117,8 @@ export class GameManager {
       largestArmyHolderId: null,
       largestArmyKnights: 0,
       playerKnightCounts: Object.fromEntries(playerIds.map((id) => [id, 0])),
+      gamePhase: 'setup',
+      winnerId: null,
     };
 
     // Initialize development card deck
