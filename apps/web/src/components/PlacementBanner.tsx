@@ -1,8 +1,6 @@
 import { motion } from 'motion/react';
-import { Paper, Text, Group, Badge } from '@mantine/core';
 import { PLAYER_COLOR_HEX } from '@catan/shared';
 import { usePlacementState } from '../hooks/usePlacementState';
-
 
 interface PlacementBannerProps {
   players: Array<{ id: string; nickname: string; color: string }>;
@@ -26,16 +24,24 @@ export function PlacementBanner({ players }: PlacementBannerProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
-      <Paper
-        shadow="md"
-        p="sm"
-        radius="md"
+      <div
         style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          background: '#fdf6e3',
+          border: '4px solid #8d6e63',
           borderLeft: `4px solid ${colorHex}`,
+          borderRadius: '12px',
+          boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+          padding: '12px 16px',
         }}
       >
-        <Group gap="sm">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            flexWrap: 'wrap',
+          }}
+        >
           {isMyTurn ? (
             <motion.div
               animate={{ scale: [1, 1.05, 1] }}
@@ -45,27 +51,48 @@ export function PlacementBanner({ players }: PlacementBannerProps) {
                 ease: 'easeInOut',
               }}
             >
-              <Text fw={700} size="lg" c="dark">
+              <span
+                style={{
+                  fontWeight: 700,
+                  fontSize: '18px',
+                  color: '#5d4037',
+                  fontFamily: 'Fraunces, serif',
+                }}
+              >
                 Your Turn: {actionText}
-              </Text>
+              </span>
             </motion.div>
           ) : (
-            <Text size="lg" c="dimmed">
-              <Text span fw={600} style={{ color: colorHex }}>
+            <span
+              style={{
+                fontSize: '18px',
+                color: '#8d6e63',
+              }}
+            >
+              <span style={{ fontWeight: 600, color: colorHex }}>
                 {currentPlayer.nickname}
-              </Text>
+              </span>
               {' is placing a '}
-              <Text span fw={500}>
-                {phase}
-              </Text>
-            </Text>
+              <span style={{ fontWeight: 500, color: '#5d4037' }}>{phase}</span>
+            </span>
           )}
 
-          <Badge variant="light" color="gray" size="sm">
+          <div
+            style={{
+              background: 'rgba(141, 110, 99, 0.15)',
+              color: '#5d4037',
+              border: '1px solid #d7ccc8',
+              padding: '4px 10px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              fontWeight: 600,
+              fontFamily: 'Inter, sans-serif',
+            }}
+          >
             Round {draftRound}
-          </Badge>
-        </Group>
-      </Paper>
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 }
