@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-04  
-**Last activity:** 2026-02-04 - Completed quick task 023: Apply parchment aesthetic to robber and victory modals
+**Last activity:** 2026-02-04 - Completed quick task 024: Simplify the bank trade UI
 
 ## Current Position
 
@@ -43,6 +43,7 @@ Progress: ███████████████████████�
 | 021 | Apply parchment aesthetic to PlacementBanner and DraftOrderDisplay     | 2026-02-04 | 9427c3c | [021-apply-the-style-of-the-gameplayerlist-co](./quick/021-apply-the-style-of-the-gameplayerlist-co/)     |
 | 022 | Restyle Dev Card button to match BuildButton design                    | 2026-02-04 | 8541676 | [022-restyle-dev-card-button-to-align-with-bu](./quick/022-restyle-dev-card-button-to-align-with-bu/)     |
 | 023 | Apply parchment aesthetic to robber and victory modals                 | 2026-02-04 | 33c21a7 | [023-apply-the-style-of-the-gameplayerlist-co](./quick/023-apply-the-style-of-the-gameplayerlist-co/)     |
+| 024 | Simplify the bank trade UI                                             | 2026-02-04 | 6190cf9 | [024-simplify-the-bank-trade-ui](./quick/024-simplify-the-bank-trade-ui/)                                 |
 
 ## Decisions
 
