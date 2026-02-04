@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-04  
-**Last activity:** 2026-02-04 - Completed quick task 024: Simplify the bank trade UI
+**Last activity:** 2026-02-04 - Completed quick task 025: Add land-colored background with rounded corners behind hexagons
 
 ## Current Position
 
@@ -44,6 +44,7 @@ Progress: ███████████████████████�
 | 022 | Restyle Dev Card button to match BuildButton design                    | 2026-02-04 | 8541676 | [022-restyle-dev-card-button-to-align-with-bu](./quick/022-restyle-dev-card-button-to-align-with-bu/)     |
 | 023 | Apply parchment aesthetic to robber and victory modals                 | 2026-02-04 | 33c21a7 | [023-apply-the-style-of-the-gameplayerlist-co](./quick/023-apply-the-style-of-the-gameplayerlist-co/)     |
 | 024 | Simplify the bank trade UI                                             | 2026-02-04 | 6190cf9 | [024-simplify-the-bank-trade-ui](./quick/024-simplify-the-bank-trade-ui/)                                 |
+| 025 | Add land-colored background with rounded corners behind hexagons       | 2026-02-04 | 865606d | [025-add-a-land-coloured-background-to-the-he](./quick/025-add-a-land-coloured-background-to-the-he/)     |
 
 ## Decisions
 
