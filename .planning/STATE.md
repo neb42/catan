@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-04  
-**Last activity:** 2026-02-04 - Completed quick task 020: Apply parchment aesthetic to all modal components
+**Last activity:** 2026-02-04 - Planning quick task 021: Apply parchment aesthetic to PlacementBanner and DraftOrderDisplay
 
 ## Current Position
 
