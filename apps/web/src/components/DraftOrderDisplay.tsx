@@ -1,8 +1,7 @@
 import { motion } from 'motion/react';
-import { Paper, Text, Group, Box, Stack, Tooltip } from '@mantine/core';
+import { Tooltip } from '@mantine/core';
 import { PLAYER_COLOR_HEX } from '@catan/shared';
 import { useDraftOrder } from '../hooks/usePlacementState';
-
 
 interface DraftOrderDisplayProps {
   players: Array<{ id: string; nickname: string; color: string }>;
@@ -16,26 +15,60 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
   const round2 = draftOrder.filter((d) => d.round === 2);
 
   return (
-    <Paper
-      shadow="sm"
-      p="xs"
-      radius="md"
+    <div
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        background: '#fdf6e3',
+        border: '4px solid #8d6e63',
+        borderRadius: '12px',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+        padding: '12px',
         maxWidth: 280,
       }}
     >
-      <Stack gap="xs">
-        <Text size="xs" fw={600} c="dimmed" tt="uppercase">
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '15px',
+        }}
+      >
+        <h3
+          style={{
+            fontSize: '11px',
+            fontWeight: 600,
+            color: '#5d4037',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            margin: 0,
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
           Draft Order
-        </Text>
+        </h3>
 
         {/* Round 1 */}
-        <Box>
-          <Text size="xs" c="dimmed" mb={4}>
+        <div
+          style={{
+            paddingBottom: '15px',
+            borderBottom: '2px dashed #d7ccc8',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '12px',
+              color: '#8d6e63',
+              marginBottom: '8px',
+            }}
+          >
             Round 1 (1→{players.length})
-          </Text>
-          <Group gap={4} wrap="wrap">
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              gap: '4px',
+              flexWrap: 'wrap',
+            }}
+          >
             {round1.map((position) => {
               const player = players[position.playerIndex];
               const colorHex = PLAYER_COLOR_HEX[player?.color] || '#ccc';
@@ -79,15 +112,32 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
                 </Tooltip>
               );
             })}
-          </Group>
-        </Box>
+          </div>
+        </div>
 
         {/* Round 2 */}
-        <Box>
-          <Text size="xs" c="dimmed" mb={4}>
+        <div
+          style={{
+            paddingBottom: '15px',
+            borderBottom: '2px dashed #d7ccc8',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '12px',
+              color: '#8d6e63',
+              marginBottom: '8px',
+            }}
+          >
             Round 2 ({players.length}→1)
-          </Text>
-          <Group gap={4} wrap="wrap">
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              gap: '4px',
+              flexWrap: 'wrap',
+            }}
+          >
             {round2.map((position) => {
               const player = players[position.playerIndex];
               const colorHex = PLAYER_COLOR_HEX[player?.color] || '#ccc';
@@ -131,33 +181,70 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
                 </Tooltip>
               );
             })}
-          </Group>
-        </Box>
+          </div>
+        </div>
 
         {/* Legend */}
-        <Group gap="xs" mt={4}>
-          <Group gap={4}>
-            <Box
-              w={12}
-              h={12}
-              style={{ backgroundColor: '#ccc', borderRadius: 2 }}
+        <div
+          style={{
+            display: 'flex',
+            gap: '12px',
+            background: 'rgba(0,0,0,0.03)',
+            padding: '8px',
+            borderRadius: '6px',
+            borderTop: '2px dashed #d7ccc8',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <div
+              style={{
+                width: 12,
+                height: 12,
+                backgroundColor: '#ccc',
+                borderRadius: 2,
+              }}
             />
-            <Text size="xs" c="dimmed">
+            <span
+              style={{
+                fontSize: '11px',
+                color: '#8d6e63',
+              }}
+            >
               Settlement
-            </Text>
-          </Group>
-          <Group gap={4}>
-            <Box
-              w={12}
-              h={12}
-              style={{ backgroundColor: '#ccc', borderRadius: '50%' }}
+            </span>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <div
+              style={{
+                width: 12,
+                height: 12,
+                backgroundColor: '#ccc',
+                borderRadius: '50%',
+              }}
             />
-            <Text size="xs" c="dimmed">
+            <span
+              style={{
+                fontSize: '11px',
+                color: '#8d6e63',
+              }}
+            >
               Road
-            </Text>
-          </Group>
-        </Group>
-      </Stack>
-    </Paper>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
