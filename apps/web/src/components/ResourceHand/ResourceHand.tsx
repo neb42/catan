@@ -147,12 +147,12 @@ export function ResourceHand() {
   if (totalCards === 0) {
     return (
       <Paper
-        shadow="sm"
-        radius="lg"
+        radius="md"
         p="md"
         style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(8px)',
+          background: '#fdf6e3',
+          border: '4px solid #8d6e63',
+          boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
           textAlign: 'center',
         }}
       >
@@ -173,25 +173,35 @@ export function ResourceHand() {
 
   return (
     <Paper
-      shadow="md"
-      radius="lg"
+      radius="md"
       p="md"
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        backdropFilter: 'blur(8px)',
+        background: '#fdf6e3',
+        border: '4px solid #8d6e63',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
         perspective: 1000,
       }}
     >
       <Stack gap="xs" align="center">
         {/* Header with count */}
-        <Text
-          size="sm"
-          fw={600}
-          c="dimmed"
-          style={{ fontFamily: 'Fraunces, serif' }}
+        <div
+          style={{
+            borderBottom: '2px dashed #d7ccc8',
+            paddingBottom: '8px',
+            marginBottom: '8px',
+            width: '100%',
+            textAlign: 'center',
+          }}
         >
-          Your Resources ({totalCards})
-        </Text>
+          <Text
+            size="sm"
+            fw={600}
+            c="dimmed"
+            style={{ fontFamily: 'Fraunces, serif' }}
+          >
+            Your Resources ({totalCards})
+          </Text>
+        </div>
 
         {/* Resource counts */}
         <Group gap={2} mt="xs">
