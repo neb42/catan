@@ -170,8 +170,8 @@ function calculateInteriorAngle(prev: Point, curr: Point, next: Point): number {
 }
 
 /**
- * Generate SVG path with adaptive extension based on local curvature
- * Tighter in concave regions (inward curves), extended in convex regions
+ * Generate SVG path with straight edges and rounded corners
+ * Uses adaptive extension based on local curvature
  */
 function generateAdaptiveWigglyPath(points: Point[]): string {
   if (points.length < 3) return '';
@@ -195,9 +195,6 @@ function generateAdaptiveWigglyPath(points: Point[]): string {
     const interiorAngle = calculateInteriorAngle(prev, curr, next);
 
     // Determine if this is convex (outward) or concave (inward)
-    // For a clockwise perimeter: angle > π means convex, angle < π means concave
-    // For counter-clockwise: reversed
-    // Check winding order by testing cross product
     const isOutward = interiorAngle > Math.PI;
 
     // Calculate extension factor based on curvature
@@ -226,52 +223,60 @@ function generateAdaptiveWigglyPath(points: Point[]): string {
     extendedPoints.push(extended);
   }
 
-  // Start at first point
-  pathCommands.push(
-    `M ${extendedPoints[0].x.toFixed(2)} ${extendedPoints[0].y.toFixed(2)}`,
-  );
+  // Corner radius for rounded corners (in SVG units)
+  const cornerRadius = 3;
 
-  // Create wiggly path with bezier curves
+  // Start path
+  const startPoint = extendedPoints[0];
+  const startNext = extendedPoints[1];
+
+  // Calculate starting position offset by corner radius
+  const startDx = startNext.x - startPoint.x;
+  const startDy = startNext.y - startPoint.y;
+  const startDist = Math.sqrt(startDx * startDx + startDy * startDy);
+  const startOffsetRatio = Math.min(cornerRadius / startDist, 0.5);
+
+  const startX = startPoint.x + startDx * startOffsetRatio;
+  const startY = startPoint.y + startDy * startOffsetRatio;
+
+  pathCommands.push(`M ${startX.toFixed(2)} ${startY.toFixed(2)}`);
+
+  // Draw straight lines with rounded corners
   for (let i = 0; i < extendedPoints.length; i++) {
-    const p1 = extendedPoints[i];
-    const p2 = extendedPoints[(i + 1) % extendedPoints.length];
+    const prev =
+      extendedPoints[(i - 1 + extendedPoints.length) % extendedPoints.length];
+    const curr = extendedPoints[i];
+    const next = extendedPoints[(i + 1) % extendedPoints.length];
 
-    // Calculate edge vector and perpendicular
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-    const edgeLength = Math.sqrt(dx * dx + dy * dy);
+    // Vector from current to next
+    const dx = next.x - curr.x;
+    const dy = next.y - curr.y;
+    const distToNext = Math.sqrt(dx * dx + dy * dy);
 
-    // Perpendicular vector (normalized)
-    const perpX = -dy / edgeLength;
-    const perpY = dx / edgeLength;
+    // Vector from previous to current
+    const dxPrev = curr.x - prev.x;
+    const dyPrev = curr.y - prev.y;
+    const distFromPrev = Math.sqrt(dxPrev * dxPrev + dyPrev * dyPrev);
 
-    // Add multiple bezier curves along edge for organic wiggle
-    const segments = Math.max(2, Math.floor(edgeLength / 10)); // ~10 units per segment
+    // Calculate how much to offset from corner (smaller of radius or half edge length)
+    const offsetPrev = Math.min(cornerRadius, distFromPrev * 0.4);
+    const offsetNext = Math.min(cornerRadius, distToNext * 0.4);
 
-    for (let seg = 0; seg < segments; seg++) {
-      const t1 = seg / segments;
-      const t2 = (seg + 1) / segments;
+    // Point before corner (on incoming edge)
+    const beforeX = curr.x - (dxPrev / distFromPrev) * offsetPrev;
+    const beforeY = curr.y - (dyPrev / distFromPrev) * offsetPrev;
 
-      const x2 = p1.x + dx * t2;
-      const y2 = p1.y + dy * t2;
+    // Point after corner (on outgoing edge)
+    const afterX = curr.x + (dx / distToNext) * offsetNext;
+    const afterY = curr.y + (dy / distToNext) * offsetNext;
 
-      // Control point in middle of segment with sine wave offset
-      const tMid = (t1 + t2) / 2;
-      const xMid = p1.x + dx * tMid;
-      const yMid = p1.y + dy * tMid;
+    // Draw line to point before corner
+    pathCommands.push(`L ${beforeX.toFixed(2)} ${beforeY.toFixed(2)}`);
 
-      // Use deterministic "randomness" based on position
-      const seed = (xMid * 0.1 + yMid * 0.1) % (Math.PI * 2);
-      const wiggleAmount = (Math.sin(seed * 3) + Math.cos(seed * 5)) * 1.2;
-
-      const cpX = xMid + perpX * wiggleAmount;
-      const cpY = yMid + perpY * wiggleAmount;
-
-      // Quadratic bezier curve
-      pathCommands.push(
-        `Q ${cpX.toFixed(2)} ${cpY.toFixed(2)}, ${x2.toFixed(2)} ${y2.toFixed(2)}`,
-      );
-    }
+    // Draw quadratic curve for rounded corner
+    pathCommands.push(
+      `Q ${curr.x.toFixed(2)} ${curr.y.toFixed(2)}, ${afterX.toFixed(2)} ${afterY.toFixed(2)}`,
+    );
   }
 
   // Close path
