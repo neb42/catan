@@ -1,13 +1,6 @@
 import { ActionIcon, Group, Text } from '@mantine/core';
 import { ResourceType } from '@catan/shared';
-
-const RESOURCE_ICONS: Record<ResourceType, string> = {
-  wood: '🪵',
-  brick: '🧱',
-  sheep: '🐑',
-  wheat: '🌾',
-  ore: '⛰️',
-};
+import { ResourceIcon } from '../ResourceIcon/ResourceIcon';
 
 const RESOURCE_LABELS: Record<ResourceType, string> = {
   wood: 'Wood',
@@ -38,7 +31,7 @@ export function ResourceSelector({
 }: ResourceSelectorProps) {
   return (
     <Group gap="xs" align="center">
-      <Text size="lg">{RESOURCE_ICONS[resource]}</Text>
+      <ResourceIcon type={resource} size="md" />
       <Text size="sm" w={50}>
         {RESOURCE_LABELS[resource]}
       </Text>
@@ -58,7 +51,7 @@ export function ResourceSelector({
       </ActionIcon>
 
       <Text w={40} ta="center" fw={600}>
-        {showMax ? `${value} / ${max}` : value} 
+        {showMax ? `${value} / ${max}` : value}
       </Text>
 
       <ActionIcon

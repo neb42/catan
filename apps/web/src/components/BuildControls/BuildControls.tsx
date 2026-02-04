@@ -1,6 +1,6 @@
 import { Button, Group, Paper, Stack, Text, Tooltip } from '@mantine/core';
 import { BUILDING_COSTS } from '@catan/shared';
-import type { BuildingType } from '@catan/shared';
+import type { BuildingType, ResourceType } from '@catan/shared';
 import {
   useBuildMode,
   useCanBuild,
@@ -8,15 +8,7 @@ import {
 } from '../../hooks/useBuildMode';
 import { useGameStore } from '../../stores/gameStore';
 import { BuyDevCardButton } from '../DevCard/BuyDevCardButton';
-
-// Resource emoji icons for inline display
-const RESOURCE_ICONS: Record<string, string> = {
-  wood: '🪵',
-  brick: '🧱',
-  sheep: '🐑',
-  wheat: '🌾',
-  ore: '⛰️',
-};
+import { ResourceIcon } from '../ResourceIcon/ResourceIcon';
 
 // Building configuration
 const BUILDING_CONFIG: Record<
@@ -35,13 +27,15 @@ function CostIcons({ buildingType }: { buildingType: BuildingType }) {
   const cost = BUILDING_COSTS[buildingType];
 
   return (
-    <span style={{ marginLeft: 4, opacity: 0.8 }}>
+    <span
+      style={{ marginLeft: 4, opacity: 0.8, display: 'inline-flex', gap: 2 }}
+    >
       {Object.entries(cost).map(([resource, amount]) => (
-        <span key={resource} title={`${amount} ${resource}`}>
+        <span key={resource} style={{ display: 'inline-flex', gap: 1 }}>
           {Array(amount)
             .fill(null)
             .map((_, i) => (
-              <span key={i}>{RESOURCE_ICONS[resource]}</span>
+              <ResourceIcon key={i} type={resource as ResourceType} size="sm" />
             ))}
         </span>
       ))}

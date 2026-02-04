@@ -6,14 +6,7 @@ import {
   useNeedsToRespondToTrade,
 } from '../../hooks/useTradeState';
 import { useSocket, useGameStore } from '../../stores/gameStore';
-
-const RESOURCE_ICONS: Record<ResourceType, string> = {
-  wood: '🪵',
-  brick: '🧱',
-  sheep: '🐑',
-  wheat: '🌾',
-  ore: '⛰️',
-};
+import { ResourceIcon } from '../ResourceIcon/ResourceIcon';
 
 function ResourceDisplay({
   resources,
@@ -32,9 +25,10 @@ function ResourceDisplay({
       </Text>
       <Group gap="xs">
         {nonZero.map(([resource, count]) => (
-          <Text key={resource}>
-            {count}x {RESOURCE_ICONS[resource as ResourceType]}
-          </Text>
+          <Group key={resource} gap={4}>
+            <Text>{count}x</Text>
+            <ResourceIcon type={resource as ResourceType} size="sm" />
+          </Group>
         ))}
       </Group>
     </Paper>
