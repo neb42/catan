@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react';
-import { Button, Divider, Stack, Text, Group, Alert } from '@mantine/core';
+import { Button, Stack, Text, Alert, Select } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { ResourceType } from '@catan/shared';
-import { ResourceSelector } from './ResourceSelector';
 import { useGameStore, useSocket } from '../../stores/gameStore';
 import { usePortAccess, getBestRate } from '../../hooks/usePortAccess';
 
@@ -53,50 +52,29 @@ export function MaritimeTrade() {
     return result;
   }, [portAccess]);
 
-  const handleGiveSelect = (resource: ResourceType) => {
-    const rate = rates[resource];
-    const maxCanGive = Math.floor(playerResources[resource] / rate);
-
-    if (maxCanGive === 0) {
-      // Can't afford to trade this resource
-      return;
-    }
-
-    // If selecting same resource, deselect
-    if (giving.resource === resource) {
+  const handleGiveChange = (value: string | null) => {
+    if (!value) {
       setGiving({ resource: null, amount: 0 });
-      setReceiving({ resource: null, amount: 0 });
       return;
     }
 
-    // Select this resource for giving
+    const resource = value as ResourceType;
+    const rate = rates[resource];
     setGiving({ resource, amount: rate });
-    // If receiving is set, keep it; if not, don't auto-set
-    if (receiving.resource) {
-      setReceiving({ resource: receiving.resource, amount: 1 });
+
+    // If receiving is same as giving, clear it
+    if (receiving.resource === resource) {
+      setReceiving({ resource: null, amount: 0 });
     }
   };
 
-  const handleReceiveSelect = (resource: ResourceType) => {
-    // Can't receive what you're giving
-    if (resource === giving.resource) return;
-
-    // If selecting same resource, deselect
-    if (receiving.resource === resource) {
+  const handleReceiveChange = (value: string | null) => {
+    if (!value) {
       setReceiving({ resource: null, amount: 0 });
       return;
     }
 
-    // Need to select giving resource first
-    if (!giving.resource) {
-      notifications.show({
-        title: 'Select resource to give first',
-        message: 'Choose which resource you want to trade away',
-        color: 'yellow',
-      });
-      return;
-    }
-
+    const resource = value as ResourceType;
     setReceiving({ resource, amount: 1 });
   };
 
@@ -137,11 +115,44 @@ export function MaritimeTrade() {
   const hasAnyPortAccess =
     portAccess.hasGeneric3to1 || portAccess.specificPorts.length > 0;
 
+  // Build dropdown options for giving (only resources player can afford)
+  const giveOptions = useMemo(() => {
+    return RESOURCE_TYPES.filter((resource) => {
+      const rate = rates[resource];
+      return playerResources[resource] >= rate;
+    }).map((resource) => ({
+      value: resource,
+      label: `${resource.charAt(0).toUpperCase() + resource.slice(1)} (${rates[resource]}:1) - have ${playerResources[resource]}`,
+    }));
+  }, [playerResources, rates]);
+
+  // Build dropdown options for receiving (all resources except currently giving)
+  const receiveOptions = useMemo(() => {
+    return RESOURCE_TYPES.filter(
+      (resource) => resource !== giving.resource,
+    ).map((resource) => ({
+      value: resource,
+      label: resource.charAt(0).toUpperCase() + resource.slice(1),
+    }));
+  }, [giving.resource]);
+
   return (
     <Stack gap="md">
       {/* Port access info */}
       {hasAnyPortAccess && (
-        <Alert color="blue" variant="light">
+        <Alert
+          color="blue"
+          variant="light"
+          styles={{
+            root: {
+              backgroundColor: '#fdf6e3',
+              border: '1px solid #d7ccc8',
+            },
+            message: {
+              color: '#5d4037',
+            },
+          }}
+        >
           <Text size="sm">
             You have access to:{' '}
             {portAccess.specificPorts.length > 0 &&
@@ -154,93 +165,62 @@ export function MaritimeTrade() {
         </Alert>
       )}
 
-      <Group justify="space-around" align="flex-start">
-        {/* Give section */}
-        <Stack gap="xs">
-          <Text fw={600} size="sm" c="dimmed">
-            Give (select one resource)
-          </Text>
-          {RESOURCE_TYPES.map((resource) => {
-            const rate = rates[resource];
-            const maxCanGive = Math.floor(playerResources[resource] / rate);
-            const isSelected = giving.resource === resource;
-            const canAfford = maxCanGive > 0;
+      {/* Give selector */}
+      <Select
+        label="Give"
+        placeholder="Select resource to trade away"
+        data={giveOptions}
+        value={giving.resource}
+        onChange={handleGiveChange}
+        styles={{
+          input: {
+            backgroundColor: '#fdf6e3',
+            border: '1px solid #d7ccc8',
+            color: '#5d4037',
+          },
+          label: {
+            color: '#5d4037',
+            fontWeight: 600,
+          },
+        }}
+      />
 
-            return (
-              <Group
-                key={`give-${resource}`}
-                gap="xs"
-                style={{
-                  cursor: canAfford ? 'pointer' : 'not-allowed',
-                  opacity: canAfford ? 1 : 0.5,
-                  backgroundColor: isSelected
-                    ? 'var(--mantine-color-blue-light)'
-                    : undefined,
-                  padding: '4px 8px',
-                  borderRadius: 4,
-                }}
-                onClick={() => canAfford && handleGiveSelect(resource)}
-              >
-                <ResourceSelector
-                  resource={resource}
-                  value={isSelected ? giving.amount : 0}
-                  max={playerResources[resource]}
-                  onChange={() => {}}
-                  rateLabel={`(${rate}:1)`}
-                  disabled={true}
-                />
-                <Text size="xs" c="dimmed">
-                  (have {playerResources[resource]})
-                </Text>
-              </Group>
-            );
-          })}
-        </Stack>
+      {/* Receive selector */}
+      <Select
+        label="Receive"
+        placeholder="Select resource to receive"
+        data={receiveOptions}
+        value={receiving.resource}
+        onChange={handleReceiveChange}
+        disabled={!giving.resource}
+        styles={{
+          input: {
+            backgroundColor: '#fdf6e3',
+            border: '1px solid #d7ccc8',
+            color: '#5d4037',
+          },
+          label: {
+            color: '#5d4037',
+            fontWeight: 600,
+          },
+        }}
+      />
 
-        <Divider />
-
-        {/* Receive section */}
-        <Stack gap="xs">
-          <Text fw={600} size="sm" c="dimmed">
-            Receive (select one resource)
-          </Text>
-          {RESOURCE_TYPES.map((resource) => {
-            const isSelected = receiving.resource === resource;
-            const isGiving = giving.resource === resource;
-
-            return (
-              <Group
-                key={`receive-${resource}`}
-                gap="xs"
-                style={{
-                  cursor: isGiving ? 'not-allowed' : 'pointer',
-                  opacity: isGiving ? 0.5 : 1,
-                  backgroundColor: isSelected
-                    ? 'var(--mantine-color-green-light)'
-                    : undefined,
-                  padding: '4px 8px',
-                  borderRadius: 4,
-                }}
-                onClick={() => !isGiving && handleReceiveSelect(resource)}
-              >
-                <ResourceSelector
-                  resource={resource}
-                  value={isSelected ? receiving.amount : 0}
-                  max={99}
-                  onChange={() => {}}
-                  disabled={true}
-                />
-              </Group>
-            );
-          })}
-        </Stack>
-      </Group>
-
-      <Divider />
-
-      {/* Trade summary and button */}
+      {/* Trade summary */}
       {giving.resource && receiving.resource && (
-        <Alert color="gray" variant="light">
+        <Alert
+          color="gray"
+          variant="light"
+          styles={{
+            root: {
+              backgroundColor: '#fdf6e3',
+              border: '1px solid #d7ccc8',
+            },
+            message: {
+              color: '#5d4037',
+            },
+          }}
+        >
           <Text size="sm" fw={500}>
             Trade: {giving.amount} {giving.resource} ➔ {receiving.amount}{' '}
             {receiving.resource}
@@ -248,22 +228,25 @@ export function MaritimeTrade() {
         </Alert>
       )}
 
-      <Group justify="center">
-        <Button
-          color="green"
-          size="md"
-          disabled={!canTrade}
-          onClick={handleTrade}
-        >
-          Trade with Bank
-        </Button>
-      </Group>
-
-      {!giving.resource && (
-        <Text size="xs" c="dimmed" ta="center">
-          Click a resource above to select what to trade away
-        </Text>
-      )}
+      {/* Trade button */}
+      <Button
+        color="green"
+        size="md"
+        disabled={!canTrade}
+        onClick={handleTrade}
+        fullWidth
+        styles={{
+          root: {
+            backgroundColor: canTrade ? '#6d4c41' : undefined,
+            border: '2px solid #5d4037',
+            '&:hover': {
+              backgroundColor: canTrade ? '#8d6e63' : undefined,
+            },
+          },
+        }}
+      >
+        Trade with Bank
+      </Button>
     </Stack>
   );
 }
