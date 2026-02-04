@@ -39,11 +39,13 @@ export function WaitingForDiscardsOverlay() {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         zIndex: 1000,
-        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        background: 'rgba(253, 246, 227, 0.98)',
         backdropFilter: 'blur(8px)',
         minWidth: 320,
         textAlign: 'center',
-        border: '3px solid #E53935',
+        border: '4px solid #E53935',
+        borderRadius: '12px',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
       }}
     >
       <Stack gap="md" align="center">
@@ -57,7 +59,7 @@ export function WaitingForDiscardsOverlay() {
 
         <Loader color="red" size="md" />
 
-        <Text size="md" c="dimmed">
+        <Text size="md" style={{ color: '#5d4037' }}>
           Waiting for players to discard cards...
         </Text>
 
@@ -65,12 +67,16 @@ export function WaitingForDiscardsOverlay() {
           <Paper
             p="sm"
             radius="md"
-            style={{ backgroundColor: '#FFF3E0', width: '100%' }}
+            style={{
+              background: 'rgba(0,0,0,0.03)',
+              border: '2px dashed #d7ccc8',
+              width: '100%',
+            }}
           >
-            <Text size="sm" fw={500}>
+            <Text size="sm" fw={500} style={{ color: '#5d4037' }}>
               Still discarding:
             </Text>
-            <Text size="sm" c="dimmed">
+            <Text size="sm" style={{ color: '#5d4037' }}>
               {waitingPlayerNames.join(', ')}
             </Text>
           </Paper>
