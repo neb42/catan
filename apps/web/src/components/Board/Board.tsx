@@ -156,6 +156,7 @@ export function Board({ board }: BoardProps) {
         height: '100%',
         position: 'relative',
         cursor: isPanning ? 'grabbing' : 'grab',
+        backgroundColor: '#1E90FF', // Sea blue
       }}
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
