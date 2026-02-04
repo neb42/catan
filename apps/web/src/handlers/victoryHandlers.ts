@@ -1,0 +1,16 @@
+import { useGameStore } from '@web/stores/gameStore';
+
+import { HandlerContext, MessageHandler } from './types';
+
+export const handleVictory: MessageHandler = (message, ctx) => {
+  if (message.type !== 'victory') return;
+
+  const gameStore = useGameStore.getState();
+  gameStore.setVictoryState({
+    winnerId: message.winnerId,
+    winnerNickname: message.winnerNickname,
+    winnerVP: message.winnerVP,
+    allPlayerVP: message.allPlayerVP,
+    revealedVPCards: message.revealedVPCards,
+  });
+};
