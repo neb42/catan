@@ -42,33 +42,49 @@ export function CoastlineBackground({ hexes }: CoastlineBackgroundProps) {
       return vertices;
     };
 
-    // Collect all perimeter vertices
-    const perimeterVertices: Point[] = [];
+    // Build a map of hex locations for neighbor detection
+    const hexMap = new Map<string, Hex>();
+    hexes.forEach((hex) => {
+      hexMap.set(`${hex.q},${hex.r}`, hex);
+    });
 
-    // For each hex, add its vertices with outward extension
+    // Find all perimeter edges (edges not shared with another hex)
+    const perimeterEdges: Array<{ p1: Point; p2: Point; center: Point }> = [];
+
     hexes.forEach((hex) => {
       const center = getHexCenter(hex.q, hex.r);
       const vertices = getHexVertices(center, hexSize.x * spacing);
 
-      // Extend vertices outward by 15-20% for coastline effect
-      vertices.forEach((vertex) => {
-        const dx = vertex.x - center.x;
-        const dy = vertex.y - center.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const extension = 1.17; // 17% extension
+      // Check each edge of the hexagon
+      for (let i = 0; i < 6; i++) {
+        const v1 = vertices[i];
+        const v2 = vertices[(i + 1) % 6];
 
-        perimeterVertices.push({
-          x: center.x + dx * extension,
-          y: center.y + dy * extension,
-        });
-      });
+        // Calculate which neighbor would share this edge
+        // Pointy-top hex neighbors in axial coordinates
+        const neighbors = [
+          { q: hex.q + 1, r: hex.r }, // Edge 0
+          { q: hex.q, r: hex.r + 1 }, // Edge 1
+          { q: hex.q - 1, r: hex.r + 1 }, // Edge 2
+          { q: hex.q - 1, r: hex.r }, // Edge 3
+          { q: hex.q, r: hex.r - 1 }, // Edge 4
+          { q: hex.q + 1, r: hex.r - 1 }, // Edge 5
+        ];
+
+        const neighborKey = `${neighbors[i].q},${neighbors[i].r}`;
+
+        // If no neighbor on this edge, it's a perimeter edge
+        if (!hexMap.has(neighborKey)) {
+          perimeterEdges.push({ p1: v1, p2: v2, center });
+        }
+      }
     });
 
-    // Find convex hull of perimeter vertices to get outer boundary
-    const convexHull = getConvexHull(perimeterVertices);
+    // Sort perimeter edges to form a continuous boundary
+    const sortedPerimeter = sortPerimeterEdges(perimeterEdges);
 
-    // Generate wiggly path by adding sine wave variations to hull edges
-    const wigglePath = generateWigglyPath(convexHull);
+    // Generate wiggly path with variable extension based on curvature
+    const wigglePath = generateAdaptiveWigglyPath(sortedPerimeter);
 
     return wigglePath;
   }, [hexes]);
@@ -88,78 +104,137 @@ export function CoastlineBackground({ hexes }: CoastlineBackgroundProps) {
 }
 
 /**
- * Calculate convex hull using Graham scan algorithm
+ * Sort perimeter edges into continuous boundary order
  */
-function getConvexHull(points: Point[]): Point[] {
-  if (points.length < 3) return points;
+function sortPerimeterEdges(
+  edges: Array<{ p1: Point; p2: Point; center: Point }>,
+): Point[] {
+  if (edges.length === 0) return [];
 
-  // Find the point with lowest y (and leftmost if tie)
-  let pivot = points[0];
-  for (const point of points) {
-    if (point.y < pivot.y || (point.y === pivot.y && point.x < pivot.x)) {
-      pivot = point;
-    }
-  }
+  const points: Point[] = [];
+  const epsilon = 0.01; // Tolerance for point matching
 
-  // Sort points by polar angle with respect to pivot
-  const sorted = [...points].sort((a, b) => {
-    if (a === pivot) return -1;
-    if (b === pivot) return 1;
+  // Helper to check if two points are approximately equal
+  const pointsEqual = (a: Point, b: Point) =>
+    Math.abs(a.x - b.x) < epsilon && Math.abs(a.y - b.y) < epsilon;
 
-    const angleA = Math.atan2(a.y - pivot.y, a.x - pivot.x);
-    const angleB = Math.atan2(b.y - pivot.y, b.x - pivot.x);
+  // Start with first edge
+  let current = edges[0].p2;
+  points.push(edges[0].p1);
+  points.push(current);
 
-    if (angleA !== angleB) return angleA - angleB;
+  const remaining = [...edges.slice(1)];
 
-    // If angles are equal, sort by distance
-    const distA = Math.hypot(a.x - pivot.x, a.y - pivot.y);
-    const distB = Math.hypot(b.x - pivot.x, b.y - pivot.y);
-    return distA - distB;
-  });
+  // Build continuous path by finding connected edges
+  while (remaining.length > 0) {
+    const nextIndex = remaining.findIndex(
+      (edge) => pointsEqual(edge.p1, current) || pointsEqual(edge.p2, current),
+    );
 
-  // Build hull
-  const hull: Point[] = [sorted[0], sorted[1]];
+    if (nextIndex === -1) break; // No more connected edges
 
-  for (let i = 2; i < sorted.length; i++) {
-    let top = hull.length - 1;
+    const nextEdge = remaining[nextIndex];
+    remaining.splice(nextIndex, 1);
 
-    // Remove points that make clockwise turn
-    while (
-      hull.length > 1 &&
-      crossProduct(hull[top - 1], hull[top], sorted[i]) <= 0
-    ) {
-      hull.pop();
-      top--;
+    // Add the other endpoint
+    if (pointsEqual(nextEdge.p1, current)) {
+      current = nextEdge.p2;
+    } else {
+      current = nextEdge.p1;
     }
 
-    hull.push(sorted[i]);
+    points.push(current);
   }
 
-  return hull;
+  return points;
 }
 
 /**
- * Calculate cross product to determine turn direction
+ * Calculate interior angle at a point in a polygon
+ * Returns angle in radians (0 to 2π)
  */
-function crossProduct(o: Point, a: Point, b: Point): number {
-  return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+function calculateInteriorAngle(prev: Point, curr: Point, next: Point): number {
+  const v1x = prev.x - curr.x;
+  const v1y = prev.y - curr.y;
+  const v2x = next.x - curr.x;
+  const v2y = next.y - curr.y;
+
+  const angle1 = Math.atan2(v1y, v1x);
+  const angle2 = Math.atan2(v2y, v2x);
+
+  let angle = angle2 - angle1;
+  if (angle < 0) angle += 2 * Math.PI;
+  if (angle > 2 * Math.PI) angle -= 2 * Math.PI;
+
+  return angle;
 }
 
 /**
- * Generate SVG path with wiggly coastline effect using sine wave
+ * Generate SVG path with adaptive extension based on local curvature
+ * Tighter in concave regions (inward curves), extended in convex regions
  */
-function generateWigglyPath(points: Point[]): string {
+function generateAdaptiveWigglyPath(points: Point[]): string {
   if (points.length < 3) return '';
 
   const pathCommands: string[] = [];
+  const extendedPoints: Point[] = [];
+
+  // Calculate center of all points for outward direction reference
+  const centroid = {
+    x: points.reduce((sum, p) => sum + p.x, 0) / points.length,
+    y: points.reduce((sum, p) => sum + p.y, 0) / points.length,
+  };
+
+  // For each point, calculate extension based on interior angle
+  for (let i = 0; i < points.length; i++) {
+    const prev = points[(i - 1 + points.length) % points.length];
+    const curr = points[i];
+    const next = points[(i + 1) % points.length];
+
+    // Calculate interior angle
+    const interiorAngle = calculateInteriorAngle(prev, curr, next);
+
+    // Determine if this is convex (outward) or concave (inward)
+    // For a clockwise perimeter: angle > π means convex, angle < π means concave
+    // For counter-clockwise: reversed
+    // Check winding order by testing cross product
+    const isOutward = interiorAngle > Math.PI;
+
+    // Calculate extension factor based on curvature
+    // Convex (outward): 15-20% extension
+    // Concave (inward): 5-8% extension (tighter)
+    let extensionFactor: number;
+    if (isOutward) {
+      // Smooth convex corners - more extension
+      extensionFactor = 1.15 + (interiorAngle - Math.PI) * 0.02;
+    } else {
+      // Concave corners - minimal extension
+      const concavity = (Math.PI - interiorAngle) / Math.PI;
+      extensionFactor = 1.05 + concavity * 0.03; // 5-8% extension
+    }
+
+    // Calculate outward direction from centroid
+    const dx = curr.x - centroid.x;
+    const dy = curr.y - centroid.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    const extended = {
+      x: centroid.x + (dx / dist) * dist * extensionFactor,
+      y: centroid.y + (dy / dist) * dist * extensionFactor,
+    };
+
+    extendedPoints.push(extended);
+  }
 
   // Start at first point
-  pathCommands.push(`M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`);
+  pathCommands.push(
+    `M ${extendedPoints[0].x.toFixed(2)} ${extendedPoints[0].y.toFixed(2)}`,
+  );
 
-  // For each edge, create wiggly line with bezier curves
-  for (let i = 0; i < points.length; i++) {
-    const p1 = points[i];
-    const p2 = points[(i + 1) % points.length];
+  // Create wiggly path with bezier curves
+  for (let i = 0; i < extendedPoints.length; i++) {
+    const p1 = extendedPoints[i];
+    const p2 = extendedPoints[(i + 1) % extendedPoints.length];
 
     // Calculate edge vector and perpendicular
     const dx = p2.x - p1.x;
@@ -171,14 +246,12 @@ function generateWigglyPath(points: Point[]): string {
     const perpY = dx / edgeLength;
 
     // Add multiple bezier curves along edge for organic wiggle
-    const segments = Math.max(3, Math.floor(edgeLength / 8)); // ~8 units per segment
+    const segments = Math.max(2, Math.floor(edgeLength / 10)); // ~10 units per segment
 
     for (let seg = 0; seg < segments; seg++) {
       const t1 = seg / segments;
       const t2 = (seg + 1) / segments;
 
-      const x1 = p1.x + dx * t1;
-      const y1 = p1.y + dy * t1;
       const x2 = p1.x + dx * t2;
       const y2 = p1.y + dy * t2;
 
@@ -189,7 +262,7 @@ function generateWigglyPath(points: Point[]): string {
 
       // Use deterministic "randomness" based on position
       const seed = (xMid * 0.1 + yMid * 0.1) % (Math.PI * 2);
-      const wiggleAmount = (Math.sin(seed * 3) + Math.cos(seed * 5)) * 1.5;
+      const wiggleAmount = (Math.sin(seed * 3) + Math.cos(seed * 5)) * 1.2;
 
       const cpX = xMid + perpX * wiggleAmount;
       const cpY = yMid + perpY * wiggleAmount;
