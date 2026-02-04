@@ -201,78 +201,89 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 </h3>
 
                 {/* Achievement badges */}
-                {(hasLongestRoad || hasLargestArmy) && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: '4px',
-                      marginTop: '4px',
-                    }}
-                  >
-                    {hasLongestRoad && (
-                      <div
-                        style={{
-                          background: '#ffe0b2',
-                          color: '#e65100',
-                          border: '1px solid #ffcc80',
-                          fontSize: '10px',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontFamily: 'Inter, sans-serif',
-                          fontWeight: 600,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                        }}
-                        title="Longest Road"
-                      >
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                        >
-                          <path d="M18 4l-6 16L6 4" />
-                          <circle cx="12" cy="12" r="2" />
-                        </svg>
-                        Longest Road
-                      </div>
-                    )}
-                    {hasLargestArmy && (
-                      <div
-                        style={{
-                          background: '#ffcdd2',
-                          color: '#b71c1c',
-                          border: '1px solid #ef9a9a',
-                          fontSize: '10px',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontFamily: 'Inter, sans-serif',
-                          fontWeight: 600,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                        }}
-                        title="Largest Army"
-                      >
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                        >
-                          <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z" />
-                          <path d="M12 12v10" />
-                        </svg>
-                        Largest Army
-                      </div>
-                    )}
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '4px',
+                    marginTop: '4px',
+                  }}
+                >
+                  {/* Victory point badge */}
+                  <div style={{
+                    background: '#d35400',
+                    color: 'white',
+                    border: '1px solid #e67e22',
+                    fontSize: '10px',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: 600,
+                  }} title={`${trueVP} Victory Points`}>
+                    {player.id === myPlayerId  && vpCardCount > 0 ? `${publicVP} (${publicVP + vpCardCount})` : trueVP} VP
                   </div>
-                )}
+                  {hasLongestRoad && (
+                    <div
+                      style={{
+                        background: '#ffe0b2',
+                        color: '#e65100',
+                        border: '1px solid #ffcc80',
+                        fontSize: '10px',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 600,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                      title="Longest Road"
+                    >
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                      >
+                        <path d="M18 4l-6 16L6 4" />
+                        <circle cx="12" cy="12" r="2" />
+                      </svg>
+                      Longest Road
+                    </div>
+                  )}
+                  {hasLargestArmy && (
+                    <div
+                      style={{
+                        background: '#ffcdd2',
+                        color: '#b71c1c',
+                        border: '1px solid #ef9a9a',
+                        fontSize: '10px',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 600,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                      title="Largest Army"
+                    >
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                      >
+                        <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z" />
+                        <path d="M12 12v10" />
+                      </svg>
+                      Largest Army
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -549,7 +560,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 </div>
               </div>
 
-              {/* Row 2: Victory Points */}
+              {/* Row 2: Resource cards */}
               <div
                 style={{
                   background: 'white',
@@ -563,10 +574,10 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   position: 'relative',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 }}
-                title="Victory Points"
+                title="Resource Cards Held"
               >
                 <svg
-                  style={{ width: '18px', height: '18px', color: '#d35400' }}
+                  style={{ width: '18px', height: '18px', color: '#27ae60' }}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -575,14 +586,37 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  <rect
+                    x="6"
+                    y="2"
+                    width="12"
+                    height="16"
+                    rx="2"
+                    transform="rotate(-10 12 10)"
+                  />
+                  <rect
+                    x="6"
+                    y="2"
+                    width="12"
+                    height="16"
+                    rx="2"
+                    transform="rotate(0 12 10)"
+                  />
+                  <rect
+                    x="6"
+                    y="2"
+                    width="12"
+                    height="16"
+                    rx="2"
+                    transform="rotate(10 12 10)"
+                  />
                 </svg>
                 <div
                   style={{
                     position: 'absolute',
                     bottom: '-6px',
                     right: '-6px',
-                    background: '#e67e22',
+                    background: '#27ae60',
                     color: 'white',
                     fontSize: '10px',
                     minWidth: '16px',
@@ -596,83 +630,12 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                     boxSizing: 'border-box',
                   }}
                 >
-                  {publicVP}
-                  {player.id === myPlayerId && vpCardCount > 0 && (
-                    <span
-                      style={{
-                        fontSize: '10px',
-                        color: '#27ae60',
-                        fontWeight: 'bold',
-                        marginLeft: '2px',
-                      }}
-                      title={`True score: ${trueVP} (includes ${vpCardCount} hidden VP card${vpCardCount !== 1 ? 's' : ''})`}
-                    >
-                      *
-                    </span>
-                  )}
+                  {totalCards}
                 </div>
               </div>
+             
             </div>
 
-            {/* Resource cards display */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '-12px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: '#fff',
-                border: '1px solid #ccc',
-                padding: '4px 12px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: 600,
-                fontFamily: 'Inter, sans-serif',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                whiteSpace: 'nowrap',
-                zIndex: 2,
-              }}
-            >
-              <svg
-                style={{ width: '14px', height: '14px' }}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect
-                  x="6"
-                  y="2"
-                  width="12"
-                  height="16"
-                  rx="2"
-                  transform="rotate(-10 12 10)"
-                />
-                <rect
-                  x="6"
-                  y="2"
-                  width="12"
-                  height="16"
-                  rx="2"
-                  transform="rotate(0 12 10)"
-                />
-                <rect
-                  x="6"
-                  y="2"
-                  width="12"
-                  height="16"
-                  rx="2"
-                  transform="rotate(10 12 10)"
-                />
-              </svg>
-              {totalCards} Cards
-            </div>
           </motion.div>
         );
       })}
