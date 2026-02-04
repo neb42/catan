@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-04  
-**Last activity:** 2026-02-04 - Completed quick task 010: Change layout to CSS Grid with 2 rows × 3 columns
+**Last activity:** 2026-02-04 - Completed quick task 011: Make the board a fixed size and zoomable
 
 ## Current Position
 
@@ -30,6 +30,7 @@ Progress: ███████████████████████�
 | 008 | Show true score with VP cards to card owner only                       | 2025-06-10 | b656938 | [008-show-true-score-with-vp-cards-to-card-ow](./quick/008-show-true-score-with-vp-cards-to-card-ow/)     |
 | 009 | Refactor GamePlayerList to vertical card layout                        | 2026-02-04 | e3727f7 | [009-refactor-the-gameplayerlist-component-to](./quick/009-refactor-the-gameplayerlist-component-to/)     |
 | 010 | Change layout to CSS Grid with 2 rows × 3 columns                      | 2026-02-04 | 1176090 | [010-change-the-layout-to-be-a-grid-with-two-](./quick/010-change-the-layout-to-be-a-grid-with-two-/)     |
+| 011 | Make the board a fixed size and zoomable                               | 2026-02-04 | f8dd536 | [011-make-the-board-a-fixed-size-and-zoomable](./quick/011-make-the-board-a-fixed-size-and-zoomable/)     |
 
 ## Decisions
 
