@@ -28,9 +28,21 @@ export function TradeButton() {
   return (
     <Button
       variant="light"
-      color="blue"
+      // color="blue"
       disabled={isBlocked}
       onClick={() => setTradeModalOpen(true)}
+      style={{
+        background: '#fdf6e3',
+        border: '4px solid #8d6e63',
+        borderRadius: '12px',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+        padding: '15px',
+        width: 200,
+        fontSize: '14px',
+        fontWeight: 600,
+        color: '#5d4037',
+        fontFamily: 'Fraunces, serif',
+      }}
     >
       Trade
     </Button>

@@ -64,7 +64,7 @@ export function Game() {
     <Box
       style={{
         display: 'grid',
-        gridTemplateRows: '1fr auto',
+        gridTemplateRows: '1fr minmax(200px, auto)',
         gridTemplateColumns:
           'minmax(250px, 1fr) minmax(600px, 2fr) minmax(250px, 1fr)',
         width: '100%',
@@ -128,10 +128,8 @@ export function Game() {
         >
           <TurnControls />
           <DiceRoller />
-          <Box style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-            <TradeButton />
-            <BuildControls />
-          </Box>
+          <TradeButton />
+          <BuildControls />
         </Stack>
       )}
 
