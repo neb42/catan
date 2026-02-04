@@ -27,8 +27,7 @@ export function PlacementBanner({ players }: PlacementBannerProps) {
       <div
         style={{
           background: '#fdf6e3',
-          border: '4px solid #8d6e63',
-          borderLeft: `4px solid ${colorHex}`,
+          border: `4px solid ${colorHex}`,
           borderRadius: '12px',
           boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
           padding: '12px 16px',
