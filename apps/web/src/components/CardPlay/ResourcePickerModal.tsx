@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Modal, Button, Group, Stack, Text, Badge } from '@mantine/core';
 import { ResourceType } from '@catan/shared';
 import { useGameStore, useDevCardPlayPhase } from '../../stores/gameStore';
+import { ResourceIcon } from '../ResourceIcon/ResourceIcon';
 
 const RESOURCES: ResourceType[] = ['wood', 'brick', 'sheep', 'wheat', 'ore'];
 
@@ -43,68 +43,214 @@ export function ResourcePickerModal() {
   if (!isOpen) return null;
 
   return (
-    <Modal
-      opened={true}
-      onClose={() => {}} // Blocking modal - cannot close
-      closeOnClickOutside={false}
-      closeOnEscape={false}
-      withCloseButton={false}
-      title="Year of Plenty"
-      centered
-      size="md"
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000,
+      }}
     >
-      <Stack gap="md">
-        <Text size="sm" c="dimmed">
-          Select 2 resources to take from the bank. You can select the same
-          resource twice.
-        </Text>
+      <div
+        style={{
+          background: '#fdf6e3',
+          border: '4px solid #8d6e63',
+          borderRadius: '12px',
+          boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+          width: '90%',
+          maxWidth: '500px',
+          padding: '0',
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: '16px',
+            borderBottom: '2px dashed #d7ccc8',
+            background: 'rgba(0,0,0,0.03)',
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#5d4037',
+              fontFamily: 'Fraunces, serif',
+            }}
+          >
+            Year of Plenty
+          </h2>
+        </div>
 
-        <Group gap="xs">
-          <Text fw={500}>Selected:</Text>
-          {selected.length === 0 && <Text c="dimmed">None</Text>}
-          {selected.map((resource, i) => (
-            <Badge
-              key={i}
-              size="lg"
-              color={RESOURCE_COLORS[resource]}
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleRemove(i)}
-              variant="filled"
-            >
-              {resource.charAt(0).toUpperCase() + resource.slice(1)} ✕
-            </Badge>
-          ))}
-        </Group>
+        {/* Body */}
+        <div style={{ padding: '20px' }}>
+          <p
+            style={{
+              fontSize: '14px',
+              color: '#5d4037',
+              marginTop: 0,
+              marginBottom: '16px',
+              lineHeight: 1.5,
+            }}
+          >
+            Select 2 resources to take from the bank. You can select the same
+            resource twice.
+          </p>
 
-        <Group justify="center" gap="sm">
-          {RESOURCES.map((resource) => (
-            <Button
-              key={resource}
-              onClick={() => handleSelect(resource)}
-              disabled={selected.length >= 2}
-              variant="outline"
-              color={RESOURCE_COLORS[resource]}
-              styles={{
-                root: {
-                  borderColor: RESOURCE_COLORS[resource],
-                  color: RESOURCE_COLORS[resource],
-                },
+          {/* Selected section */}
+          <div
+            style={{
+              background: 'rgba(0,0,0,0.03)',
+              borderBottom: '2px dashed #d7ccc8',
+              padding: '12px',
+              marginBottom: '16px',
+              borderRadius: '8px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                flexWrap: 'wrap',
               }}
             >
-              {resource.charAt(0).toUpperCase() + resource.slice(1)}
-            </Button>
-          ))}
-        </Group>
+              <span
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: '#5d4037',
+                }}
+              >
+                Selected:
+              </span>
+              {selected.length === 0 && (
+                <span style={{ fontSize: '14px', color: '#a1887f' }}>None</span>
+              )}
+              {selected.map((resource, i) => (
+                <div
+                  key={i}
+                  onClick={() => handleRemove(i)}
+                  style={{
+                    background: RESOURCE_COLORS[resource],
+                    color: 'white',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    e.currentTarget.style.boxShadow =
+                      '0 2px 4px rgba(0,0,0,0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  {resource.charAt(0).toUpperCase() + resource.slice(1)} ✕
+                </div>
+              ))}
+            </div>
+          </div>
 
-        <Button
-          onClick={handleSubmit}
-          disabled={selected.length !== 2}
-          fullWidth
-          mt="md"
-        >
-          Take {selected.length}/2 Resources
-        </Button>
-      </Stack>
-    </Modal>
+          {/* Resource selection buttons */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '10px',
+              flexWrap: 'wrap',
+              marginBottom: '20px',
+            }}
+          >
+            {RESOURCES.map((resource) => (
+              <button
+                key={resource}
+                onClick={() => handleSelect(resource)}
+                disabled={selected.length >= 2}
+                style={{
+                  background: 'white',
+                  border: `2px solid ${RESOURCE_COLORS[resource]}`,
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  cursor: selected.length >= 2 ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  transition: 'all 0.2s',
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  color: RESOURCE_COLORS[resource],
+                  opacity: selected.length >= 2 ? 0.5 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (selected.length < 2) {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow =
+                      '0 4px 8px rgba(0,0,0,0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                }}
+              >
+                <ResourceIcon type={resource} size="sm" />
+                {resource.charAt(0).toUpperCase() + resource.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* Submit button */}
+          <button
+            onClick={handleSubmit}
+            disabled={selected.length !== 2}
+            style={{
+              width: '100%',
+              background: selected.length === 2 ? '#5d4037' : '#d7ccc8',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: selected.length === 2 ? 'pointer' : 'not-allowed',
+              transition: 'all 0.2s',
+              fontFamily: 'Inter, sans-serif',
+            }}
+            onMouseEnter={(e) => {
+              if (selected.length === 2) {
+                e.currentTarget.style.background = '#4e342e';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selected.length === 2) {
+                e.currentTarget.style.background = '#5d4037';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }
+            }}
+          >
+            Take {selected.length}/2 Resources
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
