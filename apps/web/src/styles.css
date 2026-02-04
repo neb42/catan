@@ -27,6 +27,7 @@ body, #root {
   font-family: 'Outfit', sans-serif;
   min-height: 100vh;
   position: relative;
+  overflow: hidden;
 }
 
 /* Typography */
