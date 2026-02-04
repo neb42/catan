@@ -31,7 +31,6 @@ import { GameLog } from '@web/components/Feedback';
 import { RoadBuildingOverlay } from './CardPlay/RoadBuildingOverlay';
 import { ResourcePickerModal } from './CardPlay/ResourcePickerModal';
 import { MonopolyModal } from './CardPlay/MonopolyModal';
-import { DevCardHand } from './DevCard/DevCardHand';
 import { VPRevealOverlay, VictoryModal } from './Victory';
 
 export function Game() {
@@ -149,9 +148,15 @@ export function Game() {
             gap: '16px',
           }}
         >
-          <Box style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', width: '100%' }}>
+          <Box
+            style={{
+              display: 'flex',
+              gap: '8px',
+              alignItems: 'flex-end',
+              width: '100%',
+            }}
+          >
             <ResourceHand />
-            <DevCardHand />
           </Box>
         </Box>
       )}

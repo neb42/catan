@@ -1,8 +1,9 @@
-import { Paper, Text, Stack, Group } from '@mantine/core';
+import { Paper, Text, Stack, Group, Divider, Box } from '@mantine/core';
 import { motion, AnimatePresence } from 'motion/react';
 import { ResourceType } from '@catan/shared';
 import { useGameStore, usePlayerResources } from '../../stores/gameStore';
 import { ResourceIcon } from '../ResourceIcon/ResourceIcon';
+import { DevCardButton } from '../DevCard/DevCardButton';
 
 // Resource card configuration
 const RESOURCE_CARD_COLORS: Record<string, string> = {
@@ -131,6 +132,7 @@ function ResourceCard({
 export function ResourceHand() {
   const myPlayerId = useGameStore((state) => state.myPlayerId);
   const resources = usePlayerResources(myPlayerId || '');
+  const myDevCards = useGameStore((s) => s.myDevCards);
 
   // Generate individual card objects from resource counts
   // Order: wood, brick, sheep, wheat, ore (grouped by type)
@@ -146,8 +148,13 @@ export function ResourceHand() {
 
   const totalCards = cards.length;
 
-  // Empty state
-  if (totalCards === 0) {
+  // Separate VP cards for distinct display
+  const vpCards = myDevCards.filter((c) => c.type === 'victory_point');
+  const playableCards = myDevCards.filter((c) => c.type !== 'victory_point');
+  const hasDevCards = myDevCards.length > 0;
+
+  // Empty state - show when BOTH resources and dev cards are empty
+  if (totalCards === 0 && !hasDevCards) {
     return (
       <Paper
         radius="md"
@@ -188,7 +195,7 @@ export function ResourceHand() {
       }}
     >
       <Stack gap="xs" align="center">
-        {/* Header with count */}
+        {/* Combined header */}
         <div
           style={{
             borderBottom: '2px dashed #d7ccc8',
@@ -203,51 +210,120 @@ export function ResourceHand() {
             c="dimmed"
             style={{ fontFamily: 'Fraunces, serif' }}
           >
-            Your Resources ({totalCards})
+            YOUR HAND
           </Text>
         </div>
 
-        {/* Resource counts */}
-        <Group gap={2}>
-          {Object.entries(resources).map(([type, count]) => (
-            <Text
-              key={type}
-              size="xs"
-              c="dimmed"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-              }}
-            >
-              <ResourceIcon type={type as ResourceType} size="xs" />
-              <span>{count}</span>
-            </Text>
-          ))}
-        </Group>
-
-        {/* Fanned hand container */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            paddingBottom: 10,
-            minHeight: CARD_HEIGHT + 20,
-          }}
+        {/* Horizontal layout for resources and dev cards */}
+        <Group
+          gap="md"
+          align="flex-start"
+          wrap="nowrap"
+          style={{ width: '100%' }}
         >
-          <AnimatePresence mode="popLayout">
-            {cards.map((card, cardIndex) => (
-              <ResourceCard
-                key={`${card.type}-${card.index}`}
-                type={card.type}
-                index={card.index}
-                totalCards={totalCards}
-                cardIndex={cardIndex}
-              />
-            ))}
-          </AnimatePresence>
-        </div>
+          {/* Resources section */}
+          {totalCards > 0 && (
+            <Stack gap="xs" align="center" style={{ flex: 1 }}>
+              <Text
+                size="sm"
+                fw={600}
+                c="dimmed"
+                style={{ fontFamily: 'Fraunces, serif' }}
+              >
+                Resources ({totalCards})
+              </Text>
+
+              {/* Resource counts */}
+              <Group gap={2}>
+                {Object.entries(resources).map(([type, count]) => (
+                  <Text
+                    key={type}
+                    size="xs"
+                    c="dimmed"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
+                    <ResourceIcon type={type as ResourceType} size="xs" />
+                    <span>{count}</span>
+                  </Text>
+                ))}
+              </Group>
+
+              {/* Fanned hand container */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                  paddingBottom: 10,
+                  minHeight: CARD_HEIGHT + 20,
+                }}
+              >
+                <AnimatePresence mode="popLayout">
+                  {cards.map((card, cardIndex) => (
+                    <ResourceCard
+                      key={`${card.type}-${card.index}`}
+                      type={card.type}
+                      index={card.index}
+                      totalCards={totalCards}
+                      cardIndex={cardIndex}
+                    />
+                  ))}
+                </AnimatePresence>
+              </div>
+            </Stack>
+          )}
+
+          {/* Vertical divider (only show when both resources and dev cards exist) */}
+          {totalCards > 0 && hasDevCards && (
+            <Divider
+              orientation="vertical"
+              style={{
+                borderColor: '#d7ccc8',
+                height: 'auto',
+                alignSelf: 'stretch',
+              }}
+            />
+          )}
+
+          {/* Development cards section */}
+          {hasDevCards && (
+            <Stack gap="xs" align="flex-start" style={{ flex: 1 }}>
+              <Text
+                size="sm"
+                fw={600}
+                c="dimmed"
+                style={{ fontFamily: 'Fraunces, serif' }}
+              >
+                Development Cards
+              </Text>
+
+              <Group gap="sm">
+                {playableCards.map((card) => (
+                  <DevCardButton key={card.id} card={card} />
+                ))}
+
+                {vpCards.length > 0 && (
+                  <Box
+                    style={{
+                      borderLeft: '2px solid gold',
+                      paddingLeft: 12,
+                      display: 'flex',
+                      gap: 8,
+                    }}
+                  >
+                    {vpCards.map((card) => (
+                      <DevCardButton key={card.id} card={card} />
+                    ))}
+                  </Box>
+                )}
+              </Group>
+            </Stack>
+          )}
+        </Group>
       </Stack>
     </Paper>
   );
