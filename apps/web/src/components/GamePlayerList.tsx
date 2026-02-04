@@ -524,7 +524,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 title="Development Cards Held"
               >
                 <svg
-                  style={{ width: '18px', height: '18px', color: '#2c3e50' }}
+                  style={{ width: '18px', height: '18px', color: '#5d4037' }}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -542,7 +542,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                     position: 'absolute',
                     bottom: '-6px',
                     right: '-6px',
-                    background: '#34495e',
+                    background: '#5d4037',
                     color: 'white',
                     fontSize: '10px',
                     minWidth: '16px',
@@ -577,7 +577,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 title="Resource Cards Held"
               >
                 <svg
-                  style={{ width: '18px', height: '18px', color: '#27ae60' }}
+                  style={{ width: '18px', height: '18px', color: totalCards > 7 ? '#e74c3c' : '#5d4037' }}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -616,7 +616,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                     position: 'absolute',
                     bottom: '-6px',
                     right: '-6px',
-                    background: '#27ae60',
+                    background: totalCards > 7 ? '#e74c3c' : '#5d4037', 
                     color: 'white',
                     fontSize: '10px',
                     minWidth: '16px',

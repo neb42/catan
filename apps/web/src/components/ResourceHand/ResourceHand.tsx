@@ -229,85 +229,93 @@ export function ResourceHand() {
           style={{ width: '100%' }}
         >
           {/* Resources section */}
-          {totalCards > 0 && (
-            <Stack gap="xs" align="center" style={{ flex: 1 }}>
-              <Text
-                size="sm"
-                fw={600}
-                c="dimmed"
-                style={{ fontFamily: 'Fraunces, serif' }}
-              >
-                Resources ({totalCards})
-              </Text>
+          <Stack gap="xs" align="center" style={{ flex: 1 }}>
+            <Text
+              size="sm"
+              fw={600}
+              c="dimmed"
+              style={{ fontFamily: 'Fraunces, serif' }}
+            >
+              Resources ({totalCards})
+            </Text>
 
-              {/* Resource counts */}
-              <Group gap={2}>
-                {Object.entries(resources).map(([type, count]) => (
-                  <Text
-                    key={type}
-                    size="xs"
-                    c="dimmed"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 4,
-                    }}
-                  >
-                    <ResourceIcon type={type as ResourceType} size="xs" />
-                    <span>{count}</span>
-                  </Text>
-                ))}
-              </Group>
-
-              {/* Fanned hand container */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  justifyContent: 'center',
-                  paddingBottom: 10,
-                  minHeight: CARD_HEIGHT + 20,
-                }}
-              >
-                <AnimatePresence mode="popLayout">
-                  {cards.map((card, cardIndex) => (
-                    <ResourceCard
-                      key={`${card.type}-${card.index}`}
-                      type={card.type}
-                      index={card.index}
-                      totalCards={totalCards}
-                      cardIndex={cardIndex}
-                    />
+            {totalCards > 0 ? (
+              <>
+                {/* Resource counts */}
+                <Group gap={2}>
+                  {Object.entries(resources).map(([type, count]) => (
+                    <Text
+                      key={type}
+                      size="xs"
+                      c="dimmed"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
+                      }}
+                    >
+                      <ResourceIcon type={type as ResourceType} size="xs" />
+                      <span>{count}</span>
+                    </Text>
                   ))}
-                </AnimatePresence>
-              </div>
-            </Stack>
-          )}
+                </Group>
+
+                {/* Fanned hand container */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    justifyContent: 'center',
+                    paddingBottom: 10,
+                    minHeight: CARD_HEIGHT + 20,
+                  }}
+                >
+                  <AnimatePresence mode="popLayout">
+                    {cards.map((card, cardIndex) => (
+                      <ResourceCard
+                        key={`${card.type}-${card.index}`}
+                        type={card.type}
+                        index={card.index}
+                        totalCards={totalCards}
+                        cardIndex={cardIndex}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </>
+            ) : (
+              <Text size="xs" c="dimmed">
+                No resources yet (roll the dice to collect some!)
+              </Text>
+            )}
+          </Stack>
 
           {/* Vertical divider (only show when both resources and dev cards exist) */}
-          {totalCards > 0 && hasDevCards && (
-            <Divider
-              orientation="vertical"
-              style={{
-                borderColor: '#d7ccc8',
-                height: 'auto',
-                alignSelf: 'stretch',
-              }}
-            />
-          )}
+          <Divider
+            orientation="vertical"
+            style={{
+              borderColor: '#d7ccc8',
+              height: 'auto',
+              alignSelf: 'stretch',
+            }}
+          />
 
           {/* Development cards section */}
-          {hasDevCards && (
-            <Stack gap="xs" align="center" style={{ flex: 1 }}>
-              <Text
-                size="sm"
-                fw={600}
-                c="dimmed"
-                style={{ fontFamily: 'Fraunces, serif' }}
-              >
-                Development Cards
-              </Text>
+          <Stack gap="xs" align="center" style={{ flex: 1 }}>
+            <Text
+              size="sm"
+              fw={600}
+              c="dimmed"
+              style={{ fontFamily: 'Fraunces, serif' }}
+            >
+              Development Cards
+            </Text>
 
+            {playableCards.length === 0 && vpCards.length === 0 ? (
+              <Text size="xs" c="dimmed">
+                No development cards yet
+              </Text>
+            ) : (
               <Group gap="md" style={{ minHeight: 120 }}>
                 {playableCards.map((card) => (
                   <DevCardButton key={card.id} card={card} />
@@ -328,8 +336,8 @@ export function ResourceHand() {
                   </Box>
                 )}
               </Group>
-            </Stack>
-          )}
+            )}
+          </Stack>
         </Group>
       </Stack>
     </Paper>
