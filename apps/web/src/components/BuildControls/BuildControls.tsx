@@ -181,7 +181,7 @@ export function BuildControls() {
             fontFamily: 'Fraunces, serif',
           }}
         >
-          Build
+          Build & Buy
         </h3>
 
         {/* Build buttons */}
