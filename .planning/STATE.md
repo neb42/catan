@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-04  
-**Last activity:** 2026-02-04 - Completed quick task 013: Replace emojis with tile icons
+**Last activity:** 2026-02-04 - Completed quick task 014: Apply GamePlayerList styling to BuildControls
 
 ## Current Position
 
@@ -33,6 +33,7 @@ Progress: ███████████████████████�
 | 011 | Make the board a fixed size and zoomable                               | 2026-02-04 | f8dd536 | [011-make-the-board-a-fixed-size-and-zoomable](./quick/011-make-the-board-a-fixed-size-and-zoomable/)     |
 | 012 | Apply GamePlayerList style to ResourceHand                             | 2026-02-04 | e9617b1 | [012-apply-gameplayerlist-style-to-resourceha](./quick/012-apply-gameplayerlist-style-to-resourceha/)     |
 | 013 | Replace emojis with tile icons                                         | 2026-02-04 | 8da2e9c | [013-replace-emojis-with-tile-icons](./quick/013-replace-emojis-with-tile-icons/)                         |
+| 014 | Apply GamePlayerList style to BuildControls                            | 2026-02-04 | 251e2d6 | [014-apply-the-style-of-the-gameplayerlist-co](./quick/014-apply-the-style-of-the-gameplayerlist-co/)     |
 
 ## Decisions
 
