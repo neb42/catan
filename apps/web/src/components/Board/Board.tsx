@@ -15,6 +15,7 @@ import {
 import { useShallow } from 'zustand/react/shallow';
 import { RobberFigure, RobberPlacement } from '@web/components/Robber';
 import { RoadBuildingEdgeOverlay } from '../CardPlay/RoadBuildingOverlay';
+import { Paper } from '@mantine/core';
 
 interface BoardProps {
   board: BoardState;
@@ -150,7 +151,7 @@ export function Board({ board }: BoardProps) {
   }, [scale, offset]);
 
   return (
-    <div
+    <Paper
       style={{
         width: '100%',
         height: '100%',
@@ -158,6 +159,8 @@ export function Board({ board }: BoardProps) {
         cursor: isPanning ? 'grabbing' : 'grab',
         backgroundColor: '#1E90FF', // Sea blue
       }}
+      shadow="md"
+      radius="lg"
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -218,6 +221,6 @@ export function Board({ board }: BoardProps) {
 
       {/* Controls render OUTSIDE SVG for standard DOM interaction */}
       {/* <PlacementControls /> */}
-    </div>
+    </Paper>
   );
 }
