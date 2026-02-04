@@ -85,6 +85,20 @@ export function VictoryModal() {
         withCloseButton={false}
         overlayProps={{ blur: 2, backgroundOpacity: 0.6 }}
         zIndex={1002}
+        styles={{
+          content: {
+            background: '#fdf6e3',
+            border: '4px solid #8d6e63',
+            borderRadius: '12px',
+            boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+          },
+          header: {
+            background: 'transparent',
+          },
+          body: {
+            color: '#5d4037',
+          },
+        }}
       >
         <Stack align="center" gap="lg" p="md">
           {/* Winner announcement */}
@@ -97,20 +111,38 @@ export function VictoryModal() {
               size="2.5rem"
               fw={900}
               ta="center"
-              style={{ fontFamily: 'Fraunces, serif' }}
+              style={{ fontFamily: 'Fraunces, serif', color: '#5d4037' }}
             >
               {winnerNickname} Wins!
             </Text>
           </motion.div>
 
           {/* Winner VP breakdown */}
-          <Badge size="xl" color="yellow" variant="filled" radius="lg">
+          <Badge
+            size="xl"
+            variant="filled"
+            radius="lg"
+            styles={{
+              root: {
+                background: '#f1c40f',
+                color: '#333',
+              },
+            }}
+          >
             {winnerVP?.total} Victory Points
           </Badge>
 
           {/* All players VP table */}
           <Stack gap="sm" w="100%">
-            <Text fw={700} ta="center">
+            <Text
+              fw={700}
+              ta="center"
+              style={{
+                fontFamily: 'Fraunces, serif',
+                color: '#5d4037',
+                fontSize: '18px',
+              }}
+            >
               Final Standings
             </Text>
             {room?.players.map((player) => {
@@ -124,8 +156,10 @@ export function VictoryModal() {
                   style={{
                     border: isWinner
                       ? `3px solid ${PLAYER_COLOR_HEX[player.color]}`
-                      : '1px solid #EEE',
-                    backgroundColor: isWinner ? '#FFF9E6' : 'white',
+                      : '1px solid #d7ccc8',
+                    backgroundColor: isWinner
+                      ? 'rgba(241, 196, 15, 0.1)'
+                      : 'white',
                   }}
                 >
                   <Group justify="space-between">
@@ -139,32 +173,65 @@ export function VictoryModal() {
                       >
                         {player.nickname.slice(0, 2).toUpperCase()}
                       </Avatar>
-                      <Text fw={isWinner ? 700 : 500}>{player.nickname}</Text>
+                      <Text
+                        fw={isWinner ? 700 : 500}
+                        style={{ color: '#5d4037' }}
+                      >
+                        {player.nickname}
+                      </Text>
                       {isWinner && (
-                        <Badge color="yellow" size="xs">
+                        <Badge
+                          size="xs"
+                          styles={{
+                            root: {
+                              background: '#f1c40f',
+                              color: '#333',
+                            },
+                          }}
+                        >
                           WINNER
                         </Badge>
                       )}
                     </Group>
                     <Group gap={4}>
-                      <Text size="sm" title="Settlements">
+                      <Text
+                        size="sm"
+                        title="Settlements"
+                        style={{ color: '#5d4037' }}
+                      >
                         {vp?.settlements || 0}
                       </Text>
-                      <Text size="sm" title="Cities">
+                      <Text
+                        size="sm"
+                        title="Cities"
+                        style={{ color: '#5d4037' }}
+                      >
                         {Math.floor((vp?.cities || 0) / 2)}
                       </Text>
                       {(vp?.longestRoad || 0) > 0 && (
-                        <Text size="sm" title="Longest Road">
+                        <Text
+                          size="sm"
+                          title="Longest Road"
+                          style={{ color: '#5d4037' }}
+                        >
                           2
                         </Text>
                       )}
                       {(vp?.largestArmy || 0) > 0 && (
-                        <Text size="sm" title="Largest Army">
+                        <Text
+                          size="sm"
+                          title="Largest Army"
+                          style={{ color: '#5d4037' }}
+                        >
                           2
                         </Text>
                       )}
                       {(vp?.victoryPointCards || 0) > 0 && (
-                        <Text size="sm" title="VP Cards">
+                        <Text
+                          size="sm"
+                          title="VP Cards"
+                          style={{ color: '#5d4037' }}
+                        >
                           {vp?.victoryPointCards}
                         </Text>
                       )}
@@ -180,10 +247,34 @@ export function VictoryModal() {
 
           {/* Action buttons */}
           <Group gap="md">
-            <Button variant="light" onClick={handleClose}>
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              styles={{
+                root: {
+                  border: '2px solid #8d6e63',
+                  color: '#8d6e63',
+                  background: 'transparent',
+                  '&:hover': {
+                    background: 'rgba(141, 110, 99, 0.1)',
+                  },
+                },
+              }}
+            >
               View Board
             </Button>
-            <Button color="teal" onClick={handleReturnToLobby}>
+            <Button
+              onClick={handleReturnToLobby}
+              styles={{
+                root: {
+                  background: '#8d6e63',
+                  color: '#fdf6e3',
+                  '&:hover': {
+                    background: '#6d4c41',
+                  },
+                },
+              }}
+            >
               Return to Lobby
             </Button>
           </Group>
