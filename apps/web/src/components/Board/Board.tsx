@@ -16,6 +16,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { RobberFigure, RobberPlacement } from '@web/components/Robber';
 import { RoadBuildingEdgeOverlay } from '../CardPlay/RoadBuildingOverlay';
 import { Paper } from '@mantine/core';
+import { CoastlineBackground } from './CoastlineBackground';
 
 interface BoardProps {
   board: BoardState;
@@ -183,6 +184,9 @@ export function Board({ board }: BoardProps) {
           spacing={1.05}
           origin={{ x: 0, y: 0 }}
         >
+          {/* Render coastline background before hexes so it appears behind */}
+          <CoastlineBackground hexes={board.hexes} />
+
           {board.hexes.map((hex) => (
             <TerrainHex key={`${hex.q}-${hex.r}`} hex={hex} />
           ))}
