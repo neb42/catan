@@ -90,9 +90,9 @@ export function Game() {
       {/* Row 1, Column 1: Player list */}
       <Box
         style={{
-          gridRow: 1,
-          gridColumnStart: 1,
-          gridColumnEnd: 2,
+          gridRowStart: 1,
+          gridRowEnd: 2,
+          gridColumn: 1,
           padding: '16px',
           display: 'flex',
           alignItems: 'flex-start',
@@ -120,7 +120,8 @@ export function Game() {
       {isMainGamePhase && (
         <Stack
           style={{
-            gridRow: 1,
+            gridRowStart: 1,
+            gridRowEnd: 3,
             gridColumn: 3,
             padding: '16px',
           }}
@@ -128,6 +129,10 @@ export function Game() {
         >
           <TurnControls />
           <DiceRoller />
+          <Box style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+            <TradeButton />
+            <BuildControls />
+          </Box>
         </Stack>
       )}
 
@@ -136,21 +141,17 @@ export function Game() {
         <Box
           style={{
             gridRow: 2,
-            gridColumn: '2 / -1',
+            gridColumn: 2,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
-            padding: '0 16px 16px',
+            // padding: '0 16px 16px',
             gap: '16px',
           }}
         >
-          <Box style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+          <Box style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', width: '100%' }}>
             <ResourceHand />
             <DevCardHand />
-          </Box>
-          <Box style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-            <TradeButton />
-            <BuildControls />
           </Box>
         </Box>
       )}

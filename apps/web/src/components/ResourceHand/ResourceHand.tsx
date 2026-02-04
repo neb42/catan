@@ -157,6 +157,7 @@ export function ResourceHand() {
           border: '4px solid #8d6e63',
           boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
           textAlign: 'center',
+          width: '100%',
         }}
       >
         <Stack gap="xs" align="center">
@@ -183,6 +184,7 @@ export function ResourceHand() {
         border: '4px solid #8d6e63',
         boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
         perspective: 1000,
+        width: '100%',
       }}
     >
       <Stack gap="xs" align="center">
@@ -191,7 +193,6 @@ export function ResourceHand() {
           style={{
             borderBottom: '2px dashed #d7ccc8',
             paddingBottom: '8px',
-            marginBottom: '8px',
             width: '100%',
             textAlign: 'center',
           }}
@@ -207,7 +208,7 @@ export function ResourceHand() {
         </div>
 
         {/* Resource counts */}
-        <Group gap={2} mt="xs">
+        <Group gap={2}>
           {Object.entries(resources).map(([type, count]) => (
             <Text
               key={type}
@@ -231,7 +232,6 @@ export function ResourceHand() {
             display: 'flex',
             alignItems: 'flex-end',
             justifyContent: 'center',
-            paddingTop: 10,
             paddingBottom: 10,
             minHeight: CARD_HEIGHT + 20,
           }}

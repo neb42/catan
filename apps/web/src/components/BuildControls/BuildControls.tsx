@@ -160,6 +160,7 @@ export function BuildControls() {
         borderRadius: '12px',
         boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
         padding: '15px',
+        width: 200,
       }}
     >
       <div
@@ -184,7 +185,7 @@ export function BuildControls() {
         </h3>
 
         {/* Build buttons */}
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <BuildButton
             buildingType="road"
             isActive={buildMode === 'road'}

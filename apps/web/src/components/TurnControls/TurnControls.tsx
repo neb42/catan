@@ -33,7 +33,7 @@ export function TurnControls() {
       style={{
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(8px)',
-        minWidth: 200,
+        width: 200,
       }}
     >
       <Stack gap="sm" align="center">
