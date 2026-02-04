@@ -31,8 +31,10 @@ export function TurnControls() {
       radius="lg"
       p="md"
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(8px)',
+        background: '#fdf6e3',
+        border: '4px solid #8d6e63',
+        borderRadius: '12px',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
         width: 200,
       }}
     >
@@ -94,7 +96,7 @@ export function TurnControls() {
         </AnimatePresence>
 
         {/* Phase indicator */}
-        <Text size="xs" c="dimmed" ta="center">
+        <Text size="xs" c="#5d4037" ta="center">
           {turnPhase === 'roll' ? 'Roll the dice' : 'Trade & Build'}
         </Text>
 
