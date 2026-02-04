@@ -92,12 +92,12 @@ export function CoastlineBackground({ hexes }: CoastlineBackgroundProps) {
   return (
     <g className="coastline-background">
       <path
-        d={coastlinePath}
-        fill="#D4C4A8" // Sand/land color
-        opacity={0.95}
-        style={{
-          filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.2))',
-        }}
+      d={coastlinePath}
+      fill="#d4a574" // Warm sandy beige
+      opacity={0.95}
+      style={{
+        filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.2))',
+      }}
       />
     </g>
   );
