@@ -79,12 +79,20 @@ export function Game() {
     >
       {/* Placement UI (only during setup) - absolute positioned overlays */}
       {placementPhase && (
-        <>
+        <Stack
+          style={{
+            gridRowStart: 1,
+            gridRowEnd: 3,
+            gridColumn: 3,
+            padding: '0 16px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+          gap="md"
+        >
           <PlacementBanner players={players} />
-          <div style={{ position: 'absolute', top: 80, right: 16, zIndex: 10 }}>
-            <DraftOrderDisplay players={players} />
-          </div>
-        </>
+          <DraftOrderDisplay players={players} />
+        </Stack>
       )}
 
       {/* Row 1, Column 1: Player list */}

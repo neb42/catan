@@ -25,13 +25,6 @@ export function PlacementBanner({ players }: PlacementBannerProps) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      style={{
-        position: 'absolute',
-        top: 16,
-        left: '65%',
-        transform: 'translateX(-50%)',
-        zIndex: 100,
-      }}
     >
       <Paper
         shadow="md"
