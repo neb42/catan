@@ -13,9 +13,7 @@ export function TradeButton() {
   const devCardPlayPhase = useGameStore((state) => state.devCardPlayPhase);
 
   // Only show trade button during main phase of own turn
-  if (turnPhase !== 'main' || !isMyTurn) {
-    return null;
-  }
+  const inActive = turnPhase !== 'main' || !isMyTurn;
 
   // Block trading during robber phase or dev card play phase
   const isBlocked =
@@ -26,7 +24,7 @@ export function TradeButton() {
 
   return (
     <button
-      disabled={isBlocked}
+      disabled={isBlocked || inActive}
       onClick={() => setTradeModalOpen(true)}
       style={{
         background: '#fdf6e3',
@@ -38,32 +36,32 @@ export function TradeButton() {
         fontSize: '0.875rem',
         color: '#5d4037',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        cursor: isBlocked ? 'not-allowed' : 'pointer',
+        cursor: isBlocked || inActive ? 'not-allowed' : 'pointer',
         transition: 'all 0.2s ease',
-        opacity: isBlocked ? 0.5 : 1,
+        opacity: isBlocked || inActive ? 0.5 : 1,
       }}
       onMouseEnter={(e) => {
-        if (!isBlocked) {
+        if (!isBlocked && !inActive) {
           e.currentTarget.style.background = '#f5ecd7';
           e.currentTarget.style.transform = 'translateY(-1px)';
           e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
         }
       }}
       onMouseLeave={(e) => {
-        if (!isBlocked) {
+        if (!isBlocked && !inActive) {
           e.currentTarget.style.background = '#fdf6e3';
           e.currentTarget.style.transform = 'translateY(0)';
           e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
         }
       }}
       onMouseDown={(e) => {
-        if (!isBlocked) {
+        if (!isBlocked && !inActive) {
           e.currentTarget.style.transform = 'translateY(0)';
           e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
         }
       }}
       onMouseUp={(e) => {
-        if (!isBlocked) {
+        if (!isBlocked && !inActive) {
           e.currentTarget.style.transform = 'translateY(-1px)';
           e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
         }
