@@ -2,8 +2,8 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-02-03  
-**Last activity:** 2025-06-10 - Completed quick task 008: Show true score with VP cards to card owner only
+**Last Updated:** 2026-02-04  
+**Last activity:** 2026-02-04 - Completed quick task 009: Refactor GamePlayerList to vertical card layout
 
 ## Current Position
 
@@ -28,6 +28,7 @@ Progress: ███████████████████████�
 | 005 | Add debug panel with current game state                                | 2026-01-30 | a2c5f89 | [005-add-debug-panel-with-current-game-state-](./quick/005-add-debug-panel-with-current-game-state-/)     |
 | 007 | Log all WebSocket messages to per-room log files for debugging         | 2026-01-31 | 59dc82d | [007-api-log-websocket-messages-to-file](./quick/007-api-log-websocket-messages-to-file/)                 |
 | 008 | Show true score with VP cards to card owner only                       | 2025-06-10 | b656938 | [008-show-true-score-with-vp-cards-to-card-ow](./quick/008-show-true-score-with-vp-cards-to-card-ow/)     |
+| 009 | Refactor GamePlayerList to vertical card layout                        | 2026-02-04 | e3727f7 | [009-refactor-the-gameplayerlist-component-to](./quick/009-refactor-the-gameplayerlist-component-to/)     |
 
 ## Decisions
 
@@ -115,6 +116,6 @@ Progress: ███████████████████████�
 
 ## Session Continuity
 
-Last session: 2026-02-03
-Stopped at: Completed Phase 11 (Victory) - plan 6 UAT fixes complete
-Resume file: .planning/phases/12-resilience-polish/
+Last session: 2026-02-04
+Stopped at: Completed quick task 009 (Refactor GamePlayerList to vertical card layout)
+Resume file: None
