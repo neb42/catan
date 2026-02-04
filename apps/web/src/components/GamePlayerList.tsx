@@ -54,7 +54,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
         display: 'flex',
         flexDirection: 'column',
         gap: '30px',
-        width: '260px',
+        width: '200px',
       }}
     >
       {players.map((player) => {

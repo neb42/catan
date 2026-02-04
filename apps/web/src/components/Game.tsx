@@ -66,12 +66,13 @@ export function Game() {
       style={{
         display: 'grid',
         gridTemplateRows: '1fr auto',
-        gridTemplateColumns: '1fr 2fr 1fr',
+        gridTemplateColumns:
+          'minmax(250px, 1fr) minmax(600px, 2fr) minmax(250px, 1fr)',
         width: '100%',
         height: '100vh',
         backgroundColor: '#F9F4EF', // Warm beige from Phase 1.1
         gap: '16px',
-        padding: '80px 16px 16px',
+        padding: '16px 16px 16px',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -90,7 +91,8 @@ export function Game() {
       <Box
         style={{
           gridRow: 1,
-          gridColumn: 1,
+          gridColumnStart: 1,
+          gridColumnEnd: 2,
           padding: '16px',
           display: 'flex',
           alignItems: 'flex-start',
@@ -108,6 +110,7 @@ export function Game() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          overflow: 'auto',
         }}
       >
         <Board board={board} />
@@ -133,7 +136,7 @@ export function Game() {
         <Box
           style={{
             gridRow: 2,
-            gridColumn: '1 / -1',
+            gridColumn: '2 / -1',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
