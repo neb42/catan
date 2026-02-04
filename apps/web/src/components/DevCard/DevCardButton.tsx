@@ -1,4 +1,5 @@
-import { Button, Tooltip, Box } from '@mantine/core';
+import { Tooltip, Box, Paper, Text } from '@mantine/core';
+import { motion } from 'motion/react';
 import { DevelopmentCardType, OwnedDevCard } from '@catan/shared';
 import { useGameStore } from '../../stores/gameStore';
 
@@ -75,35 +76,110 @@ export function DevCardButton({ card }: DevCardButtonProps) {
     });
   };
 
-  const buttonContent = (
-    <Button
-      variant={card.type === 'victory_point' ? 'light' : 'filled'}
-      color={info.color}
-      disabled={!canPlay}
+  // Card dimensions (slightly larger than resource cards)
+  const CARD_WIDTH = 80;
+  const CARD_HEIGHT = 110;
+
+  const cardContent = (
+    <motion.div
+      whileHover={
+        canPlay
+          ? {
+              scale: 1.05,
+              y: -8,
+              zIndex: 100,
+            }
+          : undefined
+      }
+      whileTap={canPlay ? { scale: 0.98 } : undefined}
+      transition={{ duration: 0.15 }}
+      style={{
+        width: CARD_WIDTH,
+        height: CARD_HEIGHT,
+        cursor: canPlay ? 'pointer' : 'not-allowed',
+        transformOrigin: 'bottom center',
+        opacity: canPlay ? 1 : 0.5,
+        pointerEvents: canPlay ? 'auto' : 'none',
+      }}
       onClick={handleClick}
-      styles={{
-        root: {
-          opacity: canPlay ? 1 : 0.5,
-          minWidth: 80,
-          height: 100,
+    >
+      <Paper
+        shadow="md"
+        radius="md"
+        style={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: info.color,
           display: 'flex',
           flexDirection: 'column',
-          gap: 4,
-        },
-      }}
-    >
-      <Box style={{ fontSize: 28 }}>{info.icon}</Box>
-      <Box style={{ fontSize: 12, textAlign: 'center' }}>{info.name}</Box>
-    </Button>
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: '2px solid rgba(255, 255, 255, 0.3)',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        {/* Card pattern overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 50%)',
+          }}
+        />
+
+        {/* Optional gold shimmer for VP cards */}
+        {card.type === 'victory_point' && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(135deg, transparent 0%, rgba(255, 215, 0, 0.3) 50%, transparent 100%)',
+            }}
+          />
+        )}
+
+        {/* Card icon */}
+        <Box
+          style={{
+            fontSize: 32,
+            filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          {info.icon}
+        </Box>
+
+        {/* Card name */}
+        <Text
+          size="xs"
+          fw={600}
+          style={{
+            color: 'rgba(255, 255, 255, 0.9)',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
+            marginTop: 4,
+            textAlign: 'center',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          {info.name}
+        </Text>
+      </Paper>
+    </motion.div>
   );
 
   if (!canPlay && disabledReason) {
     return (
       <Tooltip label={disabledReason} position="top">
-        <span>{buttonContent}</span>
+        <span style={{ display: 'inline-block' }}>{cardContent}</span>
       </Tooltip>
     );
   }
 
-  return buttonContent;
+  return cardContent;
 }
