@@ -1,10 +1,12 @@
-import { Box, Container, Stack, Title, Text } from '@mantine/core';
+import { Box, Button, Container, Stack, Title, Text } from '@mantine/core';
 import { Board } from './Board/Board';
 import {
   useGameStore,
   useCurrentPlayer,
   useSocket,
   useTurnPhase,
+  useGameEnded,
+  useVictoryState,
 } from '../stores/gameStore';
 import { PlacementBanner } from './PlacementBanner';
 import { DraftOrderDisplay } from './DraftOrderDisplay';
@@ -30,16 +32,20 @@ import { RoadBuildingOverlay } from './CardPlay/RoadBuildingOverlay';
 import { ResourcePickerModal } from './CardPlay/ResourcePickerModal';
 import { MonopolyModal } from './CardPlay/MonopolyModal';
 import { DevCardHand } from './DevCard/DevCardHand';
+import { VPRevealOverlay, VictoryModal } from './Victory';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
   const players = useGameStore(
     useShallow((state) => state.room?.players || []),
   );
+  const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
   const { id: currentPlayerId } = useCurrentPlayer();
   const socket = useSocket();
   const { phase: placementPhase } = usePlacementState();
   const turnPhase = useTurnPhase();
+  const gameEnded = useGameEnded();
+  const { victoryPhase } = useVictoryState();
 
   // Determine which phase UI to show
   const isMainGamePhase = placementPhase === null && turnPhase !== null;
@@ -187,6 +193,31 @@ export function Game() {
 
       {/* Debug panel - development only */}
       <DebugPanel />
+
+      {/* Show Results button when modal has been dismissed */}
+      {gameEnded && victoryPhase === 'dismissed' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 16,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 30,
+          }}
+        >
+          <Button
+            color="yellow"
+            size="lg"
+            onClick={() => setVictoryPhase('modal')}
+          >
+            🏆 Show Results
+          </Button>
+        </div>
+      )}
+
+      {/* Victory announcement - overlays when game ends */}
+      {gameEnded && victoryPhase === 'reveal' && <VPRevealOverlay />}
+      {gameEnded && victoryPhase === 'modal' && <VictoryModal />}
     </Box>
   );
 }

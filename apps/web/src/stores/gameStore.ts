@@ -134,6 +134,27 @@ interface LargestArmySlice {
   largestArmyKnights: number;
 }
 
+// Victory point breakdown type (matches VPBreakdown from shared)
+interface VPBreakdown {
+  settlements: number;
+  cities: number;
+  longestRoad: number;
+  largestArmy: number;
+  victoryPointCards: number;
+  total: number;
+}
+
+// Victory state slice
+interface VictorySlice {
+  gameEnded: boolean;
+  winnerId: string | null;
+  winnerNickname: string | null;
+  winnerVP: VPBreakdown | null;
+  allPlayerVP: Record<string, VPBreakdown>;
+  revealedVPCards: Array<{ playerId: string; cardCount: number }>;
+  victoryPhase: 'none' | 'reveal' | 'modal' | 'dismissed';
+}
+
 // Game log state slice
 interface GameLogEntry {
   id: string;
@@ -168,6 +189,7 @@ interface GameStore
     DevCardSlice,
     LongestRoadSlice,
     LargestArmySlice,
+    VictorySlice,
     GameLogSlice,
     DebugSlice {
   board: BoardState | null;
@@ -295,6 +317,16 @@ interface GameStore
     playerKnightCounts: Record<string, number>;
   }) => void;
 
+  // Victory actions
+  setVictoryState: (data: {
+    winnerId: string;
+    winnerNickname: string;
+    winnerVP: VPBreakdown;
+    allPlayerVP: Record<string, VPBreakdown>;
+    revealedVPCards: Array<{ playerId: string; cardCount: number }>;
+  }) => void;
+  setVictoryPhase: (phase: 'none' | 'reveal' | 'modal' | 'dismissed') => void;
+
   // Game log actions
   addLogEntry: (
     message: string,
@@ -379,6 +411,15 @@ export const useGameStore = create<GameStore>((set) => ({
   // Largest army initial state
   largestArmyHolderId: null,
   largestArmyKnights: 0,
+
+  // Victory initial state
+  gameEnded: false,
+  winnerId: null,
+  winnerNickname: null,
+  winnerVP: null,
+  allPlayerVP: {},
+  revealedVPCards: [],
+  victoryPhase: 'none',
 
   // Game log state
   gameLog: [],
@@ -641,6 +682,19 @@ export const useGameStore = create<GameStore>((set) => ({
       knightsPlayed: { ...prev.knightsPlayed, ...state.playerKnightCounts },
     })),
 
+  // Victory actions
+  setVictoryState: (data) =>
+    set({
+      gameEnded: true,
+      winnerId: data.winnerId,
+      winnerNickname: data.winnerNickname,
+      winnerVP: data.winnerVP,
+      allPlayerVP: data.allPlayerVP,
+      revealedVPCards: data.revealedVPCards,
+      victoryPhase: data.revealedVPCards.length > 0 ? 'reveal' : 'modal',
+    }),
+  setVictoryPhase: (phase) => set({ victoryPhase: phase }),
+
   // Game log actions
   addLogEntry: (message, type = 'info') =>
     set((state) => ({
@@ -850,3 +904,52 @@ export const usePlayerRoadLengths = () =>
 // Largest army state selector hooks
 export const useLargestArmyHolder = () =>
   useGameStore((s) => s.largestArmyHolderId);
+
+// Victory state selector hooks
+export const useGameEnded = () => useGameStore((s) => s.gameEnded);
+export const useWinnerId = () => useGameStore((s) => s.winnerId);
+export const useVictoryState = () =>
+  useGameStore(
+    useShallow((s) => ({
+      winnerId: s.winnerId,
+      winnerNickname: s.winnerNickname,
+      winnerVP: s.winnerVP,
+      allPlayerVP: s.allPlayerVP,
+      revealedVPCards: s.revealedVPCards,
+      victoryPhase: s.victoryPhase,
+    })),
+  );
+
+/**
+ * Calculate public victory points for a player.
+ * Note: VP cards are hidden from opponents and NOT included in public VP.
+ * They are only revealed when a player wins.
+ */
+export function usePlayerPublicVP(playerId: string): {
+  settlements: number;
+  cities: number;
+  longestRoad: number;
+  largestArmy: number;
+  total: number;
+} {
+  return useGameStore(
+    useShallow((state) => {
+      const playerSettlements = state.settlements.filter(
+        (s) => s.playerId === playerId,
+      );
+      const settlementCount = playerSettlements.filter((s) => !s.isCity).length;
+      const cityCount = playerSettlements.filter((s) => s.isCity).length;
+      const longestRoad = state.longestRoadHolderId === playerId ? 2 : 0;
+      const largestArmy = state.largestArmyHolderId === playerId ? 2 : 0;
+
+      // Note: VP cards are hidden until game ends, so NOT included in public VP
+      return {
+        settlements: settlementCount,
+        cities: cityCount * 2,
+        longestRoad,
+        largestArmy,
+        total: settlementCount + cityCount * 2 + longestRoad + largestArmy,
+      };
+    }),
+  );
+}

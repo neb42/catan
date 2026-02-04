@@ -99,6 +99,21 @@ export const ActiveTradeSchema = z.object({
 });
 export type ActiveTrade = z.infer<typeof ActiveTradeSchema>;
 
+// Victory point breakdown for end-game display
+export const VPBreakdownSchema = z.object({
+  settlements: z.number(), // Count of non-city settlements (1 VP each)
+  cities: z.number(), // City count * 2 (2 VP each)
+  longestRoad: z.number(), // 2 if holder, 0 otherwise
+  largestArmy: z.number(), // 2 if holder, 0 otherwise
+  victoryPointCards: z.number(), // Count of VP dev cards (1 VP each)
+  total: z.number(),
+});
+export type VPBreakdown = z.infer<typeof VPBreakdownSchema>;
+
+// Overall game lifecycle phase (distinct from placement GamePhaseSchema)
+export const GameLifecyclePhaseSchema = z.enum(['setup', 'playing', 'ended']);
+export type GameLifecyclePhase = z.infer<typeof GameLifecyclePhaseSchema>;
+
 export const GameStateSchema = z.object({
   board: BoardStateSchema,
   settlements: z.array(SettlementSchema),
@@ -115,5 +130,8 @@ export const GameStateSchema = z.object({
   largestArmyHolderId: z.string().nullable(), // Player with largest army card, null if no one has 3+
   largestArmyKnights: z.number(), // Knight count of holder (0 if no holder)
   playerKnightCounts: z.record(z.string(), z.number()), // playerId -> knights played
+  // Game lifecycle phase
+  gamePhase: GameLifecyclePhaseSchema.default('setup'), // 'setup' | 'playing' | 'ended'
+  winnerId: z.string().nullable().default(null), // Player ID of winner when game ends
 });
 export type GameState = z.infer<typeof GameStateSchema>;

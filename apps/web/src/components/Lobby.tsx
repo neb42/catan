@@ -6,6 +6,7 @@ import {
   Room,
   WebSocketMessage,
   ResourceType,
+  DEV_CARD_COST,
 } from '@catan/shared';
 import {
   Alert,
@@ -638,6 +639,14 @@ export default function Lobby() {
           const currentCount =
             gameStore.opponentDevCardCounts[message.playerId] || 0;
           gameStore.setOpponentDevCardCount(message.playerId, currentCount + 1);
+          // Deduct resources from buyer (using constant cost since it's always the same)
+          const devCardResources = Object.entries(DEV_CARD_COST).map(
+            ([type, count]) => ({
+              type: type as ResourceType,
+              count: -(count as number), // Negative to deduct
+            }),
+          );
+          gameStore.updatePlayerResources(message.playerId, devCardResources);
           // Show notification
           const buyer = room?.players.find((p) => p.id === message.playerId);
           const nickname = buyer?.nickname || 'A player';
@@ -897,6 +906,22 @@ export default function Lobby() {
               );
             }
           }
+          break;
+        }
+
+        // ============================================================================
+        // VICTORY HANDLER
+        // ============================================================================
+
+        case 'victory': {
+          const gameStore = useGameStore.getState();
+          gameStore.setVictoryState({
+            winnerId: message.winnerId,
+            winnerNickname: message.winnerNickname,
+            winnerVP: message.winnerVP,
+            allPlayerVP: message.allPlayerVP,
+            revealedVPCards: message.revealedVPCards,
+          });
           break;
         }
 

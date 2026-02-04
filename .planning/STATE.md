@@ -2,17 +2,17 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-02-02  
-**Last activity:** 2026-02-02 - Completed Phase 10 (Largest Army)
+**Last Updated:** 2026-02-03  
+**Last activity:** 2025-06-10 - Completed quick task 008: Show true score with VP cards to card owner only
 
 ## Current Position
 
-Phase: 10 of 12 (Largest Army) ✅ Complete  
-Plan: 3 of 3 in current phase  
+Phase: 11 of 12 (Victory) ✅ Complete  
+Plan: 6 of 6 in current phase  
 Status: Complete  
-Last activity: 2026-02-02 - Phase 10 verified and complete
+Last activity: 2026-02-03 - Completed plan 11-06 (UAT fixes: block actions + modal reopen)
 
-Progress: ██████████████████████████████████████████████████████████████████████████████████████████ (Phase 10: Complete)
+Progress: ███████████████████████████████████████████████████████████████████████████████████████████ (Phase 11: Complete)
 
 ## Blockers/Concerns
 
@@ -27,6 +27,7 @@ Progress: ███████████████████████�
 | 004 | Split Phase 8 into Development Cards/Longest Road/Largest Army/Victory | 2026-01-29 | 6f16728 | [004-split-phase-8-into-4-phases](./quick/004-split-phase-8-into-4-phases/)                               |
 | 005 | Add debug panel with current game state                                | 2026-01-30 | a2c5f89 | [005-add-debug-panel-with-current-game-state-](./quick/005-add-debug-panel-with-current-game-state-/)     |
 | 007 | Log all WebSocket messages to per-room log files for debugging         | 2026-01-31 | 59dc82d | [007-api-log-websocket-messages-to-file](./quick/007-api-log-websocket-messages-to-file/)                 |
+| 008 | Show true score with VP cards to card owner only                       | 2025-06-10 | b656938 | [008-show-true-score-with-vp-cards-to-card-ow](./quick/008-show-true-score-with-vp-cards-to-card-ow/)     |
 
 ## Decisions
 
@@ -107,9 +108,13 @@ Progress: ███████████████████████�
 | 09    | LongestRoadSlice pattern         | Follows DevCardSlice/RobberSlice pattern with useShallow for Record selectors      |
 | 10    | Mirror longest-road pattern      | Largest army logic mirrors longest-road-logic.ts structure for consistency         |
 | 10    | LargestArmySlice minimal         | Only holderId and knights fields needed; knightsPlayed already exists in store     |
+| 11    | GameLifecyclePhaseSchema naming  | Distinct from GamePhaseSchema (placement phases like setup_settlement1)            |
+| 11    | victoryPhase state machine       | 'none' -> 'reveal' -> 'modal' for victory animation flow                           |
+| 11    | victoryPhase dismissed state     | 'dismissed' tracks closed modal; enables "Show Results" reopen button              |
+| 11    | Auto-transition reveal           | VP reveal overlay auto-transitions to modal after 1.5 seconds                      |
 
 ## Session Continuity
 
-Last session: 2026-02-02
-Stopped at: Completed Phase 10 (Largest Army) - verified and complete
-Resume file: .planning/phases/11-victory/
+Last session: 2026-02-03
+Stopped at: Completed Phase 11 (Victory) - plan 6 UAT fixes complete
+Resume file: .planning/phases/12-resilience-polish/
