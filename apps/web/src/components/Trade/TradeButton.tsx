@@ -1,4 +1,3 @@
-import { Button } from '@mantine/core';
 import { useTradeActions } from '../../hooks/useTradeState';
 import { useIsMyTurnInMainGame, useGameStore } from '../../stores/gameStore';
 
@@ -26,25 +25,51 @@ export function TradeButton() {
     (devCardPlayPhase !== null && devCardPlayPhase !== 'none');
 
   return (
-    <Button
-      variant="light"
-      // color="blue"
+    <button
       disabled={isBlocked}
       onClick={() => setTradeModalOpen(true)}
       style={{
         background: '#fdf6e3',
-        border: '4px solid #8d6e63',
-        borderRadius: '12px',
-        boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
-        padding: '15px',
-        width: 200,
-        fontSize: '14px',
-        fontWeight: 600,
-        color: '#5d4037',
+        border: '3px solid #8d6e63',
+        borderRadius: '8px',
+        padding: '8px 16px',
         fontFamily: 'Fraunces, serif',
+        fontWeight: 600,
+        fontSize: '0.875rem',
+        color: '#5d4037',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        cursor: isBlocked ? 'not-allowed' : 'pointer',
+        transition: 'all 0.2s ease',
+        opacity: isBlocked ? 0.5 : 1,
+      }}
+      onMouseEnter={(e) => {
+        if (!isBlocked) {
+          e.currentTarget.style.background = '#f5ecd7';
+          e.currentTarget.style.transform = 'translateY(-1px)';
+          e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isBlocked) {
+          e.currentTarget.style.background = '#fdf6e3';
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+        }
+      }}
+      onMouseDown={(e) => {
+        if (!isBlocked) {
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+        }
+      }}
+      onMouseUp={(e) => {
+        if (!isBlocked) {
+          e.currentTarget.style.transform = 'translateY(-1px)';
+          e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+        }
       }}
     >
       Trade
-    </Button>
+    </button>
   );
 }
