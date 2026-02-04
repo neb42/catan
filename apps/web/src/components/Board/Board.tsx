@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { HexGrid, Layout, Pattern } from 'react-hexgrid';
 import { BoardState } from '@catan/shared';
 import { TerrainHex } from './TerrainHex';
@@ -21,6 +21,13 @@ interface BoardProps {
 }
 
 export function Board({ board }: BoardProps) {
+  // Zoom and pan state
+  const [scale, setScale] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState<{ x: number; y: number } | null>(
+    null,
+  );
   const currentPlayerColor = useGameStore((state) => {
     // Determine color from store - fallback to white if not found (shouldn't happen in game)
     // We assume the gameStore has player info, or we derive it from socket/room state
@@ -81,9 +88,82 @@ export function Board({ board }: BoardProps) {
     return hex?.center || null;
   }, [robberHexId, hexesWithCenters]);
 
+  // Zoom handler
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY * -0.001;
+    const newScale = Math.max(0.5, Math.min(2, scale + delta));
+
+    // Zoom toward cursor position
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Calculate offset adjustment to zoom toward cursor
+    const scaleRatio = newScale / scale;
+    const newOffsetX = mouseX - (mouseX - offset.x) * scaleRatio;
+    const newOffsetY = mouseY - (mouseY - offset.y) * scaleRatio;
+
+    setScale(newScale);
+    setOffset({ x: newOffsetX, y: newOffsetY });
+  };
+
+  // Pan handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsPanning(true);
+    setPanStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isPanning || !panStart) return;
+
+    const deltaX = e.clientX - panStart.x;
+    const deltaY = e.clientY - panStart.y;
+
+    setOffset({
+      x: offset.x + deltaX,
+      y: offset.y + deltaY,
+    });
+
+    setPanStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseUp = () => {
+    setIsPanning(false);
+    setPanStart(null);
+  };
+
+  const handleMouseLeave = () => {
+    setIsPanning(false);
+    setPanStart(null);
+  };
+
+  // Calculate viewBox from scale and offset
+  const viewBox = useMemo(() => {
+    const baseWidth = 100;
+    const baseHeight = 100;
+    const width = baseWidth / scale;
+    const height = baseHeight / scale;
+    const x = -50 - offset.x / (scale * 8);
+    const y = -50 - offset.y / (scale * 8);
+    return `${x} ${y} ${width} ${height}`;
+  }, [scale, offset]);
+
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      <HexGrid width="100%" height="100%" viewBox="-50 -50 100 100">
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        cursor: isPanning ? 'grabbing' : 'grab',
+      }}
+      onWheel={handleWheel}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
+    >
+      <HexGrid width={800} height={600} viewBox={viewBox}>
         {/* Define SVG patterns for terrain textures */}
         <Pattern id="forest" link="/assets/tiles/forest.svg" />
         <Pattern id="hills" link="/assets/tiles/hills.svg" />
