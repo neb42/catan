@@ -237,7 +237,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                           <path d="M18 4l-6 16L6 4" />
                           <circle cx="12" cy="12" r="2" />
                         </svg>
-                        Road
+                        Longest Road
                       </div>
                     )}
                     {hasLargestArmy && (
@@ -268,7 +268,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                           <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z" />
                           <path d="M12 12v10" />
                         </svg>
-                        Army
+                        Largest Army
                       </div>
                     )}
                   </div>
