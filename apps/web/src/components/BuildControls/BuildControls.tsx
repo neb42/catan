@@ -1,4 +1,4 @@
-import { Button, Group, Paper, Stack, Text, Tooltip } from '@mantine/core';
+import { Tooltip } from '@mantine/core';
 import { BUILDING_COSTS } from '@catan/shared';
 import type { BuildingType, ResourceType } from '@catan/shared';
 import {
@@ -80,39 +80,51 @@ function BuildButton({ buildingType, isActive, onClick }: BuildButtonProps) {
       w={200}
       transitionProps={{ transition: 'pop', duration: 200 }}
     >
-      <Button
-        variant={isActive ? 'filled' : 'light'}
-        color={isActive ? 'orange' : 'gray'}
+      <button
         disabled={!canBuild && !isActive}
         onClick={onClick}
-        styles={{
-          root: {
-            height: 'auto',
-            padding: '8px 12px',
-            opacity: canBuild || isActive ? 1 : 0.6,
-          },
+        style={{
+          background: 'white',
+          border: isActive ? '2px solid #f1c40f' : '2px solid #d7ccc8',
+          borderRadius: '8px',
+          boxShadow: isActive
+            ? '0 4px 8px rgba(241,196,15,0.3)'
+            : '0 2px 4px rgba(0,0,0,0.1)',
+          padding: '8px 12px',
+          opacity: canBuild || isActive ? 1 : 0.5,
+          cursor: canBuild || isActive ? 'pointer' : 'not-allowed',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px',
         }}
       >
-        <Stack gap={2} align="center">
-          {/* Icon + Label row */}
-          <Group gap={6} wrap="nowrap">
-            <Text size="lg">{config.icon}</Text>
-            <Text size="sm" fw={600}>
-              {config.label}
-            </Text>
-          </Group>
+        {/* Icon + Label row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '18px' }}>{config.icon}</span>
+          <span
+            style={{
+              fontSize: '14px',
+              fontWeight: 600,
+              color: '#5d4037',
+            }}
+          >
+            {config.label}
+          </span>
+        </div>
 
-          {/* Cost icons + remaining count row */}
-          <Group gap={4} wrap="nowrap">
-            <CostIcons buildingType={buildingType} />
-            <Text
-              size="xs"
-              c="dimmed"
-              style={{ marginLeft: 4 }}
-            >{`(${remainingCount})`}</Text>
-          </Group>
-        </Stack>
-      </Button>
+        {/* Cost icons + remaining count row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <CostIcons buildingType={buildingType} />
+          <span
+            style={{
+              fontSize: '11px',
+              color: '#8d6e63',
+              marginLeft: '4px',
+            }}
+          >{`(${remainingCount})`}</span>
+        </div>
+      </button>
     </Tooltip>
   );
 }
@@ -141,28 +153,38 @@ export function BuildControls() {
   };
 
   return (
-    <Paper
-      shadow="md"
-      radius="lg"
-      p="md"
+    <div
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(8px)',
+        background: '#fdf6e3',
+        border: '4px solid #8d6e63',
+        borderRadius: '12px',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+        padding: '15px',
       }}
     >
-      <Stack gap="sm" align="center">
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          alignItems: 'center',
+        }}
+      >
         {/* Header */}
-        <Text
-          size="sm"
-          fw={600}
-          c="dimmed"
-          style={{ fontFamily: 'Fraunces, serif' }}
+        <h3
+          style={{
+            fontSize: '14px',
+            fontWeight: 600,
+            color: '#5d4037',
+            margin: 0,
+            fontFamily: 'Fraunces, serif',
+          }}
         >
           Build
-        </Text>
+        </h3>
 
         {/* Build buttons */}
-        <Group gap="xs">
+        <div style={{ display: 'flex', gap: '8px' }}>
           <BuildButton
             buildingType="road"
             isActive={buildMode === 'road'}
@@ -178,25 +200,48 @@ export function BuildControls() {
             isActive={buildMode === 'city'}
             onClick={() => handleBuildClick('city')}
           />
-        </Group>
+        </div>
 
         {/* Buy Dev Card button */}
         <BuyDevCardButton />
 
         {/* Cancel button when in build mode */}
         {buildMode && (
-          <Button variant="subtle" color="red" size="xs" onClick={handleCancel}>
+          <button
+            onClick={handleCancel}
+            style={{
+              background: '#ffe0e0',
+              border: '1px solid #ffcccc',
+              borderRadius: '6px',
+              color: '#c0392b',
+              padding: '4px 12px',
+              fontSize: '12px',
+              fontWeight: 500,
+              cursor: 'pointer',
+            }}
+          >
             Cancel
-          </Button>
+          </button>
         )}
 
         {/* Mode indicator when active */}
         {buildMode && (
-          <Text size="xs" c="orange" fw={500}>
+          <div
+            style={{
+              background: '#fff3cd',
+              border: '1px solid #ffd966',
+              borderRadius: '6px',
+              color: '#856404',
+              padding: '8px',
+              fontSize: '12px',
+              fontWeight: 500,
+              textAlign: 'center',
+            }}
+          >
             Click a valid location on the board to build
-          </Text>
+          </div>
         )}
-      </Stack>
-    </Paper>
+      </div>
+    </div>
   );
 }
