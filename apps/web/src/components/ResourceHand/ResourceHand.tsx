@@ -4,6 +4,7 @@ import { ResourceType } from '@catan/shared';
 import { useGameStore, usePlayerResources } from '../../stores/gameStore';
 import { ResourceIcon } from '../ResourceIcon/ResourceIcon';
 import { DevCardButton } from '../DevCard/DevCardButton';
+import { TradeButton } from '../Trade/TradeButton';
 
 // Resource card configuration
 const RESOURCE_CARD_COLORS: Record<string, string> = {
@@ -199,11 +200,17 @@ export function ResourceHand() {
         <div
           style={{
             borderBottom: '2px dashed #d7ccc8',
-            paddingBottom: '8px',
+            paddingBottom: '24px',
             width: '100%',
-            textAlign: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
           }}
         >
+          <div style={{ position: 'absolute', left: 0 }}>
+            <TradeButton />
+          </div>
           <Text
             size="sm"
             fw={600}

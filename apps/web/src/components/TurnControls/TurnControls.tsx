@@ -53,7 +53,7 @@ export function TurnControls() {
         </Badge>
 
         {/* My turn banner */}
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {isMyTurn && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: -10 }}
@@ -93,7 +93,7 @@ export function TurnControls() {
               </motion.div>
             </motion.div>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
 
         {/* Phase indicator */}
         <Text size="xs" c="#5d4037" ta="center">

@@ -167,7 +167,7 @@ export function Board({ board }: BoardProps) {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
     >
-      <HexGrid width={800} height={600} viewBox={viewBox}>
+      <HexGrid width="100%" height="100%" viewBox={viewBox}>
         {/* Define SVG patterns for terrain textures */}
         <Pattern id="forest" link="/assets/tiles/forest.svg" />
         <Pattern id="hills" link="/assets/tiles/hills.svg" />

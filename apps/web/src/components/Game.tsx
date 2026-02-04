@@ -66,7 +66,8 @@ export function Game() {
         display: 'grid',
         gridTemplateRows: '1fr minmax(200px, auto)',
         gridTemplateColumns:
-          'minmax(250px, 1fr) minmax(600px, 2fr) minmax(250px, 1fr)',
+          '250px 1fr 250px',
+          // 'minmax(250px, 1fr) minmax(600px, 2fr) minmax(250px, 1fr)',
         width: '100%',
         height: '100vh',
         backgroundColor: '#F9F4EF', // Warm beige from Phase 1.1
@@ -122,13 +123,17 @@ export function Game() {
             gridRowStart: 1,
             gridRowEnd: 3,
             gridColumn: 3,
-            padding: '16px',
+            padding: '0 16px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
           }}
           gap="md"
         >
-          <TurnControls />
-          <DiceRoller />
-          <TradeButton />
+          <Stack gap="md">
+            <TurnControls />
+            <DiceRoller />
+          </Stack>
           <BuildControls />
         </Stack>
       )}
