@@ -1,4 +1,4 @@
-import { Modal, Button, Group, Stack, Text, Paper } from '@mantine/core';
+import { Modal } from '@mantine/core';
 import { ResourceType } from '@catan/shared';
 
 import {
@@ -19,19 +19,43 @@ function ResourceDisplay({
   if (nonZero.length === 0) return null;
 
   return (
-    <Paper p="sm" withBorder>
-      <Text size="sm" fw={600} mb="xs">
+    <div
+      style={{
+        background: 'white',
+        border: '1px solid #d7ccc8',
+        borderRadius: '8px',
+        padding: '12px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      }}
+    >
+      <div
+        style={{
+          fontSize: '14px',
+          fontWeight: 600,
+          color: '#5d4037',
+          marginBottom: '8px',
+        }}
+      >
         {label}
-      </Text>
-      <Group gap="xs">
+      </div>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         {nonZero.map(([resource, count]) => (
-          <Group key={resource} gap={4}>
-            <Text>{count}x</Text>
+          <div
+            key={resource}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '14px',
+              color: '#5d4037',
+            }}
+          >
+            <span>{count}x</span>
             <ResourceIcon type={resource as ResourceType} size="sm" />
-          </Group>
+          </div>
         ))}
-      </Group>
-    </Paper>
+      </div>
+    </div>
   );
 }
 
@@ -78,9 +102,31 @@ export function TradeResponseModal() {
       withCloseButton={false}
       title={`Trade Offer from ${proposerName}`}
       centered
+      styles={{
+        content: {
+          backgroundColor: '#fdf6e3',
+        },
+        header: {
+          borderBottom: '2px dashed #d7ccc8',
+          background: 'rgba(0,0,0,0.03)',
+        },
+        title: {
+          color: '#5d4037',
+          fontWeight: 600,
+          fontFamily: 'Fraunces, serif',
+        },
+      }}
     >
-      <Stack gap="md">
-        <Text size="sm">{proposerName} wants to trade with you:</Text>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <p
+          style={{
+            fontSize: '14px',
+            color: '#5d4037',
+            margin: 0,
+          }}
+        >
+          {proposerName} wants to trade with you:
+        </p>
 
         <ResourceDisplay resources={activeTrade.offering} label="They offer:" />
         <ResourceDisplay
@@ -88,19 +134,73 @@ export function TradeResponseModal() {
           label="They want:"
         />
 
-        <Group justify="center" mt="lg">
-          <Button
-            color="green"
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '12px',
+            marginTop: '16px',
+          }}
+        >
+          <button
             onClick={handleAccept}
             disabled={!canAffordTrade}
+            style={{
+              background: canAffordTrade ? '#27ae60' : '#d7ccc8',
+              color: 'white',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: canAffordTrade ? 'pointer' : 'not-allowed',
+              transition: 'all 0.2s',
+              minWidth: '100px',
+            }}
+            onMouseEnter={(e) => {
+              if (canAffordTrade) {
+                e.currentTarget.style.background = '#229954';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canAffordTrade) {
+                e.currentTarget.style.background = '#27ae60';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }
+            }}
           >
             Accept
-          </Button>
-          <Button color="red" variant="outline" onClick={handleDecline}>
+          </button>
+          <button
+            onClick={handleDecline}
+            style={{
+              background: 'transparent',
+              color: '#c0392b',
+              border: '2px solid #c0392b',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              minWidth: '100px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#c0392b';
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = '#c0392b';
+            }}
+          >
             Decline
-          </Button>
-        </Group>
-      </Stack>
+          </button>
+        </div>
+      </div>
     </Modal>
   );
 }

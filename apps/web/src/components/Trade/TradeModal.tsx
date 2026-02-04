@@ -53,7 +53,7 @@ export function TradeModal() {
       onClose={handleClose}
       title={
         <Group gap="sm">
-          <Text size="lg" fw={600}>
+          <Text size="lg" fw={600} style={{ color: '#5d4037' }}>
             Trade
           </Text>
         </Group>
@@ -63,6 +63,12 @@ export function TradeModal() {
       styles={{
         content: {
           maxHeight: '85vh',
+          backgroundColor: '#fdf6e3',
+        },
+        header: {
+          borderBottom: '2px dashed #d7ccc8',
+          background: 'rgba(0,0,0,0.03)',
+          paddingBottom: '12px',
         },
         body: {
           padding: 0,
@@ -73,6 +79,22 @@ export function TradeModal() {
         value={activeTab}
         onChange={setActiveTab}
         styles={{
+          list: {
+            background: 'rgba(0,0,0,0.03)',
+            borderBottom: '2px dashed #d7ccc8',
+          },
+          tab: {
+            color: '#a1887f',
+            fontWeight: 600,
+            '&[data-active]': {
+              color: '#5d4037',
+              borderBottomColor: '#8d6e63',
+              borderBottomWidth: '3px',
+            },
+            '&:hover': {
+              backgroundColor: 'rgba(141, 110, 99, 0.1)',
+            },
+          },
           panel: {
             paddingTop: 16,
             paddingLeft: 16,
@@ -86,7 +108,15 @@ export function TradeModal() {
           <Tabs.Tab value="bank">
             <Group gap="xs">
               <span>Bank</span>
-              <Badge size="xs" variant="light" color="blue">
+              <Badge
+                size="xs"
+                variant="filled"
+                style={{
+                  backgroundColor: '#d35400',
+                  color: 'white',
+                  border: '1px solid #e67e22',
+                }}
+              >
                 {getBestAvailableRate()}
               </Badge>
             </Group>
