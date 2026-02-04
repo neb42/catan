@@ -291,7 +291,7 @@ export function ResourceHand() {
 
           {/* Development cards section */}
           {hasDevCards && (
-            <Stack gap="xs" align="flex-start" style={{ flex: 1 }}>
+            <Stack gap="xs" align="center" style={{ flex: 1 }}>
               <Text
                 size="sm"
                 fw={600}
@@ -301,7 +301,7 @@ export function ResourceHand() {
                 Development Cards
               </Text>
 
-              <Group gap="sm">
+              <Group gap="md" style={{ minHeight: 120 }}>
                 {playableCards.map((card) => (
                   <DevCardButton key={card.id} card={card} />
                 ))}
@@ -312,7 +312,7 @@ export function ResourceHand() {
                       borderLeft: '2px solid gold',
                       paddingLeft: 12,
                       display: 'flex',
-                      gap: 8,
+                      gap: 12,
                     }}
                   >
                     {vpCards.map((card) => (
