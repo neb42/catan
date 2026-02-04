@@ -110,7 +110,7 @@ export function Game() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'auto',
+          overflow: 'hidden',
         }}
       >
         <Board board={board} />
