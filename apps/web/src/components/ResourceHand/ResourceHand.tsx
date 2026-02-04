@@ -1,17 +1,24 @@
 import { Paper, Text, Stack, Group } from '@mantine/core';
 import { motion, AnimatePresence } from 'motion/react';
+import { ResourceType } from '@catan/shared';
 import { useGameStore, usePlayerResources } from '../../stores/gameStore';
+import { ResourceIcon } from '../ResourceIcon/ResourceIcon';
 
 // Resource card configuration
-const RESOURCE_CARDS: Record<
-  string,
-  { color: string; icon: string; label: string }
-> = {
-  wood: { color: '#228B22', icon: '🪵', label: 'Wood' },
-  brick: { color: '#B22222', icon: '🧱', label: 'Brick' },
-  sheep: { color: '#90EE90', icon: '🐑', label: 'Sheep' },
-  wheat: { color: '#FFD700', icon: '🌾', label: 'Wheat' },
-  ore: { color: '#708090', icon: '⛰️', label: 'Ore' },
+const RESOURCE_CARD_COLORS: Record<string, string> = {
+  wood: '#228B22',
+  brick: '#B22222',
+  sheep: '#90EE90',
+  wheat: '#FFD700',
+  ore: '#708090',
+};
+
+const RESOURCE_LABELS: Record<string, string> = {
+  wood: 'Wood',
+  brick: 'Brick',
+  sheep: 'Sheep',
+  wheat: 'Wheat',
+  ore: 'Ore',
 };
 
 // Card dimensions (playing card proportions ~2.5" x 3.5" = ~0.714 ratio)
@@ -31,8 +38,9 @@ function ResourceCard({
   totalCards,
   cardIndex,
 }: ResourceCardProps) {
-  const config = RESOURCE_CARDS[type];
-  if (!config) return null;
+  const color = RESOURCE_CARD_COLORS[type];
+  const label = RESOURCE_LABELS[type];
+  if (!color || !label) return null;
 
   // Calculate fan angle and offset
   const centerIndex = (totalCards - 1) / 2;
@@ -77,7 +85,7 @@ function ResourceCard({
         style={{
           width: '100%',
           height: '100%',
-          backgroundColor: config.color,
+          backgroundColor: color,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -99,14 +107,9 @@ function ResourceCard({
         />
 
         {/* Resource icon */}
-        <Text
-          style={{
-            fontSize: '1.8rem',
-            filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))',
-          }}
-        >
-          {config.icon}
-        </Text>
+        <div style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }}>
+          <ResourceIcon type={type as ResourceType} size="lg" />
+        </div>
 
         {/* Resource label */}
         <Text
@@ -118,7 +121,7 @@ function ResourceCard({
             marginTop: 4,
           }}
         >
-          {config.label}
+          {label}
         </Text>
       </Paper>
     </motion.div>
@@ -216,7 +219,7 @@ export function ResourceHand() {
                 gap: 4,
               }}
             >
-              <span>{RESOURCE_CARDS[type].icon}</span>
+              <ResourceIcon type={type as ResourceType} size="xs" />
               <span>{count}</span>
             </Text>
           ))}
