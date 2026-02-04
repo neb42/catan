@@ -64,14 +64,19 @@ export function Game() {
   return (
     <Box
       style={{
+        display: 'grid',
+        gridTemplateRows: '1fr auto',
+        gridTemplateColumns: '1fr 2fr 1fr',
         width: '100%',
         height: '100vh',
         backgroundColor: '#F9F4EF', // Warm beige from Phase 1.1
+        gap: '16px',
+        padding: '80px 16px 16px',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Placement UI (only during setup) */}
+      {/* Placement UI (only during setup) - absolute positioned overlays */}
       {placementPhase && (
         <>
           <PlacementBanner players={players} />
@@ -81,11 +86,25 @@ export function Game() {
         </>
       )}
 
-      {/* Board in center */}
+      {/* Row 1, Column 1: Player list */}
       <Box
         style={{
-          width: '100%',
-          height: '100%',
+          gridRow: 1,
+          gridColumn: 1,
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+        }}
+      >
+        <GamePlayerList players={players} />
+      </Box>
+
+      {/* Row 1, Column 2: Board */}
+      <Box
+        style={{
+          gridRow: 1,
+          gridColumn: 2,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -94,23 +113,46 @@ export function Game() {
         <Board board={board} />
       </Box>
 
-      {/* Player list on left side - simplified for Game view compared to Lobby */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 80,
-          left: 16,
-          width: 300,
-          zIndex: 10,
-          // Scale down slightly to fit sidebar better
-          transform: 'scale(0.85)',
-          transformOrigin: 'top left',
-        }}
-      >
-        <GamePlayerList players={players} />
-      </div>
+      {/* Row 1, Column 3: Turn controls and dice roller (main game phase only) */}
+      {isMainGamePhase && (
+        <Stack
+          style={{
+            gridRow: 1,
+            gridColumn: 3,
+            padding: '16px',
+          }}
+          gap="md"
+        >
+          <TurnControls />
+          <DiceRoller />
+        </Stack>
+      )}
 
-      {/* Placement controls at bottom center */}
+      {/* Row 2, Columns 1-3: Cards and building controls */}
+      {isMainGamePhase && (
+        <Box
+          style={{
+            gridRow: 2,
+            gridColumn: '1 / -1',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            padding: '0 16px 16px',
+            gap: '16px',
+          }}
+        >
+          <Box style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+            <ResourceHand />
+            <DevCardHand />
+          </Box>
+          <Box style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+            <TradeButton />
+            <BuildControls />
+          </Box>
+        </Box>
+      )}
+
+      {/* Placement controls at bottom center - absolute positioned overlay */}
       {placementPhase && (
         <div
           style={{
@@ -123,55 +165,6 @@ export function Game() {
         >
           <PlacementControls />
         </div>
-      )}
-
-      {/* Main game phase UI (dice roller, turn controls, resource hand, build controls) */}
-      {isMainGamePhase && (
-        <>
-          {/* Game controls panel (top-right) */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 80,
-              right: 16,
-              zIndex: 10,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 16,
-            }}
-          >
-            <TurnControls />
-            <DiceRoller />
-          </div>
-
-          {/* Resource hand and build controls (bottom center) */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 24,
-              left: '16px',
-              zIndex: 20,
-            }}
-          >
-            <ResourceHand />
-            <DevCardHand />
-          </div>
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 24,
-              right: '16px',
-              zIndex: 20,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 8,
-              alignItems: 'flex-end',
-            }}
-          >
-            <TradeButton />
-            <BuildControls />
-          </div>
-        </>
       )}
 
       {/* Trade modals - render at root level, they control their own visibility */}
