@@ -23,7 +23,7 @@ export function BuyDevCardButton() {
       color="violet"
     >
       <Group gap="xs">
-        <span>Buy Dev Card</span>
+        <span>Dev Card</span>
         <Badge size="sm" variant="filled" color="violet">
           {deckRemaining}
         </Badge>
