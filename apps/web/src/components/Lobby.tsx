@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { MIN_PLAYERS, Player, Room, WebSocketMessage } from '@catan/shared';
+import {
+  MIN_PLAYERS,
+  Player,
+  Room,
+  WebSocketMessage,
+  PLAYER_COLORS,
+} from '@catan/shared';
 import { Alert, Button, CopyButton, Title } from '@mantine/core';
 
 import LandingForm from './LandingForm';
@@ -28,13 +34,20 @@ export default function Lobby() {
   const [lastAction, setLastAction] = useState<PendingAction>(null);
   const [showJoinForm, setShowJoinForm] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>('');
+  const [preferredColor, setPreferredColor] = useState<Player['color'] | null>(
+    null,
+  );
 
   // Load saved room ID and nickname from localStorage on mount
   useEffect(() => {
     const savedRoomId = localStorage.getItem('catan_roomId');
     const savedNickname = localStorage.getItem('catan_nickname');
+    const savedColor = localStorage.getItem('catan_color');
     if (savedNickname) {
       setNickname(savedNickname);
+    }
+    if (savedColor && PLAYER_COLORS.includes(savedColor as Player['color'])) {
+      setPreferredColor(savedColor as Player['color']);
     }
     if (savedRoomId) {
       setRoomId(savedRoomId);
@@ -98,8 +111,12 @@ export default function Lobby() {
     setJoinError(null);
     setPendingNickname(nickname);
     setCurrentView('lobby');
-    sendMessage({ type: 'create_room', nickname: nickname.trim() });
-  }, [nickname, sendMessage]);
+    sendMessage({
+      type: 'create_room',
+      nickname: nickname.trim(),
+      preferredColor: preferredColor || undefined,
+    });
+  }, [nickname, preferredColor, sendMessage]);
 
   const handleJoinRoom = useCallback(
     (roomCode: string) => {
@@ -113,14 +130,17 @@ export default function Lobby() {
         type: 'join_room',
         roomId: roomCode,
         nickname: nickname.trim(),
+        preferredColor: preferredColor || undefined,
       });
     },
-    [nickname, sendMessage],
+    [nickname, preferredColor, sendMessage],
   );
 
   const handleColorChange = useCallback(
     (color: Player['color']) => {
       if (!currentPlayerId) return;
+      localStorage.setItem('catan_color', color);
+      setPreferredColor(color);
       sendMessage({ type: 'change_color', playerId: currentPlayerId, color });
     },
     [currentPlayerId, sendMessage],
@@ -182,6 +202,11 @@ export default function Lobby() {
                 transform: 'translate(-50%, -50%)',
                 zIndex: 1000,
                 pointerEvents: 'none',
+                background: 'rgba(255, 255, 255, 0.9)',
+                boxShadow: '0 10px 40px -10px var(--color-shadow)',
+                height: '200px',
+                width: '200px',
+                borderRadius: '50%',
               }}
             >
               <Title
