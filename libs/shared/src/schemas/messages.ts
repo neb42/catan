@@ -539,6 +539,20 @@ export const GameStateSyncMessageSchema = z.object({
         playerId: z.string(),
       }),
     ),
+    placement: z
+      .object({
+        currentPlayerIndex: z.number(),
+        draftRound: z.union([z.literal(1), z.literal(2)]),
+        phase: z.enum([
+          'setup_settlement1',
+          'setup_road1',
+          'setup_settlement2',
+          'setup_road2',
+          'playing',
+        ]),
+        turnNumber: z.number(),
+      })
+      .nullable(),
     turnState: z
       .object({
         phase: z.enum(['roll', 'main']),

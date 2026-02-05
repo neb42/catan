@@ -193,6 +193,7 @@ export function handleJoinRoom(
               playerResources: gameState.playerResources,
               settlements: gameState.settlements,
               roads: gameState.roads,
+              placement: gameState.placement,
               turnState: gameState.turnState,
               robberHexId: gameState.robberHexId,
               longestRoadHolderId: gameState.longestRoadHolderId,

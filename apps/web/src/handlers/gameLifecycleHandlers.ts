@@ -60,7 +60,30 @@ export const handleGameStateSync: MessageHandler = (message, ctx) => {
   gameStore.settlements = gameState.settlements;
   gameStore.roads = gameState.roads;
 
-  // Sync turn state
+  // Sync placement state (setup phase)
+  if (gameState.placement) {
+    // Map GameState phase to frontend phase format
+    const phase = gameState.placement.phase.includes('settlement')
+      ? 'settlement'
+      : 'road';
+
+    // Get player ID from player index
+    const room = gameStore.room;
+    if (room && room.players[gameState.placement.currentPlayerIndex]) {
+      const currentPlayerId =
+        room.players[gameState.placement.currentPlayerIndex].id;
+
+      gameStore.setPlacementTurn({
+        currentPlayerIndex: gameState.placement.currentPlayerIndex,
+        currentPlayerId: currentPlayerId,
+        phase: phase as 'settlement' | 'road',
+        round: gameState.placement.draftRound,
+        turnNumber: gameState.placement.turnNumber,
+      });
+    }
+  }
+
+  // Sync turn state (main game phase)
   if (gameState.turnState) {
     gameStore.setTurnState({
       phase: gameState.turnState.phase,
