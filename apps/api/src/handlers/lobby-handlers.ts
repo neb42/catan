@@ -37,7 +37,20 @@ export function handleCreateRoom(
   }
 
   const room = roomManager.createRoom(roomId);
-  const color = getAvailableColor(room) ?? PLAYER_COLORS[0];
+
+  // Check if preferred color is available
+  let color = message.preferredColor;
+  if (color) {
+    const colorTaken = Array.from(room.players.values()).some(
+      (p) => p.color === color,
+    );
+    if (colorTaken) {
+      color = getAvailableColor(room) ?? PLAYER_COLORS[0];
+    }
+  } else {
+    color = getAvailableColor(room) ?? PLAYER_COLORS[0];
+  }
+
   const player: ManagedPlayer = {
     id: randomUUID(),
     nickname: message.nickname,
@@ -93,7 +106,19 @@ export function handleJoinRoom(
       return;
     }
 
-    const color = getAvailableColor(room);
+    // Check if preferred color is available
+    let color = message.preferredColor;
+    if (color) {
+      const colorTaken = Array.from(room.players.values()).some(
+        (p) => p.color === color,
+      );
+      if (colorTaken) {
+        color = getAvailableColor(room) ?? undefined;
+      }
+    } else {
+      color = getAvailableColor(room) ?? undefined;
+    }
+
     if (!color) {
       sendError(ws, 'Room is full');
       return;
