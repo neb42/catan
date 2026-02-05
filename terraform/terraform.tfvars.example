@@ -5,6 +5,11 @@ project_id = "your-gcp-project-id"
 image_url  = "gcr.io/your-gcp-project-id/catan:latest"
 region     = "europe-west1"
 
+# Budget monitoring
+billing_account_id = "012345-ABCDEF-678901"
+alert_email        = "your-email@example.com"
+# monthly_budget_euros = 5  # Optional override
+
 # Optional overrides
 # service_name = "catan-game"
 # min_instances = 0

@@ -49,3 +49,21 @@ variable "max_concurrency" {
   type        = number
   default     = 20
 }
+
+variable "billing_account_id" {
+  description = "GCP billing account ID for budget alerts"
+  type        = string
+  sensitive   = true
+}
+
+variable "alert_email" {
+  description = "Email address for budget alert notifications"
+  type        = string
+  sensitive   = true
+}
+
+variable "monthly_budget_euros" {
+  description = "Monthly budget in EUR for cost alerts"
+  type        = number
+  default     = 5
+}
