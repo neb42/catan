@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-05  
-**Last activity:** 2026-02-05 - Completed plan 12-04: Game log implementation
+**Last activity:** 2026-02-05 - Completed plan 12-01: WebSocket resilience
 
 ## Current Position
 
 Phase: 12 of 12 (Resilience & Polish)  
-Plan: 4 of 6 in current phase  
+Plan: 5 of 6 in current phase  
 Status: In progress  
-Last activity: 2026-02-05 - Completed plan 12-04 (Game log implementation)
+Last activity: 2026-02-05 - Completed plan 12-01 (WebSocket resilience)
 
-Progress: ████████████████████████████████████████████████████████████████████████████████████████████████░░ (71/74 plans complete - 96.0%)
+Progress: ██████████████████████████████████████████████████████████████████████████████████████████████████░ (72/74 plans complete - 97.3%)
 
 ## Blockers/Concerns
 
@@ -141,9 +141,13 @@ Progress: ███████████████████████�
 | 12-04 | Notifications separate from log  | Toast notifications and log entries serve different purposes                       |
 | 12-04 | Handlers call addLogEntry direct | Each handler knows context and can format entries appropriately                    |
 | 12-04 | Right-side panel positioning     | Follows common chat/log UI patterns and doesn't block main gameplay                |
+| 12-01 | 30-second heartbeat interval     | Industry standard prevents network spam while detecting failures quickly           |
+| 12-01 | Nickname-based reconnection      | Map disconnectedPlayers by nickname to allow same identity restoration             |
+| 12-01 | No disconnect timeout            | Wait indefinitely for reconnection, room cleanup only when ALL players leave       |
+| 12-01 | Separate pause state             | isPaused boolean and disconnectedPlayers map for clean state machine transitions   |
 
 ## Session Continuity
 
-Last session: 2026-02-05T12:31:34Z
-Stopped at: Completed plan 12-04 (Game log implementation)
+Last session: 2026-02-05T12:37:31Z
+Stopped at: Completed plan 12-01 (WebSocket resilience)
 Resume file: None
