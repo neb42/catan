@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-05  
-**Last activity:** 2026-02-05 - Completed plan 12-03: Lobby ready-up system with countdown timer
+**Last activity:** 2026-02-05 - Completed plan 12-05: Mobile responsive polish
 
 ## Current Position
 
 Phase: 12 of 12 (Resilience & Polish)  
-Plan: 3 of 6 in current phase  
+Plan: 5 of 6 in current phase  
 Status: In progress  
-Last activity: 2026-02-05 - Completed plan 12-03 (Lobby ready-up system with countdown timer)
+Last activity: 2026-02-05 - Completed plan 12-05 (Mobile responsive polish)
 
-Progress: ███████████████████████████████████████████████████████████████████████████████████████████░░░░░░ (68/74 plans complete - 91.9%)
+Progress: ████████████████████████████████████████████████████████████████████████████████████████████████░░ (70/74 plans complete - 94.6%)
 
 ## Blockers/Concerns
 
@@ -132,10 +132,14 @@ Progress: ███████████████████████�
 | 11    | victoryPhase dismissed state     | 'dismissed' tracks closed modal; enables "Show Results" reopen button              |
 | 12-03 | Countdown duration: 5 seconds    | User preference for anticipation without excessive wait                            |
 | 12-03 | Countdown signal: -1 cancels     | secondsRemaining: -1 signals frontend to hide countdown when player unreadies      |
+| 12-05 | 100dvh for mobile viewport       | Use dynamic viewport height instead of vh for Safari address bar compatibility     |
+| 12-05 | 44px touch target minimum        | W3C WCAG 2.1 AAA guideline for mobile accessibility                                |
+| 12-05 | 60% board scale on mobile        | Allows full board visibility on small screens without horizontal scroll            |
+| 12-05 | Horizontal player list scroll    | More natural touch interaction for mobile than vertical stacking                   |
 | 11    | Auto-transition reveal           | VP reveal overlay auto-transitions to modal after 1.5 seconds                      |
 
 ## Session Continuity
 
-Last session: 2026-02-05T12:26:27Z
-Stopped at: Completed plan 12-03 (Lobby ready-up system with countdown timer)
+Last session: 2026-02-05T12:27:15Z
+Stopped at: Completed plan 12-05 (Mobile responsive polish)
 Resume file: None
