@@ -160,6 +160,12 @@ interface GameLogSlice {
   gameLog: string[]; // Simple array of log entries (no timestamps, no metadata)
 }
 
+// Pause state slice
+interface PauseSlice {
+  isPaused: boolean;
+  disconnectedPlayerNickname: string | null;
+}
+
 // Debug state slice
 interface DebugMessage {
   direction: 'sent' | 'received';
@@ -184,6 +190,7 @@ interface GameStore
     LargestArmySlice,
     VictorySlice,
     GameLogSlice,
+    PauseSlice,
     DebugSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
@@ -324,6 +331,9 @@ interface GameStore
   addLogEntry: (entry: string) => void;
   clearGameLog: () => void;
 
+  // Pause actions
+  setGamePaused: (paused: boolean, nickname: string | null) => void;
+
   // Debug actions
   addDebugMessage: (
     direction: 'sent' | 'received',
@@ -413,6 +423,10 @@ export const useGameStore = create<GameStore>((set) => ({
 
   // Game log state
   gameLog: [],
+
+  // Pause state
+  isPaused: false,
+  disconnectedPlayerNickname: null,
 
   // Debug state
   debugMessages: [],
@@ -691,6 +705,10 @@ export const useGameStore = create<GameStore>((set) => ({
       gameLog: [...state.gameLog.slice(-99), entry], // Keep last 100 entries
     })),
   clearGameLog: () => set({ gameLog: [] }),
+
+  // Pause actions
+  setGamePaused: (paused, nickname) =>
+    set({ isPaused: paused, disconnectedPlayerNickname: nickname }),
 
   // Debug actions
   addDebugMessage: (direction, type, data) =>

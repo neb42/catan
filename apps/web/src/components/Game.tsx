@@ -32,6 +32,7 @@ import { RoadBuildingOverlay } from './CardPlay/RoadBuildingOverlay';
 import { ResourcePickerModal } from './CardPlay/ResourcePickerModal';
 import { MonopolyModal } from './CardPlay/MonopolyModal';
 import { VPRevealOverlay, VictoryModal } from './Victory';
+import { DisconnectOverlay } from './DisconnectOverlay';
 
 export function Game() {
   const board = useGameStore(useShallow((state) => state.board));
@@ -230,6 +231,9 @@ export function Game() {
       {/* Victory announcement - overlays when game ends */}
       {gameEnded && victoryPhase === 'reveal' && <VPRevealOverlay />}
       {gameEnded && victoryPhase === 'modal' && <VictoryModal />}
+
+      {/* Disconnect overlay - blocks all interaction when any player disconnects */}
+      <DisconnectOverlay />
     </Box>
   );
 }

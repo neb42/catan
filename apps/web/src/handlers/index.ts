@@ -63,6 +63,7 @@ import {
   handleLargestArmyUpdated,
 } from './awardHandlers';
 import { handleVictory } from './victoryHandlers';
+import { handleGamePaused, handleGameResumed } from './pauseHandlers';
 import { handleError } from './errorHandlers';
 
 const handlerRegistry: Partial<
@@ -134,6 +135,10 @@ const handlerRegistry: Partial<
 
   // Victory handler
   victory: handleVictory,
+
+  // Pause handlers
+  game_paused: handleGamePaused,
+  game_resumed: handleGameResumed,
 
   // Error handler
   error: handleError,
