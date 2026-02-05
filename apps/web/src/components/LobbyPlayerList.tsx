@@ -143,16 +143,14 @@ export function LobbyPlayerList({
                     gap="xs"
                     style={{
                       marginTop: '0.5rem',
-                      background: '#F3F4F6',
                       padding: '0.4rem',
-                      borderRadius: '99px',
                     }}
                   >
                     {PLAYER_COLORS.map((color) => (
                       <ColorSwatch
                         key={color}
                         color={colorMap[color] || color}
-                        size={44}
+                        size={32}
                         radius="xl"
                         style={{
                           cursor: 'pointer',
