@@ -15,6 +15,21 @@ const app = express();
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+// Serve frontend static files
+const webDistPath = path.join(__dirname, '../web');
+app.use(
+  express.static(webDistPath, {
+    maxAge: '1y',
+    immutable: true,
+    setHeaders: (res, filePath) => {
+      // Don't cache HTML files for SPA routing
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
+  }),
+);
+
 app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to api!' });
 });
@@ -63,9 +78,16 @@ httpServer.on('upgrade', (request, socket, head) => {
   }
 });
 
-httpServer.listen(port, () => {
+// SPA fallback - serve index.html for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(webDistPath, 'index.html'));
+});
+
+httpServer.listen(port, '0.0.0.0', () => {
   console.log(`Listening at http://localhost:${port}/api`);
-  console.log(`WebSocket server listening on ws://localhost:${port}${WS_PATHNAME}`);
+  console.log(
+    `WebSocket server listening on ws://localhost:${port}${WS_PATHNAME}`,
+  );
 });
 
 httpServer.on('error', console.error);
