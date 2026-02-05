@@ -177,10 +177,10 @@ function generatePorts(hexes: Hex[]): Port[] {
   const ports: Port[] = [];
 
   // Pattern for 9 ports on 12 hexes.
-  // Distribute evenly. 12/9 = 1.33.
-  // We can use a fixed pattern of indices: 0, 1, 2, 4, 5, 6, 8, 9, 10
-  // Skipping 3, 7, 11 (3 gaps).
-  const portIndices = [0, 1, 2, 4, 5, 6, 8, 9, 10];
+  // Distribute evenly by skipping positions 2, 5, 9
+  // This creates max 3 consecutive ports (better than the original 3 clusters of 3)
+  // Pattern: PP_PP_PPP_PP (gaps at indices 2, 5, 9)
+  const portIndices = [0, 1, 3, 4, 6, 7, 8, 10, 11];
 
   portIndices.forEach((hexIndex, i) => {
     const hex = edgeHexes[hexIndex];
