@@ -156,8 +156,37 @@ export default function Lobby() {
             flexDirection: 'column',
             justifyContent: 'flex-start',
             paddingTop: '4rem',
+            position: 'relative',
           }}
         >
+          {/* Countdown Overlay */}
+          {countdown !== null && countdown >= 0 && (
+            <div
+              style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 1000,
+                pointerEvents: 'none',
+              }}
+            >
+              <Title
+                order={1}
+                style={{
+                  fontSize: '160px',
+                  fontFamily: 'Fraunces, serif',
+                  fontWeight: 900,
+                  color: 'var(--color-secondary)',
+                  textAlign: 'center',
+                  textShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                }}
+              >
+                {countdown}
+              </Title>
+            </div>
+          )}
+
           {!isConnected && (
             <Alert
               color="yellow"

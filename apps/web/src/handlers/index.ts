@@ -11,6 +11,7 @@ import {
 } from './lobbyHandlers';
 import {
   handleGameStarting,
+  handleCountdownTick,
   handleGameStarted,
   handleSetupComplete,
 } from './gameLifecycleHandlers';
@@ -77,6 +78,7 @@ const handlerRegistry: Partial<
 
   // Game lifecycle handlers
   game_starting: handleGameStarting,
+  countdown_tick: handleCountdownTick,
   game_started: handleGameStarted,
   setup_complete: handleSetupComplete,
 

@@ -15,6 +15,17 @@ export const handleGameStarting: MessageHandler = (message, ctx) => {
   }, 1000);
 };
 
+export const handleCountdownTick: MessageHandler = (message, ctx) => {
+  if (message.type !== 'countdown_tick') return;
+
+  if (message.secondsRemaining < 0) {
+    // Countdown cancelled
+    ctx.setCountdown(null);
+  } else {
+    ctx.setCountdown(message.secondsRemaining);
+  }
+};
+
 export const handleGameStarted: MessageHandler = (message, ctx) => {
   if (message.type !== 'game_started') return;
 
