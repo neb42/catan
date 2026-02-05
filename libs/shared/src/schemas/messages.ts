@@ -21,11 +21,13 @@ export const JoinRoomMessageSchema = z.object({
   type: z.literal('join_room'),
   roomId: roomIdSchema,
   nickname: nicknameSchema,
+  preferredColor: z.enum(PLAYER_COLORS).optional(),
 });
 
 export const CreateRoomMessageSchema = z.object({
   type: z.literal('create_room'),
   nickname: nicknameSchema,
+  preferredColor: z.enum(PLAYER_COLORS).optional(),
 });
 
 export const RoomCreatedMessageSchema = z.object({
