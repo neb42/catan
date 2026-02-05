@@ -10,7 +10,7 @@ import { useGameLog } from '@web/stores/gameStore';
  * - Entries are simple strings with no timestamps or turn numbers
  */
 export function GameLog() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const logEntries = useGameLog();
 
   return (
