@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Paper,
   Text,
@@ -8,18 +8,20 @@ import {
   ScrollArea,
   Badge,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { useGameLog } from '@web/stores/gameStore';
 
-const TYPE_COLORS = {
-  info: 'blue',
-  success: 'green',
-  warning: 'yellow',
-  error: 'red',
-} as const;
-
 export function GameLog() {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [expanded, setExpanded] = useState(false);
   const entries = useGameLog();
+
+  // Default to closed on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setExpanded(false);
+    }
+  }, [isMobile]);
 
   const recentEntries = entries.slice(-50).reverse(); // Most recent first
 
@@ -49,9 +51,10 @@ export function GameLog() {
         </Group>
         <ActionIcon
           variant="subtle"
-          size="sm"
+          size="lg"
           onClick={() => setExpanded(!expanded)}
           aria-label={expanded ? 'Collapse game log' : 'Expand game log'}
+          style={{ minWidth: '44px', minHeight: '44px' }}
         >
           <Text size="xs">{expanded ? '▼' : '▲'}</Text>
         </ActionIcon>
@@ -65,23 +68,10 @@ export function GameLog() {
                 No actions yet
               </Text>
             )}
-            {recentEntries.map((entry) => (
-              <Group key={entry.id} gap="xs" wrap="nowrap" align="flex-start">
-                <Text size="xs" c="dimmed" style={{ whiteSpace: 'nowrap' }}>
-                  {entry.timestamp.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </Text>
-                <Badge
-                  size="xs"
-                  color={TYPE_COLORS[entry.type]}
-                  variant="dot"
-                />
-                <Text size="xs" style={{ flex: 1 }}>
-                  {entry.message}
-                </Text>
-              </Group>
+            {recentEntries.map((entry, index) => (
+              <Text key={index} size="xs" style={{ flex: 1 }}>
+                {entry}
+              </Text>
             ))}
           </Stack>
         </ScrollArea>

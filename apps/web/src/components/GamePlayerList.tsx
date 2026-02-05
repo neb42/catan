@@ -1,5 +1,6 @@
 import { Player, PLAYER_COLOR_HEX } from '@catan/shared';
 import { Avatar } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { motion } from 'motion/react';
 import { useShallow } from 'zustand/react/shallow';
 import {
@@ -15,6 +16,9 @@ type GamePlayerListProps = {
 };
 
 export function GamePlayerList({ players }: GamePlayerListProps) {
+  // Detect mobile for responsive layout
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   // Get active player from store for placement phase highlighting
   const { id: placementPlayerId } = useCurrentPlayer();
 
@@ -52,9 +56,11 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
     <div
       style={{
         display: 'flex',
-        flexDirection: 'column',
-        gap: '30px',
-        width: '200px',
+        flexDirection: isMobile ? 'row' : 'column',
+        gap: isMobile ? '15px' : '30px',
+        width: isMobile ? '100%' : '200px',
+        overflowX: isMobile ? 'auto' : 'visible',
+        padding: isMobile ? '10px 0' : '0',
       }}
     >
       {players.map((player) => {
@@ -126,7 +132,8 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
               background: '#fdf6e3',
               border: isActiveTurn ? '4px solid #f1c40f' : '4px solid #8d6e63',
               borderRadius: '12px',
-              width: '100%',
+              width: isMobile ? '180px' : '100%',
+              flexShrink: 0,
               position: 'relative',
               boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
               display: 'flex',
@@ -209,17 +216,23 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   }}
                 >
                   {/* Victory point badge */}
-                  <div style={{
-                    background: '#d35400',
-                    color: 'white',
-                    border: '1px solid #e67e22',
-                    fontSize: '10px',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 600,
-                  }} title={`${trueVP} Victory Points`}>
-                    {player.id === myPlayerId  && vpCardCount > 0 ? `${publicVP} (${publicVP + vpCardCount})` : trueVP} VP
+                  <div
+                    style={{
+                      background: '#d35400',
+                      color: 'white',
+                      border: '1px solid #e67e22',
+                      fontSize: '10px',
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: 600,
+                    }}
+                    title={`${trueVP} Victory Points`}
+                  >
+                    {player.id === myPlayerId && vpCardCount > 0
+                      ? `${publicVP} (${publicVP + vpCardCount})`
+                      : trueVP}{' '}
+                    VP
                   </div>
                   {hasLongestRoad && (
                     <div
@@ -577,7 +590,11 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 title="Resource Cards Held"
               >
                 <svg
-                  style={{ width: '18px', height: '18px', color: totalCards > 7 ? '#e74c3c' : '#5d4037' }}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    color: totalCards > 7 ? '#e74c3c' : '#5d4037',
+                  }}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -616,7 +633,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                     position: 'absolute',
                     bottom: '-6px',
                     right: '-6px',
-                    background: totalCards > 7 ? '#e74c3c' : '#5d4037', 
+                    background: totalCards > 7 ? '#e74c3c' : '#5d4037',
                     color: 'white',
                     fontSize: '10px',
                     minWidth: '16px',
@@ -633,9 +650,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                   {totalCards}
                 </div>
               </div>
-             
             </div>
-
           </motion.div>
         );
       })}

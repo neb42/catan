@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { motion } from 'motion/react';
 
 type LobbyPlayerListProps = {
@@ -23,6 +24,8 @@ export function LobbyPlayerList({
   onColorChange,
   onReadyToggle,
 }: LobbyPlayerListProps) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   // Create 4 slots (max players)
   const slots = Array.from({ length: 4 }, (_, index) => {
     return players[index] || null;
@@ -33,7 +36,11 @@ export function LobbyPlayerList({
 
   return (
     <div
-      style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+        gap: '1.5rem',
+      }}
     >
       {slots.map((player, index) => {
         if (!player) {

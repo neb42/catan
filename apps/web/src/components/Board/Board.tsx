@@ -16,6 +16,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { RobberFigure, RobberPlacement } from '@web/components/Robber';
 import { RoadBuildingEdgeOverlay } from '../CardPlay/RoadBuildingOverlay';
 import { Paper } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { CoastlineBackground } from './CoastlineBackground';
 
 interface BoardProps {
@@ -23,6 +24,9 @@ interface BoardProps {
 }
 
 export function Board({ board }: BoardProps) {
+  // Detect mobile screen for responsive scaling
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   // Zoom and pan state
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -64,6 +68,9 @@ export function Board({ board }: BoardProps) {
   // Layout size constant (must match Layout props)
   const hexSize = { x: 10, y: 10 };
   const spacing = 1.05;
+
+  // Apply mobile scaling (60% on mobile)
+  const boardScale = isMobile ? 0.6 : 1;
 
   // Calculate hex centers for robber placement and rendering
   // Using pointy-top hex formula: x = size.x * (√3 * q + √3/2 * r) * spacing
@@ -159,6 +166,8 @@ export function Board({ board }: BoardProps) {
         position: 'relative',
         cursor: isPanning ? 'grabbing' : 'grab',
         backgroundColor: '#1E90FF', // Sea blue
+        transform: `scale(${boardScale})`,
+        transformOrigin: 'center center',
       }}
       shadow="md"
       radius="lg"
