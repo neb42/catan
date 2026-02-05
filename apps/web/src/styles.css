@@ -1,14 +1,14 @@
 /* Design System - Global Styles */
 
 :root {
-  --color-bg: #F9F4EF;
-  --color-text: #2D3142;
-  --color-primary: #E76F51; /* Terracotta */
-  --color-primary-dark: #C65538;
-  --color-secondary: #2A9D8F; /* Teal */
-  --color-secondary-dark: #1F7A6F;
-  --color-accent: #E9C46A; /* Saffron */
-  --color-surface: #FFFFFF;
+  --color-bg: #f9f4ef;
+  --color-text: #2d3142;
+  --color-primary: #e76f51; /* Terracotta */
+  --color-primary-dark: #c65538;
+  --color-secondary: #2a9d8f; /* Teal */
+  --color-secondary-dark: #1f7a6f;
+  --color-accent: #e9c46a; /* Saffron */
+  --color-surface: #ffffff;
   --color-shadow: rgba(45, 49, 66, 0.15);
   --radius-lg: 24px;
   --radius-md: 12px;
@@ -21,17 +21,29 @@
   padding: 0;
 }
 
-body, #root {
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: 'Outfit', sans-serif;
-  min-height: 100vh;
-  position: relative;
+/* Mobile viewport fix for Safari address bar */
+html,
+body,
+#root {
+  height: 100dvh; /* Use dynamic viewport height instead of vh */
+  width: 100%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
 }
 
+body,
+#root {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Outfit', sans-serif;
+  position: relative;
+}
+
 /* Typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: 'Fraunces', serif;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -56,74 +68,117 @@ h1, h2, h3 {
   position: absolute;
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, var(--color-secondary) 0%, transparent 80%);
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary) 0%,
+    transparent 80%
+  );
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   opacity: 0.1;
   animation: float 20s infinite ease-in-out;
   pointer-events: none;
 }
 
-.hex-1 { 
-  top: -50px; 
-  left: -50px; 
-  animation-delay: 0s; 
+.hex-1 {
+  top: -50px;
+  left: -50px;
+  animation-delay: 0s;
   transform: rotate(15deg);
 }
 
-.hex-2 { 
-  bottom: -50px; 
-  right: -50px; 
-  background: linear-gradient(135deg, var(--color-primary) 0%, transparent 80%); 
-  animation-delay: -5s; 
+.hex-2 {
+  bottom: -50px;
+  right: -50px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, transparent 80%);
+  animation-delay: -5s;
   transform: rotate(-15deg);
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
-  50% { transform: translateY(-20px) rotate(var(--r, 0deg)); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-20px) rotate(var(--r, 0deg));
+  }
 }
 
 /* Animation Utilities */
 @keyframes slideUp {
-  to { transform: translateY(0); opacity: 1; }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes popIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Player Color Variables & Classes */
 :root {
-  --color-red: #E76F51;
+  --color-red: #e76f51;
   --color-blue: #264653;
-  --color-white: #FFFFFF;
-  --color-orange: #F4A261;
-  --color-green: #2A9D8F;
-  --color-yellow: #E9C46A;
-  --color-purple: #9B59B6;
-  --color-brown: #8B4513;
+  --color-white: #ffffff;
+  --color-orange: #f4a261;
+  --color-green: #2a9d8f;
+  --color-yellow: #e9c46a;
+  --color-purple: #9b59b6;
+  --color-brown: #8b4513;
 }
 
 .c-red {
@@ -157,4 +212,21 @@ h1, h2, h3 {
 
 .c-brown {
   color: var(--color-brown);
+}
+
+/* Mobile Touch Targets & Interaction */
+button,
+a,
+[role='button'] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Prevent text selection on game elements during touch interaction */
+.game-board,
+.player-list,
+.build-controls {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }

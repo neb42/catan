@@ -145,7 +145,7 @@ export function LobbyPlayerList({
                       <ColorSwatch
                         key={color}
                         color={colorMap[color] || color}
-                        size={32}
+                        size={44}
                         radius="xl"
                         style={{
                           cursor: 'pointer',

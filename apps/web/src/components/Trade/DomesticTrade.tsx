@@ -112,8 +112,9 @@ export function DomesticTrade() {
                 <Group gap="xs">
                   <Badge color="green">Accepted</Badge>
                   <Button
-                    size="xs"
+                    size="sm"
                     onClick={() => handleSelectPartner(player.id)}
+                    style={{ minHeight: '44px' }}
                   >
                     Trade
                   </Button>

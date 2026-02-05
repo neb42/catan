@@ -43,9 +43,10 @@ export function ResourceSelector({
 
       <ActionIcon
         variant="default"
-        size="sm"
+        size="lg"
         onClick={() => onChange(Math.max(0, value - 1))}
         disabled={disabled || value <= 0}
+        style={{ minWidth: '44px', minHeight: '44px' }}
       >
         -
       </ActionIcon>
@@ -56,9 +57,10 @@ export function ResourceSelector({
 
       <ActionIcon
         variant="default"
-        size="sm"
+        size="lg"
         onClick={() => onChange(Math.min(max, value + 1))}
         disabled={disabled || value >= max}
+        style={{ minWidth: '44px', minHeight: '44px' }}
       >
         +
       </ActionIcon>

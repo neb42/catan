@@ -215,10 +215,11 @@ export function BuildControls() {
               border: '1px solid #ffcccc',
               borderRadius: '6px',
               color: '#c0392b',
-              padding: '4px 12px',
+              padding: '8px 12px',
               fontSize: '12px',
               fontWeight: 500,
               cursor: 'pointer',
+              minHeight: '44px',
             }}
           >
             Cancel
