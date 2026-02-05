@@ -26,7 +26,12 @@ export function GameLog() {
         display: 'flex',
         flexDirection: 'column',
         zIndex: 100,
-        borderRadius: 0,
+        background: '#fdf6e3',
+        border: '4px solid #8d6e63',
+        borderTopLeftRadius: '12px',
+        borderBottomLeftRadius: '12px',
+        borderRight: 'none',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
       }}
     >
       {/* Header with toggle button */}
@@ -36,12 +41,13 @@ export function GameLog() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '12px',
-          borderBottom: isOpen ? '1px solid #dee2e6' : 'none',
+          borderBottom: isOpen ? '2px dashed #d7ccc8' : 'none',
           minHeight: '48px',
+          background: 'rgba(0,0,0,0.03)',
         }}
       >
         {isOpen && (
-          <Title order={4} style={{ margin: 0 }}>
+          <Title order={4} style={{ margin: 0, color: '#5d4037' }}>
             Game Log
           </Title>
         )}
@@ -50,7 +56,19 @@ export function GameLog() {
           size="xs"
           onClick={() => setIsOpen(!isOpen)}
           title={isOpen ? 'Collapse log' : 'Expand log'}
-          style={{ minWidth: '24px', padding: '4px 8px', fontSize: '18px' }}
+          style={{
+            minWidth: '24px',
+            padding: '4px 8px',
+            fontSize: '18px',
+            color: '#5d4037',
+          }}
+          styles={{
+            root: {
+              '&:hover': {
+                backgroundColor: 'rgba(93, 64, 55, 0.1)',
+              },
+            },
+          }}
         >
           {isOpen ? '›' : '‹'}
         </Button>
@@ -68,7 +86,7 @@ export function GameLog() {
             {logEntries.length === 0 ? (
               <div
                 style={{
-                  color: '#868e96',
+                  color: '#8d6e63',
                   fontSize: '14px',
                   fontStyle: 'italic',
                   textAlign: 'center',
@@ -82,13 +100,20 @@ export function GameLog() {
                 <div
                   key={index}
                   style={{
-                    padding: '6px 8px',
+                    padding: '8px 12px',
                     marginBottom: '4px',
-                    backgroundColor:
-                      index % 2 === 0 ? '#f8f9fa' : 'transparent',
-                    borderRadius: '4px',
+                    borderBottom: '1px solid #d7ccc8',
+                    borderRadius: '6px',
                     fontSize: '14px',
                     lineHeight: '1.4',
+                    color: '#5d4037',
+                    transition: 'background 0.2s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0,0,0,0.02)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
                   }}
                 >
                   {entry}
