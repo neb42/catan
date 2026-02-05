@@ -15,6 +15,10 @@ export const handleRoomCreated: MessageHandler = (message, ctx) => {
   ctx.setCreateError(null);
   ctx.setJoinError(null);
   ctx.setGeneralError(null);
+
+  // Persist to localStorage for reconnection
+  localStorage.setItem('catan_roomId', message.roomId);
+  localStorage.setItem('catan_nickname', message.player.nickname);
 };
 
 export const handleRoomState: MessageHandler = (message, ctx) => {
@@ -31,6 +35,10 @@ export const handleRoomState: MessageHandler = (message, ctx) => {
     ctx.setCurrentPlayerId(selfFromNickname.id);
     useGameStore.getState().setMyPlayerId(selfFromNickname.id);
     ctx.setPendingNickname(null);
+
+    // Persist to localStorage for reconnection (join room success)
+    localStorage.setItem('catan_roomId', message.room.id);
+    localStorage.setItem('catan_nickname', selfFromNickname.nickname);
   }
 
   const readyToStart =

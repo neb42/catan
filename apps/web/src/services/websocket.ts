@@ -5,7 +5,7 @@ type WebSocketHandlers = {
   onError?: (event: Event) => void;
 };
 
-const INITIAL_RECONNECT_DELAY = 1000; // 1s
+const INITIAL_RECONNECT_DELAY = 2000; // 2s
 const MAX_RECONNECT_DELAY = 30000; // 30s
 
 export class WebSocketClient {
@@ -89,7 +89,10 @@ export class WebSocketClient {
 
     this.reconnectTimer = setTimeout(() => {
       this.reconnectAttempts += 1;
-      this.reconnectDelay = Math.min(this.reconnectDelay * 2, MAX_RECONNECT_DELAY);
+      this.reconnectDelay = Math.min(
+        this.reconnectDelay * 2,
+        MAX_RECONNECT_DELAY,
+      );
       this.startConnection();
     }, delay);
   }

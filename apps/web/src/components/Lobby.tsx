@@ -29,6 +29,17 @@ export default function Lobby() {
   const [showJoinForm, setShowJoinForm] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>('');
 
+  // Load saved room ID and nickname from localStorage on mount
+  useEffect(() => {
+    const savedRoomId = localStorage.getItem('catan_roomId');
+    const savedNickname = localStorage.getItem('catan_nickname');
+    if (savedNickname) {
+      setNickname(savedNickname);
+    }
+    // Note: savedRoomId could be used to auto-fill join form, but we keep it simple
+    // User still needs to click "Join Room" button
+  }, []);
+
   const players: Player[] = useMemo(() => room?.players ?? [], [room]);
 
   const handleMessage = useCallback(
