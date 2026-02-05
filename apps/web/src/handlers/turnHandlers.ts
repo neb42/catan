@@ -19,6 +19,20 @@ export const handleDiceRolled: MessageHandler = (message, ctx) => {
     `${playerName} rolled ${message.total} (${message.dice1} + ${message.dice2})`,
   );
 
+  // Log resource distributions
+  for (const grant of message.resourcesDistributed) {
+    const player = gameStore.room?.players.find((p) => p.id === grant.playerId);
+    if (player) {
+      const resourceNames = grant.resources
+        .filter((r) => r.count > 0)
+        .map((r) => `${r.count} ${r.type}`)
+        .join(', ');
+      if (resourceNames) {
+        gameStore.addLogEntry(`${player.nickname} received ${resourceNames}`);
+      }
+    }
+  }
+
   // Update phase to 'main' FIRST (dice has been rolled)
   // This must happen before setDiceRoll because setTurnState clears lastDiceRoll
   gameStore.setTurnState({

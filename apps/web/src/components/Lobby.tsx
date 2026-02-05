@@ -36,8 +36,10 @@ export default function Lobby() {
     if (savedNickname) {
       setNickname(savedNickname);
     }
-    // Note: savedRoomId could be used to auto-fill join form, but we keep it simple
-    // User still needs to click "Join Room" button
+    if (savedRoomId) {
+      setRoomId(savedRoomId);
+      setShowJoinForm(true);
+    }
   }, []);
 
   const players: Player[] = useMemo(() => room?.players ?? [], [room]);
