@@ -500,6 +500,19 @@ export const VictoryMessageSchema = z.object({
   ),
 });
 
+// Connection resilience messages - Server -> Client
+export const GamePausedMessageSchema = z.object({
+  type: z.literal('game_paused'),
+  disconnectedPlayerId: z.string(),
+  disconnectedPlayerNickname: z.string(),
+});
+
+export const GameResumedMessageSchema = z.object({
+  type: z.literal('game_resumed'),
+  reconnectedPlayerId: z.string(),
+  reconnectedPlayerNickname: z.string(),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -586,6 +599,9 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   LargestArmyUpdatedMessageSchema,
   // Victory messages
   VictoryMessageSchema,
+  // Connection resilience messages
+  GamePausedMessageSchema,
+  GameResumedMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -730,5 +746,8 @@ export type LargestArmyUpdatedMessage = z.infer<
 >;
 // Victory message types
 export type VictoryMessage = z.infer<typeof VictoryMessageSchema>;
+// Connection resilience message types
+export type GamePausedMessage = z.infer<typeof GamePausedMessageSchema>;
+export type GameResumedMessage = z.infer<typeof GameResumedMessageSchema>;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;

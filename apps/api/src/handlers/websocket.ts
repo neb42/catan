@@ -14,6 +14,14 @@ import * as RobberHandlers from './robber-handlers';
 import * as TradingHandlers from './trading-handlers';
 import * as TurnHandlers from './turn-handlers';
 
+// Extended WebSocket with heartbeat tracking
+interface ExtendedWebSocket extends WebSocket {
+  isAlive: boolean;
+}
+
+// Heartbeat interval: 30 seconds (industry standard)
+const HEARTBEAT_INTERVAL_MS = 30000;
+
 export function handleWebSocketConnection(
   ws: WebSocket,
   roomManager: RoomManager,
@@ -21,6 +29,41 @@ export function handleWebSocketConnection(
 ): void {
   let currentRoomId: string | null = null;
   let playerId: string | null = null;
+
+  // Cast to ExtendedWebSocket for heartbeat tracking
+  const extWs = ws as ExtendedWebSocket;
+  extWs.isAlive = true;
+
+  // Set up heartbeat ping/pong
+  const heartbeatInterval = setInterval(() => {
+    if (!currentRoomId) return;
+
+    const room = roomManager.getRoom(currentRoomId);
+    if (!room) return;
+
+    // Check all players in room for dead connections
+    room.players.forEach((player) => {
+      const playerWs = player.ws as ExtendedWebSocket;
+
+      if (playerWs.isAlive === false) {
+        // Connection is dead - trigger disconnect and pause game
+        console.log(
+          `[WebSocket] Dead connection detected for player ${player.id}`,
+        );
+        roomManager.pauseGame(currentRoomId!, player.id);
+        return;
+      }
+
+      // Mark as not alive, will be reset by pong
+      playerWs.isAlive = false;
+      playerWs.ping();
+    });
+  }, HEARTBEAT_INTERVAL_MS);
+
+  // Handle pong response
+  extWs.on('pong', () => {
+    extWs.isAlive = true;
+  });
 
   ws.on('message', (data) => {
     let parsed: unknown;
@@ -182,19 +225,32 @@ export function handleWebSocketConnection(
   });
 
   ws.on('close', () => {
+    // Clear heartbeat interval
+    clearInterval(heartbeatInterval);
+
     if (!currentRoomId || !playerId) return;
 
+    const room = roomManager.getRoom(currentRoomId);
+    const gameManager = roomManager.getGameManager(currentRoomId);
+
+    // If game is active, pause instead of removing player
+    if (room && gameManager && room.board) {
+      roomManager.pauseGame(currentRoomId, playerId);
+      return;
+    }
+
+    // No active game - remove player normally
     roomManager.removePlayer(currentRoomId, playerId);
     roomManager.broadcastToRoom(currentRoomId, {
       type: 'player_left',
       playerId,
     });
 
-    const room = roomManager.getRoom(currentRoomId);
-    if (room) {
+    const updatedRoom = roomManager.getRoom(currentRoomId);
+    if (updatedRoom) {
       roomManager.broadcastToRoom(currentRoomId, {
         type: 'room_state',
-        room: serializeRoom(room),
+        room: serializeRoom(updatedRoom),
       });
     }
   });
