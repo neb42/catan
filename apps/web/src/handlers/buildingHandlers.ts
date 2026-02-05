@@ -25,6 +25,9 @@ export const handleRoadBuilt: MessageHandler = (message, ctx) => {
   const builder = ctx.room?.players.find((p) => p.id === playerId);
   const nickname = builder?.nickname || 'A player';
   showGameNotification(`${nickname} built a road`, 'success');
+
+  // Log action
+  gameStore.addLogEntry(`${nickname} built a road`);
 };
 
 export const handleSettlementBuilt: MessageHandler = (message, ctx) => {
@@ -47,6 +50,9 @@ export const handleSettlementBuilt: MessageHandler = (message, ctx) => {
   const builder = ctx.room?.players.find((p) => p.id === playerId);
   const nickname = builder?.nickname || 'A player';
   showGameNotification(`${nickname} built a settlement`, 'success');
+
+  // Log action
+  gameStore.addLogEntry(`${nickname} built a settlement`);
 };
 
 export const handleCityBuilt: MessageHandler = (message, ctx) => {
@@ -70,6 +76,9 @@ export const handleCityBuilt: MessageHandler = (message, ctx) => {
   const builder = ctx.room?.players.find((p) => p.id === playerId);
   const nickname = builder?.nickname || 'A player';
   showGameNotification(`${nickname} upgraded to a city`, 'success');
+
+  // Log action
+  gameStore.addLogEntry(`${nickname} upgraded to a city`);
 };
 
 export const handleBuildFailed: MessageHandler = (message, ctx) => {

@@ -156,15 +156,8 @@ interface VictorySlice {
 }
 
 // Game log state slice
-interface GameLogEntry {
-  id: string;
-  message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-  timestamp: Date;
-}
-
 interface GameLogSlice {
-  gameLog: GameLogEntry[];
+  gameLog: string[]; // Simple array of log entries (no timestamps, no metadata)
 }
 
 // Debug state slice
@@ -328,10 +321,7 @@ interface GameStore
   setVictoryPhase: (phase: 'none' | 'reveal' | 'modal' | 'dismissed') => void;
 
   // Game log actions
-  addLogEntry: (
-    message: string,
-    type?: 'info' | 'success' | 'warning' | 'error',
-  ) => void;
+  addLogEntry: (entry: string) => void;
   clearGameLog: () => void;
 
   // Debug actions
@@ -696,17 +686,9 @@ export const useGameStore = create<GameStore>((set) => ({
   setVictoryPhase: (phase) => set({ victoryPhase: phase }),
 
   // Game log actions
-  addLogEntry: (message, type = 'info') =>
+  addLogEntry: (entry) =>
     set((state) => ({
-      gameLog: [
-        ...state.gameLog.slice(-99), // Keep last 100 entries
-        {
-          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          message,
-          type,
-          timestamp: new Date(),
-        },
-      ],
+      gameLog: [...state.gameLog.slice(-99), entry], // Keep last 100 entries
     })),
   clearGameLog: () => set({ gameLog: [] }),
 

@@ -79,12 +79,26 @@ export const handleTradeExecuted: MessageHandler = (message, ctx) => {
 
   gameStore.clearTrade();
   gameStore.setTradeModalOpen(false);
+
   // Show trade notification
   const proposer = ctx.room?.players.find((p) => p.id === proposerId);
   const partner = ctx.room?.players.find((p) => p.id === partnerId);
   showGameNotification(
     `Trade completed: ${proposer?.nickname || 'Player'} ↔ ${partner?.nickname || 'Player'}`,
     'success',
+  );
+
+  // Log action - format resources simply
+  const gaveStr = Object.entries(proposerGave)
+    .filter(([_, count]) => (count as number) > 0)
+    .map(([type, count]) => `${count} ${type}`)
+    .join(', ');
+  const receivedStr = Object.entries(partnerGave)
+    .filter(([_, count]) => (count as number) > 0)
+    .map(([type, count]) => `${count} ${type}`)
+    .join(', ');
+  gameStore.addLogEntry(
+    `${proposer?.nickname || 'Player'} traded ${gaveStr} for ${receivedStr} with ${partner?.nickname || 'Player'}`,
   );
 };
 
@@ -123,5 +137,20 @@ export const handleBankTradeExecuted: MessageHandler = (message, ctx) => {
   showGameNotification(
     `${trader?.nickname || 'A player'} traded with the bank`,
     'info',
+  );
+
+  // Log action - identify ratio
+  const gaveResource = Object.keys(gave).find(
+    (k) => gave[k as ResourceType] > 0,
+  ) as ResourceType;
+  const gaveCount = gave[gaveResource] || 0;
+  const receivedResource = Object.keys(received).find(
+    (k) => received[k as ResourceType] > 0,
+  ) as ResourceType;
+  const receivedCount = received[receivedResource] || 0;
+  const ratio = gaveCount === 4 ? '4:1' : gaveCount === 3 ? '3:1' : '2:1';
+
+  gameStore.addLogEntry(
+    `${trader?.nickname || 'A player'} traded ${gaveCount} ${gaveResource} for ${receivedCount} ${receivedResource} (${ratio})`,
   );
 };

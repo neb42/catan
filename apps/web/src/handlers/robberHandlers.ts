@@ -45,6 +45,15 @@ export const handleDiscardCompleted: MessageHandler = (message, ctx) => {
   );
   const nickname = discardingPlayer?.nickname || 'A player';
   showGameNotification(`${nickname} discarded cards`, 'info');
+
+  // Log action - count total discarded
+  const totalDiscarded = message.discarded
+    ? Object.values(message.discarded).reduce(
+        (sum, count) => sum + (count || 0),
+        0,
+      )
+    : 0;
+  gameStore.addLogEntry(`${nickname} discarded ${totalDiscarded} cards`);
 };
 
 export const handleAllDiscardsComplete: MessageHandler = (message, ctx) => {
@@ -83,6 +92,9 @@ export const handleRobberMoved: MessageHandler = (message, ctx) => {
   const movingPlayer = ctx.room?.players.find((p) => p.id === message.playerId);
   const nickname = movingPlayer?.nickname || 'A player';
   showGameNotification(`${nickname} moved the robber`, 'info');
+
+  // Log action
+  gameStore.addLogEntry(`${nickname} moved the robber`);
 };
 
 export const handleStealRequired: MessageHandler = (message, ctx) => {
@@ -117,6 +129,10 @@ export const handleStolen: MessageHandler = (message, ctx) => {
     showGameNotification(
       `${thiefNickname} stole from ${victimNickname}`,
       'info',
+    );
+    // Log steal
+    gameStore.addLogEntry(
+      `${thiefNickname} stole 1 card from ${victimNickname}`,
     );
   } else {
     showGameNotification(`${thiefNickname} stole nothing (no cards)`, 'info');

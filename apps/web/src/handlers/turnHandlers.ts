@@ -7,6 +7,18 @@ export const handleDiceRolled: MessageHandler = (message, ctx) => {
   if (message.type !== 'dice_rolled') return;
 
   const gameStore = useGameStore.getState();
+
+  // Get player nickname for log
+  const currentPlayer = gameStore.room?.players.find(
+    (p) => p.id === gameStore.turnCurrentPlayerId,
+  );
+  const playerName = currentPlayer?.nickname || 'Someone';
+
+  // Log dice roll
+  gameStore.addLogEntry(
+    `${playerName} rolled ${message.total} (${message.dice1} + ${message.dice2})`,
+  );
+
   // Update phase to 'main' FIRST (dice has been rolled)
   // This must happen before setDiceRoll because setTurnState clears lastDiceRoll
   gameStore.setTurnState({

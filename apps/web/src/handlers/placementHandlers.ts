@@ -29,6 +29,11 @@ export const handleSettlementPlaced: MessageHandler = (message, ctx) => {
       .getState()
       .updatePlayerResources(message.playerId, message.resourcesGranted);
   }
+
+  // Log placement
+  const player = ctx.room?.players.find((p) => p.id === message.playerId);
+  const nickname = player?.nickname || 'A player';
+  useGameStore.getState().addLogEntry(`${nickname} placed a settlement`);
 };
 
 export const handleRoadPlaced: MessageHandler = (message, ctx) => {
@@ -38,4 +43,9 @@ export const handleRoadPlaced: MessageHandler = (message, ctx) => {
     edgeId: message.edgeId,
     playerId: message.playerId,
   });
+
+  // Log placement
+  const player = ctx.room?.players.find((p) => p.id === message.playerId);
+  const nickname = player?.nickname || 'A player';
+  useGameStore.getState().addLogEntry(`${nickname} placed a road`);
 };

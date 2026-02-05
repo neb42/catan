@@ -11,7 +11,8 @@ const TYPE_COLORS: Record<NotificationType, string> = {
 };
 
 /**
- * Show a game notification (toast + log entry)
+ * Show a game notification (toast only - no log entry)
+ * For log entries, handlers should call useGameStore.getState().addLogEntry() directly
  */
 export function showGameNotification(
   message: string,
@@ -24,17 +25,13 @@ export function showGameNotification(
     autoClose: 3000,
     withCloseButton: true,
   });
-
-  // Add to game log
-  useGameStore.getState().addLogEntry(message, type);
 }
 
 /**
  * Hook that provides notification functions for use in components
+ * Shows toast notifications only (no log entries)
  */
 export function useGameNotifications() {
-  const addLogEntry = useGameStore((s) => s.addLogEntry);
-
   const notify = (message: string, type: NotificationType = 'info') => {
     notifications.show({
       message,
@@ -42,7 +39,6 @@ export function useGameNotifications() {
       autoClose: 3000,
       withCloseButton: true,
     });
-    addLogEntry(message, type);
   };
 
   return {

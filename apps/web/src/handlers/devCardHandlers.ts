@@ -48,6 +48,9 @@ export const handleDevCardPurchasedPublic: MessageHandler = (message, ctx) => {
   const buyer = ctx.room?.players.find((p) => p.id === message.playerId);
   const nickname = buyer?.nickname || 'A player';
   showGameNotification(`${nickname} bought a development card`, 'info');
+
+  // Log action
+  gameStore.addLogEntry(`${nickname} bought a development card`);
 };
 
 export const handleDevCardPlayed: MessageHandler = (message, ctx) => {
@@ -68,14 +71,28 @@ export const handleDevCardPlayed: MessageHandler = (message, ctx) => {
     }
   }
 
+  // Get player nickname for logging
+  const player = ctx.room?.players.find((p) => p.id === message.playerId);
+  const nickname = player?.nickname || 'A player';
+
   // Increment knights played if knight
   if (message.cardType === 'knight') {
     gameStore.incrementKnightsPlayed(message.playerId);
-    // Show notification
-    const player = ctx.room?.players.find((p) => p.id === message.playerId);
-    const nickname = player?.nickname || 'A player';
     showGameNotification(`${nickname} played a Knight!`, 'info');
   }
+
+  // Log the card played
+  const cardName =
+    message.cardType === 'knight'
+      ? 'Knight'
+      : message.cardType === 'road_building'
+        ? 'Road Building'
+        : message.cardType === 'year_of_plenty'
+          ? 'Year of Plenty'
+          : message.cardType === 'monopoly'
+            ? 'Monopoly'
+            : 'Victory Point';
+  gameStore.addLogEntry(`${nickname} played ${cardName}`);
 };
 
 export const handleDevCardPlayFailed: MessageHandler = (message, ctx) => {
@@ -129,6 +146,11 @@ export const handleYearOfPlentyCompleted: MessageHandler = (message, ctx) => {
     `${yopNickname} took ${yopResources.join(' and ')} from the bank!`,
     'info',
   );
+
+  // Log action
+  gameStore.addLogEntry(
+    `${yopNickname} played Year of Plenty (took ${yopResources.join(' and ')})`,
+  );
 };
 
 export const handleMonopolyRequired: MessageHandler = (message, ctx) => {
@@ -180,6 +202,11 @@ export const handleMonopolyExecuted: MessageHandler = (message, ctx) => {
     `${monopolyNickname} collected ${totalCollected} ${monopolyResource} via Monopoly!`,
     'warning',
   );
+
+  // Log action
+  gameStore.addLogEntry(
+    `${monopolyNickname} played Monopoly (took all ${monopolyResource})`,
+  );
 };
 
 export const handleRoadBuildingRequired: MessageHandler = (message, ctx) => {
@@ -220,4 +247,7 @@ export const handleRoadBuildingCompleted: MessageHandler = (message, ctx) => {
     `${rbNickname} placed ${edgesPlaced?.length || 0} free roads!`,
     'success',
   );
+
+  // Log action
+  gameStore.addLogEntry(`${rbNickname} played Road Building`);
 };

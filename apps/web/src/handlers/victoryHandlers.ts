@@ -13,4 +13,10 @@ export const handleVictory: MessageHandler = (message, ctx) => {
     allPlayerVP: message.allPlayerVP,
     revealedVPCards: message.revealedVPCards,
   });
+
+  // Log victory
+  const winnerVPTotal = message.winnerVP.total || message.winnerVP;
+  gameStore.addLogEntry(
+    `${message.winnerNickname} won with ${winnerVPTotal} points!`,
+  );
 };
