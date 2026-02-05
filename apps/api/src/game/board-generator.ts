@@ -174,104 +174,28 @@ function generatePorts(hexes: Hex[]): Port[] {
     return Math.atan2(yA, xA) - Math.atan2(yB, xB);
   });
 
+  /* Port placement logic:
+  - There are 9 ports, placed on the edges of the board (ring 2 hexes).
+  - We have a pre-determined list of hex indices and edge directions for port placement to ensure even distribution and visual consistency.
+  - We shuffle the port types and assign them to these predetermined locations.
+  - This approach is based on the standard Catan base game layout, which has specific hexes and edges designated for ports to maintain balance and aesthetics.
+  */
   const ports: Port[] = [];
 
-  // Pattern for 9 ports on 12 hexes.
-  // Distribute evenly by skipping positions 2, 5, 9
-  // This creates max 3 consecutive ports (better than the original 3 clusters of 3)
-  // Pattern: PP_PP_PPP_PP (gaps at indices 2, 5, 9)
-  const portIndices = [0, 1, 3, 4, 6, 7, 8, 10, 11];
+  const portIndices = [0, 1, 2, 4, 5, 6, 8, 9, 10]; // Pre-determined hex indices for port placement (from sorted edgeHexes)
+  const portEdges =   [3, 4, 5, 5, 0, 1, 1, 2, 3]; // Pre-determined edge directions for visual consistency
 
   portIndices.forEach((hexIndex, i) => {
     const hex = edgeHexes[hexIndex];
     const type = shuffledPorts[i];
+    const edge = portEdges[i];
 
-    // Determine edge direction (0-5)
-    // We want the edge that faces OUTWARDS.
-    // Center is (0,0). Hex is (q,r). Vector C->H is (q,r).
-    // Neighbor along edge E is Hex + Dir[E].
-    // We want Neighbor to be distance > 2 (out of board).
-    // CUBE_DIRECTIONS order usually matches 0-5 edge indexing.
-    // 0: (1, 0, -1), 1: (1, -1, 0)...
-
-    // We need to import CUBE_DIRECTIONS or redefine.
-    // Let's copy simple logic: check all 6 neighbors, find one that is NOT in the board (radius > 2).
-    // Actually, corner hexes (radius 2) have 2 or 3 edges facing out.
-    // We need to pick one consistently strictly for rendering?
-    // Or just pick the "most outward" one.
-    // Most outward = direction vector that has smallest angle to position vector?
-    // dot product of (dir_vec, pos_vec) should be maximal.
-
-    let bestEdge = 0;
-    let maxDist = -1;
-
-    // Directions from coordinates.ts (replicated here to match index 0-5)
-    const DIRS = [
-      { q: 1, r: 0, s: -1 },
-      { q: 1, r: -1, s: 0 },
-      { q: 0, r: -1, s: 1 },
-      { q: -1, r: 0, s: 1 },
-      { q: -1, r: 1, s: 0 },
-      { q: 0, r: 1, s: -1 },
-    ];
-    // Map DIRS index to visual edge index (0-5)
-    // DIRS are: East, NE, NW, West, SW, SE (in terms of q,r changes?)
-    // Actually:
-    // (1,0) -> East (Prop 0)
-    // (1,-1) -> NE (Prop 5)
-    // (0,-1) -> NW (Prop 4)
-    // (-1,0) -> West (Prop 3)
-    // (-1,1) -> SW (Prop 2)
-    // (0,1) -> SE (Prop 1)
-    const DIRS_TO_EDGE_MAP = [0, 5, 4, 3, 2, 1];
-
-    // We find the direction that extends furthest from center AND is most aligned with position
-    let bestEdgeIndex = -1;
-    let maxAlignment = -Infinity;
-
-    for (let e = 0; e < 6; e++) {
-      const d = DIRS[e];
-      const nQ = hex.q + d.q;
-      const nR = hex.r + d.r;
-      const nS = -hex.q - hex.r + d.s; // s = -q-r
-
-      const dist = (Math.abs(nQ) + Math.abs(nR) + Math.abs(nS)) / 2;
-
-      // Must be an external edge (neighbor is outside the board)
-      if (dist > 2) {
-        // Calculate alignment (dot product) between Position and Direction
-        // Hex to pixel conversion (approximate for comparison):
-        // x = q + r/2
-        // y = r * sqrt(3)/2
-        // Dot product = (P.x * D.x) + (P.y * D.y)
-
-        // Position vector components
-        const px = hex.q + hex.r * 0.5;
-        const py = hex.r * 0.866;
-
-        // Direction vector components
-        const dx = d.q + d.r * 0.5;
-        const dy = d.r * 0.866;
-
-        const alignment = px * dx + py * dy;
-
-        if (alignment > maxAlignment) {
-          maxAlignment = alignment;
-          bestEdgeIndex = e;
-        }
-      }
-    }
-
-    if (bestEdgeIndex !== -1) {
-      const visualEdge = DIRS_TO_EDGE_MAP[bestEdgeIndex];
-
-      ports.push({
-        type,
-        hexQ: hex.q,
-        hexR: hex.r,
-        edge: visualEdge,
-      });
-    }
+    ports.push({
+      type,
+      hexQ: hex.q,
+      hexR: hex.r,
+      edge,
+    });
   });
 
   return ports;
