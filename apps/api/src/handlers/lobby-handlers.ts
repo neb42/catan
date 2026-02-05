@@ -159,7 +159,7 @@ export function handleJoinRoom(
       message.roomId,
     );
 
-    // If game has started, send board state too
+    // If game has started, send board state and full game state
     if (room.board) {
       sendMessage(
         ws,
@@ -169,6 +169,48 @@ export function handleJoinRoom(
         },
         message.roomId,
       );
+
+      // Send full game state for reconnection
+      if (room.gameManager) {
+        const gameState = room.gameManager.getGameState();
+        const myDevCards = room.gameManager.getPlayerDevCards(player.id);
+
+        // Calculate opponent dev card counts
+        const opponentDevCardCounts: Record<string, number> = {};
+        for (const p of room.players.values()) {
+          if (p.id !== player.id) {
+            opponentDevCardCounts[p.id] = room.gameManager.getPlayerDevCards(
+              p.id,
+            ).length;
+          }
+        }
+
+        sendMessage(
+          ws,
+          {
+            type: 'game_state_sync',
+            gameState: {
+              playerResources: gameState.playerResources,
+              settlements: gameState.settlements,
+              roads: gameState.roads,
+              turnState: gameState.turnState,
+              robberHexId: gameState.robberHexId,
+              longestRoadHolderId: gameState.longestRoadHolderId,
+              longestRoadLength: gameState.longestRoadLength,
+              playerRoadLengths: gameState.playerRoadLengths,
+              largestArmyHolderId: gameState.largestArmyHolderId,
+              largestArmyKnights: gameState.largestArmyKnights,
+              playerKnightCounts: gameState.playerKnightCounts,
+              gamePhase: gameState.gamePhase,
+              winnerId: gameState.winnerId,
+            },
+            myDevCards,
+            opponentDevCardCounts,
+            deckRemaining: room.gameManager.getDeckRemaining(),
+          },
+          message.roomId,
+        );
+      }
     }
 
     // resumeGame message already broadcast by RoomManager.addPlayer

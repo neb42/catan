@@ -40,3 +40,62 @@ export const handleSetupComplete: MessageHandler = (message, ctx) => {
   // Clear placement-specific state
   useGameStore.getState().clearPlacementState();
 };
+
+export const handleGameStateSync: MessageHandler = (message, ctx) => {
+  if (message.type !== 'game_state_sync') return;
+
+  const gameStore = useGameStore.getState();
+  const { gameState, myDevCards, opponentDevCardCounts, deckRemaining } =
+    message;
+
+  // Sync player resources for all players
+  for (const [playerId, resources] of Object.entries(
+    gameState.playerResources,
+  )) {
+    // Set the entire resource object directly
+    gameStore.playerResources[playerId] = resources;
+  }
+
+  // Sync settlements and roads
+  gameStore.settlements = gameState.settlements;
+  gameStore.roads = gameState.roads;
+
+  // Sync turn state
+  if (gameState.turnState) {
+    gameStore.setTurnState({
+      phase: gameState.turnState.phase,
+      currentPlayerId: gameState.turnState.currentPlayerId,
+      turnNumber: gameState.turnState.turnNumber,
+    });
+    if (gameState.turnState.lastDiceRoll) {
+      gameStore.setDiceRoll(gameState.turnState.lastDiceRoll);
+    }
+  }
+
+  // Sync robber position
+  gameStore.setRobberHexId(gameState.robberHexId);
+
+  // Sync longest road
+  gameStore.setLongestRoadState({
+    holderId: gameState.longestRoadHolderId,
+    holderLength: gameState.longestRoadLength,
+    playerLengths: gameState.playerRoadLengths,
+  });
+
+  // Sync largest army
+  gameStore.setLargestArmyState({
+    holderId: gameState.largestArmyHolderId,
+    holderKnights: gameState.largestArmyKnights,
+    playerKnightCounts: gameState.playerKnightCounts,
+  });
+
+  // Sync development cards
+  gameStore.setMyDevCards(myDevCards);
+  for (const [playerId, count] of Object.entries(opponentDevCardCounts)) {
+    gameStore.setOpponentDevCardCount(playerId, count);
+  }
+  gameStore.setDeckRemaining(deckRemaining);
+
+  // Ensure game is marked as started
+  gameStore.setGameStarted(true);
+};

@@ -513,6 +513,74 @@ export const GameResumedMessageSchema = z.object({
   reconnectedPlayerNickname: z.string(),
 });
 
+export const GameStateSyncMessageSchema = z.object({
+  type: z.literal('game_state_sync'),
+  gameState: z.object({
+    playerResources: z.record(
+      z.string(),
+      z.object({
+        wood: z.number(),
+        brick: z.number(),
+        sheep: z.number(),
+        wheat: z.number(),
+        ore: z.number(),
+      }),
+    ),
+    settlements: z.array(
+      z.object({
+        vertexId: z.string(),
+        playerId: z.string(),
+        isCity: z.boolean(),
+      }),
+    ),
+    roads: z.array(
+      z.object({
+        edgeId: z.string(),
+        playerId: z.string(),
+      }),
+    ),
+    turnState: z
+      .object({
+        phase: z.enum(['roll', 'main']),
+        currentPlayerId: z.string(),
+        turnNumber: z.number(),
+        lastDiceRoll: z
+          .object({
+            dice1: z.number(),
+            dice2: z.number(),
+            total: z.number(),
+          })
+          .nullable(),
+      })
+      .nullable(),
+    robberHexId: z.string().nullable(),
+    longestRoadHolderId: z.string().nullable(),
+    longestRoadLength: z.number(),
+    playerRoadLengths: z.record(z.string(), z.number()),
+    largestArmyHolderId: z.string().nullable(),
+    largestArmyKnights: z.number(),
+    playerKnightCounts: z.record(z.string(), z.number()),
+    gamePhase: z.enum(['setup', 'playing', 'ended']),
+    winnerId: z.string().nullable(),
+  }),
+  // Player-specific data
+  myDevCards: z.array(
+    z.object({
+      id: z.string(),
+      type: z.enum([
+        'knight',
+        'victory_point',
+        'road_building',
+        'year_of_plenty',
+        'monopoly',
+      ]),
+      purchasedOnTurn: z.number(),
+    }),
+  ),
+  opponentDevCardCounts: z.record(z.string(), z.number()),
+  deckRemaining: z.number(),
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -602,6 +670,7 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   // Connection resilience messages
   GamePausedMessageSchema,
   GameResumedMessageSchema,
+  GameStateSyncMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -749,5 +818,6 @@ export type VictoryMessage = z.infer<typeof VictoryMessageSchema>;
 // Connection resilience message types
 export type GamePausedMessage = z.infer<typeof GamePausedMessageSchema>;
 export type GameResumedMessage = z.infer<typeof GameResumedMessageSchema>;
+export type GameStateSyncMessage = z.infer<typeof GameStateSyncMessageSchema>;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;

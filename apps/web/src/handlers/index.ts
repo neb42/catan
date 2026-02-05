@@ -14,6 +14,7 @@ import {
   handleCountdownTick,
   handleGameStarted,
   handleSetupComplete,
+  handleGameStateSync,
 } from './gameLifecycleHandlers';
 import {
   handlePlacementTurn,
@@ -82,6 +83,7 @@ const handlerRegistry: Partial<
   countdown_tick: handleCountdownTick,
   game_started: handleGameStarted,
   setup_complete: handleSetupComplete,
+  game_state_sync: handleGameStateSync,
 
   // Placement handlers
   placement_turn: handlePlacementTurn,
