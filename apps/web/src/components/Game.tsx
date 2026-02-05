@@ -84,7 +84,8 @@ export function Game() {
             gridRowStart: 1,
             gridRowEnd: 3,
             gridColumn: 3,
-            padding: '0 16px',
+            paddingLeft: 16,
+            paddingRight: 44,
             display: 'flex',
             flexDirection: 'column',
           }}
