@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-05  
-**Last activity:** 2026-02-05 - Completed plan 12-05: Mobile responsive polish
+**Last activity:** 2026-02-05 - Completed plan 12-04: Game log implementation
 
 ## Current Position
 
 Phase: 12 of 12 (Resilience & Polish)  
-Plan: 5 of 6 in current phase  
+Plan: 4 of 6 in current phase  
 Status: In progress  
-Last activity: 2026-02-05 - Completed plan 12-05 (Mobile responsive polish)
+Last activity: 2026-02-05 - Completed plan 12-04 (Game log implementation)
 
-Progress: ████████████████████████████████████████████████████████████████████████████████████████████████░░ (70/74 plans complete - 94.6%)
+Progress: ████████████████████████████████████████████████████████████████████████████████████████████████░░ (71/74 plans complete - 96.0%)
 
 ## Blockers/Concerns
 
@@ -137,9 +137,13 @@ Progress: ███████████████████████�
 | 12-05 | 60% board scale on mobile        | Allows full board visibility on small screens without horizontal scroll            |
 | 12-05 | Horizontal player list scroll    | More natural touch interaction for mobile than vertical stacking                   |
 | 11    | Auto-transition reveal           | VP reveal overlay auto-transitions to modal after 1.5 seconds                      |
+| 12-04 | Simple string-based log entries  | No timestamps or turn numbers - keeps implementation simple and focused            |
+| 12-04 | Notifications separate from log  | Toast notifications and log entries serve different purposes                       |
+| 12-04 | Handlers call addLogEntry direct | Each handler knows context and can format entries appropriately                    |
+| 12-04 | Right-side panel positioning     | Follows common chat/log UI patterns and doesn't block main gameplay                |
 
 ## Session Continuity
 
-Last session: 2026-02-05T12:27:15Z
-Stopped at: Completed plan 12-05 (Mobile responsive polish)
+Last session: 2026-02-05T12:31:34Z
+Stopped at: Completed plan 12-04 (Game log implementation)
 Resume file: None
