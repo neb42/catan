@@ -2,17 +2,17 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-02-04  
-**Last activity:** 2026-02-05 - Completed quick task 026: Refactor WebSocket handler into modular domain handlers
+**Last Updated:** 2026-02-05  
+**Last activity:** 2026-02-05 - Completed plan 12-03: Lobby ready-up system with countdown timer
 
 ## Current Position
 
-Phase: 11 of 12 (Victory) ✅ Complete  
-Plan: 6 of 6 in current phase  
-Status: Complete  
-Last activity: 2026-02-03 - Completed plan 11-06 (UAT fixes: block actions + modal reopen)
+Phase: 12 of 12 (Resilience & Polish)  
+Plan: 3 of 6 in current phase  
+Status: In progress  
+Last activity: 2026-02-05 - Completed plan 12-03 (Lobby ready-up system with countdown timer)
 
-Progress: ███████████████████████████████████████████████████████████████████████████████████████████ (Phase 11: Complete)
+Progress: ███████████████████████████████████████████████████████████████████████████████████████████░░░░░░ (68/74 plans complete - 91.9%)
 
 ## Blockers/Concerns
 
@@ -130,10 +130,12 @@ Progress: ███████████████████████�
 | 11    | GameLifecyclePhaseSchema naming  | Distinct from GamePhaseSchema (placement phases like setup_settlement1)            |
 | 11    | victoryPhase state machine       | 'none' -> 'reveal' -> 'modal' for victory animation flow                           |
 | 11    | victoryPhase dismissed state     | 'dismissed' tracks closed modal; enables "Show Results" reopen button              |
+| 12-03 | Countdown duration: 5 seconds    | User preference for anticipation without excessive wait                            |
+| 12-03 | Countdown signal: -1 cancels     | secondsRemaining: -1 signals frontend to hide countdown when player unreadies      |
 | 11    | Auto-transition reveal           | VP reveal overlay auto-transitions to modal after 1.5 seconds                      |
 
 ## Session Continuity
 
-Last session: 2026-02-05
-Stopped at: Completed quick task 026 (Refactor WebSocket handler into modular domain handlers)
+Last session: 2026-02-05T12:26:27Z
+Stopped at: Completed plan 12-03 (Lobby ready-up system with countdown timer)
 Resume file: None
