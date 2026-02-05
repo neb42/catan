@@ -208,6 +208,8 @@ export function handleJoinRoom(
             myDevCards,
             opponentDevCardCounts,
             deckRemaining: room.gameManager.getDeckRemaining(),
+            lastPlacedSettlementId:
+              room.gameManager.getLastPlacedSettlementId(),
           },
           message.roomId,
         );

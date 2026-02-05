@@ -45,8 +45,13 @@ export const handleGameStateSync: MessageHandler = (message, ctx) => {
   if (message.type !== 'game_state_sync') return;
 
   const gameStore = useGameStore.getState();
-  const { gameState, myDevCards, opponentDevCardCounts, deckRemaining } =
-    message;
+  const {
+    gameState,
+    myDevCards,
+    opponentDevCardCounts,
+    deckRemaining,
+    lastPlacedSettlementId,
+  } = message;
 
   // Sync player resources for all players
   for (const [playerId, resources] of Object.entries(
@@ -80,6 +85,9 @@ export const handleGameStateSync: MessageHandler = (message, ctx) => {
         round: gameState.placement.draftRound,
         turnNumber: gameState.placement.turnNumber,
       });
+
+      // Sync last placed settlement ID (critical for road placement validation)
+      gameStore.setLastPlacedSettlement(lastPlacedSettlementId);
     }
   }
 

@@ -575,6 +575,10 @@ export class GameManager {
     return this.gameState;
   }
 
+  getLastPlacedSettlementId(): string | null {
+    return this.lastPlacedSettlementId;
+  }
+
   // ============================================================================
   // BUILDING HELPERS
   // ============================================================================

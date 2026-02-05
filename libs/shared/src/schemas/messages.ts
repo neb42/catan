@@ -593,6 +593,8 @@ export const GameStateSyncMessageSchema = z.object({
   ),
   opponentDevCardCounts: z.record(z.string(), z.number()),
   deckRemaining: z.number(),
+  // Placement phase tracking
+  lastPlacedSettlementId: z.string().nullable(),
 });
 
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
