@@ -156,49 +156,64 @@ export function handleToggleReady(
     ready: player.ready,
   });
 
-  const readyToStart =
+  // Check if all players are ready
+  const playersArray = Array.from(room.players.values());
+  const allReady =
     room.players.size >= MIN_PLAYERS &&
     room.players.size <= MAX_PLAYERS &&
-    Array.from(room.players.values()).every((p) => p.ready);
+    playersArray.every((p) => p.ready);
 
-  if (readyToStart) {
+  if (!player.ready) {
+    // Someone unreadied - cancel countdown
+    roomManager.cancelCountdown(context.currentRoomId);
     roomManager.broadcastToRoom(context.currentRoomId, {
-      type: 'game_starting',
-      countdown: GAME_START_COUNTDOWN,
+      type: 'countdown_tick',
+      secondsRemaining: -1,
     });
-
-    setTimeout(() => {
-      const roomChecking = roomManager.getRoom(context.currentRoomId!);
-      if (!roomChecking || roomChecking.board) return;
-
-      const board = generateBoard();
-      roomManager.setBoard(context.currentRoomId!, board);
-
-      const playerIds = Array.from(roomChecking.players.keys());
-      const gameManager = new GameManager(board, playerIds);
-      roomManager.setGameManager(context.currentRoomId!, gameManager);
-
-      roomManager.broadcastToRoom(context.currentRoomId!, {
-        type: 'game_started',
-        board,
-      });
-
-      // Broadcast first turn info
-      const playerId = gameManager.getCurrentPlayerId();
-      const phase = gameManager.getPlacementPhase();
-      const placement = gameManager.getState().placement;
-
-      if (playerId && phase && placement) {
+  } else if (allReady && !room.board) {
+    // All players ready and game not started - start countdown
+    roomManager.startCountdown(
+      context.currentRoomId,
+      (secondsRemaining) => {
         roomManager.broadcastToRoom(context.currentRoomId!, {
-          type: 'placement_turn',
-          currentPlayerIndex: placement.currentPlayerIndex,
-          currentPlayerId: playerId,
-          phase,
-          round: placement.draftRound,
-          turnNumber: placement.turnNumber,
+          type: 'countdown_tick',
+          secondsRemaining,
         });
-      }
-    }, GAME_START_COUNTDOWN * 1000);
+      },
+      () => {
+        // Countdown complete - start game
+        const roomChecking = roomManager.getRoom(context.currentRoomId!);
+        if (!roomChecking || roomChecking.board) return;
+
+        const board = generateBoard();
+        roomManager.setBoard(context.currentRoomId!, board);
+
+        const playerIds = Array.from(roomChecking.players.keys());
+        const gameManager = new GameManager(board, playerIds);
+        roomManager.setGameManager(context.currentRoomId!, gameManager);
+
+        roomManager.broadcastToRoom(context.currentRoomId!, {
+          type: 'game_started',
+          board,
+        });
+
+        // Broadcast first turn info
+        const playerId = gameManager.getCurrentPlayerId();
+        const phase = gameManager.getPlacementPhase();
+        const placement = gameManager.getState().placement;
+
+        if (playerId && phase && placement) {
+          roomManager.broadcastToRoom(context.currentRoomId!, {
+            type: 'placement_turn',
+            currentPlayerIndex: placement.currentPlayerIndex,
+            currentPlayerId: playerId,
+            phase,
+            round: placement.draftRound,
+            turnNumber: placement.turnNumber,
+          });
+        }
+      },
+    );
   }
 
   roomManager.broadcastToRoom(context.currentRoomId, {

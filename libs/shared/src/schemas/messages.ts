@@ -72,6 +72,11 @@ export const GameStartingMessageSchema = z.object({
   countdown: z.number(),
 });
 
+export const CountdownTickMessageSchema = z.object({
+  type: z.literal('countdown_tick'),
+  secondsRemaining: z.number(),
+});
+
 export const GameStartedMessageSchema = z.object({
   type: z.literal('game_started'),
   board: BoardStateSchema,
@@ -506,6 +511,7 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   ColorChangedMessageSchema,
   ToggleReadyMessageSchema,
   GameStartingMessageSchema,
+  CountdownTickMessageSchema,
   GameStartedMessageSchema,
   RoomStateMessageSchema,
   ErrorMessageSchema,
@@ -592,6 +598,7 @@ export type ChangeColorMessage = z.infer<typeof ChangeColorMessageSchema>;
 export type ColorChangedMessage = z.infer<typeof ColorChangedMessageSchema>;
 export type ToggleReadyMessage = z.infer<typeof ToggleReadyMessageSchema>;
 export type GameStartingMessage = z.infer<typeof GameStartingMessageSchema>;
+export type CountdownTickMessage = z.infer<typeof CountdownTickMessageSchema>;
 export type GameStartedMessage = z.infer<typeof GameStartedMessageSchema>;
 export type RoomStateMessage = z.infer<typeof RoomStateMessageSchema>;
 export type ErrorMessage = z.infer<typeof ErrorMessageSchema>;

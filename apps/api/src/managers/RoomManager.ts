@@ -20,6 +20,7 @@ export type ManagedRoom = {
   disconnectTimer: NodeJS.Timeout | null;
   board: BoardState | null;
   gameManager: GameManager | null;
+  countdownTimer: NodeJS.Timeout | null;
 };
 
 export class RoomManager {
@@ -33,6 +34,7 @@ export class RoomManager {
       createdAt: new Date(),
       board: null,
       gameManager: null,
+      countdownTimer: null,
     };
 
     this.rooms.set(roomId, room);
@@ -146,5 +148,43 @@ export class RoomManager {
 
     const player = room.players.get(playerId);
     return player?.ws;
+  }
+
+  startCountdown(
+    roomId: string,
+    callback: (secondsRemaining: number) => void,
+    onComplete: () => void,
+  ): void {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    // Cancel existing countdown if any
+    this.cancelCountdown(roomId);
+
+    let secondsRemaining = 5;
+
+    // Broadcast initial countdown
+    callback(secondsRemaining);
+
+    room.countdownTimer = setInterval(() => {
+      secondsRemaining--;
+
+      if (secondsRemaining <= 0) {
+        this.cancelCountdown(roomId);
+        onComplete();
+      } else {
+        callback(secondsRemaining);
+      }
+    }, 1000);
+  }
+
+  cancelCountdown(roomId: string): void {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    if (room.countdownTimer) {
+      clearInterval(room.countdownTimer);
+      room.countdownTimer = null;
+    }
   }
 }
