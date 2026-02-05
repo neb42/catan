@@ -132,7 +132,7 @@ export function Game() {
             gridRowEnd: 3,
             gridColumn: 3,
             paddingLeft: 16,
-            paddingRight: 32,
+            paddingRight: 44,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',

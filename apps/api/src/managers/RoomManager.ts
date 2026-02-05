@@ -23,6 +23,7 @@ export type ManagedRoom = {
   countdownTimer: NodeJS.Timeout | null;
   isPaused: boolean;
   disconnectedPlayers: Map<string, ManagedPlayer>; // Keyed by nickname
+  playerOrder: string[]; // Player IDs in join order (preserved across disconnects)
 };
 
 export class RoomManager {
@@ -39,6 +40,7 @@ export class RoomManager {
       countdownTimer: null,
       isPaused: false,
       disconnectedPlayers: new Map(),
+      playerOrder: [], // Initialize empty player order
     };
 
     this.rooms.set(roomId, room);
@@ -56,7 +58,20 @@ export class RoomManager {
     if (disconnectedPlayer) {
       // Reconnection - restore player with same ID, new WebSocket
       disconnectedPlayer.ws = player.ws;
-      room.players.set(disconnectedPlayer.id, disconnectedPlayer);
+
+      // Rebuild players Map in original order to preserve player list ordering
+      const orderedPlayers = new Map<string, ManagedPlayer>();
+      for (const playerId of room.playerOrder) {
+        if (playerId === disconnectedPlayer.id) {
+          // Insert reconnecting player at their original position
+          orderedPlayers.set(disconnectedPlayer.id, disconnectedPlayer);
+        } else if (room.players.has(playerId)) {
+          // Keep existing connected players
+          orderedPlayers.set(playerId, room.players.get(playerId)!);
+        }
+        // Skip if player is still disconnected (will be added when they reconnect)
+      }
+      room.players = orderedPlayers;
       room.disconnectedPlayers.delete(player.nickname);
 
       // Resume game if this was the only disconnected player
@@ -84,6 +99,7 @@ export class RoomManager {
     }
 
     room.players.set(player.id, player);
+    room.playerOrder.push(player.id); // Track player join order
     return false; // Indicates new player
   }
 
@@ -92,6 +108,11 @@ export class RoomManager {
     if (!room) return;
 
     room.players.delete(playerId);
+    // Remove from playerOrder if permanently leaving (not just disconnecting)
+    const orderIndex = room.playerOrder.indexOf(playerId);
+    if (orderIndex !== -1) {
+      room.playerOrder.splice(orderIndex, 1);
+    }
 
     if (room.players.size === 0 && !room.disconnectTimer) {
       room.disconnectTimer = setTimeout(() => {
