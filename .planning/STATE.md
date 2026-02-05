@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-05  
-**Last activity:** 2026-02-05 - Completed plan 12-01: WebSocket resilience
+**Last activity:** 2026-02-05 - Completed plan 12-02: Client auto-reconnection
 
 ## Current Position
 
 Phase: 12 of 12 (Resilience & Polish)  
-Plan: 5 of 6 in current phase  
+Plan: 6 of 6 in current phase  
 Status: In progress  
-Last activity: 2026-02-05 - Completed plan 12-01 (WebSocket resilience)
+Last activity: 2026-02-05 - Completed plan 12-02 (Client auto-reconnection)
 
-Progress: ██████████████████████████████████████████████████████████████████████████████████████████████████░ (72/74 plans complete - 97.3%)
+Progress: ███████████████████████████████████████████████████████████████████████████████████████████████████░ (73/74 plans complete - 98.6%)
 
 ## Blockers/Concerns
 
@@ -145,9 +145,14 @@ Progress: ███████████████████████�
 | 12-01 | Nickname-based reconnection      | Map disconnectedPlayers by nickname to allow same identity restoration             |
 | 12-01 | No disconnect timeout            | Wait indefinitely for reconnection, room cleanup only when ALL players leave       |
 | 12-01 | Separate pause state             | isPaused boolean and disconnectedPlayers map for clean state machine transitions   |
+| 12-02 | 2-second reconnect delay         | Per user specification - balance awareness with automatic recovery                 |
+| 12-02 | localStorage namespaced keys     | Use catan_roomId and catan_nickname to avoid conflicts with other apps             |
+| 12-02 | Auto-fill not auto-reconnect     | Nickname auto-fills but user must click Join - prevents unwanted auto-join         |
+| 12-02 | Full-screen blocking overlay     | z-index 10000, rgba background - strong visual block during disconnect             |
+| 12-02 | Toast on reconnection            | Green notification, 3s auto-close - clear positive feedback                        |
 
 ## Session Continuity
 
-Last session: 2026-02-05T12:37:31Z
-Stopped at: Completed plan 12-01 (WebSocket resilience)
+Last session: 2026-02-05T12:41:47Z
+Stopped at: Completed plan 12-02 (Client auto-reconnection)
 Resume file: None
