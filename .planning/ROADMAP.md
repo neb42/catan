@@ -489,7 +489,8 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 **Goal:** Handle disconnects, finalize lobby, polish UX  
 **Duration:** 1 week  
-**Dependencies:** Phase 11
+**Dependencies:** Phase 11  
+**Plans:** 6 plans
 
 ### Requirements (10)
 
@@ -517,6 +518,15 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 3. **Lobby flow complete** — Join room, pick color, mark ready, countdown starts (3-4 players only), game begins
 4. **Game log provides transparency** — All actions logged with timestamps, scrollable, clear descriptions
 5. **Mobile playable** — Can complete full game on mobile device (touch targets adequate, layout responsive)
+
+### Plans
+
+- [ ] 12-01-PLAN.md — WebSocket resilience (heartbeat, pause, session restore)
+- [ ] 12-02-PLAN.md — Reconnection UX (auto-reconnect, disconnect overlay)
+- [ ] 12-03-PLAN.md — Lobby ready system (ready button, countdown, game start)
+- [ ] 12-04-PLAN.md — Game log (capture all actions, collapsible panel)
+- [ ] 12-05-PLAN.md — Mobile responsive polish (viewport, touch targets, layouts)
+- [ ] 12-06-PLAN.md — Integration verification
 
 ### Deliverables
 
