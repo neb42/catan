@@ -3,11 +3,11 @@ resource "google_cloud_run_v2_service" "api" {
   location = var.region
 
   template {
-    timeout = "3600s"  # 1 hour for full game sessions
+    timeout = "3600s" # 1 hour for full game sessions
 
     scaling {
-      min_instance_count = var.min_instances  # Scale to zero
-      max_instance_count = var.max_instances  # Single instance constraint
+      min_instance_count = var.min_instances # Scale to zero
+      max_instance_count = var.max_instances # Single instance constraint
     }
 
     max_instance_request_concurrency = var.max_concurrency
@@ -20,7 +20,7 @@ resource "google_cloud_run_v2_service" "api" {
           cpu    = var.cpu_limit
           memory = var.memory_limit
         }
-        cpu_idle = false  # Instance-based billing for WebSocket
+        cpu_idle = false # Instance-based billing for WebSocket
       }
 
       ports {
@@ -54,7 +54,7 @@ resource "google_cloud_run_v2_service" "api" {
       }
     }
 
-    session_affinity = true  # Best-effort WebSocket connection stickiness
+    session_affinity = true # Best-effort WebSocket connection stickiness
   }
 
   traffic {

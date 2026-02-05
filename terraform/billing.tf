@@ -18,7 +18,7 @@ resource "google_billing_budget" "cloud_run_budget" {
   budget_filter {
     # Target Cloud Run service specifically
     projects = ["projects/${var.project_id}"]
-    services = ["services/152E-C115-5142"]  # Cloud Run service code
+    services = ["services/152E-C115-5142"] # Cloud Run service code
 
     # Optional: Uncomment to filter by specific labels
     # labels = {
