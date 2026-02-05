@@ -78,47 +78,101 @@ export function handleJoinRoom(
     return;
   }
 
-  if (room.players.size >= MAX_PLAYERS) {
-    sendError(ws, 'Room is full');
-    return;
+  // Check if this is a reconnection attempt
+  const isReconnection = room.disconnectedPlayers.has(message.nickname);
+
+  if (!isReconnection) {
+    // New player validation
+    if (room.players.size >= MAX_PLAYERS) {
+      sendError(ws, 'Room is full');
+      return;
+    }
+
+    if (roomManager.isNicknameTaken(message.roomId, message.nickname)) {
+      sendError(ws, 'Nickname taken');
+      return;
+    }
+
+    const color = getAvailableColor(room);
+    if (!color) {
+      sendError(ws, 'Room is full');
+      return;
+    }
+
+    const player: ManagedPlayer = {
+      id: randomUUID(),
+      nickname: message.nickname,
+      color,
+      ready: false,
+      ws,
+    };
+
+    roomManager.addPlayer(message.roomId, player);
+    context.currentRoomId = message.roomId;
+    context.playerId = player.id;
+
+    roomManager.broadcastToRoom(
+      message.roomId,
+      {
+        type: 'player_joined',
+        player: serializePlayer(player),
+      },
+      player.id,
+    );
+
+    roomManager.broadcastToRoom(message.roomId, {
+      type: 'room_state',
+      room: serializeRoom(room),
+    });
+  } else {
+    // Reconnection flow - get the disconnected player info
+    const disconnectedPlayer = room.disconnectedPlayers.get(message.nickname);
+    if (!disconnectedPlayer) {
+      sendError(ws, 'Reconnection failed');
+      return;
+    }
+
+    const player: ManagedPlayer = {
+      id: disconnectedPlayer.id,
+      nickname: disconnectedPlayer.nickname,
+      color: disconnectedPlayer.color,
+      ready: disconnectedPlayer.ready,
+      ws,
+    };
+
+    const wasReconnection = roomManager.addPlayer(message.roomId, player);
+    if (!wasReconnection) {
+      sendError(ws, 'Reconnection failed');
+      return;
+    }
+
+    context.currentRoomId = message.roomId;
+    context.playerId = player.id;
+
+    // Send full game state to reconnecting player
+    sendMessage(
+      ws,
+      {
+        type: 'room_state',
+        room: serializeRoom(room),
+      },
+      message.roomId,
+    );
+
+    // If game has started, send board state too
+    if (room.board) {
+      sendMessage(
+        ws,
+        {
+          type: 'game_started',
+          board: room.board,
+        },
+        message.roomId,
+      );
+    }
+
+    // resumeGame message already broadcast by RoomManager.addPlayer
   }
-
-  if (roomManager.isNicknameTaken(message.roomId, message.nickname)) {
-    sendError(ws, 'Nickname taken');
-    return;
-  }
-
-  const color = getAvailableColor(room);
-  if (!color) {
-    sendError(ws, 'Room is full');
-    return;
-  }
-
-  const player: ManagedPlayer = {
-    id: randomUUID(),
-    nickname: message.nickname,
-    color,
-    ready: false,
-    ws,
-  };
-
-  roomManager.addPlayer(message.roomId, player);
-  context.currentRoomId = message.roomId;
-  context.playerId = player.id;
-
-  roomManager.broadcastToRoom(
-    message.roomId,
-    {
-      type: 'player_joined',
-      player: serializePlayer(player),
-    },
-    player.id,
-  );
-
-  roomManager.broadcastToRoom(message.roomId, {
-    type: 'room_state',
-    room: serializeRoom(room),
-  });
 }
 
 export function handleToggleReady(
