@@ -3,14 +3,14 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-05  
-**Last activity:** 2026-02-05 - Completed plan 12-02: Client auto-reconnection
+**Last activity:** 2026-02-05 - Completed quick task 027: Apply parchment aesthetic to GameLog
 
 ## Current Position
 
 Phase: 12 of 12 (Resilience & Polish)  
 Plan: 6 of 6 in current phase  
 Status: In progress  
-Last activity: 2026-02-05 - Completed plan 12-02 (Client auto-reconnection)
+Last activity: 2026-02-05 - Completed quick task 027 (Apply parchment aesthetic to GameLog)
 
 Progress: ███████████████████████████████████████████████████████████████████████████████████████████████████░ (73/74 plans complete - 98.6%)
 
@@ -46,6 +46,7 @@ Progress: ███████████████████████�
 | 024 | Simplify the bank trade UI                                             | 2026-02-04 | 6190cf9 | [024-simplify-the-bank-trade-ui](./quick/024-simplify-the-bank-trade-ui/)                                 |
 | 025 | Add land-colored background with rounded corners behind hexagons       | 2026-02-04 | 865606d | [025-add-a-land-coloured-background-to-the-he](./quick/025-add-a-land-coloured-background-to-the-he/)     |
 | 026 | Refactor WebSocket handler into modular domain handlers                | 2026-02-05 | a3b2bc9 | [026-refactor-handlewebsocketconnection-into-](./quick/026-refactor-handlewebsocketconnection-into-/)     |
+| 027 | Apply parchment aesthetic to GameLog component                         | 2026-02-05 | fbabeb5 | [027-apply-the-style-of-the-gameplayerlist-co](./quick/027-apply-the-style-of-the-gameplayerlist-co/)     |
 
 ## Decisions
 
@@ -150,9 +151,11 @@ Progress: ███████████████████████�
 | 12-02 | Auto-fill not auto-reconnect     | Nickname auto-fills but user must click Join - prevents unwanted auto-join         |
 | 12-02 | Full-screen blocking overlay     | z-index 10000, rgba background - strong visual block during disconnect             |
 | 12-02 | Toast on reconnection            | Green notification, 3s auto-close - clear positive feedback                        |
+| 027   | Left-side border radius only     | GameLog at right edge of screen needs rounded corners only on left side            |
+| 027   | Transparent entry backgrounds    | Cleaner parchment look with subtle borders + hover instead of alternating rows     |
 
 ## Session Continuity
 
-Last session: 2026-02-05T12:41:47Z
-Stopped at: Completed plan 12-02 (Client auto-reconnection)
+Last session: 2026-02-05T08:49:32Z
+Stopped at: Completed quick task 027 (Apply parchment aesthetic to GameLog)
 Resume file: None
