@@ -65,9 +65,8 @@ export function Game() {
       style={{
         display: 'grid',
         gridTemplateRows: '1fr minmax(200px, auto)',
-        gridTemplateColumns:
-          '250px 1fr 250px',
-          // 'minmax(250px, 1fr) minmax(600px, 2fr) minmax(250px, 1fr)',
+        gridTemplateColumns: '250px 1fr 250px',
+        // 'minmax(250px, 1fr) minmax(600px, 2fr) minmax(250px, 1fr)',
         width: '100%',
         height: '100vh',
         backgroundColor: '#F9F4EF', // Warm beige from Phase 1.1
@@ -202,7 +201,7 @@ export function Game() {
       <MonopolyModal />
 
       {/* Game log - shows action history */}
-      {/* <GameLog /> */}
+      <GameLog />
 
       {/* Debug panel - development only */}
       <DebugPanel />

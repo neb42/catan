@@ -1,79 +1,101 @@
-import { useState, useEffect } from 'react';
-import {
-  Paper,
-  Text,
-  Stack,
-  Group,
-  ActionIcon,
-  ScrollArea,
-  Badge,
-} from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+import { useState } from 'react';
+import { Button, Paper, ScrollArea, Title } from '@mantine/core';
 import { useGameLog } from '@web/stores/gameStore';
 
+/**
+ * GameLog component displays a collapsible side panel with game log entries.
+ * - Positioned on the right side of the screen
+ * - 300px wide when open, 40px when collapsed
+ * - Shows log entries oldest-first (chat-style, scroll down for latest)
+ * - Entries are simple strings with no timestamps or turn numbers
+ */
 export function GameLog() {
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  const [expanded, setExpanded] = useState(false);
-  const entries = useGameLog();
-
-  // Default to closed on mobile
-  useEffect(() => {
-    if (isMobile) {
-      setExpanded(false);
-    }
-  }, [isMobile]);
-
-  const recentEntries = entries.slice(-50).reverse(); // Most recent first
+  const [isOpen, setIsOpen] = useState(true);
+  const logEntries = useGameLog();
 
   return (
     <Paper
-      withBorder
-      p="xs"
+      shadow="md"
       style={{
         position: 'fixed',
-        bottom: 60, // Above notifications
-        right: 16,
-        width: 300,
-        maxHeight: expanded ? 400 : 48,
-        overflow: 'hidden',
-        transition: 'max-height 0.2s ease',
+        top: '80px', // Below header
+        right: 0,
+        bottom: 0,
+        width: isOpen ? '300px' : '40px',
+        transition: 'width 0.3s ease',
+        display: 'flex',
+        flexDirection: 'column',
         zIndex: 100,
+        borderRadius: 0,
       }}
     >
-      <Group justify="space-between" mb={expanded ? 'xs' : 0}>
-        <Group gap="xs">
-          <Text size="sm" fw={500}>
+      {/* Header with toggle button */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '12px',
+          borderBottom: isOpen ? '1px solid #dee2e6' : 'none',
+          minHeight: '48px',
+        }}
+      >
+        {isOpen && (
+          <Title order={4} style={{ margin: 0 }}>
             Game Log
-          </Text>
-          <Badge size="xs" variant="light">
-            {entries.length}
-          </Badge>
-        </Group>
-        <ActionIcon
+          </Title>
+        )}
+        <Button
           variant="subtle"
-          size="lg"
-          onClick={() => setExpanded(!expanded)}
-          aria-label={expanded ? 'Collapse game log' : 'Expand game log'}
-          style={{ minWidth: '44px', minHeight: '44px' }}
+          size="xs"
+          onClick={() => setIsOpen(!isOpen)}
+          title={isOpen ? 'Collapse log' : 'Expand log'}
+          style={{ minWidth: '24px', padding: '4px 8px', fontSize: '18px' }}
         >
-          <Text size="xs">{expanded ? '▼' : '▲'}</Text>
-        </ActionIcon>
-      </Group>
+          {isOpen ? '›' : '‹'}
+        </Button>
+      </div>
 
-      {expanded && (
-        <ScrollArea h={340} offsetScrollbars>
-          <Stack gap="xs">
-            {recentEntries.length === 0 && (
-              <Text size="xs" c="dimmed" ta="center">
-                No actions yet
-              </Text>
+      {/* Log entries (only visible when open) */}
+      {isOpen && (
+        <ScrollArea
+          style={{ flex: 1 }}
+          type="auto"
+          offsetScrollbars
+          scrollbarSize={8}
+        >
+          <div style={{ padding: '12px' }}>
+            {logEntries.length === 0 ? (
+              <div
+                style={{
+                  color: '#868e96',
+                  fontSize: '14px',
+                  fontStyle: 'italic',
+                  textAlign: 'center',
+                  marginTop: '20px',
+                }}
+              >
+                No events yet
+              </div>
+            ) : (
+              logEntries.map((entry, index) => (
+                <div
+                  key={index}
+                  style={{
+                    padding: '6px 8px',
+                    marginBottom: '4px',
+                    backgroundColor:
+                      index % 2 === 0 ? '#f8f9fa' : 'transparent',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    lineHeight: '1.4',
+                  }}
+                >
+                  {entry}
+                </div>
+              ))
             )}
-            {recentEntries.map((entry, index) => (
-              <Text key={index} size="xs" style={{ flex: 1 }}>
-                {entry}
-              </Text>
-            ))}
-          </Stack>
+          </div>
         </ScrollArea>
       )}
     </Paper>
