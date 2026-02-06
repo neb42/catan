@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -42,7 +42,7 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
   const [room, setRoom] = useState<Room | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [currentPlayerId, setCurrentPlayerId] = useState<string | null>(null);
-  const [pendingNickname, setPendingNickname] = useState<string | null>(null);
+  const pendingNicknameRef = useRef<string | null>(null);
   const [currentView, setCurrentView] = useState<View>('create');
   const [createError, setCreateError] = useState<string | null>(null);
   const [joinError, setJoinError] = useState<string | null>(null);
@@ -70,7 +70,13 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
         setRoom,
         setRoomId,
         setCurrentPlayerId,
-        setPendingNickname,
+        setPendingNickname: (value: React.SetStateAction<string | null>) => {
+          if (typeof value === 'function') {
+            pendingNicknameRef.current = value(pendingNicknameRef.current);
+          } else {
+            pendingNicknameRef.current = value;
+          }
+        },
         setCurrentView,
         setCreateError,
         setJoinError,
@@ -80,7 +86,7 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
         setAttemptedRoomId,
         navigate,
         currentPlayerId,
-        pendingNickname,
+        pendingNickname: pendingNicknameRef.current,
         lastAction,
         room,
       };
@@ -90,7 +96,6 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
       setRoom,
       setRoomId,
       setCurrentPlayerId,
-      setPendingNickname,
       setCurrentView,
       setCreateError,
       setJoinError,
@@ -100,7 +105,6 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
       setAttemptedRoomId,
       navigate,
       currentPlayerId,
-      pendingNickname,
       lastAction,
       room,
     ],
@@ -120,7 +124,7 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
     setCreateError(null);
     setJoinError(null);
     const nickname = getNickname();
-    setPendingNickname(nickname);
+    pendingNicknameRef.current = nickname;
     setCurrentView('lobby');
     sendMessage({
       type: 'create_room',
@@ -135,7 +139,7 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
       setCreateError(null);
       setJoinError(null);
       const nickname = getNickname();
-      setPendingNickname(nickname);
+      pendingNicknameRef.current = nickname;
       setCurrentView('lobby');
       sendMessage({
         type: 'join_room',
