@@ -19,6 +19,9 @@ export const handleRoomCreated: MessageHandler = (message, ctx) => {
   // Persist to localStorage for reconnection
   localStorage.setItem('catan_roomId', message.roomId);
   localStorage.setItem('catan_nickname', message.player.nickname);
+
+  // Navigate to room URL
+  ctx.navigate(`/room/${message.roomId}`);
 };
 
 export const handleRoomState: MessageHandler = (message, ctx) => {

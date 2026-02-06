@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   MIN_PLAYERS,
@@ -37,6 +38,7 @@ interface LobbyProps {
 }
 
 export default function Lobby({ roomIdFromUrl }: LobbyProps) {
+  const navigate = useNavigate();
   const [room, setRoom] = useState<Room | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [currentPlayerId, setCurrentPlayerId] = useState<string | null>(null);
@@ -74,6 +76,7 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
         setGeneralError,
         setCountdown,
         setLastAction,
+        navigate,
         currentPlayerId,
         pendingNickname,
         lastAction,
@@ -92,6 +95,7 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
       setGeneralError,
       setCountdown,
       setLastAction,
+      navigate,
       currentPlayerId,
       pendingNickname,
       lastAction,

@@ -15,6 +15,9 @@ export interface HandlerContext {
   setCountdown: React.Dispatch<React.SetStateAction<number | null>>;
   setLastAction: React.Dispatch<React.SetStateAction<'create' | 'join' | null>>;
 
+  // Navigation
+  navigate: (path: string) => void;
+
   // Current state values
   currentPlayerId: string | null;
   pendingNickname: string | null;
