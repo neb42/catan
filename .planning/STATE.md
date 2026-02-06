@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-06  
-**Last activity:** 2026-02-06 - Completed quick task 031: Change nickname field to be set while in lobby
+**Last activity:** 2026-02-06 - Completed quick task 032: Remove nickname entry from landing page
 
 ## Current Position
 
@@ -54,6 +54,7 @@ Progress: ███████████████████████�
 | 028 | Persist player's last used color to localStorage                       | 2026-02-05 | 545b198 | [028-persist-a-players-last-used-color-to-loc](./quick/028-persist-a-players-last-used-color-to-loc/)     |
 | 029 | Update terraform to use Cloud Build connected to repo                  | 2026-02-06 | 35193d2 | [029-update-terraform-to-use-cloud-build-con](./quick/029-update-terraform-to-use-cloud-build-con/)       |
 | 031 | Change nickname field to be set while in lobby                         | 2026-02-06 | 86b4d8f | [031-change-nickname-field-to-be-set-while-in](./quick/031-change-nickname-field-to-be-set-while-in/)     |
+| 032 | Remove nickname entry from landing page                                | 2026-02-06 | d19aefd | [032-remove-nickname-entry-from-landing-page-](./quick/032-remove-nickname-entry-from-landing-page-/)     |
 
 ## Decisions
 
@@ -168,6 +169,6 @@ Progress: ███████████████████████�
 
 ## Session Continuity
 
-Last session: 2026-02-06T13:40:00Z
-Stopped at: Completed quick task 031
+Last session: 2026-02-06T14:00:00Z
+Stopped at: Completed quick task 032
 Resume file: None
