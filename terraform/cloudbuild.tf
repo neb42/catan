@@ -62,7 +62,7 @@ resource "google_cloudbuildv2_repository" "catan" {
 resource "google_cloudbuild_trigger" "deploy" {
   name            = "deploy-${var.service_name}"
   location        = var.region
-  service_account = "projects/${var.project_id}/serviceAccounts/${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  service_account = "projects/${var.project_id}/serviceAccounts/${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.catan.id
@@ -83,25 +83,25 @@ resource "google_cloudbuild_trigger" "deploy" {
   depends_on = [google_project_service.cloudbuild]
 }
 
-# Grant Cloud Build service account permission to deploy to Cloud Run
+# Grant default compute service account permission to deploy to Cloud Run
 resource "google_project_iam_member" "cloudbuild_run_admin" {
   project = var.project_id
   role    = "roles/run.admin"
-  member  = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  member  = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
-# Grant Cloud Build service account permission to act as the compute service account
+# Grant default compute service account permission to act as itself
 resource "google_project_iam_member" "cloudbuild_service_account_user" {
   project = var.project_id
   role    = "roles/iam.serviceAccountUser"
-  member  = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  member  = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
-# Grant Cloud Build service account permission to push to Artifact Registry
+# Grant default compute service account permission to push to Artifact Registry
 resource "google_project_iam_member" "cloudbuild_ar_writer" {
   project = var.project_id
   role    = "roles/artifactregistry.writer"
-  member  = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  member  = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 
 # Data source to get project number for service account references
