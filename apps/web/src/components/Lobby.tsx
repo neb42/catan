@@ -32,7 +32,11 @@ type View = 'create' | 'join' | 'lobby';
 
 type PendingAction = 'create' | 'join' | null;
 
-export default function Lobby() {
+interface LobbyProps {
+  roomIdFromUrl?: string;
+}
+
+export default function Lobby({ roomIdFromUrl }: LobbyProps) {
   const [room, setRoom] = useState<Room | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [currentPlayerId, setCurrentPlayerId] = useState<string | null>(null);
@@ -43,21 +47,15 @@ export default function Lobby() {
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [lastAction, setLastAction] = useState<PendingAction>(null);
-  const [showJoinForm, setShowJoinForm] = useState<boolean>(false);
   const [preferredColor, setPreferredColor] = useState<Player['color'] | null>(
     null,
   );
 
-  // Load saved room ID and color from localStorage on mount
+  // Load saved color from localStorage on mount
   useEffect(() => {
-    const savedRoomId = localStorage.getItem('catan_roomId');
     const savedColor = localStorage.getItem('catan_color');
     if (savedColor && PLAYER_COLORS.includes(savedColor as Player['color'])) {
       setPreferredColor(savedColor as Player['color']);
-    }
-    if (savedRoomId) {
-      setRoomId(savedRoomId);
-      setShowJoinForm(true);
     }
   }, []);
 
@@ -141,6 +139,13 @@ export default function Lobby() {
     },
     [preferredColor, sendMessage],
   );
+
+  // Handle URL-based room joining
+  useEffect(() => {
+    if (roomIdFromUrl && isConnected && !room && !roomId) {
+      handleJoinRoom(roomIdFromUrl);
+    }
+  }, [roomIdFromUrl, isConnected, room, roomId, handleJoinRoom]);
 
   const handleColorChange = useCallback(
     (color: Player['color']) => {

@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card, Stack, Text, TextInput, Title } from '@mantine/core';
 
 type LandingFormProps = {
@@ -16,6 +17,7 @@ export default function LandingForm({
   onJoin,
   error,
 }: LandingFormProps) {
+  const navigate = useNavigate();
   const [showJoinForm, setShowJoinForm] = useState(false);
   const [roomId, setRoomId] = useState('');
 
@@ -29,7 +31,7 @@ export default function LandingForm({
   const handleJoin = (e: FormEvent) => {
     e.preventDefault();
     if (!isRoomIdValid) return;
-    onJoin(roomId.toUpperCase());
+    navigate(`/room/${roomId.toUpperCase()}`);
   };
 
   const handleShowJoin = () => {
