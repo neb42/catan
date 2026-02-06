@@ -15,18 +15,19 @@ const roomIdSchema = z
   .length(ROOM_ID_LENGTH)
   .regex(/^[0-9A-Z]{6}$/);
 const nicknameSchema = z.string().trim().min(2).max(30);
+const initialNicknameSchema = z.string().trim().max(30); // Allow empty on create/join
 const playerIdSchema = z.string();
 
 export const JoinRoomMessageSchema = z.object({
   type: z.literal('join_room'),
   roomId: roomIdSchema,
-  nickname: nicknameSchema,
+  nickname: initialNicknameSchema,
   preferredColor: z.enum(PLAYER_COLORS).optional(),
 });
 
 export const CreateRoomMessageSchema = z.object({
   type: z.literal('create_room'),
-  nickname: nicknameSchema,
+  nickname: initialNicknameSchema,
   preferredColor: z.enum(PLAYER_COLORS).optional(),
 });
 
