@@ -80,6 +80,7 @@ export function LobbyPlayerList({
         const isSelf = player.id === currentPlayerId;
         const initials = player.nickname.slice(0, 2).toUpperCase();
         const playerColorHex = PLAYER_COLOR_HEX[player.color] || player.color;
+        const selectedColors = players.map((p) => p.color);
 
         return (
           <motion.div
@@ -208,15 +209,16 @@ export function LobbyPlayerList({
                         size={32}
                         radius="xl"
                         style={{
-                          cursor: 'pointer',
+                          cursor: selectedColors.includes(color) ? 'not-allowed' : 'pointer',
                           border:
                             player.color === color
                               ? '3px solid var(--color-text)'
                               : '2px solid white',
                           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                           transition: 'transform 0.2s',
+                          opacity: selectedColors.includes(color) && player.color !== color ? 0.5 : 1,
                         }}
-                        onClick={() => onColorChange(color)}
+                        onClick={() => selectedColors.includes(color) ? undefined : onColorChange(color)}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.transform = 'scale(1.2)';
                         }}
