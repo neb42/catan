@@ -111,6 +111,9 @@ export function handleWebSocketConnection(
       case 'change_color':
         LobbyHandlers.handleChangeColor(ws, message, roomManager, context);
         break;
+      case 'change_nickname':
+        LobbyHandlers.handleChangeNickname(ws, message, roomManager, context);
+        break;
 
       // Placement
       case 'place_settlement':
