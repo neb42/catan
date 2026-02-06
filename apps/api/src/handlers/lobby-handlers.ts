@@ -102,9 +102,16 @@ export function handleJoinRoom(
       return;
     }
 
-    if (roomManager.isNicknameTaken(message.roomId, message.nickname)) {
-      sendError(ws, 'Nickname taken');
-      return;
+    // Auto-generate unique nickname if duplicate detected
+    let uniqueNickname = message.nickname;
+    if (roomManager.isNicknameTaken(message.roomId, uniqueNickname)) {
+      let counter = 2;
+      let attempt = `${uniqueNickname} ${counter}`;
+      while (roomManager.isNicknameTaken(message.roomId, attempt)) {
+        counter++;
+        attempt = `${uniqueNickname} ${counter}`;
+      }
+      uniqueNickname = attempt;
     }
 
     // Check if preferred color is available
@@ -127,7 +134,7 @@ export function handleJoinRoom(
 
     const player: ManagedPlayer = {
       id: randomUUID(),
-      nickname: message.nickname,
+      nickname: uniqueNickname,
       color,
       ready: false,
       ws,
