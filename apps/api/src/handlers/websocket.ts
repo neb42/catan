@@ -78,6 +78,14 @@ export function handleWebSocketConnection(
 
     const result = WebSocketMessageSchema.safeParse(parsed);
     if (!result.success) {
+      console.error(
+        '[WebSocket] Message validation failed:',
+        result.error.format(),
+      );
+      console.error(
+        '[WebSocket] Received message:',
+        JSON.stringify(parsed, null, 2),
+      );
       sendError(ws, 'Invalid room ID');
       return;
     }
