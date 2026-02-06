@@ -10,6 +10,12 @@ export default defineConfig(() => ({
   server: {
     port: 4200,
     host: 'localhost',
+    proxy: {
+      '/ws': {
+        target: 'ws://localhost:3333',
+        ws: true,
+      },
+    },
   },
   preview: {
     port: 4200,

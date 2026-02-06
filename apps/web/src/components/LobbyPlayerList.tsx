@@ -7,14 +7,17 @@ import {
   Group,
   Stack,
   Text,
+  TextInput,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { motion } from 'motion/react';
+import { useState } from 'react';
 
 type LobbyPlayerListProps = {
   players: Player[];
   currentPlayerId: string | null;
   onColorChange: (color: Player['color']) => void;
+  onNicknameChange: (nickname: string) => void;
   onReadyToggle: () => void;
 };
 
@@ -22,9 +25,13 @@ export function LobbyPlayerList({
   players,
   currentPlayerId,
   onColorChange,
+  onNicknameChange,
   onReadyToggle,
 }: LobbyPlayerListProps) {
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const [editingNickname, setEditingNickname] = useState<{
+    [playerId: string]: string;
+  }>({});
 
   // Create 4 slots (max players)
   const slots = Array.from({ length: 4 }, (_, index) => {
@@ -73,6 +80,7 @@ export function LobbyPlayerList({
         const isSelf = player.id === currentPlayerId;
         const initials = player.nickname.slice(0, 2).toUpperCase();
         const playerColorHex = PLAYER_COLOR_HEX[player.color] || player.color;
+        const selectedColors = players.map((p) => p.color);
 
         return (
           <motion.div
@@ -114,14 +122,61 @@ export function LobbyPlayerList({
                   {initials}
                 </Avatar>
 
-                {/* Player name */}
-                <Text
-                  size="lg"
-                  fw={700}
-                  style={{ fontFamily: 'Fraunces, serif' }}
-                >
-                  {player.nickname}
-                </Text>
+                {/* Player name - editable for self */}
+                {isSelf ? (
+                  <TextInput
+                    value={
+                      editingNickname[player.id] !== undefined
+                        ? editingNickname[player.id]
+                        : player.nickname
+                    }
+                    onChange={(e) =>
+                      setEditingNickname({
+                        ...editingNickname,
+                        [player.id]: e.currentTarget.value,
+                      })
+                    }
+                    onBlur={() => {
+                      const newNickname =
+                        editingNickname[player.id] ?? player.nickname;
+                      if (newNickname !== player.nickname) {
+                        onNicknameChange(newNickname);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.currentTarget.blur();
+                      }
+                    }}
+                    size="lg"
+                    styles={{
+                      input: {
+                        fontFamily: 'Fraunces, serif',
+                        fontWeight: 700,
+                        textAlign: 'center',
+                        borderColor: playerColorHex,
+                        borderWidth: '2px',
+                        padding: '0.25rem',
+                        background: 'transparent',
+                        transition: 'border-color 0.2s',
+                        '&:hover': {
+                          borderBottomColor: '#D1D5DB',
+                        },
+                        '&:focus': {
+                          borderBottomColor: 'var(--color-secondary)',
+                        },
+                      },
+                    }}
+                  />
+                ) : (
+                  <Text
+                    size="lg"
+                    fw={700}
+                    style={{ fontFamily: 'Fraunces, serif' }}
+                  >
+                    {player.nickname}
+                  </Text>
+                )}
 
                 {/* Ready status */}
                 <Badge
@@ -153,15 +208,16 @@ export function LobbyPlayerList({
                         size={32}
                         radius="xl"
                         style={{
-                          cursor: 'pointer',
+                          cursor: selectedColors.includes(color) ? 'not-allowed' : 'pointer',
                           border:
                             player.color === color
                               ? '3px solid var(--color-text)'
                               : '2px solid white',
                           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                           transition: 'transform 0.2s',
+                          opacity: selectedColors.includes(color) && player.color !== color ? 0.5 : 1,
                         }}
-                        onClick={() => onColorChange(color)}
+                        onClick={() => selectedColors.includes(color) ? undefined : onColorChange(color)}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.transform = 'scale(1.2)';
                         }}

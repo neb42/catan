@@ -19,6 +19,12 @@ export const handleRoomCreated: MessageHandler = (message, ctx) => {
   // Persist to localStorage for reconnection
   localStorage.setItem('catan_roomId', message.roomId);
   localStorage.setItem('catan_nickname', message.player.nickname);
+
+  // Navigate to room URL
+  ctx.navigate(`/room/${message.roomId}`);
+
+  // Prevent URL join useEffect from triggering after room creation
+  ctx.setAttemptedRoomId(message.roomId);
 };
 
 export const handleRoomState: MessageHandler = (message, ctx) => {
@@ -131,4 +137,28 @@ export const handleColorChanged: MessageHandler = (message, ctx) => {
     useGameStore.getState().setRoom(updatedRoom);
     return updatedRoom;
   });
+};
+
+export const handleNicknameChanged: MessageHandler = (message, ctx) => {
+  if (message.type !== 'nickname_changed') return;
+
+  ctx.setRoom((previous) => {
+    if (!previous) return previous;
+    const updatedPlayers = previous.players.map((player) =>
+      player.id === message.playerId
+        ? { ...player, nickname: message.nickname }
+        : player,
+    );
+    const updatedRoom = {
+      ...previous,
+      players: updatedPlayers,
+    } as Room;
+    useGameStore.getState().setRoom(updatedRoom);
+    return updatedRoom;
+  });
+
+  // Update localStorage if it's the current player
+  if (message.playerId === ctx.currentPlayerId) {
+    localStorage.setItem('catan_nickname', message.nickname);
+  }
 };

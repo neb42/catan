@@ -15,18 +15,19 @@ const roomIdSchema = z
   .length(ROOM_ID_LENGTH)
   .regex(/^[0-9A-Z]{6}$/);
 const nicknameSchema = z.string().trim().min(2).max(30);
+const initialNicknameSchema = z.string().trim().max(30); // Allow empty on create/join
 const playerIdSchema = z.string();
 
 export const JoinRoomMessageSchema = z.object({
   type: z.literal('join_room'),
   roomId: roomIdSchema,
-  nickname: nicknameSchema,
+  nickname: initialNicknameSchema,
   preferredColor: z.enum(PLAYER_COLORS).optional(),
 });
 
 export const CreateRoomMessageSchema = z.object({
   type: z.literal('create_room'),
-  nickname: nicknameSchema,
+  nickname: initialNicknameSchema,
   preferredColor: z.enum(PLAYER_COLORS).optional(),
 });
 
@@ -62,6 +63,18 @@ export const ColorChangedMessageSchema = z.object({
   type: z.literal('color_changed'),
   playerId: playerIdSchema,
   color: z.string(),
+});
+
+export const ChangeNicknameMessageSchema = z.object({
+  type: z.literal('change_nickname'),
+  playerId: playerIdSchema,
+  nickname: nicknameSchema,
+});
+
+export const NicknameChangedMessageSchema = z.object({
+  type: z.literal('nickname_changed'),
+  playerId: playerIdSchema,
+  nickname: z.string(),
 });
 
 export const ToggleReadyMessageSchema = z.object({
@@ -608,6 +621,8 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   PlayerReadyMessageSchema,
   ChangeColorMessageSchema,
   ColorChangedMessageSchema,
+  ChangeNicknameMessageSchema,
+  NicknameChangedMessageSchema,
   ToggleReadyMessageSchema,
   GameStartingMessageSchema,
   CountdownTickMessageSchema,
@@ -699,6 +714,10 @@ export type PlayerLeftMessage = z.infer<typeof PlayerLeftMessageSchema>;
 export type PlayerReadyMessage = z.infer<typeof PlayerReadyMessageSchema>;
 export type ChangeColorMessage = z.infer<typeof ChangeColorMessageSchema>;
 export type ColorChangedMessage = z.infer<typeof ColorChangedMessageSchema>;
+export type ChangeNicknameMessage = z.infer<typeof ChangeNicknameMessageSchema>;
+export type NicknameChangedMessage = z.infer<
+  typeof NicknameChangedMessageSchema
+>;
 export type ToggleReadyMessage = z.infer<typeof ToggleReadyMessageSchema>;
 export type GameStartingMessage = z.infer<typeof GameStartingMessageSchema>;
 export type CountdownTickMessage = z.infer<typeof CountdownTickMessageSchema>;

@@ -1,8 +1,10 @@
+import { useParams } from 'react-router-dom';
 import { Game } from '../components/Game';
 import Lobby from '../components/Lobby';
 import { useGameStore } from '../stores/gameStore';
 
 export function App() {
+  const { roomId } = useParams<{ roomId?: string }>();
   const gameStarted = useGameStore((state) => state.gameStarted);
 
   return (
@@ -12,7 +14,7 @@ export function App() {
       {/* <div className="hex-decoration hex-2" /> */}
 
       <div style={{ display: gameStarted ? 'none' : 'block' }}>
-        <Lobby />
+        <Lobby roomIdFromUrl={roomId} />
       </div>
 
       {gameStarted && <Game />}

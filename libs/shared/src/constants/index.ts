@@ -1,7 +1,7 @@
 export const PLAYER_COLORS = [
   'red',
   'blue',
-  'white',
+  'black',
   'orange',
   'green',
   'yellow',
@@ -11,7 +11,7 @@ export const PLAYER_COLORS = [
 export const PLAYER_COLOR_HEX: Record<string, string> = {
   red: '#E53935',
   blue: '#1E88E5',
-  white: '#F5F5F5',
+  black: '#000000',
   orange: '#FB8C00',
   green: '#43A047',
   yellow: '#FDD835',

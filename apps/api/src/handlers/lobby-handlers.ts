@@ -3,6 +3,7 @@ import { WebSocket } from 'ws';
 
 import {
   ChangeColorMessage,
+  ChangeNicknameMessage,
   CreateRoomMessage,
   JoinRoomMessage,
   MAX_PLAYERS,
@@ -101,9 +102,16 @@ export function handleJoinRoom(
       return;
     }
 
-    if (roomManager.isNicknameTaken(message.roomId, message.nickname)) {
-      sendError(ws, 'Nickname taken');
-      return;
+    // Auto-generate unique nickname if duplicate detected
+    let uniqueNickname = message.nickname;
+    if (roomManager.isNicknameTaken(message.roomId, uniqueNickname)) {
+      let counter = 2;
+      let attempt = `${uniqueNickname} ${counter}`;
+      while (roomManager.isNicknameTaken(message.roomId, attempt)) {
+        counter++;
+        attempt = `${uniqueNickname} ${counter}`;
+      }
+      uniqueNickname = attempt;
     }
 
     // Check if preferred color is available
@@ -126,7 +134,7 @@ export function handleJoinRoom(
 
     const player: ManagedPlayer = {
       id: randomUUID(),
-      nickname: message.nickname,
+      nickname: uniqueNickname,
       color,
       ready: false,
       ws,
@@ -388,6 +396,57 @@ export function handleChangeColor(
     type: 'color_changed',
     playerId: player.id,
     color: player.color,
+  });
+
+  roomManager.broadcastToRoom(context.currentRoomId, {
+    type: 'room_state',
+    room: serializeRoom(room),
+  });
+}
+
+export function handleChangeNickname(
+  ws: WebSocket,
+  message: ChangeNicknameMessage,
+  roomManager: RoomManager,
+  context: { currentRoomId: string | null; playerId: string | null },
+): void {
+  if (
+    !context.currentRoomId ||
+    !context.playerId ||
+    message.playerId !== context.playerId
+  ) {
+    sendError(ws, 'Room not found');
+    return;
+  }
+
+  const room = roomManager.getRoom(context.currentRoomId);
+  if (!room) {
+    sendError(ws, 'Room not found');
+    return;
+  }
+
+  // Check if nickname is already taken by another player
+  const nicknameTaken = Array.from(room.players.values()).some(
+    (p) => p.nickname === message.nickname && p.id !== context.playerId,
+  );
+
+  if (nicknameTaken) {
+    sendError(ws, 'Nickname already taken');
+    return;
+  }
+
+  const player = room.players.get(context.playerId);
+  if (!player) {
+    sendError(ws, 'Room not found');
+    return;
+  }
+
+  player.nickname = message.nickname;
+
+  roomManager.broadcastToRoom(context.currentRoomId, {
+    type: 'nickname_changed',
+    playerId: player.id,
+    nickname: player.nickname,
   });
 
   roomManager.broadcastToRoom(context.currentRoomId, {

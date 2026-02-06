@@ -78,6 +78,14 @@ export function handleWebSocketConnection(
 
     const result = WebSocketMessageSchema.safeParse(parsed);
     if (!result.success) {
+      console.error(
+        '[WebSocket] Message validation failed:',
+        result.error.format(),
+      );
+      console.error(
+        '[WebSocket] Received message:',
+        JSON.stringify(parsed, null, 2),
+      );
       sendError(ws, 'Invalid room ID');
       return;
     }
@@ -110,6 +118,9 @@ export function handleWebSocketConnection(
         break;
       case 'change_color':
         LobbyHandlers.handleChangeColor(ws, message, roomManager, context);
+        break;
+      case 'change_nickname':
+        LobbyHandlers.handleChangeNickname(ws, message, roomManager, context);
         break;
 
       // Placement

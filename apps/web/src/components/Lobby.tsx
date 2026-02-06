@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   MIN_PLAYERS,
@@ -14,6 +15,7 @@ import { LobbyPlayerList } from './LobbyPlayerList';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useGameStore } from '../stores/gameStore';
 import { handleWebSocketMessage, HandlerContext } from '@web/handlers';
+import { getNickname } from '../utils/nickname';
 
 // Dynamically construct WebSocket URL based on current page location
 // In production (Cloud Run): wss://domain.run.app/ws
@@ -31,37 +33,32 @@ type View = 'create' | 'join' | 'lobby';
 
 type PendingAction = 'create' | 'join' | null;
 
-export default function Lobby() {
+interface LobbyProps {
+  roomIdFromUrl?: string;
+}
+
+export default function Lobby({ roomIdFromUrl }: LobbyProps) {
+  const navigate = useNavigate();
   const [room, setRoom] = useState<Room | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [currentPlayerId, setCurrentPlayerId] = useState<string | null>(null);
-  const [pendingNickname, setPendingNickname] = useState<string | null>(null);
+  const pendingNicknameRef = useRef<string | null>(null);
   const [currentView, setCurrentView] = useState<View>('create');
   const [createError, setCreateError] = useState<string | null>(null);
   const [joinError, setJoinError] = useState<string | null>(null);
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [lastAction, setLastAction] = useState<PendingAction>(null);
-  const [showJoinForm, setShowJoinForm] = useState<boolean>(false);
-  const [nickname, setNickname] = useState<string>('');
   const [preferredColor, setPreferredColor] = useState<Player['color'] | null>(
     null,
   );
+  const [attemptedRoomId, setAttemptedRoomId] = useState<string | null>(null);
 
-  // Load saved room ID and nickname from localStorage on mount
+  // Load saved color from localStorage on mount
   useEffect(() => {
-    const savedRoomId = localStorage.getItem('catan_roomId');
-    const savedNickname = localStorage.getItem('catan_nickname');
     const savedColor = localStorage.getItem('catan_color');
-    if (savedNickname) {
-      setNickname(savedNickname);
-    }
     if (savedColor && PLAYER_COLORS.includes(savedColor as Player['color'])) {
       setPreferredColor(savedColor as Player['color']);
-    }
-    if (savedRoomId) {
-      setRoomId(savedRoomId);
-      setShowJoinForm(true);
     }
   }, []);
 
@@ -73,15 +70,23 @@ export default function Lobby() {
         setRoom,
         setRoomId,
         setCurrentPlayerId,
-        setPendingNickname,
+        setPendingNickname: (value: React.SetStateAction<string | null>) => {
+          if (typeof value === 'function') {
+            pendingNicknameRef.current = value(pendingNicknameRef.current);
+          } else {
+            pendingNicknameRef.current = value;
+          }
+        },
         setCurrentView,
         setCreateError,
         setJoinError,
         setGeneralError,
         setCountdown,
         setLastAction,
+        setAttemptedRoomId,
+        navigate,
         currentPlayerId,
-        pendingNickname,
+        pendingNickname: pendingNicknameRef.current,
         lastAction,
         room,
       };
@@ -91,15 +96,15 @@ export default function Lobby() {
       setRoom,
       setRoomId,
       setCurrentPlayerId,
-      setPendingNickname,
       setCurrentView,
       setCreateError,
       setJoinError,
       setGeneralError,
       setCountdown,
       setLastAction,
+      setAttemptedRoomId,
+      navigate,
       currentPlayerId,
-      pendingNickname,
       lastAction,
       room,
     ],
@@ -115,36 +120,44 @@ export default function Lobby() {
   }, [sendMessage]);
 
   const handleCreateRoom = useCallback(() => {
-    if (!nickname.trim()) return;
     setLastAction('create');
     setCreateError(null);
     setJoinError(null);
-    setPendingNickname(nickname);
+    const nickname = getNickname();
+    pendingNicknameRef.current = nickname;
     setCurrentView('lobby');
     sendMessage({
       type: 'create_room',
-      nickname: nickname.trim(),
+      nickname,
       preferredColor: preferredColor || undefined,
     });
-  }, [nickname, preferredColor, sendMessage]);
+  }, [preferredColor, sendMessage]);
 
   const handleJoinRoom = useCallback(
     (roomCode: string) => {
-      if (!nickname.trim()) return;
       setLastAction('join');
       setCreateError(null);
       setJoinError(null);
-      setPendingNickname(nickname);
+      const nickname = getNickname();
+      pendingNicknameRef.current = nickname;
       setCurrentView('lobby');
       sendMessage({
         type: 'join_room',
         roomId: roomCode,
-        nickname: nickname.trim(),
+        nickname,
         preferredColor: preferredColor || undefined,
       });
     },
-    [nickname, preferredColor, sendMessage],
+    [preferredColor, sendMessage],
   );
+
+  // Handle URL-based room joining
+  useEffect(() => {
+    if (roomIdFromUrl && isConnected && roomIdFromUrl !== attemptedRoomId) {
+      setAttemptedRoomId(roomIdFromUrl);
+      handleJoinRoom(roomIdFromUrl);
+    }
+  }, [roomIdFromUrl, isConnected, attemptedRoomId]);
 
   const handleColorChange = useCallback(
     (color: Player['color']) => {
@@ -152,6 +165,21 @@ export default function Lobby() {
       localStorage.setItem('catan_color', color);
       setPreferredColor(color);
       sendMessage({ type: 'change_color', playerId: currentPlayerId, color });
+    },
+    [currentPlayerId, sendMessage],
+  );
+
+  const handleNicknameChange = useCallback(
+    (nickname: string) => {
+      if (!currentPlayerId) return;
+      const trimmed = nickname.trim();
+      if (trimmed.length < 2 || trimmed.length > 30) return;
+      localStorage.setItem('catan_nickname', trimmed);
+      sendMessage({
+        type: 'change_nickname',
+        playerId: currentPlayerId,
+        nickname: trimmed,
+      });
     },
     [currentPlayerId, sendMessage],
   );
@@ -180,8 +208,6 @@ export default function Lobby() {
             isConnected={isConnected}
             onCreate={handleCreateRoom}
             onJoin={handleJoinRoom}
-            nickname={nickname}
-            onNicknameChange={setNickname}
             error={createError || joinError}
           />
         </div>
@@ -364,6 +390,7 @@ export default function Lobby() {
               players={players}
               currentPlayerId={currentPlayerId}
               onColorChange={handleColorChange}
+              onNicknameChange={handleNicknameChange}
               onReadyToggle={handleReadyToggle}
             />
           </div>

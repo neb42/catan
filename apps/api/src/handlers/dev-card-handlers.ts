@@ -87,6 +87,12 @@ export function handleBuyDevCard(
     });
     logMessage(context.currentRoomId, 'send', publicMessage);
   }
+
+  // Check for victory (VP card may have brought player to 10+ VP)
+  if (result.victoryResult) {
+    broadcastVictory(roomManager, context.currentRoomId, result.victoryResult);
+    return;
+  }
 }
 
 /**
