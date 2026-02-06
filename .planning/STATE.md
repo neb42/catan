@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-06  
-**Last activity:** 2026-02-06 - Completed quick task 034: Fix URL routing navigation and player recognition
+**Last activity:** 2026-02-06 - Completed quick task 035: Fix duplicate player on room creation
 
 ## Current Position
 
@@ -57,6 +57,7 @@ Progress: ███████████████████████�
 | 032 | Remove nickname entry from landing page                                | 2026-02-06 | d19aefd | [032-remove-nickname-entry-from-landing-page-](./quick/032-remove-nickname-entry-from-landing-page-/)     |
 | 033 | Use URLs for landing page and room joining (/ and /room/:roomId)       | 2026-02-06 | a5b46e1 | [033-use-urls-is-the-landing-page-room-roomid](./quick/033-use-urls-is-the-landing-page-room-roomid/)     |
 | 034 | Fix URL routing navigation and player recognition                      | 2026-02-06 | 6edb200 | [034-fix-url-routing-navigate-to-room-roomid-](./quick/034-fix-url-routing-navigate-to-room-roomid-/)     |
+| 035 | Fix duplicate player on room creation                                  | 2026-02-06 | bbad94f | [035-fix-duplicate-player-on-room-creation-by](./quick/035-fix-duplicate-player-on-room-creation-by/)     |
 
 ## Decisions
 
@@ -171,9 +172,10 @@ Progress: ███████████████████████�
 | 033-01 | URL as source of truth           | Replace localStorage roomId auto-fill with URL-based routing for shareable links   |
 | 033-02 | Navigate on join                 | LandingForm navigates to /room/:roomId instead of calling onJoin callback          |
 | 033-03 | Auto-join on mount               | Lobby auto-joins room when roomIdFromUrl exists and WebSocket connected            |
+| 035    | Set attemptedRoomId on creation  | Call setAttemptedRoomId in handleRoomCreated to prevent URL join useEffect trigger |
 
 ## Session Continuity
 
-Last session: 2026-02-06T17:42:38Z
-Stopped at: Completed quick task 033
+Last session: 2026-02-06T15:06:44Z
+Stopped at: Completed quick task 035
 Resume file: None
