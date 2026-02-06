@@ -43,19 +43,14 @@ export default function Lobby() {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [lastAction, setLastAction] = useState<PendingAction>(null);
   const [showJoinForm, setShowJoinForm] = useState<boolean>(false);
-  const [nickname, setNickname] = useState<string>('');
   const [preferredColor, setPreferredColor] = useState<Player['color'] | null>(
     null,
   );
 
-  // Load saved room ID and nickname from localStorage on mount
+  // Load saved room ID and color from localStorage on mount
   useEffect(() => {
     const savedRoomId = localStorage.getItem('catan_roomId');
-    const savedNickname = localStorage.getItem('catan_nickname');
     const savedColor = localStorage.getItem('catan_color');
-    if (savedNickname) {
-      setNickname(savedNickname);
-    }
     if (savedColor && PLAYER_COLORS.includes(savedColor as Player['color'])) {
       setPreferredColor(savedColor as Player['color']);
     }
@@ -115,35 +110,33 @@ export default function Lobby() {
   }, [sendMessage]);
 
   const handleCreateRoom = useCallback(() => {
-    if (!nickname.trim()) return;
     setLastAction('create');
     setCreateError(null);
     setJoinError(null);
-    setPendingNickname(nickname);
+    setPendingNickname('');
     setCurrentView('lobby');
     sendMessage({
       type: 'create_room',
-      nickname: nickname.trim(),
+      nickname: '',
       preferredColor: preferredColor || undefined,
     });
-  }, [nickname, preferredColor, sendMessage]);
+  }, [preferredColor, sendMessage]);
 
   const handleJoinRoom = useCallback(
     (roomCode: string) => {
-      if (!nickname.trim()) return;
       setLastAction('join');
       setCreateError(null);
       setJoinError(null);
-      setPendingNickname(nickname);
+      setPendingNickname('');
       setCurrentView('lobby');
       sendMessage({
         type: 'join_room',
         roomId: roomCode,
-        nickname: nickname.trim(),
+        nickname: '',
         preferredColor: preferredColor || undefined,
       });
     },
-    [nickname, preferredColor, sendMessage],
+    [preferredColor, sendMessage],
   );
 
   const handleColorChange = useCallback(
@@ -195,8 +188,6 @@ export default function Lobby() {
             isConnected={isConnected}
             onCreate={handleCreateRoom}
             onJoin={handleJoinRoom}
-            nickname={nickname}
-            onNicknameChange={setNickname}
             error={createError || joinError}
           />
         </div>
