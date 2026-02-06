@@ -156,6 +156,21 @@ export default function Lobby() {
     [currentPlayerId, sendMessage],
   );
 
+  const handleNicknameChange = useCallback(
+    (nickname: string) => {
+      if (!currentPlayerId) return;
+      const trimmed = nickname.trim();
+      if (trimmed.length < 2 || trimmed.length > 30) return;
+      localStorage.setItem('catan_nickname', trimmed);
+      sendMessage({
+        type: 'change_nickname',
+        playerId: currentPlayerId,
+        nickname: trimmed,
+      });
+    },
+    [currentPlayerId, sendMessage],
+  );
+
   const handleReadyToggle = useCallback(() => {
     if (!currentPlayerId) return;
     sendMessage({ type: 'toggle_ready', playerId: currentPlayerId });
@@ -364,6 +379,7 @@ export default function Lobby() {
               players={players}
               currentPlayerId={currentPlayerId}
               onColorChange={handleColorChange}
+              onNicknameChange={handleNicknameChange}
               onReadyToggle={handleReadyToggle}
             />
           </div>

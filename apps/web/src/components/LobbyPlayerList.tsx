@@ -7,14 +7,17 @@ import {
   Group,
   Stack,
   Text,
+  TextInput,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { motion } from 'motion/react';
+import { useState } from 'react';
 
 type LobbyPlayerListProps = {
   players: Player[];
   currentPlayerId: string | null;
   onColorChange: (color: Player['color']) => void;
+  onNicknameChange: (nickname: string) => void;
   onReadyToggle: () => void;
 };
 
@@ -22,9 +25,13 @@ export function LobbyPlayerList({
   players,
   currentPlayerId,
   onColorChange,
+  onNicknameChange,
   onReadyToggle,
 }: LobbyPlayerListProps) {
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const [editingNickname, setEditingNickname] = useState<{
+    [playerId: string]: string;
+  }>({});
 
   // Create 4 slots (max players)
   const slots = Array.from({ length: 4 }, (_, index) => {
@@ -114,14 +121,62 @@ export function LobbyPlayerList({
                   {initials}
                 </Avatar>
 
-                {/* Player name */}
-                <Text
-                  size="lg"
-                  fw={700}
-                  style={{ fontFamily: 'Fraunces, serif' }}
-                >
-                  {player.nickname}
-                </Text>
+                {/* Player name - editable for self */}
+                {isSelf ? (
+                  <TextInput
+                    value={
+                      editingNickname[player.id] !== undefined
+                        ? editingNickname[player.id]
+                        : player.nickname
+                    }
+                    onChange={(e) =>
+                      setEditingNickname({
+                        ...editingNickname,
+                        [player.id]: e.currentTarget.value,
+                      })
+                    }
+                    onBlur={() => {
+                      const newNickname =
+                        editingNickname[player.id] ?? player.nickname;
+                      if (newNickname !== player.nickname) {
+                        onNicknameChange(newNickname);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.currentTarget.blur();
+                      }
+                    }}
+                    size="lg"
+                    styles={{
+                      input: {
+                        fontFamily: 'Fraunces, serif',
+                        fontWeight: 700,
+                        textAlign: 'center',
+                        border: 'none',
+                        borderBottom: '2px solid transparent',
+                        borderRadius: 0,
+                        padding: '0.25rem',
+                        background: 'transparent',
+                        transition: 'border-color 0.2s',
+                        '&:hover': {
+                          borderBottomColor: '#D1D5DB',
+                        },
+                        '&:focus': {
+                          borderBottomColor: 'var(--color-secondary)',
+                        },
+                      },
+                    }}
+                  />
+                ) : (
+                  <Text
+                    size="lg"
+                    fw={700}
+                    style={{ fontFamily: 'Fraunces, serif' }}
+                  >
+                    {player.nickname}
+                  </Text>
+                )}
 
                 {/* Ready status */}
                 <Badge
