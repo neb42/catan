@@ -3,6 +3,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
+      - '--platform=linux/amd64'
       - '-t'
       - '${_IMAGE_URL}:${SHORT_SHA}'
       - '-t'
@@ -33,7 +34,7 @@ steps:
       - '--platform=managed'
 
 substitutions:
-  _IMAGE_URL: 'europe-west1-docker.pkg.dev/${PROJECT_ID}/catan/catan'
+  _IMAGE_URL: 'europe-west1-docker.pkg.dev/catan-486520/catan/catan'
   _SERVICE_NAME: 'catan-game'
   _REGION: 'europe-west1'
 
