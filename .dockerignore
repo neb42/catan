@@ -1,0 +1,57 @@
+# .dockerignore for NX Monorepo
+# Reference: 13-RESEARCH.md Pattern 4 (.dockerignore for NX Monorepo)
+
+# Dependencies (reinstalled in container)
+**/node_modules/
+**/.pnp
+**/.pnp.js
+
+# NX cache and build artifacts
+.nx/
+dist/
+tmp/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# CI/CD
+.github/
+.circleci/
+
+# Environment files (use Terraform env vars instead)
+.env*
+!.env.example
+
+# Documentation
+*.md
+!README.md
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Planning and design
+.planning/
+.designs/
+screenshots/
+mockups/
+
+# Misc
+.DS_Store

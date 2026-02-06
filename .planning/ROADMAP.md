@@ -539,6 +539,46 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 
 ---
 
+## Phase 13: Deployment
+
+**Goal:** Create Docker multi-stage build and Terraform GCP deployment with cost optimization  
+**Duration:** 0.5-1 week  
+**Dependencies:** Phase 12  
+**Plans:** 4 plans
+
+### Requirements
+
+- Create multi-stage Dockerfile building both web and api apps
+- Configure API to serve web static content
+- Create Terraform configuration for Google Cloud Platform deployment
+- Optimize for cost reduction (minimal resource usage, auto-scaling configuration)
+
+### Success Criteria
+
+1. **Docker build produces production-ready image** — Multi-stage build completes, image < 400MB, runs both API and frontend
+2. **Terraform deploys to Cloud Run** — Service accessible via .run.app URL, WebSocket connections stable
+3. **Cost controls in place** — Scale to zero works, single instance max enforced, budget alerts configured
+4. **Documentation enables deployment** — Clear instructions from prerequisites to production deployment
+
+Plans:
+
+- [ ] 13-01-PLAN.md — Docker multi-stage build and static serving (Wave 1)
+- [ ] 13-02-PLAN.md — Terraform Cloud Run infrastructure (Wave 1)
+- [ ] 13-03-PLAN.md — Budget alerts and cost monitoring (Wave 1)
+- [ ] 13-04-PLAN.md — Deployment documentation and verification (Wave 2)
+
+### Deliverables
+
+- Dockerfile with 3-stage build (deps, build, runtime)
+- .dockerignore for optimized build context
+- Express static middleware serving frontend
+- Terraform configuration (backend, main, variables, IAM, billing, outputs)
+- Budget alerts at 50%, 80%, 100%, 120% thresholds
+- DEPLOYMENT.md with complete deployment guide
+- terraform/README.md with Terraform-specific docs
+
+---
+
 ## Validation Matrix
 
 **Requirements Coverage:** 68/68 (100%)
@@ -571,6 +611,7 @@ Enhance visual design to match HTML mockups while maintaining all existing WebSo
 - Phase 10 depends on Phase 8 (needs Knight card to be implemented)
 - Phase 11 depends on Phase 9 and 10 (needs longest road/largest army for VP calculation)
 - Phase 12 depends on Phase 11 (needs complete game)
+- Phase 13 depends on Phase 12 (needs complete application)
 
 **No orphaned requirements.** All 68 v1 requirements mapped to exactly one phase.
 

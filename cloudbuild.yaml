@@ -1,0 +1,41 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_IMAGE_URL}:${SHORT_SHA}'
+      - '-t'
+      - '${_IMAGE_URL}:latest'
+      - '.'
+
+  # Push the tagged image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_IMAGE_URL}:${SHORT_SHA}'
+
+  # Push the latest tag
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_IMAGE_URL}:latest'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - 'gcloud'
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image=${_IMAGE_URL}:${SHORT_SHA}'
+      - '--region=${_REGION}'
+      - '--platform=managed'
+
+substitutions:
+  _IMAGE_URL: 'europe-west1-docker.pkg.dev/${PROJECT_ID}/catan/catan'
+  _SERVICE_NAME: 'catan-game'
+  _REGION: 'europe-west1'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

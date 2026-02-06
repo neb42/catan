@@ -2,21 +2,25 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-02-05  
-**Last activity:** 2026-02-05 - Completed quick task 028: Persist player's last used color to localStorage
+**Last Updated:** 2026-02-06  
+**Last activity:** 2026-02-06 - Completed quick task 029: Update terraform to use Cloud Build connected to repo
 
 ## Current Position
 
-Phase: 12 of 12 (Resilience & Polish)  
-Plan: 6 of 6 in current phase  
-Status: In progress  
-Last activity: 2026-02-05 - Completed quick task 028 (Persist player's last used color to localStorage)
+Phase: 13 of 13 (Deployment)  
+Plan: 4 of 4 in current phase  
+Status: Phase complete  
+Last activity: 2026-02-05 - Completed 13-04-PLAN.md (Deployment documentation and verification)
 
-Progress: ███████████████████████████████████████████████████████████████████████████████████████████████████░ (73/74 plans complete - 98.6%)
+Progress: ████████████████████████████████████████████████████████████████████████████████████████████████████ (77/78 plans complete - 98.7%)
 
 ## Blockers/Concerns
 
 - None
+
+## Roadmap Evolution
+
+- Phase 13 added: Deployment. Create a docker multi-stage docker image building the web and api apps. The api serves the web static content. Create terrform deployment to google cloud platform. Focus on cost reduction.
 
 ### Quick Tasks Completed
 
@@ -48,6 +52,7 @@ Progress: ███████████████████████�
 | 026 | Refactor WebSocket handler into modular domain handlers                | 2026-02-05 | a3b2bc9 | [026-refactor-handlewebsocketconnection-into-](./quick/026-refactor-handlewebsocketconnection-into-/)     |
 | 027 | Apply parchment aesthetic to GameLog component                         | 2026-02-05 | fbabeb5 | [027-apply-the-style-of-the-gameplayerlist-co](./quick/027-apply-the-style-of-the-gameplayerlist-co/)     |
 | 028 | Persist player's last used color to localStorage                       | 2026-02-05 | 545b198 | [028-persist-a-players-last-used-color-to-loc](./quick/028-persist-a-players-last-used-color-to-loc/)     |
+| 029 | Update terraform to use Cloud Build connected to repo                  | 2026-02-06 | 35193d2 | [029-update-terraform-to-use-cloud-build-con](./quick/029-update-terraform-to-use-cloud-build-con/)       |
 
 ## Decisions
 
@@ -154,9 +159,14 @@ Progress: ███████████████████████�
 | 12-02 | Toast on reconnection            | Green notification, 3s auto-close - clear positive feedback                        |
 | 027   | Left-side border radius only     | GameLog at right edge of screen needs rounded corners only on left side            |
 | 027   | Transparent entry backgrounds    | Cleaner parchment look with subtle borders + hover instead of alternating rows     |
+| 13-03 | EUR 5 default budget             | Aligns with cost optimization priority, reasonable threshold for demo project      |
+| 13-03 | Four alert thresholds            | 50%, 80%, 100%, 120% provide progressive warnings with overspend protection        |
+| 13-03 | Sensitive billing variables      | billing_account_id and alert_email marked sensitive to prevent log exposure        |
+| 13-04 | Local-only deployment option     | Document Docker+Terraform validation without GCP costs for verification            |
+| 13-04 | Dynamic WebSocket URL            | Use window.location for containerized environments instead of hardcoded localhost  |
 
 ## Session Continuity
 
-Last session: 2026-02-05T19:01:30Z
-Stopped at: Completed quick task 028 (Persist player's last used color to localStorage)
+Last session: 2026-02-06T00:00:00Z
+Stopped at: Completed quick task 029
 Resume file: None

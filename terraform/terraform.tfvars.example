@@ -1,0 +1,23 @@
+# Copy this file to terraform.tfvars and fill in your values
+# terraform.tfvars is gitignored
+
+project_id = "your-gcp-project-id"
+region     = "europe-west1"
+
+# GitHub connection (Cloud Build v2)
+github_owner               = "your-github-username"
+github_repo                = "catan"
+github_app_installation_id = 0 # Set after installing Cloud Build GitHub App in GCP Console
+
+# Budget monitoring
+billing_account_id = "012345-ABCDEF-678901"
+alert_email        = "your-email@example.com"
+# monthly_budget_euros = 5  # Optional override
+
+# Optional overrides
+# service_name = "catan-game"
+# min_instances = 0
+# max_instances = 1
+# cpu_limit = "1"
+# memory_limit = "512Mi"
+# max_concurrency = 20

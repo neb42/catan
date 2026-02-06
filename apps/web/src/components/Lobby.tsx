@@ -15,7 +15,17 @@ import { useWebSocket } from '../hooks/useWebSocket';
 import { useGameStore } from '../stores/gameStore';
 import { handleWebSocketMessage, HandlerContext } from '@web/handlers';
 
-const WS_URL = 'ws://localhost:3333/ws';
+// Dynamically construct WebSocket URL based on current page location
+// In production (Cloud Run): wss://domain.run.app/ws
+// In local Docker: ws://localhost:8080/ws
+// In development: ws://localhost:3333/ws
+const getWebSocketUrl = () => {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const host = window.location.host; // includes port if present
+  return `${protocol}//${host}/ws`;
+};
+
+const WS_URL = getWebSocketUrl();
 
 type View = 'create' | 'join' | 'lobby';
 
