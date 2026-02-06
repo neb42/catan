@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-06  
-**Last activity:** 2026-02-06 - Completed quick task 033: URL-based room routing with shareable links
+**Last activity:** 2026-02-06 - Completed quick task 033: Use URLs for landing page and room joining (/ and /room/:roomId)
 
 ## Current Position
 
@@ -55,7 +55,7 @@ Progress: ███████████████████████�
 | 029 | Update terraform to use Cloud Build connected to repo                  | 2026-02-06 | 35193d2 | [029-update-terraform-to-use-cloud-build-con](./quick/029-update-terraform-to-use-cloud-build-con/)       |
 | 031 | Change nickname field to be set while in lobby                         | 2026-02-06 | 86b4d8f | [031-change-nickname-field-to-be-set-while-in](./quick/031-change-nickname-field-to-be-set-while-in/)     |
 | 032 | Remove nickname entry from landing page                                | 2026-02-06 | d19aefd | [032-remove-nickname-entry-from-landing-page-](./quick/032-remove-nickname-entry-from-landing-page-/)     |
-| 033 | Use URLs for landing page and room joining (/ and /room/:roomId)       | 2026-02-06 | 3f3f762 | [033-use-urls-is-the-landing-page-room-roomid](./quick/033-use-urls-is-the-landing-page-room-roomid/)     |
+| 033 | Use URLs for landing page and room joining (/ and /room/:roomId)       | 2026-02-06 | a5b46e1 | [033-use-urls-is-the-landing-page-room-roomid](./quick/033-use-urls-is-the-landing-page-room-roomid/)     |
 
 ## Decisions
 
