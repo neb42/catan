@@ -22,6 +22,9 @@ export const handleRoomCreated: MessageHandler = (message, ctx) => {
 
   // Navigate to room URL
   ctx.navigate(`/room/${message.roomId}`);
+
+  // Prevent URL join useEffect from triggering after room creation
+  ctx.setAttemptedRoomId(message.roomId);
 };
 
 export const handleRoomState: MessageHandler = (message, ctx) => {

@@ -14,6 +14,7 @@ export interface HandlerContext {
   setGeneralError: React.Dispatch<React.SetStateAction<string | null>>;
   setCountdown: React.Dispatch<React.SetStateAction<number | null>>;
   setLastAction: React.Dispatch<React.SetStateAction<'create' | 'join' | null>>;
+  setAttemptedRoomId: React.Dispatch<React.SetStateAction<string | null>>;
 
   // Navigation
   navigate: (path: string) => void;
