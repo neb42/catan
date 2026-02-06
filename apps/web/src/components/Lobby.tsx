@@ -52,6 +52,7 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
   const [preferredColor, setPreferredColor] = useState<Player['color'] | null>(
     null,
   );
+  const [attemptedRoomId, setAttemptedRoomId] = useState<string | null>(null);
 
   // Load saved color from localStorage on mount
   useEffect(() => {
@@ -146,10 +147,11 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
 
   // Handle URL-based room joining
   useEffect(() => {
-    if (roomIdFromUrl && isConnected && !room && !roomId) {
+    if (roomIdFromUrl && isConnected && roomIdFromUrl !== attemptedRoomId) {
+      setAttemptedRoomId(roomIdFromUrl);
       handleJoinRoom(roomIdFromUrl);
     }
-  }, [roomIdFromUrl, isConnected, room, roomId, handleJoinRoom]);
+  }, [roomIdFromUrl, isConnected, attemptedRoomId]);
 
   const handleColorChange = useCallback(
     (color: Player['color']) => {
