@@ -8,6 +8,7 @@ import {
   handlePlayerLeft,
   handlePlayerReady,
   handleColorChanged,
+  handleNicknameChanged,
 } from './lobbyHandlers';
 import {
   handleGameStarting,
@@ -77,6 +78,7 @@ const handlerRegistry: Partial<
   player_left: handlePlayerLeft,
   player_ready: handlePlayerReady,
   color_changed: handleColorChanged,
+  nickname_changed: handleNicknameChanged,
 
   // Game lifecycle handlers
   game_starting: handleGameStarting,
