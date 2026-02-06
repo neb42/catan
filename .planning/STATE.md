@@ -3,7 +3,7 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-06  
-**Last activity:** 2026-02-06 - Completed quick task 029: Update terraform to use Cloud Build connected to repo
+**Last activity:** 2026-02-06 - Completed quick task 031: Change nickname field to be set while in lobby
 
 ## Current Position
 
@@ -53,6 +53,7 @@ Progress: ███████████████████████�
 | 027 | Apply parchment aesthetic to GameLog component                         | 2026-02-05 | fbabeb5 | [027-apply-the-style-of-the-gameplayerlist-co](./quick/027-apply-the-style-of-the-gameplayerlist-co/)     |
 | 028 | Persist player's last used color to localStorage                       | 2026-02-05 | 545b198 | [028-persist-a-players-last-used-color-to-loc](./quick/028-persist-a-players-last-used-color-to-loc/)     |
 | 029 | Update terraform to use Cloud Build connected to repo                  | 2026-02-06 | 35193d2 | [029-update-terraform-to-use-cloud-build-con](./quick/029-update-terraform-to-use-cloud-build-con/)       |
+| 031 | Change nickname field to be set while in lobby                         | 2026-02-06 | 86b4d8f | [031-change-nickname-field-to-be-set-while-in](./quick/031-change-nickname-field-to-be-set-while-in/)     |
 
 ## Decisions
 
@@ -167,6 +168,6 @@ Progress: ███████████████████████�
 
 ## Session Continuity
 
-Last session: 2026-02-06T00:00:00Z
-Stopped at: Completed quick task 029
+Last session: 2026-02-06T13:40:00Z
+Stopped at: Completed quick task 031
 Resume file: None
