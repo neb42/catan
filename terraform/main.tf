@@ -2,6 +2,8 @@ resource "google_cloud_run_v2_service" "api" {
   name     = var.service_name
   location = var.region
 
+  deletion_protection = false
+
   template {
     timeout = "3600s" # 1 hour for full game sessions
 

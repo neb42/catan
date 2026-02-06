@@ -30,6 +30,12 @@ variable "github_app_installation_id" {
   type        = number
 }
 
+variable "github_token" {
+  description = "GitHub Personal Access Token for Cloud Build GitHub App OAuth (must be tied to the Cloud Build GitHub App)"
+  type        = string
+  sensitive   = true
+}
+
 variable "min_instances" {
   description = "Minimum number of instances (0 = scale to zero)"
   type        = number

@@ -126,7 +126,7 @@ curl http://localhost:8080      # Should return HTML (frontend)
 
 ```bash
 # Replace PROJECT_ID with your actual project ID
-export PROJECT_ID="catan-online-prod"
+export PROJECT_ID="catan-486520"
 
 # Tag image for Artifact Registry
 docker tag catan:latest \

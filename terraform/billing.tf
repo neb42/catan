@@ -64,4 +64,6 @@ resource "google_billing_budget" "cloud_run_budget" {
 
     disable_default_iam_recipients = false
   }
+
+  depends_on = [google_project_service.billingbudgets]
 }
