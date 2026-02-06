@@ -14,6 +14,7 @@ import { LobbyPlayerList } from './LobbyPlayerList';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useGameStore } from '../stores/gameStore';
 import { handleWebSocketMessage, HandlerContext } from '@web/handlers';
+import { getNickname } from '../utils/nickname';
 
 // Dynamically construct WebSocket URL based on current page location
 // In production (Cloud Run): wss://domain.run.app/ws
@@ -113,11 +114,12 @@ export default function Lobby() {
     setLastAction('create');
     setCreateError(null);
     setJoinError(null);
-    setPendingNickname('');
+    const nickname = getNickname();
+    setPendingNickname(nickname);
     setCurrentView('lobby');
     sendMessage({
       type: 'create_room',
-      nickname: '',
+      nickname,
       preferredColor: preferredColor || undefined,
     });
   }, [preferredColor, sendMessage]);
@@ -127,12 +129,13 @@ export default function Lobby() {
       setLastAction('join');
       setCreateError(null);
       setJoinError(null);
-      setPendingNickname('');
+      const nickname = getNickname();
+      setPendingNickname(nickname);
       setCurrentView('lobby');
       sendMessage({
         type: 'join_room',
         roomId: roomCode,
-        nickname: '',
+        nickname,
         preferredColor: preferredColor || undefined,
       });
     },
