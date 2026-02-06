@@ -110,9 +110,8 @@ export function LobbyPlayerList({
                 <Avatar
                   size={80}
                   radius="xl"
+                  color={colorMap[player.color] || player.color}
                   style={{
-                    backgroundColor: colorMap[player.color] || player.color,
-                    color: player.color === 'white' ? '#2D3142' : 'white',
                     fontSize: '2rem',
                     fontWeight: 800,
                     fontFamily: 'Fraunces, serif',
