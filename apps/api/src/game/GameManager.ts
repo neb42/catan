@@ -1540,6 +1540,7 @@ export class GameManager {
     error?: string;
     card?: OwnedDevCard;
     deckRemaining?: number;
+    victoryResult?: VictoryResult;
   } {
     // Guard: game has already ended
     if (this.gameEnded) {
@@ -1593,10 +1594,14 @@ export class GameManager {
     playerCards.push(ownedCard);
     this.playerDevCards.set(playerId, playerCards);
 
+    // 7. Check for victory (VP card may have brought player to 10+ VP)
+    const victoryResult = this.checkVictory();
+
     return {
       success: true,
       card: ownedCard,
       deckRemaining: this.getDeckRemaining(),
+      victoryResult: victoryResult || undefined,
     };
   }
 
