@@ -13,7 +13,7 @@ resource "google_cloud_run_v2_service" "api" {
     max_instance_request_concurrency = var.max_concurrency
 
     containers {
-      image = var.image_url
+      image = "${local.image_url}:latest"
 
       resources {
         limits = {

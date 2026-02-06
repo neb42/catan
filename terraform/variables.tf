@@ -15,9 +15,19 @@ variable "service_name" {
   default     = "catan-game"
 }
 
-variable "image_url" {
-  description = "Container image URL from Artifact Registry or GCR"
+variable "github_owner" {
+  description = "GitHub repository owner (user or org)"
   type        = string
+}
+
+variable "github_repo" {
+  description = "GitHub repository name"
+  type        = string
+}
+
+variable "github_app_installation_id" {
+  description = "Cloud Build GitHub App installation ID (find in GCP Console > Cloud Build > Repositories)"
+  type        = number
 }
 
 variable "min_instances" {

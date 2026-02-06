@@ -2,8 +2,8 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-02-05  
-**Last activity:** 2026-02-05 - Completed 13-01-PLAN.md
+**Last Updated:** 2026-02-06  
+**Last activity:** 2026-02-06 - Completed quick task 029: Update terraform to use Cloud Build connected to repo
 
 ## Current Position
 
@@ -52,6 +52,7 @@ Progress: ███████████████████████�
 | 026 | Refactor WebSocket handler into modular domain handlers                | 2026-02-05 | a3b2bc9 | [026-refactor-handlewebsocketconnection-into-](./quick/026-refactor-handlewebsocketconnection-into-/)     |
 | 027 | Apply parchment aesthetic to GameLog component                         | 2026-02-05 | fbabeb5 | [027-apply-the-style-of-the-gameplayerlist-co](./quick/027-apply-the-style-of-the-gameplayerlist-co/)     |
 | 028 | Persist player's last used color to localStorage                       | 2026-02-05 | 545b198 | [028-persist-a-players-last-used-color-to-loc](./quick/028-persist-a-players-last-used-color-to-loc/)     |
+| 029 | Update terraform to use Cloud Build connected to repo                  | 2026-02-06 | 35193d2 | [029-update-terraform-to-use-cloud-build-con](./quick/029-update-terraform-to-use-cloud-build-con/)       |
 
 ## Decisions
 
@@ -166,6 +167,6 @@ Progress: ███████████████████████�
 
 ## Session Continuity
 
-Last session: 2026-02-05T21:02:44Z
-Stopped at: Completed 13-04-PLAN.md
+Last session: 2026-02-06T00:00:00Z
+Stopped at: Completed quick task 029
 Resume file: None

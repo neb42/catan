@@ -2,8 +2,12 @@
 # terraform.tfvars is gitignored
 
 project_id = "your-gcp-project-id"
-image_url  = "gcr.io/your-gcp-project-id/catan:latest"
 region     = "europe-west1"
+
+# GitHub connection (Cloud Build v2)
+github_owner               = "your-github-username"
+github_repo                = "catan"
+github_app_installation_id = 0 # Set after installing Cloud Build GitHub App in GCP Console
 
 # Budget monitoring
 billing_account_id = "012345-ABCDEF-678901"
