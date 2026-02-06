@@ -5,44 +5,34 @@ type LandingFormProps = {
   isConnected: boolean;
   onCreate: () => void;
   onJoin: (roomId: string) => void;
-  nickname: string;
-  onNicknameChange: (nickname: string) => void;
   error?: string | null;
 };
 
-const MIN_NICKNAME_LENGTH = 2;
-const MAX_NICKNAME_LENGTH = 30;
 const ROOM_ID_LENGTH = 6;
 
 export default function LandingForm({
   isConnected,
   onCreate,
   onJoin,
-  nickname,
-  onNicknameChange,
   error,
 }: LandingFormProps) {
   const [showJoinForm, setShowJoinForm] = useState(false);
   const [roomId, setRoomId] = useState('');
 
-  const isNicknameValid = nickname.trim().length >= MIN_NICKNAME_LENGTH && 
-                          nickname.trim().length <= MAX_NICKNAME_LENGTH;
   const isRoomIdValid = roomId.toUpperCase().length === ROOM_ID_LENGTH;
 
   const handleCreate = (e: FormEvent) => {
     e.preventDefault();
-    if (!isNicknameValid) return;
     onCreate();
   };
 
   const handleJoin = (e: FormEvent) => {
     e.preventDefault();
-    if (!isNicknameValid || !isRoomIdValid) return;
+    if (!isRoomIdValid) return;
     onJoin(roomId.toUpperCase());
   };
 
   const handleShowJoin = () => {
-    if (!isNicknameValid) return;
     setShowJoinForm(true);
   };
 
@@ -59,7 +49,8 @@ export default function LandingForm({
         transform: 'translateY(20px)',
         opacity: 0,
         animation: 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-        boxShadow: '0 20px 40px -10px var(--color-shadow), 0 0 0 1px rgba(0,0,0,0.02)',
+        boxShadow:
+          '0 20px 40px -10px var(--color-shadow), 0 0 0 1px rgba(0,0,0,0.02)',
         textAlign: 'center',
       }}
     >
@@ -87,41 +78,6 @@ export default function LandingForm({
           >
             Explore, Build, Trade.
           </Text>
-        </div>
-
-        <div style={{ textAlign: 'left' }}>
-          <Text
-            size="sm"
-            fw={600}
-            style={{
-              marginBottom: '0.5rem',
-              color: '#8D99AE',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            Explorer Name
-          </Text>
-          <TextInput
-            placeholder="e.g. Captain Brick"
-            value={nickname}
-            onChange={(e) => onNicknameChange(e.currentTarget.value)}
-            maxLength={MAX_NICKNAME_LENGTH}
-            required
-            autoFocus
-            disabled={showJoinForm}
-            styles={{
-              input: {
-                padding: '1rem 1.25rem',
-                fontSize: '1.2rem',
-                fontWeight: 600,
-                border: '2px solid #EEE',
-                borderRadius: 'var(--radius-md)',
-                background: showJoinForm ? '#F5F5F5' : '#FAFAFA',
-                transition: 'all 0.2s ease',
-              },
-            }}
-          />
         </div>
 
         {showJoinForm ? (
@@ -162,7 +118,7 @@ export default function LandingForm({
 
             <Button
               type="submit"
-              disabled={!isConnected || !isNicknameValid || !isRoomIdValid}
+              disabled={!isConnected || !isRoomIdValid}
               size="lg"
               fw={800}
               styles={{
@@ -188,7 +144,9 @@ export default function LandingForm({
                 textDecoration: 'none',
                 transition: 'color 0.2s',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-text)')}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.color = 'var(--color-text)')
+              }
               onMouseLeave={(e) => (e.currentTarget.style.color = '#8D99AE')}
             >
               ← Back to menu
@@ -198,7 +156,7 @@ export default function LandingForm({
           <div style={{ display: 'grid', gap: '1rem' }}>
             <Button
               type="submit"
-              disabled={!isConnected || !isNicknameValid}
+              disabled={!isConnected}
               size="lg"
               fw={800}
               styles={{
@@ -209,13 +167,15 @@ export default function LandingForm({
                 },
               }}
             >
-              {isConnected ? 'Start New Expedition' : 'Waiting for connection...'}
+              {isConnected
+                ? 'Start New Expedition'
+                : 'Waiting for connection...'}
             </Button>
 
             <Button
               type="button"
               onClick={handleShowJoin}
-              disabled={!isConnected || !isNicknameValid}
+              disabled={!isConnected}
               size="lg"
               fw={800}
               variant="outline"
