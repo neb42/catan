@@ -48,10 +48,44 @@ export const handleGameReset: MessageHandler = (message, ctx) => {
   gameStore.clearRematchState();
   gameStore.setGameStats(null);
 
-  // Reset to placement state with new board
-  // The game_reset message includes new board
+  // Clear all game state from previous game
+  gameStore.clearPlacementState();
+  gameStore.clearTurnState();
+  gameStore.clearRobberState();
+  gameStore.clearDevCardState();
+  gameStore.clearGameLog();
+
+  // Reset settlements, roads, and resources
+  useGameStore.setState({
+    settlements: [],
+    roads: [],
+    playerResources: {},
+    gameEnded: false,
+    winnerId: null,
+    winnerNickname: null,
+    winnerVP: null,
+    allPlayerVP: {},
+    revealedVPCards: [],
+    longestRoadHolderId: null,
+    longestRoadLength: 0,
+    playerRoadLengths: {},
+    largestArmyHolderId: null,
+    largestArmyKnights: 0,
+    buildMode: null,
+    isBuildPending: false,
+    activeTrade: null,
+    tradeModalOpen: false,
+    gameStarted: false, // Game not started yet (needs ready phase)
+  });
+
+  // Set new board
   gameStore.setBoard(message.board);
-  gameStore.setGameStarted(true);
+
+  // Navigate back to lobby for new ready phase
+  // The backend will send player_ready messages to sync UI
+  if (ctx.room?.id) {
+    ctx.navigate('/lobby/' + ctx.room.id);
+  }
 
   // Toast notification
   showGameNotification('New game starting!', 'success');

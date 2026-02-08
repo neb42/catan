@@ -348,5 +348,14 @@ export class RoomManager {
       type: 'game_reset',
       board: newBoard,
     });
+
+    // Broadcast player_ready messages to sync UI state
+    room.players.forEach((player) => {
+      this.broadcastToRoom(roomId, {
+        type: 'player_ready',
+        playerId: player.id,
+        ready: false,
+      });
+    });
   }
 }
