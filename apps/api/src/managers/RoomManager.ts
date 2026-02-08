@@ -24,6 +24,7 @@ export type ManagedRoom = {
   isPaused: boolean;
   disconnectedPlayers: Map<string, ManagedPlayer>; // Keyed by nickname
   playerOrder: string[]; // Player IDs in join order (preserved across disconnects)
+  rematchVotes: Set<string>; // Player IDs who voted for rematch
 };
 
 export class RoomManager {
@@ -41,6 +42,7 @@ export class RoomManager {
       isPaused: false,
       disconnectedPlayers: new Map(),
       playerOrder: [], // Initialize empty player order
+      rematchVotes: new Set(), // Initialize empty rematch votes
     };
 
     this.rooms.set(roomId, room);
@@ -286,6 +288,65 @@ export class RoomManager {
       type: 'game_resumed',
       reconnectedPlayerId: playerId,
       reconnectedPlayerNickname: player.nickname,
+    });
+  }
+
+  /**
+   * Handle a rematch vote from a player.
+   * Tracks votes and triggers game reset when all players vote.
+   */
+  handleRematchVote(roomId: string, playerId: string): void {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    // Add vote
+    room.rematchVotes.add(playerId);
+
+    // Broadcast update
+    this.broadcastToRoom(roomId, {
+      type: 'rematch_update',
+      readyCount: room.rematchVotes.size,
+      totalPlayers: room.players.size,
+      readyPlayers: Array.from(room.rematchVotes),
+    });
+
+    // Check if all players voted
+    if (room.rematchVotes.size === room.players.size) {
+      this.resetGame(roomId);
+    }
+  }
+
+  /**
+   * Reset the game state for a rematch.
+   * Generates new board, creates new GameManager, clears votes and ready states.
+   */
+  private resetGame(roomId: string): void {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    // Import board generator
+    const { generateBoard } = require('../game/board-generator');
+
+    // Generate new board
+    const newBoard = generateBoard();
+    room.board = newBoard;
+
+    // Create new GameManager with existing player IDs
+    const playerIds = Array.from(room.players.keys());
+    room.gameManager = new GameManager(newBoard, playerIds);
+
+    // Clear rematch votes
+    room.rematchVotes.clear();
+
+    // Reset player ready states
+    room.players.forEach((player) => {
+      player.ready = false;
+    });
+
+    // Broadcast game reset with new board
+    this.broadcastToRoom(roomId, {
+      type: 'game_reset',
+      board: newBoard,
     });
   }
 }
