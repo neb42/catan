@@ -14,6 +14,11 @@ export const handleVictory: MessageHandler = (message, ctx) => {
     revealedVPCards: message.revealedVPCards,
   });
 
+  // Set game stats if present
+  if (message.stats) {
+    gameStore.setGameStats(message.stats);
+  }
+
   // Log victory
   const winnerVPTotal = message.winnerVP.total || message.winnerVP;
   gameStore.addLogEntry(

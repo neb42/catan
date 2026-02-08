@@ -10,6 +10,7 @@ import type {
   BuildingType,
   ResourceType,
   OwnedDevCard,
+  GameStats,
 } from '@catan/shared';
 import { BUILDING_COSTS } from '@catan/shared';
 
@@ -153,6 +154,7 @@ interface VictorySlice {
   allPlayerVP: Record<string, VPBreakdown>;
   revealedVPCards: Array<{ playerId: string; cardCount: number }>;
   victoryPhase: 'none' | 'reveal' | 'modal' | 'dismissed';
+  gameStats: GameStats | null;
 }
 
 // Game log state slice
@@ -179,6 +181,13 @@ interface DebugSlice {
   debugPanelOpen: boolean;
 }
 
+// Rematch state slice
+interface RematchSlice {
+  rematchReadyPlayers: string[]; // Array of player IDs who voted for rematch
+  rematchReadyCount: number;
+  rematchTotalPlayers: number;
+}
+
 interface GameStore
   extends PlacementSlice,
     TurnSlice,
@@ -191,7 +200,8 @@ interface GameStore
     VictorySlice,
     GameLogSlice,
     PauseSlice,
-    DebugSlice {
+    DebugSlice,
+    RematchSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
   gameStarted: boolean;
@@ -326,6 +336,7 @@ interface GameStore
     revealedVPCards: Array<{ playerId: string; cardCount: number }>;
   }) => void;
   setVictoryPhase: (phase: 'none' | 'reveal' | 'modal' | 'dismissed') => void;
+  setGameStats: (stats: GameStats | null) => void;
 
   // Game log actions
   addLogEntry: (entry: string) => void;
@@ -342,6 +353,14 @@ interface GameStore
   ) => void;
   setDebugPanelOpen: (open: boolean) => void;
   clearDebugMessages: () => void;
+
+  // Rematch actions
+  setRematchState: (
+    readyPlayers: string[],
+    readyCount: number,
+    totalPlayers: number,
+  ) => void;
+  clearRematchState: () => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -420,6 +439,7 @@ export const useGameStore = create<GameStore>((set) => ({
   allPlayerVP: {},
   revealedVPCards: [],
   victoryPhase: 'none',
+  gameStats: null,
 
   // Game log state
   gameLog: [],
@@ -431,6 +451,11 @@ export const useGameStore = create<GameStore>((set) => ({
   // Debug state
   debugMessages: [],
   debugPanelOpen: false,
+
+  // Rematch state
+  rematchReadyPlayers: [],
+  rematchReadyCount: 0,
+  rematchTotalPlayers: 0,
 
   // Existing actions
   setBoard: (board) => set({ board }),
@@ -698,6 +723,7 @@ export const useGameStore = create<GameStore>((set) => ({
       victoryPhase: data.revealedVPCards.length > 0 ? 'reveal' : 'modal',
     }),
   setVictoryPhase: (phase) => set({ victoryPhase: phase }),
+  setGameStats: (stats) => set({ gameStats: stats }),
 
   // Game log actions
   addLogEntry: (entry) =>
@@ -720,6 +746,20 @@ export const useGameStore = create<GameStore>((set) => ({
     })),
   setDebugPanelOpen: (open) => set({ debugPanelOpen: open }),
   clearDebugMessages: () => set({ debugMessages: [] }),
+
+  // Rematch actions
+  setRematchState: (readyPlayers, readyCount, totalPlayers) =>
+    set({
+      rematchReadyPlayers: readyPlayers,
+      rematchReadyCount: readyCount,
+      rematchTotalPlayers: totalPlayers,
+    }),
+  clearRematchState: () =>
+    set({
+      rematchReadyPlayers: [],
+      rematchReadyCount: 0,
+      rematchTotalPlayers: 0,
+    }),
 }));
 
 // CUSTOM HOOKS - prevent selector anti-pattern
@@ -919,6 +959,7 @@ export const useVictoryState = () =>
       victoryPhase: s.victoryPhase,
     })),
   );
+export const useGameStats = () => useGameStore((s) => s.gameStats);
 
 /**
  * Calculate public victory points for a player.
@@ -953,3 +994,10 @@ export function usePlayerPublicVP(playerId: string): {
     }),
   );
 }
+
+export const useRematchState = () =>
+  useGameStore((s) => ({
+    readyPlayers: s.rematchReadyPlayers,
+    readyCount: s.rematchReadyCount,
+    totalPlayers: s.rematchTotalPlayers,
+  }));
