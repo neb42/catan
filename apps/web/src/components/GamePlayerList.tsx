@@ -179,7 +179,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 radius="md"
                 style={{
                   backgroundColor: colorMap[player.color] || player.color,
-                  color: player.color === 'white' ? '#2D3142' : 'white',
+                  color: player.color === 'yellow' ? '#2D3142' : 'white',
                   fontSize: '16px',
                   fontWeight: 'bold',
                   fontFamily: 'Fraunces, serif',
