@@ -1,4 +1,4 @@
-import { Modal, Stack, Text, Group, Badge, Button } from '@mantine/core';
+import { Modal, Stack, Text, Group, Badge, Button, Tabs } from '@mantine/core';
 import { motion } from 'motion/react';
 import { useEffect, useRef, useCallback, useState } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
@@ -10,7 +10,9 @@ import {
   useRematchState,
 } from '../../stores/gameStore';
 import { ResultsBreakdown } from './ResultsBreakdown';
-import { StatisticsTabs } from './StatisticsTabs';
+import { DevCardStatsChart } from './DevCardStatsChart';
+import { DiceDistributionChart } from './DiceDistributionChart';
+import { ResourceStatsChart } from './ResourceStatsChart';
 
 /**
  * Victory modal showing winner announcement with confetti celebration.
@@ -147,16 +149,62 @@ export function VictoryModal() {
             {winnerVP?.total} Victory Points
           </Badge>
 
-          {/* Results Breakdown - replaces old player cards */}
-          <ResultsBreakdown
-            players={room?.players || []}
-            allPlayerVP={allPlayerVP}
-          />
+          <Tabs
+            defaultValue="dice"
+            styles={{
+              root: { background: '#fdf6e3' },
+              tab: {
+                color: '#5d4037',
+                fontFamily: 'Fraunces, serif',
+                '&[data-active]': {
+                  borderBottomColor: '#8d6e63',
+                  color: '#8d6e63',
+                },
+              },
+              panel: { paddingTop: 16 },
+            }}
+          >
+            <Tabs.List>
+              <Tabs.Tab value="overview">Overview</Tabs.Tab>
+              {gameStats && (
+                <>
+                  <Tabs.Tab value="dice">Dice Stats</Tabs.Tab>
+                  <Tabs.Tab value="devcards">Dev Cards</Tabs.Tab>
+                  <Tabs.Tab value="resources">Resources</Tabs.Tab>
+                </>
+              )}
+            </Tabs.List>
 
-          {/* Statistics Tabs - only if stats available */}
-          {gameStats && (
-            <StatisticsTabs stats={gameStats} players={room?.players || []} />
-          )}
+
+            <Tabs.Panel value="overview">
+              <ResultsBreakdown
+                players={room?.players || []}
+                allPlayerVP={allPlayerVP}
+              />
+            </Tabs.Panel>
+
+            {gameStats && (
+              <>
+                <Tabs.Panel value="dice">
+                  <DiceDistributionChart diceRolls={gameStats.diceRolls} />
+                </Tabs.Panel>
+
+                <Tabs.Panel value="devcards">
+                  <DevCardStatsChart
+                    devCardStats={gameStats.devCardStats}
+                    players={room?.players || []}
+                  />
+                </Tabs.Panel>
+
+                <Tabs.Panel value="resources">
+                  <ResourceStatsChart
+                    resourceStats={gameStats.resourceStats}
+                    players={room?.players || []}
+                  />
+                </Tabs.Panel>
+              </>
+            )}
+          </Tabs>
 
           {/* Action buttons */}
           <Stack w="100%" gap="xs">
