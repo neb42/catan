@@ -959,7 +959,7 @@ export const useVictoryState = () =>
       victoryPhase: s.victoryPhase,
     })),
   );
-export const useGameStats = () => useGameStore((s) => s.gameStats);
+export const useGameStats = () => useGameStore(useShallow((s) => s.gameStats));
 
 /**
  * Calculate public victory points for a player.
@@ -996,8 +996,8 @@ export function usePlayerPublicVP(playerId: string): {
 }
 
 export const useRematchState = () =>
-  useGameStore((s) => ({
+  useGameStore(useShallow((s) => ({
     readyPlayers: s.rematchReadyPlayers,
     readyCount: s.rematchReadyCount,
     totalPlayers: s.rematchTotalPlayers,
-  }));
+  })));
