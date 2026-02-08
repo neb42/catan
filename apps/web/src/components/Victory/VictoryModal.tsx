@@ -1,12 +1,13 @@
 import { Modal, Stack, Text, Group, Badge, Button } from '@mantine/core';
 import { motion } from 'motion/react';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
 import type { CreateTypes } from 'canvas-confetti';
 import {
   useVictoryState,
   useGameStore,
   useGameStats,
+  useRematchState,
 } from '../../stores/gameStore';
 import { ResultsBreakdown } from './ResultsBreakdown';
 import { StatisticsTabs } from './StatisticsTabs';
@@ -22,8 +23,12 @@ export function VictoryModal() {
   const { winnerId, winnerNickname, winnerVP, allPlayerVP, victoryPhase } =
     useVictoryState();
   const room = useGameStore((s) => s.room);
+  const myPlayerId = useGameStore((s) => s.myPlayerId);
+  const sendMessage = useGameStore((s) => s.sendMessage);
   const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
   const gameStats = useGameStats();
+  const { readyPlayers, readyCount, totalPlayers } = useRematchState();
+  const [hasVotedRematch, setHasVotedRematch] = useState(false);
   const confettiRef = useRef<CreateTypes | null>(null);
 
   // Derive modal visibility from store state
@@ -58,6 +63,17 @@ export function VictoryModal() {
   const handleReturnToLobby = () => {
     // Navigate to home/lobby - use window.location for simplicity
     window.location.href = '/';
+  };
+
+  const handleRematch = () => {
+    if (hasVotedRematch || !sendMessage || !myPlayerId) return;
+
+    sendMessage({
+      type: 'request_rematch',
+      playerId: myPlayerId,
+    });
+
+    setHasVotedRematch(true);
   };
 
   return (
@@ -143,38 +159,63 @@ export function VictoryModal() {
           )}
 
           {/* Action buttons */}
-          <Group gap="md">
-            <Button
-              variant="outline"
-              onClick={handleClose}
-              styles={{
-                root: {
-                  border: '2px solid #8d6e63',
-                  color: '#8d6e63',
-                  background: 'transparent',
-                  '&:hover': {
-                    background: 'rgba(141, 110, 99, 0.1)',
+          <Stack w="100%" gap="xs">
+            {/* Ready count display */}
+            {readyCount > 0 && (
+              <Text size="sm" ta="center" c="#5d4037">
+                Ready for rematch: {readyCount}/{totalPlayers} players
+              </Text>
+            )}
+
+            <Group gap="md" justify="center">
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                styles={{
+                  root: {
+                    border: '2px solid #8d6e63',
+                    color: '#8d6e63',
+                    background: 'transparent',
+                    '&:hover': {
+                      background: 'rgba(141, 110, 99, 0.1)',
+                    },
                   },
-                },
-              }}
-            >
-              View Board
-            </Button>
-            <Button
-              onClick={handleReturnToLobby}
-              styles={{
-                root: {
-                  background: '#8d6e63',
-                  color: '#fdf6e3',
-                  '&:hover': {
-                    background: '#6d4c41',
+                }}
+              >
+                View Board
+              </Button>
+
+              <Button
+                onClick={handleRematch}
+                disabled={hasVotedRematch}
+                styles={{
+                  root: {
+                    background: hasVotedRematch ? '#ccc' : '#8d6e63',
+                    color: '#fdf6e3',
+                    '&:hover': {
+                      background: hasVotedRematch ? '#ccc' : '#6d4c41',
+                    },
                   },
-                },
-              }}
-            >
-              Return to Lobby
-            </Button>
-          </Group>
+                }}
+              >
+                {hasVotedRematch ? 'Waiting for others...' : 'Rematch'}
+              </Button>
+            </Group>
+
+            {/* Show checkmarks next to player names who voted */}
+            {readyCount > 0 && room?.players && (
+              <Stack gap={4}>
+                {room.players.map((p) => (
+                  <Group key={p.id} gap="xs" justify="center">
+                    <Text size="xs" c="#5d4037">
+                      {p.nickname}
+                    </Text>
+                    {readyPlayers.includes(p.id) && <Text size="xs">✓</Text>}
+                  </Group>
+                ))}
+              </Stack>
+            )}
+          </Stack>
         </Stack>
       </Modal>
     </>
