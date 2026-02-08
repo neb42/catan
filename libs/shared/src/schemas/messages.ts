@@ -612,6 +612,25 @@ export const GameStateSyncMessageSchema = z.object({
   lastPlacedSettlementId: z.string().nullable(),
 });
 
+// Rematch Messages - Client -> Server
+export const RequestRematchMessageSchema = z.object({
+  type: z.literal('request_rematch'),
+  playerId: z.string(),
+});
+
+// Rematch Messages - Server -> Client
+export const RematchUpdateMessageSchema = z.object({
+  type: z.literal('rematch_update'),
+  readyCount: z.number(),
+  totalPlayers: z.number(),
+  readyPlayers: z.array(z.string()), // Array of player IDs who voted
+});
+
+export const GameResetMessageSchema = z.object({
+  type: z.literal('game_reset'),
+  board: BoardStateSchema,
+});
+
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   CreateRoomMessageSchema,
@@ -704,6 +723,10 @@ export const WebSocketMessageSchema = z.discriminatedUnion('type', [
   GamePausedMessageSchema,
   GameResumedMessageSchema,
   GameStateSyncMessageSchema,
+  // Rematch messages
+  RequestRematchMessageSchema,
+  RematchUpdateMessageSchema,
+  GameResetMessageSchema,
 ]);
 
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
@@ -856,5 +879,9 @@ export type VictoryMessage = z.infer<typeof VictoryMessageSchema>;
 export type GamePausedMessage = z.infer<typeof GamePausedMessageSchema>;
 export type GameResumedMessage = z.infer<typeof GameResumedMessageSchema>;
 export type GameStateSyncMessage = z.infer<typeof GameStateSyncMessageSchema>;
+// Rematch message types
+export type RequestRematchMessage = z.infer<typeof RequestRematchMessageSchema>;
+export type RematchUpdateMessage = z.infer<typeof RematchUpdateMessageSchema>;
+export type GameResetMessage = z.infer<typeof GameResetMessageSchema>;
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
