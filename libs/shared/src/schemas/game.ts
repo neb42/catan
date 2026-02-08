@@ -114,6 +114,22 @@ export type VPBreakdown = z.infer<typeof VPBreakdownSchema>;
 export const GameLifecyclePhaseSchema = z.enum(['setup', 'playing', 'ended']);
 export type GameLifecyclePhase = z.infer<typeof GameLifecyclePhaseSchema>;
 
+// Per-player resource statistics for post-game display
+export const ResourceStatsSchema = z.object({
+  gained: z.record(ResourceTypeSchema, z.number()), // Resources gained from dice/bank
+  spent: z.record(ResourceTypeSchema, z.number()), // Resources spent on buildings/cards
+  traded: z.record(ResourceTypeSchema, z.number()), // Net trade flow (can be negative)
+});
+export type ResourceStats = z.infer<typeof ResourceStatsSchema>;
+
+// Complete game statistics payload for victory message
+export const GameStatsSchema = z.object({
+  diceRolls: z.record(z.number(), z.number()), // Dice roll total (2-12) -> frequency count
+  resourceStats: z.record(z.string(), ResourceStatsSchema), // playerId -> resource stats
+  devCardStats: z.record(z.string(), z.array(DevelopmentCardTypeSchema)), // playerId -> cards drawn
+});
+export type GameStats = z.infer<typeof GameStatsSchema>;
+
 export const GameStateSchema = z.object({
   board: BoardStateSchema,
   settlements: z.array(SettlementSchema),
