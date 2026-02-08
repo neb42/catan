@@ -1,4 +1,4 @@
-import { OwnedDevCard, Settlement } from '@catan/shared';
+import { OwnedDevCard, Settlement, GameStats } from '@catan/shared';
 
 export interface VPBreakdown {
   settlements: number; // Count of non-city settlements (1 VP each)
@@ -15,6 +15,7 @@ export interface VictoryResult {
   winnerVP: VPBreakdown | null;
   allPlayerVP: Record<string, VPBreakdown>;
   revealedVPCards: Array<{ playerId: string; cardCount: number }>;
+  stats?: GameStats; // Optional game statistics (only present when called by GameManager)
 }
 
 export const VICTORY_POINT_THRESHOLD = 10;

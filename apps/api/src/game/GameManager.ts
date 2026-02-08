@@ -54,6 +54,7 @@ import {
   LargestArmyResult,
 } from './largest-army-logic';
 import { checkForVictory, VictoryResult } from './victory-logic';
+import { GameStats } from './GameStats';
 
 export class GameManager {
   private gameState: GameState;
@@ -85,6 +86,9 @@ export class GameManager {
 
   // Game ended state
   private gameEnded = false;
+
+  // Game statistics tracking
+  private stats: GameStats;
 
   constructor(board: BoardState, playerIds: string[]) {
     this.playerIds = playerIds;
@@ -128,6 +132,9 @@ export class GameManager {
     // Initialize development card deck
     this.devCardDeck = createShuffledDeck();
     this.deckIndex = 0;
+
+    // Initialize game statistics tracking
+    this.stats = new GameStats();
 
     // Initialize player dev cards and knights played for each player
     for (const playerId of playerIds) {
@@ -454,6 +461,9 @@ export class GameManager {
     const dice2 = Math.floor(Math.random() * 6) + 1;
     const total = dice1 + dice2;
 
+    // Record dice roll in statistics
+    this.stats.recordRoll(total);
+
     // Update turn state with dice roll
     this.gameState.turnState.lastDiceRoll = { dice1, dice2, total };
     this.gameState.turnState.phase = 'main';
@@ -504,6 +514,16 @@ export class GameManager {
       this.gameState.playerResources,
       this.gameState.robberHexId,
     );
+
+    // Record resource gains in statistics
+    for (const grant of resourcesDistributed) {
+      const resourceRecord: Partial<Record<ResourceType, number>> = {};
+      for (const resource of grant.resources) {
+        resourceRecord[resource.type] =
+          (resourceRecord[resource.type] || 0) + resource.count;
+      }
+      this.stats.recordResourceGain(grant.playerId, resourceRecord);
+    }
 
     return {
       success: true,
@@ -708,6 +728,7 @@ export class GameManager {
 
     // 6. All valid - deduct resources and place road
     this.deductResources(playerId, cost);
+    this.stats.recordResourceSpend(playerId, cost);
     this.gameState.roads.push({
       edgeId,
       playerId,
@@ -786,6 +807,7 @@ export class GameManager {
 
     // 6. All valid - deduct resources and place settlement
     this.deductResources(playerId, cost);
+    this.stats.recordResourceSpend(playerId, cost);
     this.gameState.settlements.push({
       vertexId,
       playerId,
@@ -862,6 +884,7 @@ export class GameManager {
 
     // 6. All valid - deduct resources and upgrade settlement to city
     this.deductResources(playerId, cost);
+    this.stats.recordResourceSpend(playerId, cost);
 
     // Find the settlement and set isCity to true
     const settlement = this.gameState.settlements.find(
@@ -1066,6 +1089,14 @@ export class GameManager {
       this.gameState.playerResources[proposerId][resourceType] += amount || 0;
     }
 
+    // Record trade in statistics
+    this.stats.recordResourceTrade(
+      proposerId,
+      partnerId,
+      proposerGave,
+      partnerGave,
+    );
+
     // Clear active trade
     this.activeTrade = null;
 
@@ -1167,6 +1198,10 @@ export class GameManager {
       const resourceType = resource as ResourceType;
       this.gameState.playerResources[playerId][resourceType] += amount || 0;
     }
+
+    // Record bank trade in statistics (spend + gain)
+    this.stats.recordResourceSpend(playerId, giving);
+    this.stats.recordResourceGain(playerId, receiving);
 
     return {
       success: true,
@@ -1580,6 +1615,7 @@ export class GameManager {
     resources.ore -= cost.ore;
     resources.sheep -= cost.sheep;
     resources.wheat -= cost.wheat;
+    this.stats.recordResourceSpend(playerId, cost);
 
     // 5. Create owned card with current turn
     const currentTurn = this.gameState.turnState?.turnNumber || 1;
@@ -1589,10 +1625,11 @@ export class GameManager {
       purchasedOnTurn: currentTurn,
     };
 
-    // 6. Add to player's hand
+    // 6. Add to player's hand and record card in statistics
     const playerCards = this.playerDevCards.get(playerId) || [];
     playerCards.push(ownedCard);
     this.playerDevCards.set(playerId, playerCards);
+    this.stats.recordDevCard(playerId, cardType);
 
     // 7. Check for victory (VP card may have brought player to 10+ VP)
     const victoryResult = this.checkVictory();
@@ -2105,7 +2142,7 @@ export class GameManager {
 
   /**
    * Check if any player has reached victory (10+ VP).
-   * If game ends, updates gamePhase and winnerId.
+   * If game ends, updates gamePhase and winnerId, and includes game statistics.
    */
   public checkVictory(): VictoryResult | null {
     if (this.gameEnded) return null;
@@ -2122,6 +2159,8 @@ export class GameManager {
       this.gameEnded = true;
       this.gameState.gamePhase = 'ended';
       this.gameState.winnerId = result.winnerId;
+      // Include game statistics in victory result
+      result.stats = this.stats.getStats();
     }
 
     return result.gameEnded ? result : null;
