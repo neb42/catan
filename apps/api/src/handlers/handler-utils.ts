@@ -155,6 +155,14 @@ export function broadcastVictory(
     ? Array.from(room.players.values()).find((p) => p.id === result.winnerId)
     : null;
 
+  // Stats should always be present when game ends (from GameManager.checkVictory)
+  // If not present (shouldn't happen), use empty stats as fallback
+  const stats = result.stats || {
+    diceRolls: {},
+    resourceStats: {},
+    devCardStats: {},
+  };
+
   roomManager.broadcastToRoom(roomId, {
     type: 'victory',
     winnerId: result.winnerId!,
@@ -162,5 +170,6 @@ export function broadcastVictory(
     winnerVP: result.winnerVP!,
     allPlayerVP: result.allPlayerVP,
     revealedVPCards: result.revealedVPCards,
+    stats,
   });
 }

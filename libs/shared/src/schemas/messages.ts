@@ -6,6 +6,7 @@ import {
   OwnedDevCardSchema,
   ResourceTypeSchema,
   VPBreakdownSchema,
+  GameStatsSchema,
 } from './game';
 import { PlayerSchema } from './player';
 import { RoomSchema } from './room';
@@ -513,6 +514,7 @@ export const VictoryMessageSchema = z.object({
       cardCount: z.number(),
     }),
   ),
+  stats: GameStatsSchema, // Game statistics for post-game display
 });
 
 // Connection resilience messages - Server -> Client
