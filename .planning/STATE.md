@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-08  
-**Last activity:** 2026-02-08 - Completed 14-04-PLAN.md (Integrate statistics display into VictoryModal)
+**Last activity:** 2026-02-08 - Completed 14-05-PLAN.md (Rematch UI Integration)
 
 ## Current Position
 
 Phase: 14 of 14 (Victory Stats and Rematch)  
-Plan: 4 of 6 in current phase  
+Plan: 5 of 6 in current phase  
 Status: In progress  
-Last activity: 2026-02-08 - Completed 14-04-PLAN.md
+Last activity: 2026-02-08 - Completed 14-05-PLAN.md
 
-Progress: ████████████████████████████████████████████████████████████████████████████████████████████████████ (81/84 plans complete - 96.4%)
+Progress: ████████████████████████████████████████████████████████████████████████████████████████████████████ (82/84 plans complete - 97.6%)
 
 ## Blockers/Concerns
 
@@ -185,6 +185,10 @@ Progress: ███████████████████████�
 | 14-04  | Store gameStats in VictorySlice   | Keep victory-related data together in same slice for lifecycle management          |
 | 14-04  | Conditional statistics rendering  | Only show StatisticsTabs if gameStats is not null for graceful handling            |
 | 14-04  | Modal scroll capability           | maxHeight: 80vh and overflow: auto handles extensive statistics without breaking   |
+| 14-05  | sendMessage from store            | Use store.sendMessage instead of direct WebSocket access for consistency           |
+| 14-05  | Disable rematch button after vote | Prevent duplicate request_rematch messages with local hasVotedRematch state        |
+| 14-05  | Transparent voting display        | Show all players with checkmarks so users know who's voted and who's holding up    |
+| 14-05  | Replace Return to Lobby button    | Rematch is primary action after victory, emphasize seamless replay over exit       |
 | 035    | Set attemptedRoomId on creation   | Call setAttemptedRoomId in handleRoomCreated to prevent URL join useEffect trigger |
 
 ## Session Continuity
