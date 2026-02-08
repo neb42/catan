@@ -1,19 +1,15 @@
-import {
-  Modal,
-  Stack,
-  Text,
-  Group,
-  Badge,
-  Button,
-  Avatar,
-  Card,
-} from '@mantine/core';
+import { Modal, Stack, Text, Group, Badge, Button } from '@mantine/core';
 import { motion } from 'motion/react';
 import { useEffect, useRef, useCallback } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
 import type { CreateTypes } from 'canvas-confetti';
-import { useVictoryState, useGameStore } from '../../stores/gameStore';
-import { PLAYER_COLOR_HEX } from '@catan/shared';
+import {
+  useVictoryState,
+  useGameStore,
+  useGameStats,
+} from '../../stores/gameStore';
+import { ResultsBreakdown } from './ResultsBreakdown';
+import { StatisticsTabs } from './StatisticsTabs';
 
 /**
  * Victory modal showing winner announcement with confetti celebration.
@@ -27,6 +23,7 @@ export function VictoryModal() {
     useVictoryState();
   const room = useGameStore((s) => s.room);
   const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
+  const gameStats = useGameStats();
   const confettiRef = useRef<CreateTypes | null>(null);
 
   // Derive modal visibility from store state
@@ -91,6 +88,8 @@ export function VictoryModal() {
             border: '4px solid #8d6e63',
             borderRadius: '12px',
             boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+            maxHeight: '80vh',
+            overflow: 'auto',
           },
           header: {
             background: 'transparent',
@@ -132,118 +131,16 @@ export function VictoryModal() {
             {winnerVP?.total} Victory Points
           </Badge>
 
-          {/* All players VP table */}
-          <Stack gap="sm" w="100%">
-            <Text
-              fw={700}
-              ta="center"
-              style={{
-                fontFamily: 'Fraunces, serif',
-                color: '#5d4037',
-                fontSize: '18px',
-              }}
-            >
-              Final Standings
-            </Text>
-            {room?.players.map((player) => {
-              const vp = allPlayerVP[player.id];
-              const isWinner = player.id === winnerId;
-              return (
-                <Card
-                  key={player.id}
-                  padding="sm"
-                  radius="md"
-                  style={{
-                    border: isWinner
-                      ? `3px solid ${PLAYER_COLOR_HEX[player.color]}`
-                      : '1px solid #d7ccc8',
-                    backgroundColor: isWinner
-                      ? 'rgba(241, 196, 15, 0.1)'
-                      : 'white',
-                  }}
-                >
-                  <Group justify="space-between">
-                    <Group gap="xs">
-                      <Avatar
-                        size="sm"
-                        radius="xl"
-                        style={{
-                          backgroundColor: PLAYER_COLOR_HEX[player.color],
-                        }}
-                      >
-                        {player.nickname.slice(0, 2).toUpperCase()}
-                      </Avatar>
-                      <Text
-                        fw={isWinner ? 700 : 500}
-                        style={{ color: '#5d4037' }}
-                      >
-                        {player.nickname}
-                      </Text>
-                      {isWinner && (
-                        <Badge
-                          size="xs"
-                          styles={{
-                            root: {
-                              background: '#f1c40f',
-                              color: '#333',
-                            },
-                          }}
-                        >
-                          WINNER
-                        </Badge>
-                      )}
-                    </Group>
-                    <Group gap={4}>
-                      <Text
-                        size="sm"
-                        title="Settlements"
-                        style={{ color: '#5d4037' }}
-                      >
-                        {vp?.settlements || 0}
-                      </Text>
-                      <Text
-                        size="sm"
-                        title="Cities"
-                        style={{ color: '#5d4037' }}
-                      >
-                        {Math.floor((vp?.cities || 0) / 2)}
-                      </Text>
-                      {(vp?.longestRoad || 0) > 0 && (
-                        <Text
-                          size="sm"
-                          title="Longest Road"
-                          style={{ color: '#5d4037' }}
-                        >
-                          2
-                        </Text>
-                      )}
-                      {(vp?.largestArmy || 0) > 0 && (
-                        <Text
-                          size="sm"
-                          title="Largest Army"
-                          style={{ color: '#5d4037' }}
-                        >
-                          2
-                        </Text>
-                      )}
-                      {(vp?.victoryPointCards || 0) > 0 && (
-                        <Text
-                          size="sm"
-                          title="VP Cards"
-                          style={{ color: '#5d4037' }}
-                        >
-                          {vp?.victoryPointCards}
-                        </Text>
-                      )}
-                      <Badge color="yellow" variant="light">
-                        {vp?.total} VP
-                      </Badge>
-                    </Group>
-                  </Group>
-                </Card>
-              );
-            })}
-          </Stack>
+          {/* Results Breakdown - replaces old player cards */}
+          <ResultsBreakdown
+            players={room?.players || []}
+            allPlayerVP={allPlayerVP}
+          />
+
+          {/* Statistics Tabs - only if stats available */}
+          {gameStats && (
+            <StatisticsTabs stats={gameStats} players={room?.players || []} />
+          )}
 
           {/* Action buttons */}
           <Group gap="md">
