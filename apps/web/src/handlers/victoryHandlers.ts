@@ -75,17 +75,14 @@ export const handleGameReset: MessageHandler = (message, ctx) => {
     isBuildPending: false,
     activeTrade: null,
     tradeModalOpen: false,
-    gameStarted: false, // Game not started yet (needs ready phase)
   });
 
-  // Set new board
+  // Set new board and keep game started (stay on game page)
   gameStore.setBoard(message.board);
+  gameStore.setGameStarted(true);
 
-  // Navigate back to lobby for new ready phase
-  // The backend will send player_ready messages to sync UI
-  if (ctx.room?.id) {
-    ctx.navigate('/lobby/' + ctx.room.id);
-  }
+  // Backend will send placement_turn to start initial placement phase
+  // No navigation needed - stay on game page
 
   // Toast notification
   showGameNotification('New game starting!', 'success');

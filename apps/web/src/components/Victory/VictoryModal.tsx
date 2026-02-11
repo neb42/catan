@@ -34,7 +34,8 @@ export function VictoryModal() {
   const confettiRef = useRef<CreateTypes | null>(null);
 
   // Derive modal visibility from store state
-  const modalOpen = victoryPhase === 'modal';
+  // const modalOpen = victoryPhase === 'modal';
+  const modalOpen = true;
 
   const handleInit = useCallback(({ confetti }: { confetti: CreateTypes }) => {
     confettiRef.current = confetti;

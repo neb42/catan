@@ -233,6 +233,7 @@ export function Game() {
       {/* Victory announcement - overlays when game ends */}
       {gameEnded && victoryPhase === 'reveal' && <VPRevealOverlay />}
       {gameEnded && victoryPhase === 'modal' && <VictoryModal />}
+      <VictoryModal />
 
       {/* Disconnect overlay - blocks all interaction when any player disconnects */}
       <DisconnectOverlay />

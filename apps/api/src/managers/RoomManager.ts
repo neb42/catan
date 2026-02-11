@@ -318,7 +318,7 @@ export class RoomManager {
 
   /**
    * Reset the game state for a rematch.
-   * Generates new board, creates new GameManager, clears votes and ready states.
+   * Generates new board, creates new GameManager, starts placement phase.
    */
   private resetGame(roomId: string): void {
     const room = this.rooms.get(roomId);
@@ -333,29 +333,32 @@ export class RoomManager {
 
     // Create new GameManager with existing player IDs
     const playerIds = Array.from(room.players.keys());
-    room.gameManager = new GameManager(newBoard, playerIds);
+    const gameManager = new GameManager(newBoard, playerIds);
+    room.gameManager = gameManager;
 
     // Clear rematch votes
     room.rematchVotes.clear();
 
-    // Reset player ready states
-    room.players.forEach((player) => {
-      player.ready = false;
-    });
-
-    // Broadcast game reset with new board
+    // Broadcast game reset with new board (stays on game page)
     this.broadcastToRoom(roomId, {
       type: 'game_reset',
       board: newBoard,
     });
 
-    // Broadcast player_ready messages to sync UI state
-    room.players.forEach((player) => {
+    // Broadcast first placement turn (start initial placement phase)
+    const playerId = gameManager.getCurrentPlayerId();
+    const phase = gameManager.getPlacementPhase();
+    const placement = gameManager.getState().placement;
+
+    if (playerId && phase && placement) {
       this.broadcastToRoom(roomId, {
-        type: 'player_ready',
-        playerId: player.id,
-        ready: false,
+        type: 'placement_turn',
+        currentPlayerIndex: placement.currentPlayerIndex,
+        currentPlayerId: playerId,
+        phase,
+        round: placement.draftRound,
+        turnNumber: placement.turnNumber,
       });
-    });
+    }
   }
 }
