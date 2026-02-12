@@ -24,6 +24,7 @@ export type ManagedRoom = {
   isPaused: boolean;
   disconnectedPlayers: Map<string, ManagedPlayer>; // Keyed by nickname
   playerOrder: string[]; // Player IDs in join order (preserved across disconnects)
+  rematchVotes: Set<string>; // Player IDs who voted for rematch
 };
 
 export class RoomManager {
@@ -41,6 +42,7 @@ export class RoomManager {
       isPaused: false,
       disconnectedPlayers: new Map(),
       playerOrder: [], // Initialize empty player order
+      rematchVotes: new Set(), // Initialize empty rematch votes
     };
 
     this.rooms.set(roomId, room);
@@ -287,5 +289,67 @@ export class RoomManager {
       reconnectedPlayerId: playerId,
       reconnectedPlayerNickname: player.nickname,
     });
+  }
+
+  /**
+   * Handle a rematch vote from a player.
+   * Tracks votes and triggers game reset when all players vote.
+   */
+  handleRematchVote(roomId: string, playerId: string): void {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    // Add vote
+    room.rematchVotes.add(playerId);
+
+    // Broadcast update
+    this.broadcastToRoom(roomId, {
+      type: 'rematch_update',
+      readyCount: room.rematchVotes.size,
+      totalPlayers: room.players.size,
+      readyPlayers: Array.from(room.rematchVotes),
+    });
+
+    // Check if all players voted
+    if (room.rematchVotes.size === room.players.size) {
+      this.resetGame(roomId);
+    }
+  }
+
+  /**
+   * Reset the game state for a rematch.
+   * Clears board and game manager, resets players to unready, returns to lobby.
+   */
+  private resetGame(roomId: string): void {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    // Clear board and game manager (back to pre-game state)
+    room.board = null;
+    room.gameManager = null;
+
+    // Clear rematch votes
+    room.rematchVotes.clear();
+
+    // Reset all players to unready
+    room.players.forEach((player) => {
+      player.ready = false;
+    });
+
+    // Broadcast game reset (tells clients to return to lobby)
+    this.broadcastToRoom(roomId, {
+      type: 'game_reset',
+    });
+
+    // Broadcast updated ready states
+    room.players.forEach((player) => {
+      this.broadcastToRoom(roomId, {
+        type: 'player_ready',
+        playerId: player.id,
+        ready: false,
+      });
+    });
+
+    // When all players ready up again, the normal countdown/game start flow will trigger
   }
 }

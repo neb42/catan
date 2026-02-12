@@ -64,7 +64,11 @@ import {
   handleLongestRoadUpdated,
   handleLargestArmyUpdated,
 } from './awardHandlers';
-import { handleVictory } from './victoryHandlers';
+import {
+  handleVictory,
+  handleRematchUpdate,
+  handleGameReset,
+} from './victoryHandlers';
 import { handleGamePaused, handleGameResumed } from './pauseHandlers';
 import { handleError } from './errorHandlers';
 
@@ -139,6 +143,10 @@ const handlerRegistry: Partial<
 
   // Victory handler
   victory: handleVictory,
+
+  // Rematch handlers
+  rematch_update: handleRematchUpdate,
+  game_reset: handleGameReset,
 
   // Pause handlers
   game_paused: handleGamePaused,

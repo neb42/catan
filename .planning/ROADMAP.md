@@ -579,6 +579,45 @@ Plans:
 
 ---
 
+## Phase 14: Victory Stats and Rematch
+
+**Goal:** Enhance victory modal with game statistics and rematch functionality  
+**Duration:** 0.5 week  
+**Dependencies:** Phase 13  
+**Plans:** 6 plans
+
+### Requirements
+
+- Add dice roll distribution statistics to victory modal
+- Add development card distribution statistics to victory modal
+- Add resource card distribution statistics to victory modal
+- Improve styling of results breakdown in victory modal
+- Add rematch button to return to lobby with reset game state
+
+### Success Criteria
+
+1. **Statistics display correctly** — Victory modal shows dice roll frequencies, dev card types drawn, resource distribution across players
+2. **Rematch flow works** — Click rematch button, return to lobby with same players, game state fully reset
+3. **Styling improvements** — Results breakdown is visually polished and easy to read
+
+### Plans
+
+- [x] 14-01-PLAN.md — Backend statistics tracking (GameStats class + message schemas)
+- [x] 14-02-PLAN.md — Chart components with @mantine/charts
+- [x] 14-03-PLAN.md — Rematch backend logic (RoomManager + message schemas)
+- [x] 14-04-PLAN.md — Statistics display in VictoryModal
+- [x] 14-05-PLAN.md — Rematch UI integration
+- [x] 14-06-PLAN.md — Human verification checkpoint
+
+### Deliverables
+
+- Game statistics tracking (dice rolls, dev cards, resources)
+- Enhanced victory modal with stats display
+- Rematch button and state reset logic
+- Improved results breakdown styling
+
+---
+
 ## Validation Matrix
 
 **Requirements Coverage:** 68/68 (100%)

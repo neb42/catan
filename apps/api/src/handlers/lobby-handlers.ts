@@ -9,6 +9,7 @@ import {
   MAX_PLAYERS,
   MIN_PLAYERS,
   PLAYER_COLORS,
+  RequestRematchMessage,
   ToggleReadyMessage,
 } from '@catan/shared';
 
@@ -453,4 +454,29 @@ export function handleChangeNickname(
     type: 'room_state',
     room: serializeRoom(room),
   });
+}
+
+export function handleRequestRematch(
+  ws: WebSocket,
+  message: RequestRematchMessage,
+  roomManager: RoomManager,
+  context: { currentRoomId: string | null; playerId: string | null },
+): void {
+  if (
+    !context.currentRoomId ||
+    !context.playerId ||
+    message.playerId !== context.playerId
+  ) {
+    sendError(ws, 'Invalid request');
+    return;
+  }
+
+  const room = roomManager.getRoom(context.currentRoomId);
+  if (!room || !room.players.has(context.playerId)) {
+    sendError(ws, 'Room not found');
+    return;
+  }
+
+  // Handle rematch vote
+  roomManager.handleRematchVote(context.currentRoomId, message.playerId);
 }
