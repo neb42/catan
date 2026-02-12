@@ -602,12 +602,12 @@ Plans:
 
 ### Plans
 
-- [ ] 14-01-PLAN.md — Backend statistics tracking (GameStats class + message schemas)
-- [ ] 14-02-PLAN.md — Chart components with @mantine/charts
-- [ ] 14-03-PLAN.md — Rematch backend logic (RoomManager + message schemas)
-- [ ] 14-04-PLAN.md — Statistics display in VictoryModal
-- [ ] 14-05-PLAN.md — Rematch UI integration
-- [ ] 14-06-PLAN.md — Human verification checkpoint
+- [x] 14-01-PLAN.md — Backend statistics tracking (GameStats class + message schemas)
+- [x] 14-02-PLAN.md — Chart components with @mantine/charts
+- [x] 14-03-PLAN.md — Rematch backend logic (RoomManager + message schemas)
+- [x] 14-04-PLAN.md — Statistics display in VictoryModal
+- [x] 14-05-PLAN.md — Rematch UI integration
+- [x] 14-06-PLAN.md — Human verification checkpoint
 
 ### Deliverables
 
