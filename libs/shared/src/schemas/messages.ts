@@ -630,7 +630,7 @@ export const RematchUpdateMessageSchema = z.object({
 
 export const GameResetMessageSchema = z.object({
   type: z.literal('game_reset'),
-  board: BoardStateSchema,
+  // No board - players return to lobby to ready up again
 });
 
 export const WebSocketMessageSchema = z.discriminatedUnion('type', [

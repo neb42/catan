@@ -75,15 +75,13 @@ export const handleGameReset: MessageHandler = (message, ctx) => {
     isBuildPending: false,
     activeTrade: null,
     tradeModalOpen: false,
+    board: null, // Clear board (back to pre-game state)
+    gameStarted: false, // Returns to lobby (App.tsx shows Lobby when false)
   });
 
-  // Set new board and keep game started (stay on game page)
-  gameStore.setBoard(message.board);
-  gameStore.setGameStarted(true);
-
-  // Backend will send placement_turn to start initial placement phase
-  // No navigation needed - stay on game page
+  // No navigation needed - App.tsx automatically shows Lobby when gameStarted=false
+  // Backend sent player_ready messages to show all players as unready
 
   // Toast notification
-  showGameNotification('New game starting!', 'success');
+  showGameNotification('Ready up for a new game!', 'success');
 };

@@ -318,47 +318,38 @@ export class RoomManager {
 
   /**
    * Reset the game state for a rematch.
-   * Generates new board, creates new GameManager, starts placement phase.
+   * Clears board and game manager, resets players to unready, returns to lobby.
    */
   private resetGame(roomId: string): void {
     const room = this.rooms.get(roomId);
     if (!room) return;
 
-    // Import board generator
-    const { generateBoard } = require('../game/board-generator');
-
-    // Generate new board
-    const newBoard = generateBoard();
-    room.board = newBoard;
-
-    // Create new GameManager with existing player IDs
-    const playerIds = Array.from(room.players.keys());
-    const gameManager = new GameManager(newBoard, playerIds);
-    room.gameManager = gameManager;
+    // Clear board and game manager (back to pre-game state)
+    room.board = null;
+    room.gameManager = null;
 
     // Clear rematch votes
     room.rematchVotes.clear();
 
-    // Broadcast game reset with new board (stays on game page)
-    this.broadcastToRoom(roomId, {
-      type: 'game_reset',
-      board: newBoard,
+    // Reset all players to unready
+    room.players.forEach((player) => {
+      player.ready = false;
     });
 
-    // Broadcast first placement turn (start initial placement phase)
-    const playerId = gameManager.getCurrentPlayerId();
-    const phase = gameManager.getPlacementPhase();
-    const placement = gameManager.getState().placement;
+    // Broadcast game reset (tells clients to return to lobby)
+    this.broadcastToRoom(roomId, {
+      type: 'game_reset',
+    });
 
-    if (playerId && phase && placement) {
+    // Broadcast updated ready states
+    room.players.forEach((player) => {
       this.broadcastToRoom(roomId, {
-        type: 'placement_turn',
-        currentPlayerIndex: placement.currentPlayerIndex,
-        currentPlayerId: playerId,
-        phase,
-        round: placement.draftRound,
-        turnNumber: placement.turnNumber,
+        type: 'player_ready',
+        playerId: player.id,
+        ready: false,
       });
-    }
+    });
+
+    // When all players ready up again, the normal countdown/game start flow will trigger
   }
 }
