@@ -1,5 +1,5 @@
 import { Player, PLAYER_COLOR_HEX } from '@catan/shared';
-import { Avatar } from '@mantine/core';
+import { Avatar, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { motion } from 'motion/react';
 import { useShallow } from 'zustand/react/shallow';
@@ -10,15 +10,13 @@ import {
   useLongestRoadHolder,
   useLargestArmyHolder,
 } from '../stores/gameStore';
+import { PlayerStats } from './PlayerStats';
 
 type GamePlayerListProps = {
   players: Player[];
 };
 
 export function GamePlayerList({ players }: GamePlayerListProps) {
-  // Detect mobile for responsive layout
-  const isMobile = useMediaQuery('(max-width: 768px)');
-
   // Get active player from store for placement phase highlighting
   const { id: placementPlayerId } = useCurrentPlayer();
 
@@ -56,11 +54,11 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
     <div
       style={{
         display: 'flex',
-        flexDirection: isMobile ? 'row' : 'column',
-        gap: isMobile ? '15px' : '30px',
-        width: isMobile ? '100%' : '200px',
-        overflowX: isMobile ? 'auto' : 'visible',
-        padding: isMobile ? '10px 0' : '0',
+        flexDirection: 'column',
+        gap: '30px',
+        width: '100%',
+        overflowX: 'visible',
+        padding: '0',
       }}
     >
       {players.map((player) => {
@@ -132,7 +130,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
               background: '#fdf6e3',
               border: isActiveTurn ? '4px solid #f1c40f' : '4px solid #8d6e63',
               borderRadius: '12px',
-              width: isMobile ? '180px' : '100%',
+              width: '100%',
               flexShrink: 0,
               position: 'relative',
               boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
@@ -193,11 +191,11 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
 
               {/* Player info */}
               <div style={{ flexGrow: 1, overflow: 'hidden' }}>
-                <h3
+                <Text
+                  size="sm"
+                  fw={600}
+                  c="#5d4037"
                   style={{
-                    fontSize: '16px',
-                    color: '#5d4037',
-                    margin: 0,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -205,7 +203,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                 >
                   {player.nickname}
                   {player.id === myPlayerId && ' (You)'}
-                </h3>
+                </Text>
 
                 {/* Achievement badges */}
                 <div
@@ -221,7 +219,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                       background: '#d35400',
                       color: 'white',
                       border: '1px solid #e67e22',
-                      fontSize: '10px',
+                      fontSize: '0.65rem',
                       padding: '2px 6px',
                       borderRadius: '4px',
                       fontFamily: 'Inter, sans-serif',
@@ -240,7 +238,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                         background: '#ffe0b2',
                         color: '#e65100',
                         border: '1px solid #ffcc80',
-                        fontSize: '10px',
+                        fontSize: '0.65rem',
                         padding: '2px 6px',
                         borderRadius: '4px',
                         fontFamily: 'Inter, sans-serif',
@@ -262,7 +260,6 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                         <path d="M18 4l-6 16L6 4" />
                         <circle cx="12" cy="12" r="2" />
                       </svg>
-                      Longest Road
                     </div>
                   )}
                   {hasLargestArmy && (
@@ -271,7 +268,7 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                         background: '#ffcdd2',
                         color: '#b71c1c',
                         border: '1px solid #ef9a9a',
-                        fontSize: '10px',
+                        fontSize: '0.65rem',
                         padding: '2px 6px',
                         borderRadius: '4px',
                         fontFamily: 'Inter, sans-serif',
@@ -293,7 +290,6 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
                         <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z" />
                         <path d="M12 12v10" />
                       </svg>
-                      Largest Army
                     </div>
                   )}
                 </div>
@@ -301,356 +297,14 @@ export function GamePlayerList({ players }: GamePlayerListProps) {
             </div>
 
             {/* Stats area */}
-            <div
-              style={{
-                padding: '15px',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '10px',
-                justifyItems: 'center',
-              }}
-            >
-              {/* Row 1: Settlements */}
-              <div
-                style={{
-                  background: 'white',
-                  border: '1px solid #d7ccc8',
-                  borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                }}
-                title="Settlements"
-              >
-                <svg
-                  style={{ width: '18px', height: '18px', color: '#5d4037' }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                  <polyline points="9 22 9 12 15 12 15 22" />
-                </svg>
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '-6px',
-                    right: '-6px',
-                    background: '#5d4037',
-                    color: 'white',
-                    fontSize: '10px',
-                    minWidth: '16px',
-                    height: '16px',
-                    padding: '0 4px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'Inter, sans-serif',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  {settlementCount}
-                </div>
-              </div>
-
-              {/* Row 1: Cities */}
-              <div
-                style={{
-                  background: 'white',
-                  border: '1px solid #d7ccc8',
-                  borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                }}
-                title="Cities"
-              >
-                <svg
-                  style={{ width: '18px', height: '18px', color: '#5d4037' }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 22h20" />
-                  <path d="M4 22V9l7-4 2 2 5-3v18" />
-                  <path d="M9 22V12h6v10" />
-                </svg>
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '-6px',
-                    right: '-6px',
-                    background: '#5d4037',
-                    color: 'white',
-                    fontSize: '10px',
-                    minWidth: '16px',
-                    height: '16px',
-                    padding: '0 4px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'Inter, sans-serif',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  {cityCount}
-                </div>
-              </div>
-
-              {/* Row 1: Roads */}
-              <div
-                style={{
-                  background: 'white',
-                  border: '1px solid #d7ccc8',
-                  borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                }}
-                title="Roads Built"
-              >
-                <svg
-                  style={{ width: '18px', height: '18px', color: '#5d4037' }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 4l-6 16L6 4" />
-                  <circle cx="12" cy="12" r="2" />
-                </svg>
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '-6px',
-                    right: '-6px',
-                    background: '#5d4037',
-                    color: 'white',
-                    fontSize: '10px',
-                    minWidth: '16px',
-                    height: '16px',
-                    padding: '0 4px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'Inter, sans-serif',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  {roadCount}
-                </div>
-              </div>
-
-              {/* Row 2: Knights */}
-              <div
-                style={{
-                  background: 'white',
-                  border: '1px solid #d7ccc8',
-                  borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                }}
-                title="Knights Played"
-              >
-                <svg
-                  style={{ width: '18px', height: '18px', color: '#5d4037' }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z" />
-                  <path d="M12 12v10" />
-                  <path d="M9 16h6" />
-                </svg>
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '-6px',
-                    right: '-6px',
-                    background: '#5d4037',
-                    color: 'white',
-                    fontSize: '10px',
-                    minWidth: '16px',
-                    height: '16px',
-                    padding: '0 4px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'Inter, sans-serif',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  {knightsPlayed[player.id] || 0}
-                </div>
-              </div>
-
-              {/* Row 2: Dev Cards */}
-              <div
-                style={{
-                  background: 'white',
-                  border: '1px solid #d7ccc8',
-                  borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                }}
-                title="Development Cards Held"
-              >
-                <svg
-                  style={{ width: '18px', height: '18px', color: '#5d4037' }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-                  <path d="M12 18h.01" />
-                  <path d="M12 14c0-2 1-3 2-4 .5-.5 1-1.5 1-2.5 0-2-1.5-3-3-3s-3 1-3 3" />
-                </svg>
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '-6px',
-                    right: '-6px',
-                    background: '#5d4037',
-                    color: 'white',
-                    fontSize: '10px',
-                    minWidth: '16px',
-                    height: '16px',
-                    padding: '0 4px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'Inter, sans-serif',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  {devCardCount}
-                </div>
-              </div>
-
-              {/* Row 2: Resource cards */}
-              <div
-                style={{
-                  background: 'white',
-                  border: '1px solid #d7ccc8',
-                  borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                }}
-                title="Resource Cards Held"
-              >
-                <svg
-                  style={{
-                    width: '18px',
-                    height: '18px',
-                    color: totalCards > 7 ? '#e74c3c' : '#5d4037',
-                  }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect
-                    x="6"
-                    y="2"
-                    width="12"
-                    height="16"
-                    rx="2"
-                    transform="rotate(-10 12 10)"
-                  />
-                  <rect
-                    x="6"
-                    y="2"
-                    width="12"
-                    height="16"
-                    rx="2"
-                    transform="rotate(0 12 10)"
-                  />
-                  <rect
-                    x="6"
-                    y="2"
-                    width="12"
-                    height="16"
-                    rx="2"
-                    transform="rotate(10 12 10)"
-                  />
-                </svg>
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '-6px',
-                    right: '-6px',
-                    background: totalCards > 7 ? '#e74c3c' : '#5d4037',
-                    color: 'white',
-                    fontSize: '10px',
-                    minWidth: '16px',
-                    height: '16px',
-                    padding: '0 4px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'Inter, sans-serif',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  {totalCards}
-                </div>
-              </div>
-            </div>
+            <PlayerStats
+              settlementCount={settlementCount}
+              cityCount={cityCount}
+              roadCount={roadCount}
+              knightsPlayed={knightsPlayed[player.id] || 0}
+              devCardCount={devCardCount}
+              totalCards={totalCards}
+            />
           </motion.div>
         );
       })}

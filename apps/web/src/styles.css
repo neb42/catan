@@ -230,3 +230,21 @@ a,
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* Responsive Typography */
+html {
+  /* Keep browser default (16px) and scale modestly on larger screens */
+  font-size: 100%;
+}
+
+@media (min-width: 1440px) {
+  html {
+    font-size: 112.5%; /* 18px */
+  }
+}
+
+@media (min-width: 2000px) {
+  html {
+    font-size: 150%; /* 24px */
+  }
+}

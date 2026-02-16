@@ -35,7 +35,6 @@ export function TurnControls() {
         border: '4px solid #8d6e63',
         borderRadius: '12px',
         boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
-        width: 200,
       }}
     >
       <Stack gap="sm" align="center">

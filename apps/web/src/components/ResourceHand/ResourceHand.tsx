@@ -166,6 +166,7 @@ export function ResourceHand() {
           boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
           textAlign: 'center',
           width: '100%',
+          height: '100%',
         }}
       >
         <Stack gap="xs" align="center">
@@ -193,6 +194,7 @@ export function ResourceHand() {
         boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
         perspective: 1000,
         width: '100%',
+        height: '100%',
       }}
     >
       <Stack gap="xs" align="center">
@@ -246,7 +248,8 @@ export function ResourceHand() {
                   {Object.entries(resources).map(([type, count]) => (
                     <Text
                       key={type}
-                      size="xs"
+                      size="sm"
+                      fw={600}
                       c="dimmed"
                       style={{
                         display: 'flex',
@@ -254,7 +257,7 @@ export function ResourceHand() {
                         gap: 4,
                       }}
                     >
-                      <ResourceIcon type={type as ResourceType} size="xs" />
+                      <ResourceIcon type={type as ResourceType} size="lg" />
                       <span>{count}</span>
                     </Text>
                   ))}

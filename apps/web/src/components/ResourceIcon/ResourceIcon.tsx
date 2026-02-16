@@ -17,10 +17,14 @@ const RESOURCE_LABELS: Record<ResourceType, string> = {
 };
 
 const SIZE_MAP = {
-  xs: 16,
-  sm: 20,
-  md: 28,
-  lg: 40,
+  // xs: 16,
+  xs: '1rem',
+  // sm: 20,
+  sm: '1.25rem',
+  // md: 28,
+  md: '1.75rem',
+  // lg: 40,
+  lg: '2.5rem',
 };
 
 interface ResourceIconProps {

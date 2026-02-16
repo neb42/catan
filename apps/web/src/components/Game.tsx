@@ -65,9 +65,9 @@ export function Game() {
     <Box
       style={{
         display: 'grid',
-        gridTemplateRows: '1fr minmax(200px, auto)',
-        gridTemplateColumns: '250px 1fr 250px',
-        // 'minmax(250px, 1fr) minmax(600px, 2fr) minmax(250px, 1fr)',
+        gridTemplateRows: '1fr auto',
+        // gridTemplateColumns: 'minmax(250px, 20%) minmax(600px, 2fr) minmax(350px, 20%)',
+        gridTemplateColumns: '300px minmax(600px, 2fr) minmax(350px, 20%)',
         width: '100%',
         height: '100vh',
         backgroundColor: '#F9F4EF', // Warm beige from Phase 1.1
@@ -100,12 +100,13 @@ export function Game() {
       <Box
         style={{
           gridRowStart: 1,
-          gridRowEnd: 2,
+          gridRowEnd: 3,
           gridColumn: 1,
           padding: '16px',
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'center',
+          overflowY: 'auto',
         }}
       >
         <GamePlayerList players={players} />
@@ -137,6 +138,7 @@ export function Game() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
+            overflowY: 'auto',  
           }}
           gap="md"
         >
@@ -167,6 +169,7 @@ export function Game() {
               gap: '8px',
               alignItems: 'flex-end',
               width: '100%',
+              height: '100%',
             }}
           >
             <ResourceHand />

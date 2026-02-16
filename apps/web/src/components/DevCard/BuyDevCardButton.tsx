@@ -54,7 +54,7 @@ export function BuyDevCardButton() {
           <span style={{ fontSize: '18px' }}>🃏</span>
           <span
             style={{
-              fontSize: '14px',
+              fontSize: '1rem',
               fontWeight: 600,
               color: '#5d4037',
             }}

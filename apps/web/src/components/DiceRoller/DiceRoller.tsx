@@ -160,17 +160,6 @@ export function DiceRoller() {
         </motion.div>
       </div>
 
-      {total !== null && (
-        <div className={styles['result']}>
-          <span>Total:</span>
-          <span
-            className={`${styles['resultTotal']} ${isRobber ? styles['resultTotalRobber'] : ''}`}
-          >
-            {total}
-          </span>
-        </div>
-      )}
-
       {isRobber && (
         <div className={styles['robberWarning']}>
           <svg
@@ -191,13 +180,28 @@ export function DiceRoller() {
         </div>
       )}
 
-      <button
-        className={styles['rollButton']}
-        onClick={handleRoll}
-        disabled={!canRollDice || isRolling}
-      >
-        {isRolling ? 'Rolling...' : 'Roll Dice'}
-      </button>
+      {(canRollDice || isRolling) && (
+        <button
+          className={styles['rollButton']}
+          onClick={handleRoll}
+          disabled={!canRollDice || isRolling}
+        >
+          {isRolling ? 'Rolling...' : 'Roll Dice'}
+        </button>
+      )}
+
+
+      {!canRollDice && !isRolling && total !== null && (
+        <div className={styles['result']}>
+          <span>Total:</span>
+          <span
+            className={`${styles['resultTotal']} ${isRobber ? styles['resultTotalRobber'] : ''}`}
+          >
+            {total}
+          </span>
+        </div>
+      )}
+
     </div>
   );
 }
