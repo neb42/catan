@@ -28,6 +28,7 @@ export const handleGameResumed: MessageHandler = (message) => {
     message: `${message.reconnectedPlayerNickname} has reconnected`,
     color: 'green',
     autoClose: 3000,
+    withBorder: true,
   });
 
   // Add log entry

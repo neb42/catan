@@ -71,6 +71,7 @@ export function DiceRoller() {
         message,
         color: 'green',
         autoClose: 3000,
+        withBorder: true,
       });
     } else if (
       lastResourcesDistributed.length === 0 ||
@@ -81,6 +82,7 @@ export function DiceRoller() {
         message: 'No resources from this roll',
         color: 'gray',
         autoClose: 2000,
+        withBorder: true,
       });
     }
   }, [lastResourcesDistributed, myPlayerId]);
