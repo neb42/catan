@@ -1,6 +1,7 @@
 import { DEV_CARD_COST, ResourceType } from '@catan/shared';
 
 import { showGameNotification } from '@web/components/Feedback';
+import { soundService } from '@web/services/sound';
 import { useGameStore } from '@web/stores/gameStore';
 
 import { HandlerContext, MessageHandler } from './types';
@@ -25,6 +26,7 @@ export const handleDevCardPurchased: MessageHandler = (message, ctx) => {
   }
 
   showGameNotification('Development card purchased!', 'success');
+  soundService.play('devCardBuy');
 };
 
 export const handleDevCardPurchasedPublic: MessageHandler = (message, ctx) => {
@@ -48,6 +50,7 @@ export const handleDevCardPurchasedPublic: MessageHandler = (message, ctx) => {
   const buyer = ctx.room?.players.find((p) => p.id === message.playerId);
   const nickname = buyer?.nickname || 'A player';
   showGameNotification(`${nickname} bought a development card`, 'info');
+  soundService.play('devCardBuy');
 
   // Log action
   gameStore.addLogEntry(`${nickname} bought a development card`);
@@ -93,12 +96,14 @@ export const handleDevCardPlayed: MessageHandler = (message, ctx) => {
             ? 'Monopoly'
             : 'Victory Point';
   gameStore.addLogEntry(`${nickname} played ${cardName}`);
+  soundService.play('devCardPlay');
 };
 
 export const handleDevCardPlayFailed: MessageHandler = (message, ctx) => {
   if (message.type !== 'dev_card_play_failed') return;
 
   showGameNotification(`${message.reason}`, 'error');
+  soundService.play('negative');
 };
 
 export const handleYearOfPlentyRequired: MessageHandler = (message, ctx) => {

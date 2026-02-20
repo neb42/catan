@@ -1,5 +1,6 @@
 import { useGameStore } from '@web/stores/gameStore';
 import { showGameNotification } from '@web/components/Feedback';
+import { soundService } from '@web/services/sound';
 
 import { HandlerContext, MessageHandler } from './types';
 
@@ -25,6 +26,7 @@ export const handleVictory: MessageHandler = (message, ctx) => {
   gameStore.addLogEntry(
     `${message.winnerNickname} won with ${winnerVPTotal} points!`,
   );
+  soundService.play('victory');
 };
 
 export const handleRematchUpdate: MessageHandler = (message, ctx) => {
