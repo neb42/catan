@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-20  
-**Last activity:** 2026-02-20 - Completed 15-02-PLAN.md (Sound Event Integration)
+**Last activity:** 2026-02-20 - Completed 15-03-PLAN.md (Sound Effects Gap Closure)
 
 ## Current Position
 
 Phase: 15 of 15 (COMPLETE)  
-Plan: 2 of 2 complete  
+Plan: 3 of 3 complete  
 Status: Complete  
-Last activity: 2026-02-20 - Completed 15-02-PLAN.md
+Last activity: 2026-02-20 - Completed 15-03-PLAN.md
 
-Progress: ██████████████████████████████████████████████████████████████████████████████████████████████████████ (86/86 plans complete - 100%)
+Progress: ██████████████████████████████████████████████████████████████████████████████████████████████████████ (87/87 plans complete - 100%)
 
 ## Blockers/Concerns
 
@@ -199,8 +199,12 @@ Progress: ███████████████████████�
 - [Phase 15]: Award handlers get no sounds — secondary to primary action that triggered them
 - [Phase 15]: devCardBuy plays in both private and public purchase handlers for all players
 
+- [Phase 15]: Lazy SoundService init — this.init() called inside play() for browser autoplay compliance, zero external callers needed
+- [Phase 15]: WAV audio files with .mp3 extension — Howler.js content-sniffs format, simpler than MP3 encoding
+- [Phase 15]: Lazy SoundService init via this.init() inside play() for browser autoplay compliance
+
 ## Session Continuity
 
-Last session: 2026-02-20T16:59:13Z
-Stopped at: Completed 15-02-PLAN.md
+Last session: 2026-02-20T17:20:26Z
+Stopped at: Completed 15-03-PLAN.md
 Resume file: None

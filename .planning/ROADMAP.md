@@ -716,7 +716,7 @@ Future versions:
 **Goal:** Add event-driven sound effects for all gameplay actions with user toggle control
 **Depends on:** Phase 14
 **Requirements:** AUDIO-01, AUDIO-02
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 
