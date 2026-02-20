@@ -711,6 +711,15 @@ Future versions:
 - Custom board layouts
 - House rules toggles
 
+### Phase 15: Add sound effects during gameplay
+
+**Goal:** [To be planned]
+**Depends on:** Phase 14
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 15 to break down)
+
 ---
 
 _Last updated: 2026-02-03 - Phase 11 (Victory) complete_
