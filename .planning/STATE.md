@@ -2,17 +2,17 @@
 
 **Project:** Catan Online  
 **Version:** v1  
-**Last Updated:** 2026-02-12  
-**Last activity:** 2026-02-12 - Completed Phase 14 (Victory Stats and Rematch)
+**Last Updated:** 2026-02-20  
+**Last activity:** 2026-02-20 - Completed 15-01-PLAN.md (Sound Infrastructure)
 
 ## Current Position
 
-Phase: 14 of 15 (COMPLETE)  
-Plan: All plans complete  
-Status: Milestone complete  
-Last activity: 2026-02-12 - Completed 14-06-PLAN.md and verified Phase 14
+Phase: 15 of 15 (IN PROGRESS)  
+Plan: 1 of 2 complete  
+Status: Executing  
+Last activity: 2026-02-20 - Completed 15-01-PLAN.md
 
-Progress: ████████████████████████████████████████████████████████████████████████████████████████████████████ (84/84 plans complete - 100%)
+Progress: █████████████████████████████████████████████████████████████████████████████████████████████████████ (85/86 plans complete - 99%)
 
 ## Blockers/Concerns
 
@@ -191,9 +191,12 @@ Progress: ███████████████████████�
 | 14-05  | Transparent voting display        | Show all players with checkmarks so users know who's voted and who's holding up    |
 | 14-05  | Replace Return to Lobby button    | Rematch is primary action after victory, emphasize seamless replay over exit       |
 | 035    | Set attemptedRoomId on creation   | Call setAttemptedRoomId in handleRoomCreated to prevent URL join useEffect trigger |
+- [Phase 15]: Root package.json install with --legacy-peer-deps for Howler.js due to @mantine/charts peer conflict
+- [Phase 15]: SoundService singleton checks gameStore.soundEnabled at play-time with localStorage persistence via 'catan-sound-enabled' key
+- [Phase 15]: Settings gear button (⚙) at top-right z-index 25, parchment-styled modal matching StealModal aesthetic
 
 ## Session Continuity
 
-Last session: 2026-02-08T18:59:53Z
-Stopped at: Completed 14-04-PLAN.md
+Last session: 2026-02-20T16:51:02Z
+Stopped at: Completed 15-01-PLAN.md
 Resume file: None

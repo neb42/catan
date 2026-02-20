@@ -716,11 +716,11 @@ Future versions:
 **Goal:** Add event-driven sound effects for all gameplay actions with user toggle control
 **Depends on:** Phase 14
 **Requirements:** AUDIO-01, AUDIO-02
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 
-- [ ] 15-01-PLAN.md — Sound infrastructure (Howler.js, SoundService, Settings UI, audio files)
+- [x] 15-01-PLAN.md — Sound infrastructure (Howler.js, SoundService, Settings UI, audio files)
 - [ ] 15-02-PLAN.md — Handler integration (sound triggers for all game events)
 
 ---
