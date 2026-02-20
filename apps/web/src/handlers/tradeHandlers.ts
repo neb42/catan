@@ -1,6 +1,7 @@
 import { ResourceType } from '@catan/shared';
 
 import { showGameNotification } from '@web/components/Feedback';
+import { soundService } from '@web/services/sound';
 import { useGameStore } from '@web/stores/gameStore';
 
 import { HandlerContext, MessageHandler } from './types';
@@ -23,6 +24,7 @@ export const handleTradeProposed: MessageHandler = (message, ctx) => {
     requesting,
     responses,
   });
+  soundService.play('tradeOffer');
 };
 
 export const handleTradeResponse: MessageHandler = (message, ctx) => {
@@ -79,6 +81,7 @@ export const handleTradeExecuted: MessageHandler = (message, ctx) => {
 
   gameStore.clearTrade();
   gameStore.setTradeModalOpen(false);
+  soundService.play('tradeComplete');
 
   // Show trade notification
   const proposer = ctx.room?.players.find((p) => p.id === proposerId);
@@ -131,6 +134,7 @@ export const handleBankTradeExecuted: MessageHandler = (message, ctx) => {
       count: count as number,
     }));
   gameStore.updatePlayerResources(playerId, [...deductions, ...additions]);
+  soundService.play('tradeComplete');
 
   // Show bank trade notification
   const trader = ctx.room?.players.find((p) => p.id === playerId);
