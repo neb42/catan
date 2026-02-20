@@ -775,6 +775,19 @@ export const useCurrentPlayer = () =>
     })),
   );
 
+export const useOrderedPlayers = () => 
+  useGameStore(
+    useShallow((state) => {
+      const players = state.room?.players || [];
+      const playerOrder = state.room?.playerOrder || [];
+      // Sort players according to playerOrder
+      const ordered = playerOrder
+        .map((id) => players.find((p) => p.id === id))
+        .filter((p): p is NonNullable<typeof p> => p !== undefined);
+      return ordered;
+    }),
+  );
+
 export const useIsMyTurn = () =>
   useGameStore((state) => state.currentPlayerId === state.myPlayerId);
 

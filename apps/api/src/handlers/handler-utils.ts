@@ -79,6 +79,7 @@ export function serializeRoom(room: ManagedRoom) {
     id: room.id,
     createdAt: room.createdAt,
     players: Array.from(room.players.values()).map(serializePlayer),
+    playerOrder: room.playerOrder, // Include player order in serialized room
   };
 }
 

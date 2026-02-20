@@ -7,6 +7,7 @@ import {
   useTurnPhase,
   useGameEnded,
   useVictoryState,
+  useOrderedPlayers,
 } from '../stores/gameStore';
 import { PlacementBanner } from './PlacementBanner';
 import { DraftOrderDisplay } from './DraftOrderDisplay';
@@ -39,6 +40,8 @@ export function Game() {
   const players = useGameStore(
     useShallow((state) => state.room?.players || []),
   );
+  const playerOrder = useGameStore(useShallow((state) => state.room?.playerOrder || []));
+  const orderedPlayers = useOrderedPlayers();
   const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
   const { id: currentPlayerId } = useCurrentPlayer();
   const socket = useSocket();
@@ -91,8 +94,8 @@ export function Game() {
           }}
           gap="md"
         >
-          <PlacementBanner players={players} />
-          <DraftOrderDisplay players={players} />
+          <PlacementBanner players={orderedPlayers} />
+          <DraftOrderDisplay players={orderedPlayers} />
         </Stack>
       )}
 
@@ -109,7 +112,7 @@ export function Game() {
           overflowY: 'auto',
         }}
       >
-        <GamePlayerList players={players} />
+        <GamePlayerList players={orderedPlayers} />
       </Box>
 
       {/* Row 1, Column 2: Board */}

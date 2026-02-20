@@ -315,15 +315,21 @@ export function handleToggleReady(
       },
       () => {
         // Countdown complete - start game
+        roomManager.shufflePlayerOrder(context.currentRoomId!);
         const roomChecking = roomManager.getRoom(context.currentRoomId!);
         if (!roomChecking || roomChecking.board) return;
 
         const board = generateBoard();
         roomManager.setBoard(context.currentRoomId!, board);
 
-        const playerIds = Array.from(roomChecking.players.keys());
+        const playerIds = Array.from(roomChecking.playerOrder);
         const gameManager = new GameManager(board, playerIds);
         roomManager.setGameManager(context.currentRoomId!, gameManager);
+
+        roomManager.broadcastToRoom(context.currentRoomId!, {
+          type: 'room_state',
+          room: serializeRoom(roomChecking),
+        });
 
         roomManager.broadcastToRoom(context.currentRoomId!, {
           type: 'game_started',

@@ -10,6 +10,7 @@ import {
 
 import { GameManager } from '../game/GameManager';
 import { logMessage } from '../utils/message-logger';
+import { shuffle } from '../utils/shuffle';
 
 export type ManagedPlayer = Player & { ws: WebSocket };
 
@@ -316,11 +317,28 @@ export class RoomManager {
     }
   }
 
+  public shufflePlayerOrder(roomId: string): void {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    room.playerOrder = shuffle(room.playerOrder);
+    const reorderedPlayers = new Map<string, ManagedPlayer>();
+    for (const id of room.playerOrder) {
+      const player = room.players.get(id);
+      if (player) {
+        reorderedPlayers.set(id, player);
+      }
+    }
+    room.players = reorderedPlayers;
+  }
+
   /**
    * Reset the game state for a rematch.
    * Clears board and game manager, resets players to unready, returns to lobby.
    */
   private resetGame(roomId: string): void {
+    this.shufflePlayerOrder(roomId); // Shuffle player order for next game
+
     const room = this.rooms.get(roomId);
     if (!room) return;
 
@@ -335,6 +353,16 @@ export class RoomManager {
     room.players.forEach((player) => {
       player.ready = false;
     });
+
+    // Shuffle player order for the next game
+    const reorderedPlayers = new Map<string, ManagedPlayer>();
+    for (const id of room.playerOrder) {
+      const player = room.players.get(id);
+      if (player) {
+        reorderedPlayers.set(id, player);
+      }
+    }
+    room.players = reorderedPlayers;
 
     // Broadcast game reset (tells clients to return to lobby)
     this.broadcastToRoom(roomId, {
