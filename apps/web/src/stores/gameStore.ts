@@ -181,6 +181,12 @@ interface DebugSlice {
   debugPanelOpen: boolean;
 }
 
+// Sound state slice
+interface SoundSlice {
+  soundEnabled: boolean;
+  toggleSound: () => void;
+}
+
 // Rematch state slice
 interface RematchSlice {
   rematchReadyPlayers: string[]; // Array of player IDs who voted for rematch
@@ -201,6 +207,7 @@ interface GameStore
     GameLogSlice,
     PauseSlice,
     DebugSlice,
+    SoundSlice,
     RematchSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
@@ -456,6 +463,9 @@ export const useGameStore = create<GameStore>((set) => ({
   rematchReadyPlayers: [],
   rematchReadyCount: 0,
   rematchTotalPlayers: 0,
+
+  // Sound state - default ON, persisted to localStorage
+  soundEnabled: localStorage.getItem('catan-sound-enabled') !== 'false',
 
   // Existing actions
   setBoard: (board) => set({ board }),
@@ -760,6 +770,15 @@ export const useGameStore = create<GameStore>((set) => ({
       rematchReadyCount: 0,
       rematchTotalPlayers: 0,
     }),
+
+  // Sound actions
+  toggleSound: () => {
+    set((state) => {
+      const next = !state.soundEnabled;
+      localStorage.setItem('catan-sound-enabled', String(next));
+      return { soundEnabled: next };
+    });
+  },
 }));
 
 // CUSTOM HOOKS - prevent selector anti-pattern
@@ -775,7 +794,7 @@ export const useCurrentPlayer = () =>
     })),
   );
 
-export const useOrderedPlayers = () => 
+export const useOrderedPlayers = () =>
   useGameStore(
     useShallow((state) => {
       const players = state.room?.players || [];
@@ -1009,8 +1028,13 @@ export function usePlayerPublicVP(playerId: string): {
 }
 
 export const useRematchState = () =>
-  useGameStore(useShallow((s) => ({
-    readyPlayers: s.rematchReadyPlayers,
-    readyCount: s.rematchReadyCount,
-    totalPlayers: s.rematchTotalPlayers,
-  })));
+  useGameStore(
+    useShallow((s) => ({
+      readyPlayers: s.rematchReadyPlayers,
+      readyCount: s.rematchReadyCount,
+      totalPlayers: s.rematchTotalPlayers,
+    })),
+  );
+
+export const useSoundEnabled = () =>
+  useGameStore((state) => state.soundEnabled);
