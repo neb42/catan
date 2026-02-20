@@ -62,6 +62,7 @@ class SoundService {
 
   play(name: SoundName): void {
     if (!useGameStore.getState().soundEnabled) return;
+    if (!this.initialized) this.init();
 
     const sound = this.sounds.get(name);
     if (sound) {
