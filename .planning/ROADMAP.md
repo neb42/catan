@@ -713,13 +713,16 @@ Future versions:
 
 ### Phase 15: Add sound effects during gameplay
 
-**Goal:** [To be planned]
+**Goal:** Add event-driven sound effects for all gameplay actions with user toggle control
 **Depends on:** Phase 14
-**Plans:** 0 plans
+**Requirements:** AUDIO-01, AUDIO-02
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 15 to break down)
+
+- [ ] 15-01-PLAN.md — Sound infrastructure (Howler.js, SoundService, Settings UI, audio files)
+- [ ] 15-02-PLAN.md — Handler integration (sound triggers for all game events)
 
 ---
 
-_Last updated: 2026-02-03 - Phase 11 (Victory) complete_
+_Last updated: 2026-02-20 - Phase 15 planned_
