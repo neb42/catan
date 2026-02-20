@@ -3,16 +3,16 @@
 **Project:** Catan Online  
 **Version:** v1  
 **Last Updated:** 2026-02-20  
-**Last activity:** 2026-02-20 - Completed 15-01-PLAN.md (Sound Infrastructure)
+**Last activity:** 2026-02-20 - Completed 15-02-PLAN.md (Sound Event Integration)
 
 ## Current Position
 
-Phase: 15 of 15 (IN PROGRESS)  
-Plan: 1 of 2 complete  
-Status: Executing  
-Last activity: 2026-02-20 - Completed 15-01-PLAN.md
+Phase: 15 of 15 (COMPLETE)  
+Plan: 2 of 2 complete  
+Status: Complete  
+Last activity: 2026-02-20 - Completed 15-02-PLAN.md
 
-Progress: █████████████████████████████████████████████████████████████████████████████████████████████████████ (85/86 plans complete - 99%)
+Progress: ██████████████████████████████████████████████████████████████████████████████████████████████████████ (86/86 plans complete - 100%)
 
 ## Blockers/Concerns
 
@@ -191,12 +191,16 @@ Progress: ███████████████████████�
 | 14-05  | Transparent voting display        | Show all players with checkmarks so users know who's voted and who's holding up    |
 | 14-05  | Replace Return to Lobby button    | Rematch is primary action after victory, emphasize seamless replay over exit       |
 | 035    | Set attemptedRoomId on creation   | Call setAttemptedRoomId in handleRoomCreated to prevent URL join useEffect trigger |
+
 - [Phase 15]: Root package.json install with --legacy-peer-deps for Howler.js due to @mantine/charts peer conflict
 - [Phase 15]: SoundService singleton checks gameStore.soundEnabled at play-time with localStorage persistence via 'catan-sound-enabled' key
 - [Phase 15]: Settings gear button (⚙) at top-right z-index 25, parchment-styled modal matching StealModal aesthetic
+- [Phase 15]: All players hear all game events; yourTurn is the sole local-player-only sound
+- [Phase 15]: Award handlers get no sounds — secondary to primary action that triggered them
+- [Phase 15]: devCardBuy plays in both private and public purchase handlers for all players
 
 ## Session Continuity
 
-Last session: 2026-02-20T16:51:02Z
-Stopped at: Completed 15-01-PLAN.md
+Last session: 2026-02-20T16:59:13Z
+Stopped at: Completed 15-02-PLAN.md
 Resume file: None
