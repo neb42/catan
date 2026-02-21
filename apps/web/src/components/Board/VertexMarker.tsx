@@ -28,7 +28,7 @@ export function VertexMarker({
         <motion.circle
           cx={vertex.x}
           cy={vertex.y}
-          r={1.2}
+          r={1.5}
           fill={playerColor}
           stroke="white"
           strokeWidth={0.3}

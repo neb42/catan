@@ -35,7 +35,7 @@ function CostIcons({ buildingType }: { buildingType: BuildingType }) {
           {Array(amount)
             .fill(null)
             .map((_, i) => (
-              <ResourceIcon key={i} type={resource as ResourceType} size="sm" />
+              <ResourceIcon key={i} type={resource as ResourceType} size="md" />
             ))}
         </span>
       ))}
@@ -97,6 +97,7 @@ function BuildButton({ buildingType, isActive, onClick }: BuildButtonProps) {
           flexDirection: 'column',
           alignItems: 'center',
           gap: '4px',
+          width: '100%',
         }}
       >
         {/* Icon + Label row */}
@@ -104,7 +105,7 @@ function BuildButton({ buildingType, isActive, onClick }: BuildButtonProps) {
           <span style={{ fontSize: '18px' }}>{config.icon}</span>
           <span
             style={{
-              fontSize: '14px',
+              fontSize: '1rem',
               fontWeight: 600,
               color: '#5d4037',
             }}
@@ -160,7 +161,7 @@ export function BuildControls() {
         borderRadius: '12px',
         boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
         padding: '15px',
-        width: 200,
+        width: '100%',
       }}
     >
       <div
@@ -168,13 +169,14 @@ export function BuildControls() {
           display: 'flex',
           flexDirection: 'column',
           gap: '12px',
+          width: '100%',
           alignItems: 'center',
         }}
       >
         {/* Header */}
         <h3
           style={{
-            fontSize: '14px',
+            fontSize: '1.25rem',
             fontWeight: 600,
             color: '#5d4037',
             margin: 0,
@@ -185,7 +187,7 @@ export function BuildControls() {
         </h3>
 
         {/* Build buttons */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
           <BuildButton
             buildingType="road"
             isActive={buildMode === 'road'}

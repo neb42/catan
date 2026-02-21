@@ -122,6 +122,9 @@ export function handleWebSocketConnection(
       case 'change_nickname':
         LobbyHandlers.handleChangeNickname(ws, message, roomManager, context);
         break;
+      case 'request_rematch':
+        LobbyHandlers.handleRequestRematch(ws, message, roomManager, context);
+        break;
 
       // Placement
       case 'place_settlement':

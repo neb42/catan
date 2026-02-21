@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Box, Button, Container, Stack, Title, Text } from '@mantine/core';
 import { Board } from './Board/Board';
 import {
@@ -7,6 +8,7 @@ import {
   useTurnPhase,
   useGameEnded,
   useVictoryState,
+  useOrderedPlayers,
 } from '../stores/gameStore';
 import { PlacementBanner } from './PlacementBanner';
 import { DraftOrderDisplay } from './DraftOrderDisplay';
@@ -33,12 +35,18 @@ import { ResourcePickerModal } from './CardPlay/ResourcePickerModal';
 import { MonopolyModal } from './CardPlay/MonopolyModal';
 import { VPRevealOverlay, VictoryModal } from './Victory';
 import { DisconnectOverlay } from './DisconnectOverlay';
+import { SettingsButton, SettingsPanel } from './Settings';
 
 export function Game() {
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const board = useGameStore(useShallow((state) => state.board));
   const players = useGameStore(
     useShallow((state) => state.room?.players || []),
   );
+  const playerOrder = useGameStore(
+    useShallow((state) => state.room?.playerOrder || []),
+  );
+  const orderedPlayers = useOrderedPlayers();
   const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
   const { id: currentPlayerId } = useCurrentPlayer();
   const socket = useSocket();
@@ -65,9 +73,9 @@ export function Game() {
     <Box
       style={{
         display: 'grid',
-        gridTemplateRows: '1fr minmax(200px, auto)',
-        gridTemplateColumns: '250px 1fr 250px',
-        // 'minmax(250px, 1fr) minmax(600px, 2fr) minmax(250px, 1fr)',
+        gridTemplateRows: '1fr auto',
+        // gridTemplateColumns: 'minmax(250px, 20%) minmax(600px, 2fr) minmax(350px, 20%)',
+        gridTemplateColumns: '300px minmax(600px, 2fr) minmax(350px, 20%)',
         width: '100%',
         height: '100vh',
         backgroundColor: '#F9F4EF', // Warm beige from Phase 1.1
@@ -91,8 +99,8 @@ export function Game() {
           }}
           gap="md"
         >
-          <PlacementBanner players={players} />
-          <DraftOrderDisplay players={players} />
+          <PlacementBanner players={orderedPlayers} />
+          <DraftOrderDisplay players={orderedPlayers} />
         </Stack>
       )}
 
@@ -100,15 +108,16 @@ export function Game() {
       <Box
         style={{
           gridRowStart: 1,
-          gridRowEnd: 2,
+          gridRowEnd: 3,
           gridColumn: 1,
           padding: '16px',
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'center',
+          overflowY: 'auto',
         }}
       >
-        <GamePlayerList players={players} />
+        <GamePlayerList players={orderedPlayers} />
       </Box>
 
       {/* Row 1, Column 2: Board */}
@@ -137,6 +146,7 @@ export function Game() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
+            overflowY: 'auto',
           }}
           gap="md"
         >
@@ -167,6 +177,7 @@ export function Game() {
               gap: '8px',
               alignItems: 'flex-end',
               width: '100%',
+              height: '100%',
             }}
           >
             <ResourceHand />
@@ -233,6 +244,22 @@ export function Game() {
       {/* Victory announcement - overlays when game ends */}
       {gameEnded && victoryPhase === 'reveal' && <VPRevealOverlay />}
       {gameEnded && victoryPhase === 'modal' && <VictoryModal />}
+
+      {/* Settings button and panel */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          zIndex: 25,
+        }}
+      >
+        <SettingsButton onClick={() => setSettingsOpen(true)} />
+      </div>
+      <SettingsPanel
+        opened={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
 
       {/* Disconnect overlay - blocks all interaction when any player disconnects */}
       <DisconnectOverlay />

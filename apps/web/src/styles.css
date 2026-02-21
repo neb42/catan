@@ -214,6 +214,65 @@ h3 {
   color: var(--color-brown);
 }
 
+/* ──────────────────────────────────
+   Mantine Notification Overrides
+   Parchment / board-game style
+   ────────────────────────────────── */
+
+/* Notification root (each toast) */
+.mantine-Notification-root {
+  background: #fdf6e3 !important;
+  border: 3px solid #8d6e63 !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
+  padding: 14px 16px !important;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Coloured left indicator strip */
+.mantine-Notification-root::before {
+  border-radius: 4px !important;
+}
+
+/* Title text */
+.mantine-Notification-title {
+  font-family: 'Fraunces', serif !important;
+  font-weight: 700 !important;
+  color: #5d4037 !important;
+  font-size: 0.95rem !important;
+}
+
+/* Message / description text */
+.mantine-Notification-description {
+  font-family: 'Outfit', sans-serif !important;
+  color: #6d4c41 !important;
+  font-size: 0.85rem !important;
+}
+
+/* Close button */
+.mantine-Notification-closeButton {
+  color: #8d6e63 !important;
+}
+.mantine-Notification-closeButton:hover {
+  background: rgba(141, 110, 99, 0.12) !important;
+}
+
+/* Icon wrapper — inherit border colour per type */
+.mantine-Notification-icon {
+  background: transparent !important;
+}
+
+/* Type-specific accent colours (via data-attribute set by Mantine) */
+.mantine-Notification-root[data-with-border][style*='--notification-color: var(--mantine-color-green'] {
+  border-color: #2a9d8f !important;
+}
+.mantine-Notification-root[data-with-border][style*='--notification-color: var(--mantine-color-red'] {
+  border-color: #e76f51 !important;
+}
+.mantine-Notification-root[data-with-border][style*='--notification-color: var(--mantine-color-yellow'] {
+  border-color: #e9c46a !important;
+}
+
 /* Mobile Touch Targets & Interaction */
 button,
 a,
@@ -229,4 +288,22 @@ a,
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* Responsive Typography */
+html {
+  /* Keep browser default (16px) and scale modestly on larger screens */
+  font-size: 100%;
+}
+
+@media (min-width: 1440px) {
+  html {
+    font-size: 112.5%; /* 18px */
+  }
+}
+
+@media (min-width: 2000px) {
+  html {
+    font-size: 150%; /* 24px */
+  }
 }

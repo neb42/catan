@@ -104,7 +104,7 @@ export function EdgeMarker({
         <motion.circle
           cx={midpoint.x}
           cy={midpoint.y}
-          r={1}
+          r={1.5}
           fill={playerColor}
           stroke="white"
           strokeWidth={0.2}

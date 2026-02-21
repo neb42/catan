@@ -10,6 +10,7 @@ import type {
   BuildingType,
   ResourceType,
   OwnedDevCard,
+  GameStats,
 } from '@catan/shared';
 import { BUILDING_COSTS } from '@catan/shared';
 
@@ -153,6 +154,7 @@ interface VictorySlice {
   allPlayerVP: Record<string, VPBreakdown>;
   revealedVPCards: Array<{ playerId: string; cardCount: number }>;
   victoryPhase: 'none' | 'reveal' | 'modal' | 'dismissed';
+  gameStats: GameStats | null;
 }
 
 // Game log state slice
@@ -179,6 +181,19 @@ interface DebugSlice {
   debugPanelOpen: boolean;
 }
 
+// Sound state slice
+interface SoundSlice {
+  soundEnabled: boolean;
+  toggleSound: () => void;
+}
+
+// Rematch state slice
+interface RematchSlice {
+  rematchReadyPlayers: string[]; // Array of player IDs who voted for rematch
+  rematchReadyCount: number;
+  rematchTotalPlayers: number;
+}
+
 interface GameStore
   extends PlacementSlice,
     TurnSlice,
@@ -191,7 +206,9 @@ interface GameStore
     VictorySlice,
     GameLogSlice,
     PauseSlice,
-    DebugSlice {
+    DebugSlice,
+    SoundSlice,
+    RematchSlice {
   board: BoardState | null;
   room: Room | null; // Add room state
   gameStarted: boolean;
@@ -326,6 +343,7 @@ interface GameStore
     revealedVPCards: Array<{ playerId: string; cardCount: number }>;
   }) => void;
   setVictoryPhase: (phase: 'none' | 'reveal' | 'modal' | 'dismissed') => void;
+  setGameStats: (stats: GameStats | null) => void;
 
   // Game log actions
   addLogEntry: (entry: string) => void;
@@ -342,6 +360,14 @@ interface GameStore
   ) => void;
   setDebugPanelOpen: (open: boolean) => void;
   clearDebugMessages: () => void;
+
+  // Rematch actions
+  setRematchState: (
+    readyPlayers: string[],
+    readyCount: number,
+    totalPlayers: number,
+  ) => void;
+  clearRematchState: () => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -420,6 +446,7 @@ export const useGameStore = create<GameStore>((set) => ({
   allPlayerVP: {},
   revealedVPCards: [],
   victoryPhase: 'none',
+  gameStats: null,
 
   // Game log state
   gameLog: [],
@@ -431,6 +458,14 @@ export const useGameStore = create<GameStore>((set) => ({
   // Debug state
   debugMessages: [],
   debugPanelOpen: false,
+
+  // Rematch state
+  rematchReadyPlayers: [],
+  rematchReadyCount: 0,
+  rematchTotalPlayers: 0,
+
+  // Sound state - default ON, persisted to localStorage
+  soundEnabled: localStorage.getItem('catan-sound-enabled') !== 'false',
 
   // Existing actions
   setBoard: (board) => set({ board }),
@@ -698,6 +733,7 @@ export const useGameStore = create<GameStore>((set) => ({
       victoryPhase: data.revealedVPCards.length > 0 ? 'reveal' : 'modal',
     }),
   setVictoryPhase: (phase) => set({ victoryPhase: phase }),
+  setGameStats: (stats) => set({ gameStats: stats }),
 
   // Game log actions
   addLogEntry: (entry) =>
@@ -720,6 +756,29 @@ export const useGameStore = create<GameStore>((set) => ({
     })),
   setDebugPanelOpen: (open) => set({ debugPanelOpen: open }),
   clearDebugMessages: () => set({ debugMessages: [] }),
+
+  // Rematch actions
+  setRematchState: (readyPlayers, readyCount, totalPlayers) =>
+    set({
+      rematchReadyPlayers: readyPlayers,
+      rematchReadyCount: readyCount,
+      rematchTotalPlayers: totalPlayers,
+    }),
+  clearRematchState: () =>
+    set({
+      rematchReadyPlayers: [],
+      rematchReadyCount: 0,
+      rematchTotalPlayers: 0,
+    }),
+
+  // Sound actions
+  toggleSound: () => {
+    set((state) => {
+      const next = !state.soundEnabled;
+      localStorage.setItem('catan-sound-enabled', String(next));
+      return { soundEnabled: next };
+    });
+  },
 }));
 
 // CUSTOM HOOKS - prevent selector anti-pattern
@@ -733,6 +792,19 @@ export const useCurrentPlayer = () =>
       index: state.currentPlayerIndex,
       id: state.currentPlayerId,
     })),
+  );
+
+export const useOrderedPlayers = () =>
+  useGameStore(
+    useShallow((state) => {
+      const players = state.room?.players || [];
+      const playerOrder = state.room?.playerOrder || [];
+      // Sort players according to playerOrder
+      const ordered = playerOrder
+        .map((id) => players.find((p) => p.id === id))
+        .filter((p): p is NonNullable<typeof p> => p !== undefined);
+      return ordered;
+    }),
   );
 
 export const useIsMyTurn = () =>
@@ -919,6 +991,7 @@ export const useVictoryState = () =>
       victoryPhase: s.victoryPhase,
     })),
   );
+export const useGameStats = () => useGameStore(useShallow((s) => s.gameStats));
 
 /**
  * Calculate public victory points for a player.
@@ -953,3 +1026,15 @@ export function usePlayerPublicVP(playerId: string): {
     }),
   );
 }
+
+export const useRematchState = () =>
+  useGameStore(
+    useShallow((s) => ({
+      readyPlayers: s.rematchReadyPlayers,
+      readyCount: s.rematchReadyCount,
+      totalPlayers: s.rematchTotalPlayers,
+    })),
+  );
+
+export const useSoundEnabled = () =>
+  useGameStore((state) => state.soundEnabled);

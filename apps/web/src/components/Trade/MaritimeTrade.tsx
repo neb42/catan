@@ -108,6 +108,7 @@ export function MaritimeTrade() {
       title: 'Trade Complete',
       message: `Traded ${giving.amount} ${giving.resource} for ${receiving.amount} ${receiving.resource}`,
       color: 'green',
+      withBorder: true,
     });
   };
 

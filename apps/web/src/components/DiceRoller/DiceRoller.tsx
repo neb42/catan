@@ -71,6 +71,7 @@ export function DiceRoller() {
         message,
         color: 'green',
         autoClose: 3000,
+        withBorder: true,
       });
     } else if (
       lastResourcesDistributed.length === 0 ||
@@ -81,6 +82,7 @@ export function DiceRoller() {
         message: 'No resources from this roll',
         color: 'gray',
         autoClose: 2000,
+        withBorder: true,
       });
     }
   }, [lastResourcesDistributed, myPlayerId]);
@@ -160,17 +162,6 @@ export function DiceRoller() {
         </motion.div>
       </div>
 
-      {total !== null && (
-        <div className={styles['result']}>
-          <span>Total:</span>
-          <span
-            className={`${styles['resultTotal']} ${isRobber ? styles['resultTotalRobber'] : ''}`}
-          >
-            {total}
-          </span>
-        </div>
-      )}
-
       {isRobber && (
         <div className={styles['robberWarning']}>
           <svg
@@ -191,13 +182,28 @@ export function DiceRoller() {
         </div>
       )}
 
-      <button
-        className={styles['rollButton']}
-        onClick={handleRoll}
-        disabled={!canRollDice || isRolling}
-      >
-        {isRolling ? 'Rolling...' : 'Roll Dice'}
-      </button>
+      {(canRollDice || isRolling) && (
+        <button
+          className={styles['rollButton']}
+          onClick={handleRoll}
+          disabled={!canRollDice || isRolling}
+        >
+          {isRolling ? 'Rolling...' : 'Roll Dice'}
+        </button>
+      )}
+
+
+      {!canRollDice && !isRolling && total !== null && (
+        <div className={styles['result']}>
+          <span>Total:</span>
+          <span
+            className={`${styles['resultTotal']} ${isRobber ? styles['resultTotalRobber'] : ''}`}
+          >
+            {total}
+          </span>
+        </div>
+      )}
+
     </div>
   );
 }

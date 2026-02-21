@@ -110,7 +110,7 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
     ],
   );
 
-  const { isConnected, sendMessage } = useWebSocket({
+  const { isConnected, sendMessage, reconnect } = useWebSocket({
     url: WS_URL,
     onMessage: handleMessage,
   });
@@ -189,6 +189,22 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
     sendMessage({ type: 'toggle_ready', playerId: currentPlayerId });
   }, [currentPlayerId, sendMessage]);
 
+  const handleBackToHome = useCallback(() => {
+    setRoom(null);
+    setRoomId(null);
+    setCurrentPlayerId(null);
+    setCurrentView('create');
+    setCreateError(null);
+    setJoinError(null);
+    setGeneralError(null);
+    setCountdown(null);
+    setLastAction(null);
+    setAttemptedRoomId(null);
+    pendingNicknameRef.current = null;
+    reconnect();
+    navigate('/');
+  }, [navigate]);
+
   const lobbyViewActive = currentView === 'lobby' && Boolean(roomId || room);
 
   return (
@@ -228,6 +244,49 @@ export default function Lobby({ roomIdFromUrl }: LobbyProps) {
             position: 'relative',
           }}
         >
+          {/* Back Button */}
+          <button
+            onClick={handleBackToHome}
+            style={{
+              position: 'absolute',
+              top: '1.5rem',
+              left: '1.5rem',
+              background: 'white',
+              border: '2px solid #E5E7EB',
+              borderRadius: '50%',
+              width: '44px',
+              height: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px var(--color-shadow)',
+              transition: 'border-color 0.2s, transform 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--color-secondary)';
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#E5E7EB';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+            title="Back to Home"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--color-secondary-dark)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
           {/* Countdown Overlay */}
           {countdown !== null && countdown >= 0 && (
             <div

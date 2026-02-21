@@ -1,19 +1,18 @@
-import {
-  Modal,
-  Stack,
-  Text,
-  Group,
-  Badge,
-  Button,
-  Avatar,
-  Card,
-} from '@mantine/core';
+import { Modal, Stack, Text, Group, Badge, Button, Tabs } from '@mantine/core';
 import { motion } from 'motion/react';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
 import type { CreateTypes } from 'canvas-confetti';
-import { useVictoryState, useGameStore } from '../../stores/gameStore';
-import { PLAYER_COLOR_HEX } from '@catan/shared';
+import {
+  useVictoryState,
+  useGameStore,
+  useGameStats,
+  useRematchState,
+} from '../../stores/gameStore';
+import { ResultsBreakdown } from './ResultsBreakdown';
+import { DevCardStatsChart } from './DevCardStatsChart';
+import { DiceDistributionChart } from './DiceDistributionChart';
+import { ResourceStatsChart } from './ResourceStatsChart';
 
 /**
  * Victory modal showing winner announcement with confetti celebration.
@@ -26,11 +25,17 @@ export function VictoryModal() {
   const { winnerId, winnerNickname, winnerVP, allPlayerVP, victoryPhase } =
     useVictoryState();
   const room = useGameStore((s) => s.room);
+  const myPlayerId = useGameStore((s) => s.myPlayerId);
+  const sendMessage = useGameStore((s) => s.sendMessage);
   const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
+  const gameStats = useGameStats();
+  const { readyPlayers, readyCount, totalPlayers } = useRematchState();
+  const [hasVotedRematch, setHasVotedRematch] = useState(false);
   const confettiRef = useRef<CreateTypes | null>(null);
 
   // Derive modal visibility from store state
-  const modalOpen = victoryPhase === 'modal';
+  // const modalOpen = victoryPhase === 'modal';
+  const modalOpen = true;
 
   const handleInit = useCallback(({ confetti }: { confetti: CreateTypes }) => {
     confettiRef.current = confetti;
@@ -63,6 +68,17 @@ export function VictoryModal() {
     window.location.href = '/';
   };
 
+  const handleRematch = () => {
+    if (hasVotedRematch || !sendMessage || !myPlayerId) return;
+
+    sendMessage({
+      type: 'request_rematch',
+      playerId: myPlayerId,
+    });
+
+    setHasVotedRematch(true);
+  };
+
   return (
     <>
       <ReactCanvasConfetti
@@ -91,6 +107,8 @@ export function VictoryModal() {
             border: '4px solid #8d6e63',
             borderRadius: '12px',
             boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+            maxHeight: '80vh',
+            overflow: 'auto',
           },
           header: {
             background: 'transparent',
@@ -132,152 +150,121 @@ export function VictoryModal() {
             {winnerVP?.total} Victory Points
           </Badge>
 
-          {/* All players VP table */}
-          <Stack gap="sm" w="100%">
-            <Text
-              fw={700}
-              ta="center"
-              style={{
-                fontFamily: 'Fraunces, serif',
+          <Tabs
+            defaultValue="dice"
+            styles={{
+              root: { background: '#fdf6e3' },
+              tab: {
                 color: '#5d4037',
-                fontSize: '18px',
-              }}
-            >
-              Final Standings
-            </Text>
-            {room?.players.map((player) => {
-              const vp = allPlayerVP[player.id];
-              const isWinner = player.id === winnerId;
-              return (
-                <Card
-                  key={player.id}
-                  padding="sm"
-                  radius="md"
-                  style={{
-                    border: isWinner
-                      ? `3px solid ${PLAYER_COLOR_HEX[player.color]}`
-                      : '1px solid #d7ccc8',
-                    backgroundColor: isWinner
-                      ? 'rgba(241, 196, 15, 0.1)'
-                      : 'white',
-                  }}
-                >
-                  <Group justify="space-between">
-                    <Group gap="xs">
-                      <Avatar
-                        size="sm"
-                        radius="xl"
-                        style={{
-                          backgroundColor: PLAYER_COLOR_HEX[player.color],
-                        }}
-                      >
-                        {player.nickname.slice(0, 2).toUpperCase()}
-                      </Avatar>
-                      <Text
-                        fw={isWinner ? 700 : 500}
-                        style={{ color: '#5d4037' }}
-                      >
-                        {player.nickname}
-                      </Text>
-                      {isWinner && (
-                        <Badge
-                          size="xs"
-                          styles={{
-                            root: {
-                              background: '#f1c40f',
-                              color: '#333',
-                            },
-                          }}
-                        >
-                          WINNER
-                        </Badge>
-                      )}
-                    </Group>
-                    <Group gap={4}>
-                      <Text
-                        size="sm"
-                        title="Settlements"
-                        style={{ color: '#5d4037' }}
-                      >
-                        {vp?.settlements || 0}
-                      </Text>
-                      <Text
-                        size="sm"
-                        title="Cities"
-                        style={{ color: '#5d4037' }}
-                      >
-                        {Math.floor((vp?.cities || 0) / 2)}
-                      </Text>
-                      {(vp?.longestRoad || 0) > 0 && (
-                        <Text
-                          size="sm"
-                          title="Longest Road"
-                          style={{ color: '#5d4037' }}
-                        >
-                          2
-                        </Text>
-                      )}
-                      {(vp?.largestArmy || 0) > 0 && (
-                        <Text
-                          size="sm"
-                          title="Largest Army"
-                          style={{ color: '#5d4037' }}
-                        >
-                          2
-                        </Text>
-                      )}
-                      {(vp?.victoryPointCards || 0) > 0 && (
-                        <Text
-                          size="sm"
-                          title="VP Cards"
-                          style={{ color: '#5d4037' }}
-                        >
-                          {vp?.victoryPointCards}
-                        </Text>
-                      )}
-                      <Badge color="yellow" variant="light">
-                        {vp?.total} VP
-                      </Badge>
-                    </Group>
-                  </Group>
-                </Card>
-              );
-            })}
-          </Stack>
+                fontFamily: 'Fraunces, serif',
+                '&[data-active]': {
+                  borderBottomColor: '#8d6e63',
+                  color: '#8d6e63',
+                },
+              },
+              panel: { paddingTop: 16 },
+            }}
+          >
+            <Tabs.List>
+              <Tabs.Tab value="overview">Overview</Tabs.Tab>
+              {gameStats && (
+                <>
+                  <Tabs.Tab value="dice">Dice Stats</Tabs.Tab>
+                  <Tabs.Tab value="devcards">Dev Cards</Tabs.Tab>
+                  <Tabs.Tab value="resources">Resources</Tabs.Tab>
+                </>
+              )}
+            </Tabs.List>
+
+
+            <Tabs.Panel value="overview">
+              <ResultsBreakdown
+                players={room?.players || []}
+                allPlayerVP={allPlayerVP}
+              />
+            </Tabs.Panel>
+
+            {gameStats && (
+              <>
+                <Tabs.Panel value="dice">
+                  <DiceDistributionChart diceRolls={gameStats.diceRolls} />
+                </Tabs.Panel>
+
+                <Tabs.Panel value="devcards">
+                  <DevCardStatsChart
+                    devCardStats={gameStats.devCardStats}
+                    players={room?.players || []}
+                  />
+                </Tabs.Panel>
+
+                <Tabs.Panel value="resources">
+                  <ResourceStatsChart
+                    resourceStats={gameStats.resourceStats}
+                    players={room?.players || []}
+                  />
+                </Tabs.Panel>
+              </>
+            )}
+          </Tabs>
 
           {/* Action buttons */}
-          <Group gap="md">
-            <Button
-              variant="outline"
-              onClick={handleClose}
-              styles={{
-                root: {
-                  border: '2px solid #8d6e63',
-                  color: '#8d6e63',
-                  background: 'transparent',
-                  '&:hover': {
-                    background: 'rgba(141, 110, 99, 0.1)',
+          <Stack w="100%" gap="xs">
+            {/* Ready count display */}
+            {readyCount > 0 && (
+              <Text size="sm" ta="center" c="#5d4037">
+                Ready for rematch: {readyCount}/{totalPlayers} players
+              </Text>
+            )}
+
+            <Group gap="md" justify="center">
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                styles={{
+                  root: {
+                    border: '2px solid #8d6e63',
+                    color: '#8d6e63',
+                    background: 'transparent',
+                    '&:hover': {
+                      background: 'rgba(141, 110, 99, 0.1)',
+                    },
                   },
-                },
-              }}
-            >
-              View Board
-            </Button>
-            <Button
-              onClick={handleReturnToLobby}
-              styles={{
-                root: {
-                  background: '#8d6e63',
-                  color: '#fdf6e3',
-                  '&:hover': {
-                    background: '#6d4c41',
+                }}
+              >
+                View Board
+              </Button>
+
+              <Button
+                onClick={handleRematch}
+                disabled={hasVotedRematch}
+                styles={{
+                  root: {
+                    background: hasVotedRematch ? '#ccc' : '#8d6e63',
+                    color: '#fdf6e3',
+                    '&:hover': {
+                      background: hasVotedRematch ? '#ccc' : '#6d4c41',
+                    },
                   },
-                },
-              }}
-            >
-              Return to Lobby
-            </Button>
-          </Group>
+                }}
+              >
+                {hasVotedRematch ? 'Waiting for others...' : 'Rematch'}
+              </Button>
+            </Group>
+
+            {/* Show checkmarks next to player names who voted */}
+            {readyCount > 0 && room?.players && (
+              <Stack gap={4}>
+                {room.players.map((p) => (
+                  <Group key={p.id} gap="xs" justify="center">
+                    <Text size="xs" c="#5d4037">
+                      {p.nickname}
+                    </Text>
+                    {readyPlayers.includes(p.id) && <Text size="xs">✓</Text>}
+                  </Group>
+                ))}
+              </Stack>
+            )}
+          </Stack>
         </Stack>
       </Modal>
     </>

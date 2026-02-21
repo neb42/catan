@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Tooltip } from '@mantine/core';
+import { Text, Tooltip } from '@mantine/core';
 import { PLAYER_COLOR_HEX } from '@catan/shared';
 import { useDraftOrder } from '../hooks/usePlacementState';
 
@@ -21,51 +21,40 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
         border: '4px solid #8d6e63',
         borderRadius: '12px',
         boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
-        padding: '12px',
-        maxWidth: 280,
+        padding: 'var(--mantine-spacing-xs)',
       }}
     >
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '15px',
+          gap: 'var(--mantine-spacing-sm)',
         }}
       >
-        <h3
-          style={{
-            fontSize: '11px',
-            fontWeight: 600,
-            color: '#5d4037',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            margin: 0,
-            fontFamily: 'Inter, sans-serif',
-          }}
+        <Text
+          size="xs"
+          fw={600}
+          c="#5d4037"
+          tt="uppercase"
+          style={{ letterSpacing: '0.5px', fontFamily: 'Inter, sans-serif' }}
         >
           Draft Order
-        </h3>
+        </Text>
 
         {/* Round 1 */}
         <div
           style={{
-            paddingBottom: '15px',
+            paddingBottom: 'var(--mantine-spacing-md)',
             borderBottom: '2px dashed #d7ccc8',
           }}
         >
-          <div
-            style={{
-              fontSize: '12px',
-              color: '#8d6e63',
-              marginBottom: '8px',
-            }}
-          >
+          <Text size="xs" c="#8d6e63" mb="xs">
             Round 1 (1→{players.length})
-          </div>
+          </Text>
           <div
             style={{
               display: 'flex',
-              gap: '4px',
+              gap: 'var(--mantine-spacing-xs)',
               flexWrap: 'wrap',
             }}
           >
@@ -118,23 +107,17 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
         {/* Round 2 */}
         <div
           style={{
-            paddingBottom: '15px',
+            paddingBottom: 'var(--mantine-spacing-md)',
             borderBottom: '2px dashed #d7ccc8',
           }}
         >
-          <div
-            style={{
-              fontSize: '12px',
-              color: '#8d6e63',
-              marginBottom: '8px',
-            }}
-          >
+          <Text size="xs" c="#8d6e63" mb="xs">
             Round 2 ({players.length}→1)
-          </div>
+          </Text>
           <div
             style={{
               display: 'flex',
-              gap: '4px',
+              gap: 'var(--mantine-spacing-xs)',
               flexWrap: 'wrap',
             }}
           >
@@ -188,9 +171,10 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
         <div
           style={{
             display: 'flex',
-            gap: '12px',
+            flexWrap: 'wrap',
+            gap: 'var(--mantine-spacing-xs)',
             background: 'rgba(0,0,0,0.03)',
-            padding: '8px',
+            padding: 'var(--mantine-spacing-xs)',
             borderRadius: '6px',
             borderTop: '2px dashed #d7ccc8',
           }}
@@ -199,7 +183,7 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
+              gap: 'var(--mantine-spacing-xs)',
             }}
           >
             <div
@@ -210,20 +194,15 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
                 borderRadius: 2,
               }}
             />
-            <span
-              style={{
-                fontSize: '11px',
-                color: '#8d6e63',
-              }}
-            >
+            <Text size="xs" c="#8d6e63">
               Settlement
-            </span>
+            </Text>
           </div>
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
+              gap: 'var(--mantine-spacing-xs)',
             }}
           >
             <div
@@ -234,14 +213,9 @@ export function DraftOrderDisplay({ players }: DraftOrderDisplayProps) {
                 borderRadius: '50%',
               }}
             />
-            <span
-              style={{
-                fontSize: '11px',
-                color: '#8d6e63',
-              }}
-            >
+            <Text size="xs" c="#8d6e63">
               Road
-            </span>
+            </Text>
           </div>
         </div>
       </div>

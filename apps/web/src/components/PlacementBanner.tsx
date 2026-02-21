@@ -1,3 +1,4 @@
+import { Text } from '@mantine/core';
 import { motion } from 'motion/react';
 import { PLAYER_COLOR_HEX } from '@catan/shared';
 import { usePlacementState } from '../hooks/usePlacementState';
@@ -50,45 +51,43 @@ export function PlacementBanner({ players }: PlacementBannerProps) {
                 ease: 'easeInOut',
               }}
             >
-              <span
-                style={{
-                  fontWeight: 700,
-                  fontSize: '18px',
-                  color: '#5d4037',
-                  fontFamily: 'Fraunces, serif',
-                }}
+              <Text
+                size="md"
+                fw={700}
+                c="#5d4037"
+                ff="Fraunces, serif"
               >
                 Your Turn: {actionText}
-              </span>
+              </Text>
             </motion.div>
           ) : (
-            <span
-              style={{
-                fontSize: '18px',
-                color: '#8d6e63',
-              }}
-            >
-              <span style={{ fontWeight: 600, color: colorHex }}>
+            <Text size="md" c="#8d6e63">
+              <Text span fw={600} c={colorHex}>
                 {currentPlayer.nickname}
-              </span>
+              </Text>
               {' is placing a '}
-              <span style={{ fontWeight: 500, color: '#5d4037' }}>{phase}</span>
-            </span>
+              <Text span fw={500} c="#5d4037">
+                {phase}
+              </Text>
+            </Text>
           )}
 
           <div
             style={{
               background: 'rgba(141, 110, 99, 0.15)',
-              color: '#5d4037',
               border: '1px solid #d7ccc8',
               padding: '4px 10px',
               borderRadius: '6px',
-              fontSize: '12px',
-              fontWeight: 600,
-              fontFamily: 'Inter, sans-serif',
             }}
           >
-            Round {draftRound}
+            <Text
+              size="xs"
+              fw={600}
+              c="#5d4037"
+              ff="Inter, sans-serif"
+            >
+              Round {draftRound}
+            </Text>
           </div>
         </div>
       </div>

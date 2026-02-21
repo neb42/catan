@@ -579,6 +579,45 @@ Plans:
 
 ---
 
+## Phase 14: Victory Stats and Rematch
+
+**Goal:** Enhance victory modal with game statistics and rematch functionality  
+**Duration:** 0.5 week  
+**Dependencies:** Phase 13  
+**Plans:** 6 plans
+
+### Requirements
+
+- Add dice roll distribution statistics to victory modal
+- Add development card distribution statistics to victory modal
+- Add resource card distribution statistics to victory modal
+- Improve styling of results breakdown in victory modal
+- Add rematch button to return to lobby with reset game state
+
+### Success Criteria
+
+1. **Statistics display correctly** — Victory modal shows dice roll frequencies, dev card types drawn, resource distribution across players
+2. **Rematch flow works** — Click rematch button, return to lobby with same players, game state fully reset
+3. **Styling improvements** — Results breakdown is visually polished and easy to read
+
+### Plans
+
+- [x] 14-01-PLAN.md — Backend statistics tracking (GameStats class + message schemas)
+- [x] 14-02-PLAN.md — Chart components with @mantine/charts
+- [x] 14-03-PLAN.md — Rematch backend logic (RoomManager + message schemas)
+- [x] 14-04-PLAN.md — Statistics display in VictoryModal
+- [x] 14-05-PLAN.md — Rematch UI integration
+- [x] 14-06-PLAN.md — Human verification checkpoint
+
+### Deliverables
+
+- Game statistics tracking (dice rolls, dev cards, resources)
+- Enhanced victory modal with stats display
+- Rematch button and state reset logic
+- Improved results breakdown styling
+
+---
+
 ## Validation Matrix
 
 **Requirements Coverage:** 68/68 (100%)
@@ -672,6 +711,19 @@ Future versions:
 - Custom board layouts
 - House rules toggles
 
+### Phase 15: Add sound effects during gameplay
+
+**Goal:** Add event-driven sound effects for all gameplay actions with user toggle control
+**Depends on:** Phase 14
+**Requirements:** AUDIO-01, AUDIO-02
+**Plans:** 3/3 plans complete
+
+Plans:
+
+- [x] 15-01-PLAN.md — Sound infrastructure (Howler.js, SoundService, Settings UI, audio files)
+- [x] 15-02-PLAN.md — Handler integration (sound triggers for all game events)
+- [ ] 15-03-PLAN.md — Gap closure: fix SoundService init and generate audio files
+
 ---
 
-_Last updated: 2026-02-03 - Phase 11 (Victory) complete_
+_Last updated: 2026-02-20 - Phase 15 gap closure planned_
