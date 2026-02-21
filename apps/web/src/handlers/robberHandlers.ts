@@ -1,6 +1,7 @@
 import { ResourceType } from '@catan/shared';
 
 import { showGameNotification } from '@web/components/Feedback';
+import { soundService } from '@web/services/sound';
 import { useGameStore } from '@web/stores/gameStore';
 
 import { HandlerContext, MessageHandler } from './types';
@@ -14,6 +15,7 @@ export const handleDiscardRequired: MessageHandler = (message, ctx) => {
     useGameStore
       .getState()
       .setDiscardRequired(true, message.targetCount, message.currentResources);
+    soundService.play('negative');
   }
 };
 
@@ -74,6 +76,7 @@ export const handleRobberTriggered: MessageHandler = (message, ctx) => {
     const playerIds = mustDiscardPlayers.map((p) => p.playerId);
     useGameStore.getState().setWaitingForDiscards(true, playerIds);
   }
+  soundService.play('robberWarning');
 };
 
 export const handleRobberMoveRequired: MessageHandler = (message, ctx) => {
@@ -88,6 +91,7 @@ export const handleRobberMoved: MessageHandler = (message, ctx) => {
   const gameStore = useGameStore.getState();
   gameStore.setRobberHexId(message.hexId);
   gameStore.setRobberPlacementMode(false);
+  soundService.play('robberPlace');
   // Show notification for robber moved
   const movingPlayer = ctx.room?.players.find((p) => p.id === message.playerId);
   const nickname = movingPlayer?.nickname || 'A player';
@@ -120,6 +124,7 @@ export const handleStolen: MessageHandler = (message, ctx) => {
   }
   // Clear steal state
   gameStore.setStealRequired(false, []);
+  soundService.play('robberSteal');
   // Show notification for steal
   const thief = ctx.room?.players.find((p) => p.id === message.thiefId);
   const victim = ctx.room?.players.find((p) => p.id === message.victimId);

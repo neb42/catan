@@ -121,8 +121,8 @@
 
 ### Audio & Polish
 
-- [ ] **AUDIO-01**: Game plays sound effects for dice rolls, building, robber, etc.
-- [ ] **AUDIO-02**: User can toggle sound effects on/off
+- [x] **AUDIO-01**: Game plays sound effects for dice rolls, building, robber, etc.
+- [x] **AUDIO-02**: User can toggle sound effects on/off
 
 ### Quality of Life
 

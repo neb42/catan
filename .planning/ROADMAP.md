@@ -711,6 +711,19 @@ Future versions:
 - Custom board layouts
 - House rules toggles
 
+### Phase 15: Add sound effects during gameplay
+
+**Goal:** Add event-driven sound effects for all gameplay actions with user toggle control
+**Depends on:** Phase 14
+**Requirements:** AUDIO-01, AUDIO-02
+**Plans:** 3/3 plans complete
+
+Plans:
+
+- [x] 15-01-PLAN.md — Sound infrastructure (Howler.js, SoundService, Settings UI, audio files)
+- [x] 15-02-PLAN.md — Handler integration (sound triggers for all game events)
+- [ ] 15-03-PLAN.md — Gap closure: fix SoundService init and generate audio files
+
 ---
 
-_Last updated: 2026-02-03 - Phase 11 (Victory) complete_
+_Last updated: 2026-02-20 - Phase 15 gap closure planned_

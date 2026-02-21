@@ -1,4 +1,5 @@
 import { showGameNotification } from '@web/components/Feedback';
+import { soundService } from '@web/services/sound';
 import { useGameStore } from '@web/stores/gameStore';
 
 import { HandlerContext, MessageHandler } from './types';
@@ -52,6 +53,17 @@ export const handleDiceRolled: MessageHandler = (message, ctx) => {
   for (const grant of message.resourcesDistributed) {
     gameStore.updatePlayerResources(grant.playerId, grant.resources);
   }
+  // Play dice roll sound
+  soundService.play('diceRoll');
+
+  // Play resource gain sound if any resources were distributed
+  const hasDistribution = message.resourcesDistributed.some((grant) =>
+    grant.resources.some((r) => r.count > 0),
+  );
+  if (hasDistribution) {
+    soundService.play('resourceGain');
+  }
+
   // Show notification for dice roll
   showGameNotification(`Rolled ${message.total}`, 'info');
   if (message.total === 7) {
@@ -68,6 +80,13 @@ export const handleTurnChanged: MessageHandler = (message, ctx) => {
     currentPlayerId: message.currentPlayerId,
     turnNumber: message.turnNumber,
   });
+
+  // Play sound when it becomes this player's turn
+  const { myPlayerId } = useGameStore.getState();
+  if (message.currentPlayerId === myPlayerId) {
+    soundService.play('yourTurn');
+  }
+
   // Clear any active trade when turn changes
   gameStore.clearTrade();
   gameStore.setTradeModalOpen(false);

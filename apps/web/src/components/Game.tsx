@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Box, Button, Container, Stack, Title, Text } from '@mantine/core';
 import { Board } from './Board/Board';
 import {
@@ -34,13 +35,17 @@ import { ResourcePickerModal } from './CardPlay/ResourcePickerModal';
 import { MonopolyModal } from './CardPlay/MonopolyModal';
 import { VPRevealOverlay, VictoryModal } from './Victory';
 import { DisconnectOverlay } from './DisconnectOverlay';
+import { SettingsButton, SettingsPanel } from './Settings';
 
 export function Game() {
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const board = useGameStore(useShallow((state) => state.board));
   const players = useGameStore(
     useShallow((state) => state.room?.players || []),
   );
-  const playerOrder = useGameStore(useShallow((state) => state.room?.playerOrder || []));
+  const playerOrder = useGameStore(
+    useShallow((state) => state.room?.playerOrder || []),
+  );
   const orderedPlayers = useOrderedPlayers();
   const setVictoryPhase = useGameStore((s) => s.setVictoryPhase);
   const { id: currentPlayerId } = useCurrentPlayer();
@@ -141,7 +146,7 @@ export function Game() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            overflowY: 'auto',  
+            overflowY: 'auto',
           }}
           gap="md"
         >
@@ -239,6 +244,22 @@ export function Game() {
       {/* Victory announcement - overlays when game ends */}
       {gameEnded && victoryPhase === 'reveal' && <VPRevealOverlay />}
       {gameEnded && victoryPhase === 'modal' && <VictoryModal />}
+
+      {/* Settings button and panel */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          zIndex: 25,
+        }}
+      >
+        <SettingsButton onClick={() => setSettingsOpen(true)} />
+      </div>
+      <SettingsPanel
+        opened={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
 
       {/* Disconnect overlay - blocks all interaction when any player disconnects */}
       <DisconnectOverlay />
