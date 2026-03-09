@@ -6,7 +6,7 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --production=false
+RUN npm ci
 
 # Stage 2: Build both applications
 FROM node:20-alpine AS build
@@ -20,9 +20,10 @@ RUN npx nx build web --prod
 FROM node:20-alpine AS runtime
 WORKDIR /app
 
-# Copy production dependencies only
+# Copy production node_modules from deps stage and prune dev dependencies
+COPY --from=deps /app/node_modules ./node_modules
 COPY package*.json ./
-RUN npm ci --production --ignore-scripts
+RUN npm prune --omit=dev
 
 # Copy built artifacts from build stage
 COPY --from=build /app/dist/api ./dist/api
